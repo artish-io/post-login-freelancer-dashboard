@@ -1,0 +1,138 @@
+[
+  {
+    "projectId": 301,
+    "title": "Lagos Parks Services website re-design",
+    "logoUrl": "/icons/lagos-parks-logo.png",
+    "typeTags": ["Brand Design", "Content Design"],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Develop colour palette",
+        "status": "Approved",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/color-palette-link"
+      },
+      {
+        "id": 2,
+        "title": "Hero section design",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 2,
+        "link": "https://figma.com/file/hero-section-link"
+      },
+      {
+        "id": 3,
+        "title": "10 year anniversary graphic assets",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 3,
+        "link": "https://figma.com/file/anniversary-assets-link"
+      },
+      {
+        "id": 4,
+        "title": "Featured blog content transfer",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 4,
+        "link": "https://docs.google.com/document/blog-content-transfer"
+      },
+      {
+        "id": 5,
+        "title": "Final web design and project handoff",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 5,
+        "link": "https://figma.com/file/final-web-design-handoff"
+      }
+    ]
+  },
+  {
+    "projectId": 302,
+    "title": "Media channel branding",
+    "logoUrl": "/icons/media-channel-logo.png",
+    "typeTags": ["Brand Design", "Motion Design"],
+    "tasks": [
+      {
+        "id": 4,
+        "title": "Brand concept iteration",
+        "status": "In review",
+        "completed": false,
+        "order": 1,
+        "link": "https://figma.com/file/brand-concept"
+      },
+      {
+        "id": 5,
+        "title": "Motion graphics intro",
+        "status": "Approved",
+        "completed": true,
+        "order": 2,
+        "link": "https://figma.com/file/motion-intro"
+      },
+      {
+        "id": 6,
+        "title": "UX Research for iOS",
+        "status": "In review",
+        "completed": false,
+        "order": 3,
+        "link": "https://figma.com/file/ux-research-ios"
+      },
+      {
+        "id": 7,
+        "title": "Content Development for promo",
+        "status": "Approved",
+        "completed": true,
+        "order": 4,
+        "link": "https://docs.google.com/document/promo-content"
+      },
+      {
+        "id": 8,
+        "title": "Welcome Brochure graphic assets",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 5,
+        "link": "https://figma.com/file/brochure-assets"
+      },
+      {
+        "id": 9,
+        "title": "Proofread final technical documentation",
+        "status": "In review",
+        "completed": false,
+        "order": 6,
+        "link": "https://docs.google.com/document/tech-doc"
+      }
+    ]
+  },
+  {
+    "projectId": 303,
+    "title": "Corlax iOS app development",
+    "logoUrl": "/icons/corlax-ios-logo.png",
+    "typeTags": ["Mobile Design", "Engineering"],
+    "tasks": [
+      {
+        "id": 6,
+        "title": "Login & onboarding flow",
+        "status": "Approved",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/login-onboarding"
+      },
+      {
+        "id": 7,
+        "title": "iOS testing & deployment",
+        "status": "Approved",
+        "completed": true,
+        "order": 2,
+        "link": "https://figma.com/file/ios-testing"
+      },
+      {
+        "id": 10,
+        "title": "Responsive scroll effect design",
+        "status": "Approved",
+        "completed": true,
+        "order": 3,
+        "link": "https://figma.com/file/scroll-effect"
+      }
+    ]
+  }
+]

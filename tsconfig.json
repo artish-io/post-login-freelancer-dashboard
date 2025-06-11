@@ -24,10 +24,10 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    }
+      "@/*": ["./src/*"]
+    },
+    "baseUrl": ".",                             // ✅ Required for alias support
+    "types": ["next-auth"]                      // ✅ Register NextAuth module augmentation
   },
   "include": [
     "**/*.ts",

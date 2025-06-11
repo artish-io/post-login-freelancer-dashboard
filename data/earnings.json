@@ -1,0 +1,14 @@
+[
+  {
+    "userId": "31",
+    "amount": 1200.89,
+    "currency": "USD",
+    "lastUpdated": "2025-06-09T20:30:00.000Z"
+  },
+  {
+    "userId": "32",
+    "amount": 885.50,
+    "currency": "USD",
+    "lastUpdated": "2025-06-01T11:15:00.000Z"
+  }
+]
