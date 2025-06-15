@@ -1,0 +1,218 @@
+[
+  {
+    "id": 1,
+    "name": "Tobi Philly",
+    "title": "Web3 Engineer",
+    "avatar": "/avatars/tobi.png"
+  },
+  {
+    "id": 2,
+    "name": "Jenny San",
+    "title": "Graphic Designer",
+    "avatar": "/avatars/jenny.png"
+  },
+  {
+    "id": 3,
+    "name": "Geeko Leni",
+    "title": "UX/UI Designer",
+    "avatar": "/avatars/geeko.png"
+  },
+  {
+    "id": 4,
+    "name": "Muna Olu",
+    "title": "Market Researcher",
+    "avatar": "/avatars/muna.png"
+  },
+  {
+    "id": 5,
+    "name": "Shade Cee",
+    "title": "Creative Writer",
+    "avatar": "/avatars/shade.png"
+  },
+  {
+    "id": 6,
+    "name": "Kore De",
+    "title": "Video Editor",
+    "avatar": "/avatars/kore.png"
+  },
+  {
+    "id": 7,
+    "name": "Amara Lee",
+    "title": "Director of Photography",
+    "avatar": "/avatars/amara.png"
+  },
+  {
+    "id": 8,
+    "name": "Kwame Sefa",
+    "title": "Fashion Designer",
+    "avatar": "/avatars/kwame.png"
+  },
+  {
+    "id": 9,
+    "name": "Nia Ade",
+    "title": "Event Producer",
+    "avatar": "/avatars/nia.png"
+  },
+  {
+    "id": 10,
+    "name": "Tai Brown",
+    "title": "Print Specialist",
+    "avatar": "/avatars/tai.png"
+  },
+  {
+    "id": 11,
+    "name": "Riya Desai",
+    "title": "Frontend Developer",
+    "avatar": "/avatars/riya.png"
+  },
+  {
+    "id": 12,
+    "name": "Pierre Dubois",
+    "title": "Brand Strategist",
+    "avatar": "/avatars/pierre.png"
+  },
+  {
+    "id": 13,
+    "name": "Hans Richter",
+    "title": "Motion Designer",
+    "avatar": "/avatars/hans.png"
+  },
+  {
+    "id": 14,
+    "name": "Liam Chai",
+    "title": "DevOps Engineer",
+    "avatar": "/avatars/liam.png"
+  },
+  {
+    "id": 15,
+    "name": "Asha Karungi",
+    "title": "Research Analyst",
+    "avatar": "/avatars/asha.png"
+  },
+  {
+    "id": 16,
+    "name": "Daniel Okoth",
+    "title": "Backend Developer",
+    "avatar": "/avatars/daniel.png"
+  },
+  {
+    "id": 17,
+    "name": "Indah Putri",
+    "title": "Virtual Assistant",
+    "avatar": "/avatars/indah.png"
+  },
+  {
+    "id": 18,
+    "name": "Elise Martin",
+    "title": "Content Writer",
+    "avatar": "/avatars/elise.png"
+  },
+  {
+    "id": 19,
+    "name": "Markus Schulz",
+    "title": "Cloud Architect",
+    "avatar": "/avatars/markus.png"
+  },
+  {
+    "id": 20,
+    "name": "Anika Rao",
+    "title": "Customer Success Manager",
+    "avatar": "/avatars/anika.png"
+  },
+  {
+    "id": 21,
+    "name": "Sarah Lin",
+    "title": "Mobile Developer",
+    "avatar": "/avatars/sarah.png"
+  },
+  {
+    "id": 22,
+    "name": "Miguel Torres",
+    "title": "App Developer",
+    "avatar": "/avatars/miguel.png"
+  },
+  {
+    "id": 23,
+    "name": "Emeka Okafor",
+    "title": "Python Developer",
+    "avatar": "/avatars/emeka.png"
+  },
+  {
+    "id": 24,
+    "name": "Hannah Kim",
+    "title": "Shorts Video Creator",
+    "avatar": "/avatars/hannah.png"
+  },
+  {
+    "id": 25,
+    "name": "Lucas Meyer",
+    "title": "Hardware Engineer",
+    "avatar": "/avatars/lucas.png"
+  },
+  {
+    "id": 26,
+    "name": "Nadia Petrov",
+    "title": "Print Designer",
+    "avatar": "/avatars/nadia.png"
+  },
+  {
+    "id": 27,
+    "name": "Olu Ojo",
+    "title": "Stage Designer",
+    "avatar": "/avatars/olu.png"
+  },
+  {
+    "id": 28,
+    "name": "Sofia Rossi",
+    "title": "Poet",
+    "avatar": "/avatars/sofia.png"
+  },
+  {
+    "id": 29,
+    "name": "Isaac Johnson",
+    "title": "Full Stack Developer",
+    "avatar": "/avatars/isaac.png"
+  },
+  {
+    "id": 30,
+    "name": "Grace Smith",
+    "title": "Admin Support Specialist",
+    "avatar": "/avatars/grace.png"
+  },
+  {
+    "id": 31,
+    "name": "Margsate Flether",
+    "title": "Creative Producer",
+    "avatar": "/avatars/margsate-flether.png"
+  },
+  {
+    "id": 32,
+    "name": "Neilsan Mando",
+    "title": "Product Manager",
+    "avatar": "/avatars/neilsan.png"
+  },
+  {
+    "id": 33,
+    "name": "Tiruvellly Priya",
+    "title": "Brand Director",
+    "avatar": "/avatars/priyaa.png"
+  },
+  {
+    "id": 34,
+    "name": "Matte Hannery",
+    "title": "Startup Founder",
+    "avatar": "/avatars/matte.png"
+  },
+  {
+    "id": 35,
+    "name": "Tilly Burzinsky",
+    "title": "Events Lead",
+    "avatar": "/avatars/tilly.png"
+  },
+  {
+    "id": 36,
+    "name": "Felix Damini",
+    "title": "UX Research Lead",
+    "avatar": "/avatars/felix.png"
+  }
+]

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { NotesTab } from './notes-tab';
 import ProjectNotesExpansion from './project-notes-expansion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 type Task = {
   id: number;
@@ -118,51 +119,71 @@ export default function TodayTasksPanel() {
         })}
       </div>
 
-      {/* Task List */}
-      {activeTab === 'Notes' ? (
-        <NotesTab
-          projectIds={projectIds}
-          onExpand={(projectId: number) => setExpandedProject(projectId)}
-        />
-      ) : (
-        <ul className="space-y-4">
-          {displayed.map((task) => (
-            <li key={task.id} className="flex justify-between items-center text-sm">
-              <div className="flex items-center gap-3">
-                <span
-                  className={clsx(
-                    'w-5 h-5 rounded-full border flex items-center justify-center',
-                    task.completed
-                      ? 'bg-pink-500 text-white border-pink-500'
-                      : 'border-gray-400'
-                  )}
-                >
-                  {task.completed && (
-                    <svg
-                      className="w-3 h-3"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={2}
+      {/* Animated Content */}
+      <div className="relative min-h-[240px]">
+        <AnimatePresence mode="wait">
+          {activeTab === 'Notes' ? (
+            <motion.div
+              key="notes"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <NotesTab
+                projectIds={projectIds}
+                onExpand={(projectId: number) => setExpandedProject(projectId)}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="default"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ul className="space-y-4">
+                {displayed.map((task) => (
+                  <li key={task.id} className="flex justify-between items-center text-sm">
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={clsx(
+                          'w-5 h-5 rounded-full border flex items-center justify-center',
+                          task.completed
+                            ? 'bg-pink-500 text-white border-pink-500'
+                            : 'border-gray-400'
+                        )}
+                      >
+                        {task.completed && (
+                          <svg
+                            className="w-3 h-3"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path d="M5 10l3 3 7-7" />
+                          </svg>
+                        )}
+                      </span>
+                      <span>{task.title}</span>
+                    </div>
+                    <span
+                      className={clsx(
+                        'px-3 py-1 rounded-full text-xs font-medium',
+                        statusColors[task.status]
+                      )}
                     >
-                      <path d="M5 10l3 3 7-7" />
-                    </svg>
-                  )}
-                </span>
-                <span>{task.title}</span>
-              </div>
-              <span
-                className={clsx(
-                  'px-3 py-1 rounded-full text-xs font-medium',
-                  statusColors[task.status]
-                )}
-              >
-                {task.status}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
+                      {task.status}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* View All CTA */}
       <div className="flex justify-end mt-6">
