@@ -1,12 +1,9 @@
-// src/app/api/dashboard/messages/[threadId]/mark-read/route.ts
-
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
 
-// NOTE TO DEV TEAM:
-// This endpoint marks all messages as read for a given user in a thread.
-// Called as PATCH /api/dashboard/messages/[threadId]/mark-read with { userId } in body.
+// PATCH /api/dashboard/messages/[threadId]/mark-read
+// Request body: { userId: number }
 
 export async function PATCH(
   req: Request,
@@ -16,35 +13,50 @@ export async function PATCH(
   const { userId } = await req.json();
 
   if (!userId || !threadId) {
-    return NextResponse.json({ error: 'Missing userId or threadId' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Missing userId or threadId' },
+      { status: 400 }
+    );
   }
 
   try {
     const filePath = path.join(process.cwd(), 'data/messages.json');
-    const fileData = await fs.readFile(filePath, 'utf-8');
-    const threads = JSON.parse(fileData);
+    const raw = await fs.readFile(filePath, 'utf-8');
+    const threads = JSON.parse(raw);
 
-    const thread = threads.find(
-      (t: any) => t.threadId === threadId && t.participants.includes(userId)
+    const threadIndex = threads.findIndex(
+      (t: any) =>
+        t.threadId === threadId && t.participants.includes(Number(userId))
     );
 
-    if (!thread) {
-      return NextResponse.json({ error: 'Thread not found or access denied' }, { status: 403 });
+    if (threadIndex === -1) {
+      return NextResponse.json(
+        { error: 'Thread not found or access denied' },
+        { status: 403 }
+      );
     }
 
-    thread.messages = thread.messages.map((msg: any) => ({
-      ...msg,
-      read: {
-        ...msg.read,
-        [userId]: true,
-      },
-    }));
+    // ✅ Mark all messages in the thread as read for this user
+    threads[threadIndex].messages = threads[threadIndex].messages.map(
+      (msg: any) => ({
+        ...msg,
+        read: {
+          ...msg.read,
+          [userId]: true,
+        },
+      })
+    );
 
     await fs.writeFile(filePath, JSON.stringify(threads, null, 2));
 
+    console.log(`[mark-read] user ${userId} marked thread ${threadId} as read`);
+
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('[mark-read] Error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  } catch (err) {
+    console.error('[mark-read] Failed to update thread:', err);
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    );
   }
 }

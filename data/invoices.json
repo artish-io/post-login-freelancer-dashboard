@@ -1,0 +1,122 @@
+[
+  {
+    "id": 524874,
+    "freelancerId": 31,
+    "client": {
+      "name": "Ebi Tomcee",
+      "title": "Financial Analyst",
+      "email": "ebi.tomcee@client.com",
+      "avatar": "/avatars/ebi.png"
+    },
+    "projectTitle": "Lagos Parks Services website re-design",
+    "issueDate": "2025-06-01",
+    "dueDate": "2025-06-10",
+    "totalAmount": 5244.0,
+    "status": "sent"
+  },
+  {
+    "id": 524875,
+    "freelancerId": 31,
+    "client": {
+      "name": "Megan Norton",
+      "title": "Sales Manager",
+      "email": "megan.norton@client.com",
+      "avatar": "/avatars/megan.png"
+    },
+    "projectTitle": "UX Writing Sprint",
+    "issueDate": "2025-05-20",
+    "dueDate": "2025-05-30",
+    "totalAmount": 3150.0,
+    "status": "paid"
+  },
+  {
+    "id": 524876,
+    "freelancerId": 31,
+    "client": {
+      "name": "Nancy Salmon",
+      "title": "Sales Manager",
+      "email": "nancy.salmon@client.com",
+      "avatar": "/avatars/nancy.png"
+    },
+    "projectTitle": "Media channel branding",
+    "issueDate": "2025-04-18",
+    "dueDate": "2025-04-25",
+    "totalAmount": 4120.0,
+    "status": "draft"
+  },
+  {
+    "id": 524877,
+    "freelancerId": 31,
+    "client": {
+      "name": "Felix Damini",
+      "title": "Audio Engineer",
+      "email": "felix.damini@client.com",
+      "avatar": "/avatars/felix.png"
+    },
+    "projectTitle": "Podcast series logo design",
+    "issueDate": "2025-03-10",
+    "dueDate": "2025-03-20",
+    "totalAmount": 2380.0,
+    "status": "sent"
+  },
+  {
+    "id": 524878,
+    "freelancerId": 31,
+    "client": {
+      "name": "Tilly Burzinsky",
+      "title": "Creative Director",
+      "email": "tilly.burzinsky@client.com",
+      "avatar": "/avatars/tilly.png"
+    },
+    "projectTitle": "Event Production Branding",
+    "issueDate": "2025-06-05",
+    "dueDate": "2025-06-14",
+    "totalAmount": 6450.0,
+    "status": "sent"
+  },
+  {
+    "id": 524879,
+    "freelancerId": 31,
+    "client": {
+      "name": "Matt Hannery",
+      "title": "Product Manager",
+      "email": "matt.hannery@client.com",
+      "avatar": "/avatars/matte.png"
+    },
+    "projectTitle": "Corlax iOS App Launch Deck",
+    "issueDate": "2025-05-01",
+    "dueDate": "2025-05-09",
+    "totalAmount": 2880.0,
+    "status": "paid"
+  },
+  {
+    "id": 524880,
+    "freelancerId": 31,
+    "client": {
+      "name": "Felix Damini",
+      "title": "Audio Engineer",
+      "email": "felix.damini@client.com",
+      "avatar": "/avatars/felix.png"
+    },
+    "projectTitle": "Micro-content for Launch Campaign",
+    "issueDate": "2025-04-08",
+    "dueDate": "2025-04-20",
+    "totalAmount": 1375.0,
+    "status": "draft"
+  },
+  {
+    "id": 524881,
+    "freelancerId": 31,
+    "client": {
+      "name": "Billy Parker",
+      "title": "Media Lead",
+      "email": "billy.parker@client.com",
+      "avatar": "/avatars/billy.png"
+    },
+    "projectTitle": "Social Video Series – 6 Deliverables",
+    "issueDate": "2025-03-22",
+    "dueDate": "2025-03-30",
+    "totalAmount": 7200.0,
+    "status": "sent"
+  }
+]
