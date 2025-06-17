@@ -552,7 +552,7 @@
     "rate": "$20 - $50/hr",
     "minRate": 20,
     "maxRate": 50,
-    "availability": "Away",
+    "availability": "Available",
     "rating": 4,
     "avatar": "/avatars/margsate-flether.png",
     "about": "I am a user interface designer with 5+ years of experience designing complex digital experiences with human-centered design for startups. I've worked inside design and programming teams which gives me a broader vision in a graphic and technological context. I am known for always creating products that customers love with excellent interface, interactions (Interaction Design), micro-interactions, sketching, prototyping (Figma) and construction of design systems.",

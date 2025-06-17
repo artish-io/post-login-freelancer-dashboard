@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import clsx from "clsx";
+import Image from "next/image";
 
 type Note = {
   date: string;
@@ -28,7 +29,9 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
   useEffect(() => {
     async function fetchProjectDetails() {
       try {
-        const res = await fetch(`/api/dashboard/project-details?projectId=${projectId}`);
+        const res = await fetch(
+          `/api/dashboard/project-details?projectId=${projectId}`
+        );
         const json = await res.json();
         setTitle(json.title || "Untitled Project");
         setLogoUrl(json.logoUrl || "/icons/lagos-parks-logo.png");
@@ -48,7 +51,7 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
       <div
         className="relative bg-white rounded-2xl w-full max-w-3xl mx-auto pointer-events-auto shadow-xl"
-        style={{ maxHeight: '90vh', overflowY: 'auto' }}
+        style={{ maxHeight: "90vh", overflowY: "auto" }}
       >
         {/* Sticky Header */}
         <div className="sticky top-0 z-10 bg-white pt-8 pb-4 pl-8 pr-4 shadow-[rgba(0,0,0,0.05)_-2px_2px_10px]">
@@ -57,8 +60,18 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
             className="absolute top-4 left-4 flex items-center gap-2 text-gray-500 hover:text-pink-500 text-sm"
             onClick={onClose}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
             Close
           </button>
@@ -83,9 +96,17 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
           {/* Logo & Title */}
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 flex items-center justify-center rounded-full border bg-white shrink-0">
-              <img src={logoUrl} alt="Project Logo" className="object-contain w-8 h-8" />
+              <Image
+                src={logoUrl}
+                alt="Project Logo"
+                width={32} // Matches original w-8 (8 * 4 = 32px)
+                height={32} // Matches original h-8
+                className="object-contain"
+              />
             </div>
-            <h2 className="text-2xl font-semibold text-pink-600 leading-tight">{title}</h2>
+            <h2 className="text-2xl font-semibold text-pink-600 leading-tight">
+              {title}
+            </h2>
           </div>
         </div>
 
@@ -116,10 +137,12 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
                         {new Date(note.date).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
-                          year: "numeric"
+                          year: "numeric",
                         })}
                       </p>
-                      <div className="font-semibold text-sm mb-1">{task.taskTitle}</div>
+                      <div className="font-semibold text-sm mb-1">
+                        {task.taskTitle}
+                      </div>
                       <p className="text-gray-700 text-[0.85rem] leading-snug max-w-prose">
                         “{note.feedback}”
                       </p>
