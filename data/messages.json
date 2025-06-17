@@ -75,6 +75,16 @@
           "31": true,
           "32": true
         }
+      },
+      {
+        "messageId": "msg-1018",
+        "senderId": 32,
+        "timestamp": "2025-06-16T13:00:00Z",
+        "text": "[Test] Unread message from contact 32.",
+        "read": {
+          "31": true,
+          "32": true
+        }
       }
     ]
   },
@@ -110,6 +120,16 @@
         "senderId": 33,
         "timestamp": "2025-06-10T16:22:00Z",
         "text": "Cool. Sending one more version with layout tweaks now.",
+        "read": {
+          "31": true,
+          "33": true
+        }
+      },
+      {
+        "messageId": "msg-1019",
+        "senderId": 33,
+        "timestamp": "2025-06-16T13:01:00Z",
+        "text": "[Test] Unread message from contact 33.",
         "read": {
           "31": true,
           "33": true
@@ -153,6 +173,16 @@
           "31": true,
           "34": true
         }
+      },
+      {
+        "messageId": "msg-1020",
+        "senderId": 34,
+        "timestamp": "2025-06-16T13:02:00Z",
+        "text": "[Test] Unread message from contact 34.",
+        "read": {
+          "31": true,
+          "34": true
+        }
       }
     ]
   },
@@ -169,7 +199,7 @@
         "timestamp": "2025-06-13T10:00:00Z",
         "text": "Invoice sent. Let me know if payment clears today.",
         "read": {
-          "31": false,
+          "31": true,
           "35": true
         }
       },
@@ -181,6 +211,16 @@
         "read": {
           "31": true,
           "35": false
+        }
+      },
+      {
+        "messageId": "msg-1021",
+        "senderId": 35,
+        "timestamp": "2025-06-16T13:03:00Z",
+        "text": "[Test] Unread message from contact 35.",
+        "read": {
+          "31": true,
+          "35": true
         }
       }
     ]
@@ -198,7 +238,7 @@
         "timestamp": "2025-06-13T11:00:00Z",
         "text": "Can we move our meeting to 4PM?",
         "read": {
-          "31": false,
+          "31": true,
           "36": true
         }
       },
@@ -210,6 +250,16 @@
         "read": {
           "31": true,
           "36": false
+        }
+      },
+      {
+        "messageId": "msg-1022",
+        "senderId": 36,
+        "timestamp": "2025-06-16T13:04:00Z",
+        "text": "[Test] Unread message from contact 36.",
+        "read": {
+          "31": true,
+          "36": true
         }
       }
     ]

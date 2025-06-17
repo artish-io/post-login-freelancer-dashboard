@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { NotesTab } from './notes-tab';
 import ProjectNotesExpansion from './project-notes-expansion';
@@ -80,7 +80,7 @@ export default function TodayTasksPanel() {
   const projectIds = Array.from(new Set(tasks.map((t) => t.projectId)));
 
   return (
-    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 mt-6 relative">
+    <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
       <h2 className="text-lg font-semibold text-gray-900 mb-3">Today’s tasks</h2>
 
       {/* Tabs */}
@@ -120,7 +120,7 @@ export default function TodayTasksPanel() {
       </div>
 
       {/* Animated Content */}
-      <div className="relative min-h-[240px]">
+      <div className="relative">
         <AnimatePresence mode="wait">
           {activeTab === 'Notes' ? (
             <motion.div
@@ -143,9 +143,12 @@ export default function TodayTasksPanel() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              <ul className="space-y-4">
+              <ul className="flex flex-col gap-y-2">
                 {displayed.map((task) => (
-                  <li key={task.id} className="flex justify-between items-center text-sm">
+                  <li
+                    key={task.id}
+                    className="flex justify-between items-center text-sm"
+                  >
                     <div className="flex items-center gap-3">
                       <span
                         className={clsx(

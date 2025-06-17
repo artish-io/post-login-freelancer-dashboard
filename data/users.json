@@ -3,216 +3,252 @@
     "id": 1,
     "name": "Tobi Philly",
     "title": "Web3 Engineer",
-    "avatar": "/avatars/tobi.png"
+    "avatar": "/avatars/tobi.png",
+    "type": "freelancer"
   },
   {
     "id": 2,
     "name": "Jenny San",
     "title": "Graphic Designer",
-    "avatar": "/avatars/jenny.png"
+    "avatar": "/avatars/jenny.png",
+    "type": "freelancer"
   },
   {
     "id": 3,
     "name": "Geeko Leni",
     "title": "UX/UI Designer",
-    "avatar": "/avatars/geeko.png"
+    "avatar": "/avatars/geeko.png",
+    "type": "freelancer"
   },
   {
     "id": 4,
     "name": "Muna Olu",
     "title": "Market Researcher",
-    "avatar": "/avatars/muna.png"
+    "avatar": "/avatars/muna.png",
+    "type": "freelancer"
   },
   {
     "id": 5,
     "name": "Shade Cee",
     "title": "Creative Writer",
-    "avatar": "/avatars/shade.png"
+    "avatar": "/avatars/shade.png",
+    "type": "freelancer"
   },
   {
     "id": 6,
     "name": "Kore De",
     "title": "Video Editor",
-    "avatar": "/avatars/kore.png"
+    "avatar": "/avatars/kore.png",
+    "type": "freelancer"
   },
   {
     "id": 7,
     "name": "Amara Lee",
     "title": "Director of Photography",
-    "avatar": "/avatars/amara.png"
+    "avatar": "/avatars/amara.png",
+    "type": "freelancer"
   },
   {
     "id": 8,
     "name": "Kwame Sefa",
     "title": "Fashion Designer",
-    "avatar": "/avatars/kwame.png"
+    "avatar": "/avatars/kwame.png",
+    "type": "freelancer"
   },
   {
     "id": 9,
     "name": "Nia Ade",
     "title": "Event Producer",
-    "avatar": "/avatars/nia.png"
+    "avatar": "/avatars/nia.png",
+    "type": "freelancer"
   },
   {
     "id": 10,
     "name": "Tai Brown",
     "title": "Print Specialist",
-    "avatar": "/avatars/tai.png"
+    "avatar": "/avatars/tai.png",
+    "type": "freelancer"
   },
   {
     "id": 11,
     "name": "Riya Desai",
     "title": "Frontend Developer",
-    "avatar": "/avatars/riya.png"
+    "avatar": "/avatars/riya.png",
+    "type": "freelancer"
   },
   {
     "id": 12,
     "name": "Pierre Dubois",
     "title": "Brand Strategist",
-    "avatar": "/avatars/pierre.png"
+    "avatar": "/avatars/pierre.png",
+    "type": "freelancer"
   },
   {
     "id": 13,
     "name": "Hans Richter",
     "title": "Motion Designer",
-    "avatar": "/avatars/hans.png"
+    "avatar": "/avatars/hans.png",
+    "type": "freelancer"
   },
   {
     "id": 14,
     "name": "Liam Chai",
     "title": "DevOps Engineer",
-    "avatar": "/avatars/liam.png"
+    "avatar": "/avatars/liam.png",
+    "type": "freelancer"
   },
   {
     "id": 15,
     "name": "Asha Karungi",
     "title": "Research Analyst",
-    "avatar": "/avatars/asha.png"
+    "avatar": "/avatars/asha.png",
+    "type": "freelancer"
   },
   {
     "id": 16,
     "name": "Daniel Okoth",
     "title": "Backend Developer",
-    "avatar": "/avatars/daniel.png"
+    "avatar": "/avatars/daniel.png",
+    "type": "freelancer"
   },
   {
     "id": 17,
     "name": "Indah Putri",
     "title": "Virtual Assistant",
-    "avatar": "/avatars/indah.png"
+    "avatar": "/avatars/indah.png",
+    "type": "freelancer"
   },
   {
     "id": 18,
     "name": "Elise Martin",
     "title": "Content Writer",
-    "avatar": "/avatars/elise.png"
+    "avatar": "/avatars/elise.png",
+    "type": "freelancer"
   },
   {
     "id": 19,
     "name": "Markus Schulz",
     "title": "Cloud Architect",
-    "avatar": "/avatars/markus.png"
+    "avatar": "/avatars/markus.png",
+    "type": "freelancer"
   },
   {
     "id": 20,
     "name": "Anika Rao",
     "title": "Customer Success Manager",
-    "avatar": "/avatars/anika.png"
+    "avatar": "/avatars/anika.png",
+    "type": "freelancer"
   },
   {
     "id": 21,
     "name": "Sarah Lin",
     "title": "Mobile Developer",
-    "avatar": "/avatars/sarah.png"
+    "avatar": "/avatars/sarah.png",
+    "type": "freelancer"
   },
   {
     "id": 22,
     "name": "Miguel Torres",
     "title": "App Developer",
-    "avatar": "/avatars/miguel.png"
+    "avatar": "/avatars/miguel.png",
+    "type": "freelancer"
   },
   {
     "id": 23,
     "name": "Emeka Okafor",
     "title": "Python Developer",
-    "avatar": "/avatars/emeka.png"
+    "avatar": "/avatars/emeka.png",
+    "type": "freelancer"
   },
   {
     "id": 24,
     "name": "Hannah Kim",
     "title": "Shorts Video Creator",
-    "avatar": "/avatars/hannah.png"
+    "avatar": "/avatars/hannah.png",
+    "type": "freelancer"
   },
   {
     "id": 25,
     "name": "Lucas Meyer",
     "title": "Hardware Engineer",
-    "avatar": "/avatars/lucas.png"
+    "avatar": "/avatars/lucas.png",
+    "type": "freelancer"
   },
   {
     "id": 26,
     "name": "Nadia Petrov",
     "title": "Print Designer",
-    "avatar": "/avatars/nadia.png"
+    "avatar": "/avatars/nadia.png",
+    "type": "freelancer"
   },
   {
     "id": 27,
     "name": "Olu Ojo",
     "title": "Stage Designer",
-    "avatar": "/avatars/olu.png"
+    "avatar": "/avatars/olu.png",
+    "type": "freelancer"
   },
   {
     "id": 28,
     "name": "Sofia Rossi",
     "title": "Poet",
-    "avatar": "/avatars/sofia.png"
+    "avatar": "/avatars/sofia.png",
+    "type": "freelancer"
   },
   {
     "id": 29,
     "name": "Isaac Johnson",
     "title": "Full Stack Developer",
-    "avatar": "/avatars/isaac.png"
+    "avatar": "/avatars/isaac.png",
+    "type": "freelancer"
   },
   {
     "id": 30,
     "name": "Grace Smith",
     "title": "Admin Support Specialist",
-    "avatar": "/avatars/grace.png"
+    "avatar": "/avatars/grace.png",
+    "type": "freelancer"
   },
   {
     "id": 31,
     "name": "Margsate Flether",
     "title": "Creative Producer",
-    "avatar": "/avatars/margsate-flether.png"
+    "avatar": "/avatars/margsate-flether.png",
+    "type": "freelancer"
   },
   {
     "id": 32,
     "name": "Neilsan Mando",
     "title": "Product Manager",
-    "avatar": "/avatars/neilsan.png"
+    "avatar": "/avatars/neilsan.png",
+    "type": "commissioner"
   },
   {
     "id": 33,
     "name": "Tiruvellly Priya",
     "title": "Brand Director",
-    "avatar": "/avatars/priyaa.png"
+    "avatar": "/avatars/priyaa.png",
+    "type": "commissioner"
   },
   {
     "id": 34,
     "name": "Matte Hannery",
     "title": "Startup Founder",
-    "avatar": "/avatars/matte.png"
+    "avatar": "/avatars/matte.png",
+    "type": "commissioner"
   },
   {
     "id": 35,
     "name": "Tilly Burzinsky",
     "title": "Events Lead",
-    "avatar": "/avatars/tilly.png"
+    "avatar": "/avatars/tilly.png",
+    "type": "commissioner"
   },
   {
     "id": 36,
     "name": "Felix Damini",
     "title": "UX Research Lead",
-    "avatar": "/avatars/felix.png"
+    "avatar": "/avatars/felix.png",
+    "type": "commissioner"
   }
 ]

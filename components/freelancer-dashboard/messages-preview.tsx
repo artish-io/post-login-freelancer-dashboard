@@ -1,10 +1,5 @@
 'use client';
 
-// NOTE TO DEV TEAM:
-// This preview component renders recent message contacts with a visual indicator for unread threads.
-// Unread threads are fetched from `/api/dashboard/messages/preview?userId=...`.
-// This allows the pink badge and bold name behavior to match Figma spec.
-
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -29,6 +24,7 @@ export default function MessagesPreview() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [unreadThreads, setUnreadThreads] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const userId = Number(session?.user?.id);
 
@@ -36,40 +32,59 @@ export default function MessagesPreview() {
     if (!userId) return;
 
     const loadData = async () => {
+      setLoading(true);
       try {
         // Fetch contacts
         const res = await fetch(`/api/dashboard/contact-profiles?userId=${userId}`);
-        const contactData: Contact[] = await res.json();
+        const contactData = await res.json();
         setContacts(Array.isArray(contactData) ? contactData : []);
 
-        // Fetch unread thread preview
+        // Fetch thread previews
         const previewRes = await fetch(`/api/dashboard/messages/preview?userId=${userId}`);
-        const previewData: ThreadPreview[] = await previewRes.json();
+        const rawPreview = await previewRes.json();
+        console.log('[messages-preview] Raw preview data:', rawPreview);
 
-        const unread = previewData
-          .filter((thread) => thread.isUnread)
-          .map((thread) => thread.threadId);
+        // ✅ Defensive check before filtering
+        if (!Array.isArray(rawPreview)) {
+          console.warn('[messages-preview] Invalid preview data, skipping:', rawPreview);
+          setUnreadThreads([]);
+          return;
+        }
+
+        const unread = rawPreview
+          .filter((thread: ThreadPreview) => thread.isUnread)
+          .map((thread: ThreadPreview) => thread.threadId);
 
         setUnreadThreads(unread);
       } catch (err) {
         console.error('[messages-preview] Failed to fetch preview data:', err);
+        setContacts([]);
+        setUnreadThreads([]);
       } finally {
         setLoading(false);
       }
     };
 
     loadData();
-  }, [userId]);
+  }, [userId, refreshKey]);
 
   const handleContactClick = (contactId: number) => {
     const sorted = [userId, contactId].sort((a, b) => a - b);
     const threadId = `${sorted[0]}-${sorted[1]}`;
+
     router.push(`/freelancer-dashboard/messages?thread=${threadId}`);
+
+    // Optimistically mark as read
+    setUnreadThreads((prev) => prev.filter((id) => id !== threadId));
+
+    // Allow backend to process
+    setTimeout(() => {
+      setRefreshKey((prev) => prev + 1);
+    }, 500);
   };
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 flex flex-col relative">
-      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-base font-semibold text-gray-900">Messages</h2>
         <div className="flex items-center gap-2 text-sm bg-pink-100 text-pink-800 px-3 py-1 rounded-full">
@@ -78,7 +93,6 @@ export default function MessagesPreview() {
         </div>
       </div>
 
-      {/* Scrollable List */}
       <div className="relative">
         <div className="space-y-4 overflow-y-auto pr-1 max-h-[240px]">
           {loading && <p className="text-sm text-gray-400">Loading contacts...</p>}
@@ -134,11 +148,9 @@ export default function MessagesPreview() {
             })}
         </div>
 
-        {/* Gradient Overlay */}
         <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none rounded-b-xl" />
       </div>
 
-      {/* Down Caret Button */}
       <div className="flex justify-center mt-4">
         <button className="bg-pink-100 hover:bg-pink-200 p-2 rounded-full shadow-sm">
           <svg

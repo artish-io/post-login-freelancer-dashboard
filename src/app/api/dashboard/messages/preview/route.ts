@@ -4,12 +4,6 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
 
-// NOTE TO DEV TEAM:
-// This endpoint expects a `userId` passed as a query param from the client
-// using `useSession()` to fetch the logged-in user's ID.
-// This is a dev-friendly workaround while server-side auth (getServerSession) is unreliable.
-// In production, migrate to SSR or secure header-based auth.
-
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const userIdParam = searchParams.get('userId');
@@ -43,6 +37,8 @@ export async function GET(req: Request) {
           (t: { threadId: string }) => t.threadId === threadIdA || t.threadId === threadIdB
         );
 
+        console.log(`[messages-preview] user ${sessionUserId} vs contact ${contactId} → matched thread: ${thread?.threadId ?? 'none'}`);
+
         if (!thread) return null;
 
         const lastMessage = [...thread.messages].sort(
@@ -66,8 +62,8 @@ export async function GET(req: Request) {
       })
       .filter(Boolean);
 
-    // 🔍 Debug: Log the preview list to verify unread logic
-    console.log('[messages-preview] response for userId', sessionUserId, previews);
+    // 🔍 Final Output Debug
+    console.log('[messages-preview] preview response:', previews);
 
     return NextResponse.json(previews);
   } catch (error) {

@@ -1,20 +1,17 @@
 'use client';
 
-// NOTE TO DEV TEAM:
-// This sidebar polls the unread message count from `/api/dashboard/messages/count`
-// every 15 seconds to keep the UI live-updating without a full page refresh.
-
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 const sidebarItems = [
   { label: 'Home', icon: '/home-logo (sidebar).png', href: '#' },
   { label: 'Explore Gigs', icon: '/explore-gigs-logo (sidebar).png', href: '#' },
-  { label: 'Messages', icon: '/messages-logo (sidebar).png', href: '#' },
+  { label: 'Messages', icon: '/messages-logo (sidebar).png', href: '/freelancer-dashboard/messages' },
   { label: 'Gig Requests', icon: '/gig-requests-logo (sidebar).png', href: '#' },
-  { label: 'Projects & Invoices', icon: '/projects-invoices-logo (sidebar).png', href: '#' },
+  { label: 'Projects & Invoices', icon: '/projects-invoices-logo (sidebar).png', href: '/freelancer-dashboard/projects-and-invoices' },
   { label: 'Wallet', icon: '/wallet-logo (sidebar).png', href: '#' },
   { label: 'Storefront', icon: '/storefront-logo (sidebar).png', href: '#' },
   { label: 'Settings', icon: '/account-settings-logo (sidebar).png', href: '#' },
@@ -24,11 +21,10 @@ export default function FreelancerSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const { data: session } = useSession();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!session?.user?.id) return;
-
-    let interval: NodeJS.Timeout;
 
     const fetchUnread = async () => {
       try {
@@ -42,15 +38,15 @@ export default function FreelancerSidebar() {
       }
     };
 
-    fetchUnread(); // Initial call
-    interval = setInterval(fetchUnread, 15000); // Re-poll every 15s
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 15000);
 
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval);
   }, [session?.user?.id]);
 
   return (
     <>
-      {/* Mobile toggle button */}
+      {/* Mobile toggle */}
       <button
         className="md:hidden fixed top-4 left-4 z-50 p-2 bg-black text-white rounded-md"
         onClick={() => setIsOpen(!isOpen)}
@@ -58,7 +54,6 @@ export default function FreelancerSidebar() {
         ☰
       </button>
 
-      {/* Overlay for mobile when open */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -66,7 +61,6 @@ export default function FreelancerSidebar() {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`
           fixed top-0 left-0 h-screen w-60 bg-black text-white z-50 transform
@@ -79,11 +73,17 @@ export default function FreelancerSidebar() {
           <nav className="flex flex-col gap-6">
             {sidebarItems.map((item) => {
               const isMessages = item.label === 'Messages';
+              const isActive = pathname.startsWith(item.href) && item.href !== '#';
+
               return (
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="flex items-center gap-3 text-pink-200 hover:text-white text-sm relative"
+                  className={`flex items-center gap-3 text-sm relative transition-all ${
+                    isActive
+                      ? 'text-white font-semibold border-l-4 border-pink-300 pl-2'
+                      : 'text-pink-200 hover:text-white'
+                  }`}
                 >
                   <div className="relative">
                     <Image src={item.icon} alt={item.label} width={20} height={20} />

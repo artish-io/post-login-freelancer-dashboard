@@ -76,19 +76,27 @@ export default function MessagesContacts({
   const handleSelect = async (contactId: number) => {
     const sorted = [Number(userId), contactId].sort((a, b) => a - b);
     const threadId = `${sorted[0]}-${sorted[1]}`;
+
     setSelectedThreadId(threadId);
     setActiveContact(contactId);
 
     try {
-      await fetch(`/api/dashboard/messages/${threadId}/mark-read`, {
+      const res = await fetch(`/api/dashboard/messages/${threadId}/mark-read`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId }),
       });
+
+      if (!res.ok) {
+        console.warn(`[messages-contacts] Failed to mark thread ${threadId} as read: ${res.status}`);
+        return;
+      }
+
+      // ✅ Only remove badge after server confirms write
       setUnreadThreads((prev) => prev.filter((id) => id !== threadId));
       console.log(`[messages-contacts] Marked thread ${threadId} as read`);
     } catch (err) {
-      console.warn(`[messages-contacts] Failed to mark thread ${threadId} as read`);
+      console.warn(`[messages-contacts] Failed to mark thread ${threadId} as read`, err);
     }
   };
 
