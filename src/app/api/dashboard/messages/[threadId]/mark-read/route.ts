@@ -10,9 +10,9 @@ import { promises as fs } from 'fs';
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { threadId: string } }
+  { params }: { params: Promise<{ threadId: string }> }
 ) {
-  const { threadId } = params;
+  const { threadId } = await params;
   const { userId } = await req.json();
 
   if (!userId || !threadId) {

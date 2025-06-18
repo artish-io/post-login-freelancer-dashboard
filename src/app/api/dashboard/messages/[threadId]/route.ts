@@ -9,11 +9,11 @@ import { promises as fs } from 'fs';
 
 export async function GET(
   req: Request,
-  { params }: { params: { threadId: string } }
+  { params }: { params: Promise<{ threadId: string }> }
 ) {
   const { searchParams } = new URL(req.url);
   const userIdParam = searchParams.get('userId');
-  const { threadId } = params;
+  const { threadId } = await params;
 
   if (!userIdParam) {
     return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
