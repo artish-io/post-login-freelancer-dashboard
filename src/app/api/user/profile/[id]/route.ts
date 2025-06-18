@@ -4,9 +4,9 @@ import { readFile } from 'fs/promises';
 
 export async function GET(
   request: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const id = context.params.id; // ✅ Safe access to `params`
+  const { id } = await context.params; // ✅ Safe access to `params`
 
   try {
     const filePath = path.join(process.cwd(), 'data', 'freelancers.json');

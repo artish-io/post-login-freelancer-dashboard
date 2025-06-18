@@ -1,0 +1,82 @@
+[
+  {
+    "projectId": 301,
+    "title": "Lagos Parks Services website re-design",
+    "description": "Redesigning the public-facing site for Lagos Parks Services to improve user experience, accessibility, and aesthetic appeal.",
+    "manager": {
+      "name": "Neilsan Mando",
+      "title": "Product Manager",
+      "avatar": "/avatars/neilsan.png",
+      "email": "neilsan.mando@example.com"
+    },
+    "freelancerId": 31,
+    "status": "Delayed",
+    "dueDate": "2023-06-20",
+    "totalTasks": 5,
+    "progress": 35
+  },
+  {
+    "projectId": 302,
+    "title": "Media channel branding",
+    "description": "Brand identity and visual systems for a new African media streaming startup, including pitch decks and tone of voice.",
+    "manager": {
+      "name": "Tiruvellly Priya",
+      "title": "Brand Director",
+      "avatar": "/avatars/priya.png",
+      "email": "priya.t@example.com"
+    },
+    "freelancerId": 31,
+    "status": "At risk",
+    "dueDate": "2023-07-13",
+    "totalTasks": 13,
+    "progress": 68
+  },
+  {
+    "projectId": 303,
+    "title": "Corlax iOS app development",
+    "description": "UI/UX revamp for a mental wellness tracking app targeting Gen Z and Millennial users.",
+    "manager": {
+      "name": "Matt Hannery",
+      "title": "Startup Founder",
+      "avatar": "/avatars/matt.png",
+      "email": "matt.h@example.com"
+    },
+    "freelancerId": 31,
+    "status": "Completed",
+    "dueDate": "2023-12-20",
+    "totalTasks": 9,
+    "progress": 100
+  },
+  {
+    "projectId": 300,
+    "title": "Event Production",
+    "description": "Logistics, talent coordination, and branding for a large-scale tech showcase.",
+    "manager": {
+      "name": "Tilly Burzinsky",
+      "title": "Events Lead",
+      "avatar": "/avatars/tilly.png",
+      "email": "tilly.b@example.com"
+    },
+    "freelancerId": 31,
+    "status": "Paused",
+    "dueDate": "2024-01-13",
+    "totalTasks": 53,
+    "progress": 29
+  },
+  {
+    "projectId": 299,
+    "title": "UX Writing",
+    "description": "Crafting microcopy and interaction text for accessibility across multiple product touchpoints.",
+    "manager": {
+      "name": "Felix Damini",
+      "title": "UX Research Lead",
+      "avatar": "/avatars/felix.png",
+      "email": "felix.d@example.com"
+    },
+    "freelancerId": 31,
+    "status": "Ongoing",
+    "dueDate": "2024-02-14",
+    "totalTasks": 10,
+    "progress": 80
+  }
+]

@@ -1,0 +1,217 @@
+[
+  {
+    "threadId": "31-32",
+    "participants": [
+      31,
+      32
+    ],
+    "messages": [
+      {
+        "messageId": "msg-1001",
+        "senderId": 32,
+        "timestamp": "2025-06-11T09:32:00Z",
+        "text": "Hi, next week we’ll start a new project. I’ll tell you all the details later",
+        "read": {
+          "31": true,
+          "32": true
+        }
+      },
+      {
+        "messageId": "msg-1002",
+        "senderId": 31,
+        "timestamp": "2025-06-11T09:32:30Z",
+        "text": "We can meet on Sunday BTW",
+        "read": {
+          "31": true,
+          "32": false
+        }
+      },
+      {
+        "messageId": "msg-1003",
+        "senderId": 32,
+        "timestamp": "2025-06-11T09:33:10Z",
+        "text": "Sunday works. Let’s aim for 3pm?",
+        "read": {
+          "31": true,
+          "32": true
+        }
+      },
+      {
+        "messageId": "msg-1004",
+        "senderId": 31,
+        "timestamp": "2025-06-11T09:34:30Z",
+        "text": "3pm is fine. What’s the scope of this new project tho?",
+        "read": {
+          "31": true,
+          "32": false
+        }
+      },
+      {
+        "messageId": "msg-1005",
+        "senderId": 32,
+        "timestamp": "2025-06-11T09:38:40Z",
+        "text": "Still finalizing it but it’ll involve UX audits + landing page redesign for the Parks client.",
+        "read": {
+          "31": true,
+          "32": true
+        }
+      },
+      {
+        "messageId": "msg-1006",
+        "senderId": 31,
+        "timestamp": "2025-06-11T09:40:30Z",
+        "text": "Okay but I need a better timeline this time. Last sprint was too chaotic.",
+        "read": {
+          "31": true,
+          "32": false
+        }
+      },
+      {
+        "messageId": "msg-1007",
+        "senderId": 32,
+        "timestamp": "2025-06-11T09:41:40Z",
+        "text": "Fair, but you submitted the wireframes 2 days late which bottlenecked dev. Let’s both plan tighter.",
+        "read": {
+          "31": true,
+          "32": true
+        }
+      }
+    ]
+  },
+  {
+    "threadId": "31-33",
+    "participants": [
+      31,
+      33
+    ],
+    "messages": [
+      {
+        "messageId": "msg-1008",
+        "senderId": 33,
+        "timestamp": "2025-06-10T14:45:00Z",
+        "text": "Mockups are ready. Let me know if we can align before EOD.",
+        "read": {
+          "31": true,
+          "33": true
+        }
+      },
+      {
+        "messageId": "msg-1009",
+        "senderId": 31,
+        "timestamp": "2025-06-10T15:00:00Z",
+        "text": "Thanks. I'll check and revert shortly.",
+        "read": {
+          "31": true,
+          "33": false
+        }
+      },
+      {
+        "messageId": "msg-1010",
+        "senderId": 33,
+        "timestamp": "2025-06-10T16:22:00Z",
+        "text": "Cool. Sending one more version with layout tweaks now.",
+        "read": {
+          "31": true,
+          "33": true
+        }
+      }
+    ]
+  },
+  {
+    "threadId": "31-34",
+    "participants": [
+      31,
+      34
+    ],
+    "messages": [
+      {
+        "messageId": "msg-1011",
+        "senderId": 34,
+        "timestamp": "2025-06-09T12:00:00Z",
+        "text": "Hey! Did you get my notes on the graphics revision?",
+        "read": {
+          "31": true,
+          "34": true
+        }
+      },
+      {
+        "messageId": "msg-1012",
+        "senderId": 31,
+        "timestamp": "2025-06-09T12:04:00Z",
+        "text": "Yes! I’ve made updates and pushed them live. Let me know what you think.",
+        "read": {
+          "31": true,
+          "34": false
+        }
+      },
+      {
+        "messageId": "msg-1013",
+        "senderId": 34,
+        "timestamp": "2025-06-09T12:06:00Z",
+        "text": "Typography still feels heavy. Try using the medium weight for headlines.",
+        "read": {
+          "31": true,
+          "34": true
+        }
+      }
+    ]
+  },
+  {
+    "threadId": "31-35",
+    "participants": [
+      31,
+      35
+    ],
+    "messages": [
+      {
+        "messageId": "msg-1014",
+        "senderId": 35,
+        "timestamp": "2025-06-13T10:00:00Z",
+        "text": "Invoice sent. Let me know if payment clears today.",
+        "read": {
+          "31": false,
+          "35": true
+        }
+      },
+      {
+        "messageId": "msg-1015",
+        "senderId": 31,
+        "timestamp": "2025-06-13T10:10:00Z",
+        "text": "Got it. Processing now.",
+        "read": {
+          "31": true,
+          "35": false
+        }
+      }
+    ]
+  },
+  {
+    "threadId": "31-36",
+    "participants": [
+      31,
+      36
+    ],
+    "messages": [
+      {
+        "messageId": "msg-1016",
+        "senderId": 36,
+        "timestamp": "2025-06-13T11:00:00Z",
+        "text": "Can we move our meeting to 4PM?",
+        "read": {
+          "31": false,
+          "36": true
+        }
+      },
+      {
+        "messageId": "msg-1017",
+        "senderId": 31,
+        "timestamp": "2025-06-13T11:03:00Z",
+        "text": "Sure. Blocking it out now.",
+        "read": {
+          "31": true,
+          "36": false
+        }
+      }
+    ]
+  }
+]
