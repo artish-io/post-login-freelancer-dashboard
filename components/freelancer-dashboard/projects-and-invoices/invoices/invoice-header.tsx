@@ -4,7 +4,11 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-export default function InvoiceHeader() {
+type InvoiceHeaderProps = {
+  onSend: () => void;
+};
+
+export default function InvoiceHeader({ onSend }: InvoiceHeaderProps) {
   const { data: session } = useSession();
   const [name, setName] = useState('...');
   const [avatar, setAvatar] = useState('/default-avatar.png');
@@ -57,7 +61,10 @@ export default function InvoiceHeader() {
         <button className="border px-4 py-2 rounded-full text-sm text-gray-800 hover:bg-gray-100 transition">
           Preview
         </button>
-        <button className="bg-black text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-900 transition">
+        <button
+          className="bg-black text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-900 transition"
+          onClick={onSend}
+        >
           Send Now
         </button>
       </div>

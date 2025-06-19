@@ -2,6 +2,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap");
 @import "tailwindcss";
 
+/* -------------------------
+   Base Tailwind Reset Layer
+-------------------------- */
 @layer base {
   body {
     @apply leading-[normal] m-0;
@@ -13,6 +16,9 @@
   }
 }
 
+/* -------------------------
+   Keyframe animations
+-------------------------- */
 @keyframes fade-in {
   0% {
     opacity: 0;
@@ -20,4 +26,30 @@
   100% {
     opacity: 1;
   }
+}
+
+/* -------------------------
+   DayPicker (react-day-picker) custom overrides
+   Forces color styling for carets and selected state
+-------------------------- */
+
+.rdp-nav_button {
+  color: #eb1966 !important; /* Pink arrows */
+}
+
+.rdp-day_selected {
+  background-color: #FCD5E3 !important;  /* Light pink background */
+  color: #000 !important;                /* Black text */
+  border-radius: 9999px !important;
+  border: 2px solid #eb1966 !important;  /* Pink outline */
+}
+
+.rdp-day_selected:hover {
+  background-color: #eb1966 !important;
+  color: white !important;
+}
+
+.rdp-day_selected:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
