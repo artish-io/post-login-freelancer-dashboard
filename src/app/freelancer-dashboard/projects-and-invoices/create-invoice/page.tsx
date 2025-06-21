@@ -81,7 +81,7 @@ export default function CreateInvoicePage() {
 
   return (
     <div className="w-full max-w-6xl mx-auto px-6 lg:px-12 py-12 space-y-12">
-      <InvoiceHeader onSend={handleSendInvoice} />
+      <InvoiceHeader onSend={handleSendInvoice} billTo={billTo} />
 
       <div className="bg-white rounded-xl border px-6 py-10 space-y-10">
         <InvoiceMetaSection
@@ -95,6 +95,8 @@ export default function CreateInvoicePage() {
           onBillToChange={setBillTo}
         />
 
+        <hr className="border-t border-gray-200 my-8" />
+
         <div className="space-y-2">
           <h4 className="text-sm font-semibold text-gray-700 uppercase">Project Details</h4>
           {session?.user?.id && (
@@ -107,7 +109,9 @@ export default function CreateInvoicePage() {
         </div>
 
         <div className="space-y-2">
-          <h4 className="text-sm font-semibold text-gray-700 uppercase">Billable Project Milestones</h4>
+          <h4 className="text-sm font-semibold text-gray-700 uppercase">
+            Billable Project Milestones
+          </h4>
           <MilestoneListEditor
             milestones={milestones}
             onUpdate={updateMilestone}

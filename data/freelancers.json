@@ -552,7 +552,7 @@
     "rate": "$20 - $50/hr",
     "minRate": 20,
     "maxRate": 50,
-    "availability": "Busy",
+    "availability": "Available",
     "rating": 4.3,
     "trend": 1.78,
     "avatar": "/avatars/margsate-flether.png",

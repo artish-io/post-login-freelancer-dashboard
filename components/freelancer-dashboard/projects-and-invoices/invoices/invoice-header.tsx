@@ -3,13 +3,16 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 type InvoiceHeaderProps = {
   onSend: () => void;
+  billTo: string;
 };
 
-export default function InvoiceHeader({ onSend }: InvoiceHeaderProps) {
+export default function InvoiceHeader({ onSend, billTo }: InvoiceHeaderProps) {
   const { data: session } = useSession();
+  const router = useRouter();
   const [name, setName] = useState('...');
   const [avatar, setAvatar] = useState('/default-avatar.png');
 
@@ -55,12 +58,26 @@ export default function InvoiceHeader({ onSend }: InvoiceHeaderProps) {
 
       {/* Right: Actions */}
       <div className="flex flex-wrap gap-3 mt-4 sm:mt-0">
-        <button className="border px-4 py-2 rounded-full text-sm text-gray-800 hover:bg-gray-100 transition">
+        <button
+          className="border px-4 py-2 rounded-full text-sm text-gray-800 hover:bg-gray-100 transition"
+          onClick={() => window.history.back()}
+        >
           Cancel
         </button>
-        <button className="border px-4 py-2 rounded-full text-sm text-gray-800 hover:bg-gray-100 transition">
+
+        <button
+          disabled={!billTo}
+          onClick={() => router.push('/freelancer-dashboard/invoice-preview')}
+          className={`border px-4 py-2 rounded-full text-sm transition ${
+            billTo
+              ? 'text-gray-800 hover:bg-gray-100'
+              : 'text-gray-400 cursor-not-allowed bg-gray-100'
+          }`}
+          title={!billTo ? 'Enter a billing contact to enable preview' : ''}
+        >
           Preview
         </button>
+
         <button
           className="bg-black text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-900 transition"
           onClick={onSend}

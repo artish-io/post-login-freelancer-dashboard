@@ -5,10 +5,11 @@ import { CalendarIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { format } from 'date-fns';
 import { Popover } from '@headlessui/react';
+import clsx from 'clsx';
 
 import { Calendar } from '../../../../components/ui/calendar';
 import ExecutionDropdown from './execution-dropdown';
-import clsx from 'clsx';
+import BillToInput from './bill-to-input';
 
 export type InvoiceMetaSectionProps = {
   invoiceNumber: string;
@@ -39,6 +40,7 @@ export default function InvoiceMetaSection({
 
   useEffect(() => {
     if (!session?.user?.id) return;
+
     const fetchFreelancer = async () => {
       try {
         const res = await fetch(`/api/user/profile/${session.user.id}`);
@@ -48,6 +50,7 @@ export default function InvoiceMetaSection({
         console.error('Failed to fetch freelancer profile:', err);
       }
     };
+
     fetchFreelancer();
   }, [session?.user?.id]);
 
@@ -116,13 +119,14 @@ export default function InvoiceMetaSection({
           {/* Bill To */}
           <div>
             <label className="text-xs text-gray-700 mb-1 block">BILL TO:</label>
-            <input
-              type="text"
-              value={billTo}
-              onChange={(e) => onBillToChange(e.target.value)}
-              placeholder="Client email or business name"
-              className="w-full border border-gray-300 rounded-md px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-pink-500"
-            />
+            {session?.user?.id && (
+              <BillToInput
+                freelancerId={Number(session.user.id)}
+                value={billTo}
+                onChange={onBillToChange}
+                onSelect={(contact) => onBillToChange(contact.email)}
+              />
+            )}
           </div>
         </div>
       </div>

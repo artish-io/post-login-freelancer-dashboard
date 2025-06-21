@@ -44,10 +44,11 @@ export default function MilestoneInputRow({ milestone, onUpdate, onRemove }: Pro
             min={0}
             step="0.01"
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm text-right focus:outline-none focus:ring-2 focus:ring-pink-500"
-            value={milestone.rate}
-            onChange={(e) =>
-              onUpdate(milestone.id, 'rate', parseFloat(e.target.value))
-            }
+            value={isNaN(milestone.rate) ? '' : milestone.rate}
+            onChange={(e) => {
+              const val = parseFloat(e.target.value);
+              onUpdate(milestone.id, 'rate', isNaN(val) ? 0 : val);
+            }}
           />
         </div>
 
