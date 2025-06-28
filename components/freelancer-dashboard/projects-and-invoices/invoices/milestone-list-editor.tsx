@@ -18,13 +18,15 @@ type Props = {
   ) => void;
   onRemove: (id: number) => void;
   onAdd: () => void;
+  readOnly?: boolean; // 👈 NEW
 };
 
 export default function MilestoneListEditor({
   milestones,
   onUpdate,
   onRemove,
-  onAdd
+  onAdd,
+  readOnly = false // 👈 default to false so existing pages keep working
 }: Props) {
   const total = milestones.reduce((sum, m) => sum + Number(m.rate || 0), 0);
 
@@ -36,17 +38,20 @@ export default function MilestoneListEditor({
           milestone={milestone}
           onUpdate={onUpdate}
           onRemove={onRemove}
+          readOnly={readOnly} // 👈 pass down to row
         />
       ))}
 
-      <button
-        type="button"
-        onClick={onAdd}
-        className="flex items-center gap-2 text-sm font-medium text-black mt-2"
-      >
-        <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-lg">+</span>
-        Add task / deliverables
-      </button>
+      {!readOnly && (
+        <button
+          type="button"
+          onClick={onAdd}
+          className="flex items-center gap-2 text-sm font-medium text-black mt-2"
+        >
+          <span className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-lg">+</span>
+          Add task / deliverables
+        </button>
+      )}
 
       <div className="flex justify-between border-t pt-4 text-sm font-medium">
         <span>Total</span>

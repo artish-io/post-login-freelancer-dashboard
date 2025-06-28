@@ -1,7 +1,7 @@
 'use client';
 
 import { CalendarIcon } from 'lucide-react';
-import { format, isValid } from 'date-fns';
+import { format, isValid, parseISO } from 'date-fns';
 
 interface InvoiceDatesDisplayProps {
   invoiceDate: Date | string;
@@ -12,8 +12,13 @@ export default function InvoiceDatesDisplay({
   invoiceDate,
   dueDate,
 }: InvoiceDatesDisplayProps) {
-  const parsedInvoiceDate = new Date(invoiceDate);
-  const parsedDueDate = new Date(dueDate);
+  const parsedInvoiceDate = typeof invoiceDate === 'string'
+    ? parseISO(invoiceDate)
+    : invoiceDate;
+
+  const parsedDueDate = typeof dueDate === 'string'
+    ? parseISO(dueDate)
+    : dueDate;
 
   const formattedInvoiceDate = isValid(parsedInvoiceDate)
     ? format(parsedInvoiceDate, 'dd MMM yyyy')

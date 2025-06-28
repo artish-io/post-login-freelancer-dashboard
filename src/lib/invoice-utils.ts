@@ -1,17 +1,22 @@
+// src/lib/invoice-utils.ts
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
 
 const invoicesPath = path.join(process.cwd(), 'data', 'invoices.json');
 const usersPath = path.join(process.cwd(), 'data', 'users.json');
 const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
 const tasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
 
-// ✅ Generate unique invoice number: timestamp + UUID fragment
-export function generateInvoiceNumber(): string {
-  const timestamp = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
-  const uid = uuidv4().slice(0, 6).toUpperCase();
-  return `INV-${timestamp}-${uid}`;
+// ✅ Generate shortened invoice number like "MF-5447A0"
+export function generateInvoiceNumber(fullName: string): string {
+  const initials = fullName
+    .split(' ')
+    .map(word => word[0].toUpperCase())
+    .join('')
+    .slice(0, 2); // Max 2 letters
+
+  const suffix = Math.random().toString(36).substring(2, 8).toUpperCase(); // 6-char alphanumeric
+  return `${initials}-${suffix}`;
 }
 
 // ✅ Find user by ID

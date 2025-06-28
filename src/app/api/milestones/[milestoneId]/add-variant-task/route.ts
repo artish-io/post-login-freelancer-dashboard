@@ -1,6 +1,6 @@
 // File: src/app/api/milestones/[milestoneId]/add-variant-task/route.ts
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 
@@ -28,13 +28,10 @@ function getNextVariantLabel(existingTasks: Task[], base: string): string {
   return `${base} variant ${nextChar}`;
 }
 
-export async function POST(
-  request: Request,
-  { params }: { params: { milestoneId: string } }
-) {
+export async function POST(request: NextRequest) {
   try {
     const { baseTitle } = await request.json();
-    const milestoneId = params.milestoneId;
+    const milestoneId = request.nextUrl.pathname.split('/')[5]; // Extract milestoneId from URL
 
     if (!baseTitle || !milestoneId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -66,7 +63,6 @@ export async function POST(
 
     milestone.tasks.push(newTask);
 
-    // Update milestone status if all tasks are completed
     const allCompleted = milestone.tasks.length > 0 &&
       milestone.tasks.every((t: Task) => t.status === 'completed');
 

@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Lagos State Parks Services",
+    "email": "neilsan.mando@example.com",
+    "logo": "/logos/lagos-parks-logo.png",
+    "address": "3471 Hirurzen Avenue, Hidden Leaf, Land of Fire",
+    "contactPersonId": 32
+  },
+  {
+    "id": 2,
+    "name": "Urbana Channel Studios",
+    "email": "tiruvellly.priya@example.com",
+    "logo": "/logos/urbana-media.png",
+    "address": "78 Culture Drive, Lagos, Nigeria",
+    "contactPersonId": 33
+  },
+  {
+    "id": 3,
+    "name": "Corlax Wellness",
+    "email": "matte.hannery@example.com",
+    "logo": "/logos/corlax-ios-logo.png",
+    "address": "100 Mindful Road, Toronto, ON, Canada",
+    "contactPersonId": 34
+  },
+  {
+    "id": 4,
+    "name": "Zynate Events Group",
+    "email": "tilly.burzinsky@example.com",
+    "logo": "/logos/zynate-events.png",
+    "address": "12 Festival Avenue, Ottawa, Canada",
+    "contactPersonId": 35
+  },
+  {
+    "id": 5,
+    "name": "HERO Research & Design",
+    "email": "felix.damini@example.com",
+    "logo": "/logos/hero-research.png",
+    "address": "22 Insights Blvd, Nairobi, Kenya",
+    "contactPersonId": 36
+  }
+]

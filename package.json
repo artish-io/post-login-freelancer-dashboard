@@ -19,7 +19,8 @@
     "next-auth": "^4.24.11",
     "react": "19.0.0",
     "react-day-picker": "^9.7.0",
-    "react-dom": "19.0.0"
+    "react-dom": "19.0.0",
+    "react-tailwindcss-datepicker": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -15,35 +15,36 @@ type Props = {
 const OPTIONS = ['Execute Immediately', 'On Project Completion', 'Custom Date'];
 
 export default function ExecutionDropdown({ value, onChange }: Props) {
-  const [customDate, setCustomDate] = useState<Date | null>(
-    value && !OPTIONS.includes(value) ? new Date(value) : null
-  );
+  const [customDate, setCustomDate] = useState<Date | null>(null);
   const [showCalendar, setShowCalendar] = useState(false);
 
   const handleOptionSelect = (option: string) => {
     setShowCalendar(false);
 
     if (option === 'Execute Immediately') {
-      onChange(new Date().toISOString());
+      onChange('immediate'); // ✅ FIXED: now sending string, not date
     } else if (option === 'On Project Completion') {
       onChange('on-completion');
     } else if (option === 'Custom Date') {
       setShowCalendar(true);
+      onChange('custom');
     }
   };
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date && isValid(date)) {
       setCustomDate(date);
-      onChange(date.toISOString());
+      onChange(date.toISOString()); // Only for custom logic downstream
       setShowCalendar(false);
     }
   };
 
   const displayLabel = () => {
     if (value === 'on-completion') return 'On Project Completion';
+    if (value === 'immediate') return 'Execute Immediately';
+    if (value === 'custom') return customDate ? format(customDate, 'PPP') : 'Custom Date';
     if (isValid(new Date(value))) return format(new Date(value), 'PPP');
-    return 'Execute Immediately';
+    return 'Select Timing';
   };
 
   return (
@@ -72,8 +73,8 @@ export default function ExecutionDropdown({ value, onChange }: Props) {
                       className={clsx(
                         'text-left px-4 py-2 text-sm hover:bg-gray-100 w-full',
                         (value === 'on-completion' && option === 'On Project Completion') ||
-                        (option === 'Execute Immediately' && !isValid(new Date(value))) ||
-                        (option === 'Custom Date' && isValid(new Date(value))) &&
+                        (value === 'immediate' && option === 'Execute Immediately') ||
+                        (value === 'custom' && option === 'Custom Date') &&
                           'bg-gray-100 font-medium'
                       )}
                     >

@@ -30,26 +30,67 @@
 
 /* -------------------------
    DayPicker (react-day-picker) custom overrides
-   Forces color styling for carets and selected state
+   Pink/black palette, kill all blue, even for chevrons
 -------------------------- */
 
+/* Nav chevrons/arrows: always black */
+.rdp-nav_button svg {
+  fill: #000 !important;
+  stroke: #000 !important;
+  color: #000 !important;
+  opacity: 1 !important;
+}
+
+/* Remove nav button background, focus outline, and box shadow */
 .rdp-nav_button {
-  color: #eb1966 !important; /* Pink arrows */
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.rdp-nav_button:focus {
+  outline: none !important;
 }
 
-.rdp-day_selected {
-  background-color: #FCD5E3 !important;  /* Light pink background */
-  color: #000 !important;                /* Black text */
+/* Selected day: pink border, light pink bg, pink text */
+.rdp-day_selected,
+.rdp-day_selected:focus,
+.rdp-day_selected:active {
+  background-color: #FCD5E3 !important; /* Light pink bg */
+  color: #eb1966 !important;            /* Pink text */
   border-radius: 9999px !important;
-  border: 2px solid #eb1966 !important;  /* Pink outline */
+  border: 2px solid #eb1966 !important; /* Pink outline */
 }
 
+/* Hover state for selected day: solid pink bg, white text */
 .rdp-day_selected:hover {
   background-color: #eb1966 !important;
-  color: white !important;
+  color: #fff !important;
 }
 
+/* Today (unselected): pink outline, pink text */
+.rdp-day_today:not(.rdp-day_selected) {
+  border: 2px solid #eb1966 !important;
+  color: #eb1966 !important;
+  border-radius: 9999px !important;
+}
+
+/* No box shadow on focused/selected day */
+.rdp-day:focus,
 .rdp-day_selected:focus {
   outline: none !important;
   box-shadow: none !important;
+}
+
+/* Accent color variables for react-day-picker */
+:root {
+  --rdp-accent-color: #eb1966 !important;
+  --rdp-background-color: #FCD5E3 !important;
+}
+:root,
+.rdp-root {
+  --rdp-accent-color: #eb1966 !important;
+  --rdp-background-color: #FCD5E3 !important;
+  --rdp-accent-color-dark: #eb1966 !important;
+  --rdp-background-color-dark: #FCD5E3 !important;
+  --rdp-outline: 2px solid #FCD5E3 !important;
+  --rdp-outline-selected: 2px solid #eb1966 !important;
 }

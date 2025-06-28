@@ -2,29 +2,28 @@
 
 type InvoiceMetaProps = {
   invoiceNumber: string;
-  projectId: string;
-  issueDate: string;
-  dueDate: string;
+  billedToName?: string;
+  billedToAddress?: string;
 };
 
-export default function InvoiceMetaBlock({ invoiceNumber, projectId, issueDate, dueDate }: InvoiceMetaProps) {
+export default function InvoiceMetaBlock({
+  invoiceNumber,
+  billedToName,
+  billedToAddress,
+}: InvoiceMetaProps) {
   return (
-    <div className="bg-pink-100 p-4 rounded-md text-sm space-y-2">
-      <div className="flex justify-between items-center">
-        <span className="font-semibold text-gray-800">Invoice Number:</span>
-        <span className="text-gray-700">{invoiceNumber}</span>
+    <div className="w-full bg-pink-100 rounded-xl px-6 py-5 flex justify-between items-start">
+      {/* Left: Invoice Number */}
+      <div className="space-y-1">
+        <p className="text-sm text-gray-800">Invoice Number:</p>
+        <p className="text-xl font-extrabold text-gray-900">{invoiceNumber || '—'}</p>
       </div>
-      <div className="flex justify-between items-center">
-        <span className="text-gray-600">Project ID:</span>
-        <span>{projectId}</span>
-      </div>
-      <div className="flex justify-between items-center">
-        <span className="text-gray-600">Issued Date:</span>
-        <span>{issueDate}</span>
-      </div>
-      <div className="flex justify-between items-center">
-        <span className="text-gray-600">Due Date:</span>
-        <span>{dueDate}</span>
+
+      {/* Right: Bill To */}
+      <div className="text-right">
+        <p className="text-sm font-semibold text-gray-900">Billed to</p>
+        <p className="text-sm text-gray-800 mt-1">{billedToName || '—'}</p>
+        <p className="text-sm text-gray-700">{billedToAddress || '—'}</p>
       </div>
     </div>
   );

@@ -16,7 +16,7 @@ export function Button({
 
   const variantStyles = {
     primary: 'bg-zinc-900 text-white hover:bg-zinc-800',
-    secondary: 'border-[1.5px] border-purple-300 text-purple-800 hover:bg-purple-50 flex items-center gap-2',
+    secondary: 'border-[1.5px] border-black text-black hover:bg-black hover:text-white flex items-center gap-2',
   };
 
   return (

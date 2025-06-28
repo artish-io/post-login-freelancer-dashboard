@@ -1,17 +1,14 @@
 // File: src/app/api/milestones/[milestoneId]/update-task-status/route.ts
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 
 const milestonesFilePath = path.join(process.cwd(), 'data', 'milestones.json');
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { milestoneId: string } }
-) {
+export async function PUT(request: NextRequest) {
   try {
-    const milestoneId = params.milestoneId;
+    const milestoneId = request.nextUrl.pathname.split('/')[5]; // Extract milestoneId from URL
     const { taskId, newStatus } = await request.json();
 
     if (!milestoneId || !taskId || !['submitted', 'completed'].includes(newStatus)) {
@@ -41,15 +38,18 @@ export async function PUT(
       task.completedAt = now;
     }
 
-    // Auto-update milestone status if all tasks are completed
-    const allCompleted = milestone.tasks.length > 0 &&
+    const allCompleted =
+      milestone.tasks.length > 0 &&
       milestone.tasks.every((t: any) => t.status === 'completed');
 
     milestone.status = allCompleted ? 'completed' : 'in progress';
 
     await writeFile(milestonesFilePath, JSON.stringify(milestones, null, 2));
 
-    return NextResponse.json({ message: `Task ${newStatus}`, updatedTask: task }, { status: 200 });
+    return NextResponse.json(
+      { message: `Task ${newStatus}`, updatedTask: task },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Error updating task status:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

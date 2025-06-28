@@ -3,12 +3,12 @@
 import Image from 'next/image';
 import AddCustomerButton from '../../../../ui/add-customer-button';
 
-interface ClientDetailsBoxProps {
-  organizationName: string;
+export interface ClientDetailsBoxProps {
+  organizationName?: string;
   organizationLogo?: string;
-  clientName: string;
-  clientEmail: string;
-  clientAddress: string;
+  clientName?: string;
+  clientEmail?: string;
+  clientAddress?: string;
   onAddCustomer?: () => void;
 }
 
@@ -20,38 +20,70 @@ export default function ClientDetailsBox({
   clientAddress,
   onAddCustomer,
 }: ClientDetailsBoxProps) {
+  // Debug props
+  console.log('🧾 ClientDetailsBox props:', {
+    organizationName,
+    organizationLogo,
+    clientName,
+    clientEmail,
+    clientAddress,
+  });
+
   return (
-    <section className="space-y-6">
+    <section className="bg-white rounded-xl shadow-sm p-6 space-y-6">
+      {/* Header */}
       <div>
         <h3 className="text-lg font-semibold text-gray-900">Client Details</h3>
-        <p className="text-sm text-gray-500">{clientEmail}</p>
       </div>
 
-      <div className="flex items-center gap-3">
-        {organizationLogo && (
-          <Image
-            src={organizationLogo}
-            alt={organizationName}
-            width={40}
-            height={40}
-            className="rounded-full object-cover"
-          />
-        )}
-        <div>
-          <p className="text-base font-semibold text-gray-900">{organizationName}</p>
-          <p className="text-sm text-gray-500">{clientEmail}</p>
+      {/* Org Logo + Name + Email */}
+      {(organizationLogo || organizationName || clientEmail) && (
+        <div className="flex items-center gap-3">
+          {organizationLogo && (
+            <div className="w-10 h-10 relative shrink-0">
+              <Image
+                src={organizationLogo}
+                alt={organizationName || 'Client logo'}
+                fill
+                className="rounded-full object-cover"
+              />
+            </div>
+          )}
+          <div>
+            {organizationName && (
+              <p className="text-sm font-semibold text-gray-900">
+                {organizationName}
+              </p>
+            )}
+            {clientEmail && (
+              <p className="text-sm text-gray-500">{clientEmail}</p>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="border-t pt-4 space-y-1">
-        <p className="text-base font-semibold text-gray-900">{clientName}</p>
-        <p className="text-sm text-gray-500">{clientAddress}</p>
-      </div>
+      {/* Divider */}
+      {(clientName || clientAddress) && <hr className="border-gray-200" />}
 
+      {/* Contact Person Info */}
+      {(clientName || clientAddress) && (
+        <div className="space-y-1">
+          {clientName && (
+            <p className="text-sm font-semibold text-gray-900">{clientName}</p>
+          )}
+          {clientAddress && (
+            <p className="text-sm text-gray-500">{clientAddress}</p>
+          )}
+        </div>
+      )}
+
+      {/* Add Customer Button */}
       {onAddCustomer && (
-        <AddCustomerButton onClick={onAddCustomer}>
-          Add Customer
-        </AddCustomerButton>
+        <div>
+          <AddCustomerButton onClick={onAddCustomer}>
+            Add Customer
+          </AddCustomerButton>
+        </div>
       )}
     </section>
   );

@@ -1,19 +1,21 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 
 const filePath = path.join(process.cwd(), 'data', 'invoices.json');
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { freelancerId: string } }
-) {
+function extractFreelancerId(request: NextRequest): string {
+  return request.nextUrl.pathname.split('/')[4]; // Adjust if route depth changes
+}
+
+export async function GET(request: NextRequest) {
   try {
+    const freelancerId = extractFreelancerId(request);
     const data = await readFile(filePath, 'utf-8');
     const invoices = JSON.parse(data);
 
     const filtered = invoices.filter(
-      (invoice: any) => String(invoice.freelancerId) === params.freelancerId
+      (invoice: any) => String(invoice.freelancerId) === freelancerId
     );
 
     return NextResponse.json(filtered);
@@ -23,11 +25,9 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { freelancerId: string } }
-) {
+export async function PUT(request: NextRequest) {
   try {
+    const freelancerId = extractFreelancerId(request);
     const body = await request.json();
     const { invoiceNumber, updates } = body;
 
@@ -37,7 +37,7 @@ export async function PUT(
     const index = invoices.findIndex(
       (inv: any) =>
         inv.invoiceNumber === invoiceNumber &&
-        String(inv.freelancerId) === params.freelancerId
+        String(inv.freelancerId) === freelancerId
     );
 
     if (index === -1) {
@@ -54,11 +54,9 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { freelancerId: string } }
-) {
+export async function DELETE(request: NextRequest) {
   try {
+    const freelancerId = extractFreelancerId(request);
     const { invoiceNumber } = await request.json();
 
     const data = await readFile(filePath, 'utf-8');
@@ -67,7 +65,7 @@ export async function DELETE(
     const newInvoices = invoices.filter(
       (inv: any) =>
         inv.invoiceNumber !== invoiceNumber ||
-        String(inv.freelancerId) !== params.freelancerId
+        String(inv.freelancerId) !== freelancerId
     );
 
     await writeFile(filePath, JSON.stringify(newInvoices, null, 2));

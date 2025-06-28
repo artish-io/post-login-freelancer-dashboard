@@ -1,20 +1,23 @@
 // File: src/app/api/project-tasks/[projectId]/route.ts
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
 
 const tasksFilePath = path.join(process.cwd(), 'data', 'project-tasks.json');
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { projectId: string } }
-) {
+export async function GET(request: NextRequest) {
   try {
+    const projectIdSegment = request.nextUrl.pathname.split('/')[4]; // Extract projectId from URL
+    const projectId = Number(projectIdSegment);
+
+    if (isNaN(projectId)) {
+      return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 });
+    }
+
     const file = await readFile(tasksFilePath, 'utf-8');
     const projects = JSON.parse(file);
 
-    const projectId = Number(params.projectId);
     const project = projects.find((p: any) => p.projectId === projectId);
 
     if (!project) {

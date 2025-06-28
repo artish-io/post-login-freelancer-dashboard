@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const { fontFamily } = require('tailwindcss/defaultTheme');
+
 module.exports = {
   content: [
     "./src/app/**/*.{js,ts,jsx,tsx}",
@@ -7,6 +8,7 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx}",
     "./app/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/react-tailwindcss-datepicker/dist/index.esm.js", // required
   ],
   theme: {
     extend: {
@@ -17,11 +19,11 @@ module.exports = {
         Green: "#30cb94",
       },
       fontFamily: {
-  sans: ['var(--font-jakarta)', ...fontFamily.sans], // Now font-sans = Jakarta
-  jakarta: ['var(--font-jakarta)'],
-  "Text-Regular-Normal": ['"Plus Jakarta Sans"', ...fontFamily.sans],
-  "button-medium": ["Roboto", ...fontFamily.sans],
-},
+        sans: ['var(--font-jakarta)', ...fontFamily.sans],
+        jakarta: ['var(--font-jakarta)'],
+        "Text-Regular-Normal": ['"Plus Jakarta Sans"', ...fontFamily.sans],
+        "button-medium": ["Roboto", ...fontFamily.sans],
+      },
       borderRadius: {
         borderRadius: "4px",
       },
@@ -37,7 +39,4 @@ module.exports = {
     },
   },
   plugins: [],
-  corePlugins: {
-    preflight: false,
-  },
 };

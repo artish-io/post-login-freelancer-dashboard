@@ -15,9 +15,15 @@ type Props = {
     value: string | number
   ) => void;
   onRemove: (id: number) => void;
+  readOnly?: boolean;
 };
 
-export default function MilestoneInputRow({ milestone, onUpdate, onRemove }: Props) {
+export default function MilestoneInputRow({
+  milestone,
+  onUpdate,
+  onRemove,
+  readOnly = false
+}: Props) {
   return (
     <div className="flex flex-col gap-2 w-full border border-gray-300 rounded-xl p-4">
       {/* Title & Rate Row */}
@@ -32,6 +38,7 @@ export default function MilestoneInputRow({ milestone, onUpdate, onRemove }: Pro
             className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
             value={milestone.title}
             onChange={(e) => onUpdate(milestone.id, 'title', e.target.value)}
+            disabled={readOnly}
           />
         </div>
 
@@ -49,16 +56,19 @@ export default function MilestoneInputRow({ milestone, onUpdate, onRemove }: Pro
               const val = parseFloat(e.target.value);
               onUpdate(milestone.id, 'rate', isNaN(val) ? 0 : val);
             }}
+            disabled={readOnly}
           />
         </div>
 
-        <button
-          type="button"
-          onClick={() => onRemove(milestone.id)}
-          className="mt-6 text-gray-400 hover:text-red-600"
-        >
-          <Trash2 className="w-4 h-4" />
-        </button>
+        {!readOnly && (
+          <button
+            type="button"
+            onClick={() => onRemove(milestone.id)}
+            className="mt-6 text-gray-400 hover:text-red-600"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {/* Optional Description */}
@@ -71,9 +81,8 @@ export default function MilestoneInputRow({ milestone, onUpdate, onRemove }: Pro
           placeholder="Add supporting context or clarifications..."
           className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
           value={milestone.description || ''}
-          onChange={(e) =>
-            onUpdate(milestone.id, 'description', e.target.value)
-          }
+          onChange={(e) => onUpdate(milestone.id, 'description', e.target.value)}
+          disabled={readOnly}
         />
       </div>
     </div>

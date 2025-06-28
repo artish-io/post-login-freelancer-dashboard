@@ -13,30 +13,31 @@ import BillToInput from './bill-to-input';
 
 export type InvoiceMetaSectionProps = {
   invoiceNumber: string;
-  onInvoiceNumberChange: (value: string) => void;
   issueDate: string;
   onIssueDateChange: (value: string) => void;
   executionTiming: string;
   onExecutionTimingChange: (value: string) => void;
   billTo: string;
   onBillToChange: (value: string) => void;
+  dueDate: string;
+  onDueDateChange: (value: string) => void;
 };
 
 export default function InvoiceMetaSection({
   invoiceNumber,
-  onInvoiceNumberChange,
   issueDate,
   onIssueDateChange,
   executionTiming,
   onExecutionTimingChange,
   billTo,
   onBillToChange,
+  dueDate,
+  onDueDateChange,
 }: InvoiceMetaSectionProps) {
   const { data: session } = useSession();
   const [from, setFrom] = useState<{ name: string; email: string }>({ name: '', email: '' });
-  const [dateObj, setDateObj] = useState<Date | undefined>(
-    issueDate ? new Date(issueDate) : new Date()
-  );
+  const [dateObj, setDateObj] = useState<Date | undefined>(issueDate ? new Date(issueDate) : new Date());
+  const [dueDateObj, setDueDateObj] = useState<Date | undefined>(dueDate ? new Date(dueDate) : undefined);
 
   useEffect(() => {
     if (!session?.user?.id) return;
@@ -55,49 +56,23 @@ export default function InvoiceMetaSection({
   }, [session?.user?.id]);
 
   return (
-    <section className="w-full border-t border-gray-300 pt-6 mt-6">
+    <section className="w-full pt-6 mt-6 space-y-8">
+      {/* Invoice Number */}
+      <div>
+        <label className="text-xs text-gray-700 block mb-1">INVOICE NUMBER</label>
+        <div className="text-2xl font-semibold text-black">{invoiceNumber}</div>
+      </div>
+
+      {/* Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Left column */}
         <div className="flex flex-col gap-4">
-          {/* Invoice Number */}
-          <div>
-            <label className="text-xs text-gray-700 mb-1 block">INVOICE NUMBER</label>
-            <input
-              type="text"
-              value={invoiceNumber}
-              onChange={(e) => onInvoiceNumberChange(e.target.value)}
-              className="w-full border border-gray-300 rounded-md px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-pink-500"
-              placeholder="Enter invoice number"
-            />
-          </div>
-
           {/* Issue Date */}
           <div>
             <label className="text-xs text-gray-700 mb-1 block">ISSUE DATE</label>
-            <Popover className="relative">
-              <Popover.Button
-                className={clsx(
-                  'w-full border border-gray-300 rounded-md px-4 py-2 text-sm text-left flex items-center justify-between',
-                  'focus:outline-none focus:ring-2 focus:ring-pink-500'
-                )}
-              >
-                <span>{dateObj ? format(dateObj, 'PPP') : 'Pick a date'}</span>
-                <CalendarIcon className="w-4 h-4 text-gray-500" />
-              </Popover.Button>
-              <Popover.Panel className="absolute z-10 mt-2 bg-white border rounded-md shadow-md">
-                <Calendar
-                  mode="single"
-                  selected={dateObj}
-                  onSelect={(date: Date | undefined) => {
-                    if (date) {
-                      setDateObj(date);
-                      onIssueDateChange(date.toISOString());
-                    }
-                  }}
-                  initialFocus
-                />
-              </Popover.Panel>
-            </Popover>
+            <div className="w-full border border-gray-300 rounded-md px-4 py-2 text-sm text-left">
+              {format(new Date(), 'PPP')}
+            </div>
           </div>
 
           {/* Execution Timing */}
@@ -105,6 +80,37 @@ export default function InvoiceMetaSection({
             <label className="text-xs text-gray-700 mb-1 block">WHEN TO EXECUTE</label>
             <ExecutionDropdown value={executionTiming} onChange={onExecutionTimingChange} />
           </div>
+
+          {/* Due Date — conditional render based on execution timing */}
+          {executionTiming === 'custom' && (
+            <div>
+              <label className="text-xs text-gray-700 mb-1 block">DUE DATE</label>
+              <Popover className="relative">
+                <Popover.Button
+                  className={clsx(
+                    'w-full border border-gray-300 rounded-md px-4 py-2 text-sm text-left flex items-center justify-between',
+                    'focus:outline-none focus:ring-2 focus:ring-pink-500'
+                  )}
+                >
+                  <span>{dueDateObj ? format(dueDateObj, 'PPP') : 'Pick a date'}</span>
+                  <CalendarIcon className="w-4 h-4 text-gray-500" />
+                </Popover.Button>
+                <Popover.Panel className="absolute z-10 mt-2 bg-white border rounded-md shadow-md">
+                  <Calendar
+                    mode="single"
+                    selected={dueDateObj}
+                    onSelect={(date: Date | undefined) => {
+                      if (date) {
+                        setDueDateObj(date);
+                        onDueDateChange(date.toISOString());
+                      }
+                    }}
+                    initialFocus
+                  />
+                </Popover.Panel>
+              </Popover>
+            </div>
+          )}
         </div>
 
         {/* Right column */}

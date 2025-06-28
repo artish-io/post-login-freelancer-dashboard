@@ -3,16 +3,21 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 
 type InvoiceHeaderProps = {
   onSend: () => void;
+  onSaveDraft: () => void;
+  onPreview?: () => void;
   billTo: string;
 };
 
-export default function InvoiceHeader({ onSend, billTo }: InvoiceHeaderProps) {
+export default function InvoiceHeader({
+  onSend,
+  onSaveDraft,
+  onPreview,
+  billTo,
+}: InvoiceHeaderProps) {
   const { data: session } = useSession();
-  const router = useRouter();
   const [name, setName] = useState('...');
   const [avatar, setAvatar] = useState('/default-avatar.png');
 
@@ -66,17 +71,37 @@ export default function InvoiceHeader({ onSend, billTo }: InvoiceHeaderProps) {
         </button>
 
         <button
-          disabled={!billTo}
-          onClick={() => router.push('/freelancer-dashboard/invoice-preview')}
+          onClick={onSaveDraft}
+          disabled={!billTo.trim()}
           className={`border px-4 py-2 rounded-full text-sm transition ${
-            billTo
+            billTo.trim()
               ? 'text-gray-800 hover:bg-gray-100'
               : 'text-gray-400 cursor-not-allowed bg-gray-100'
           }`}
-          title={!billTo ? 'Enter a billing contact to enable preview' : ''}
+          title={!billTo.trim() ? 'Enter a billing contact to enable saving' : ''}
         >
-          Preview
+          Save Draft
         </button>
+
+        {onPreview && (
+          <button
+            onClick={() => {
+              console.log('🟡 Preview button clicked');
+              console.log('📦 Executing handlePreviewInvoice() from InvoiceHeader');
+              console.log('🧪 onPreview ref:', onPreview);
+              onPreview();
+            }}
+            disabled={!billTo.trim()}
+            className={`border px-4 py-2 rounded-full text-sm transition ${
+              billTo.trim()
+                ? 'text-gray-800 hover:bg-gray-100'
+                : 'text-gray-400 cursor-not-allowed bg-gray-100'
+            }`}
+            title={!billTo.trim() ? 'Enter a billing contact to preview' : ''}
+          >
+            Preview
+          </button>
+        )}
 
         <button
           className="bg-black text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-900 transition"

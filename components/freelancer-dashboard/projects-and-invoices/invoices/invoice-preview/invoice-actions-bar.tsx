@@ -1,41 +1,72 @@
 'use client';
 
+import { useState } from 'react';
 import { Button } from '../../../../ui/button';
-import { Eye, Download } from 'lucide-react';
+import { Download, Save, Send } from 'lucide-react';
 
 type Props = {
+  invoiceData: any;
   onSend: () => void;
-  onPreview: () => void;
   onDownload: () => void;
 };
 
-export default function InvoiceActionsBar({ onSend, onPreview, onDownload }: Props) {
-  return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-zinc-200 pt-6 mt-6">
-      <Button
-        onClick={onSend}
-        variant="primary"
-        className="w-full sm:w-auto px-12 py-4 text-base font-semibold"
-      >
-        Send Invoice
-      </Button>
+export default function InvoiceActionsBar({ invoiceData, onSend, onDownload }: Props) {
+  const [isSaving, setIsSaving] = useState(false);
 
-      <div className="flex gap-4 w-full sm:w-auto justify-between sm:justify-end">
+  const handleSaveDraft = async () => {
+    setIsSaving(true);
+    try {
+      const res = await fetch('/api/invoices/save-draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(invoiceData),
+      });
+      const result = await res.json();
+
+      if (!res.ok) {
+        console.error('❌ Save draft failed:', result?.error || result);
+      } else {
+        console.log('✅ Draft saved:', result);
+      }
+    } catch (err) {
+      console.error('❌ Error saving draft:', err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <div className="pt-8 border-t border-zinc-200 w-full max-w-md mx-auto space-y-5">
+      {/* Send Invoice */}
+      <div className="w-full">
         <Button
-          onClick={onPreview}
-          variant="secondary"
-          className="w-full sm:w-auto px-10 py-4 text-base"
+          onClick={onSend}
+          variant="primary"
+          className="w-full px-5 py-3 text-sm font-medium flex items-center justify-center gap-2"
         >
-          <Eye className="w-5 h-5" />
-          Preview
+          <Send className="w-4 h-4" />
+          Send Invoice
+        </Button>
+      </div>
+
+      {/* Compact Save Draft & Download buttons */}
+      <div className="flex flex-row gap-3 w-full">
+        <Button
+          onClick={handleSaveDraft}
+          variant="secondary"
+          className="w-1/2 px-3 py-2 text-xs flex items-center justify-center gap-1 rounded-xl"
+          disabled={isSaving}
+        >
+          <Save className="w-4 h-4" />
+          {isSaving ? 'Saving...' : 'Save'}
         </Button>
 
         <Button
           onClick={onDownload}
           variant="secondary"
-          className="w-full sm:w-auto px-10 py-4 text-base"
+          className="w-1/2 px-3 py-2 text-xs flex items-center justify-center gap-1 rounded-xl"
         >
-          <Download className="w-5 h-5" />
+          <Download className="w-4 h-4" />
           Download
         </Button>
       </div>
