@@ -1,0 +1,55 @@
+{
+  "Software Development": [
+    "Programming",
+    "JavaScript",
+    "Python",
+    "App Development",
+    "Mobile Development",
+    "Hardware",
+    "Web Development"
+  ],
+  "Marketing": [
+    "Product Marketing",
+    "UX Marketing",
+    "Go-To-Market Strategy"
+  ],
+  "Creative Writing": [
+    "Songwriting",
+    "Fiction",
+    "Poetry"
+  ],
+  "Design": [
+    "Illustration",
+    "Fashion",
+    "Print",
+    "Canva",
+    "Figma"
+  ],
+  "Video Production": [
+    "YouTube",
+    "Shorts",
+    "TikTok",
+    "Instagram Reels"
+  ],
+  "Film & Events": [
+    "DOP",
+    "Lighting",
+    "Camera"
+  ],
+  "Fashion": [
+    "Sketching",
+    "Tech Packs",
+    "Trends"
+  ],
+  "Event Production": [
+    "Stage Design",
+    "Security",
+    "Catering"
+  ],
+  "Printing": [
+    "Books",
+    "Banners",
+    "Magazines",
+    "Pamphlets"
+  ]
+}

@@ -2487,5 +2487,77 @@
     "total": 0,
     "notes": "",
     "freelancerId": "31"
+  },
+  {
+    "invoiceNumber": "MF-AR2XW",
+    "issueDate": null,
+    "dueDate": null,
+    "executionTiming": "",
+    "billTo": "matte.hannery@example.com",
+    "project": {
+      "projectId": 303,
+      "title": "Corlax iOS app development"
+    },
+    "milestones": [
+      {
+        "id": 1751410869125,
+        "title": "Sexy work",
+        "description": "sexy work.",
+        "rate": 0
+      }
+    ],
+    "total": 0,
+    "notes": "",
+    "freelancerId": "31"
+  },
+  {
+    "invoiceNumber": "MF-7IR27",
+    "issueDate": null,
+    "dueDate": null,
+    "executionTiming": "",
+    "billTo": "matte.hannery@example.com",
+    "project": {
+      "projectId": null,
+      "title": ""
+    },
+    "milestones": [
+      {
+        "id": 1751415275297,
+        "title": "",
+        "description": "",
+        "rate": 0
+      }
+    ],
+    "total": 0,
+    "notes": "",
+    "freelancerId": "31"
+  },
+  {
+    "invoiceNumber": "MF-LK9LX",
+    "issueDate": null,
+    "dueDate": null,
+    "executionTiming": "",
+    "billTo": "matte.hannery@example.com",
+    "project": {
+      "projectId": 303,
+      "title": "Corlax iOS app development"
+    },
+    "milestones": [
+      {
+        "id": 1751415713971,
+        "title": "Lagos",
+        "description": "weweLagos",
+        "rate": 500
+      },
+      {
+        "id": 1751415713972,
+        "title": "Lagos",
+        "description": "Omowewew",
+        "rate": 500
+      }
+    ],
+    "total": 1000,
+    "notes": "",
+    "freelancerId": "31"
   }
 ]

@@ -1,0 +1,36 @@
+{
+  "title": "",
+  "summary": "",
+  "logoUrl": "/logos/corlax-ios-logo.png",
+  "typeTags": [],
+  "milestones": [],
+  "paymentCycle": "Fixed Amount",
+  "rate": 32,
+  "projectId": "TU-91CGRY",
+  "totalBid": 0,
+  "customStartDate": "2025-07-09T04:00:00.000Z",
+  "endDate": "2025-07-31T04:00:00.000Z",
+  "maxHours": 8,
+  "depositRate": "12",
+  "expectedDurationDays": 22,
+  "executionMethod": "completion",
+  "startType": "Immediately",
+  "contact": {
+    "id": 34,
+    "name": "Matte Hannery",
+    "title": "Startup Founder",
+    "avatar": "/avatars/matte.png",
+    "type": "commissioner",
+    "email": "matte.hannery@example.com",
+    "address": "34 Remote Lane, Virtual City, Country",
+    "organizationId": 3,
+    "organization": {
+      "name": "Corlax Wellness",
+      "logo": "/logos/corlax-ios-logo.png",
+      "address": "100 Mindful Road, Toronto, ON, Canada"
+    }
+  },
+  "upfrontAmount": 0,
+  "milestoneTotal": 0,
+  "isAmountValid": true
+}

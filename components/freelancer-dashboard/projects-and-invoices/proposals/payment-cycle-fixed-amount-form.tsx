@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 type Props = {
   totalAmount: string;
   upfrontPayment: string;
@@ -13,8 +15,21 @@ export default function PaymentCycleFixedAmountForm({
   onTotalAmountChange,
   onUpfrontPaymentChange,
 }: Props) {
+  const [showWarning, setShowWarning] = useState(false);
+
+  const handleUpfrontChange = (val: string) => {
+    const num = Number(val);
+    if (num > 12) {
+      setShowWarning(true);
+    } else {
+      setShowWarning(false);
+    }
+
+    onUpfrontPaymentChange(val); // Still allow input so user can correct it
+  };
+
   return (
-    <div className="w-full mt-4 flex flex-col gap-1">
+    <div className="w-full mt-4 flex flex-col gap-2">
       {/* LABEL ROW */}
       <div className="flex justify-between items-end mb-1">
         <label className="text-black text-xs font-normal pl-1">Total Amount</label>
@@ -43,13 +58,20 @@ export default function PaymentCycleFixedAmountForm({
             value={upfrontPayment}
             min={0}
             max={100}
-            onChange={e => onUpfrontPaymentChange(e.target.value)}
+            onChange={e => handleUpfrontChange(e.target.value)}
             className="w-full pl-4 pr-8 py-3 rounded-2xl border border-gray-300 text-base font-normal tracking-normal leading-normal bg-white focus:outline-none focus:ring-2 focus:ring-black transition"
             placeholder="0"
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-base font-semibold">%</span>
         </div>
       </div>
+
+      {/* Warning Message */}
+      {showWarning && (
+        <p className="text-xs text-red-600 font-medium pl-1">
+          Upfront payment cannot exceed 12% for Fixed Amount projects.
+        </p>
+      )}
     </div>
   );
 }

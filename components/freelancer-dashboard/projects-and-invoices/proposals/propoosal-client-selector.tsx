@@ -64,7 +64,8 @@ export default function ProposalClientSelector({ selectedContact, onSelect }: Pr
 
   return (
     <div className="flex flex-col gap-2 relative">
-      <label className="text-sm font-medium text-gray-700">Who are you working with?</label>
+      <label className="text-xs text-gray-500 font-medium mb-1 block">
+        WHO ARE YOU WORKING WITH? </label>
 
       <input
         type="text"

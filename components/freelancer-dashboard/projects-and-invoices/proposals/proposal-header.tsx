@@ -8,22 +8,22 @@ interface Props {
   contactSelected: boolean;
   isCustomEmail: boolean;
   projectName: string;
-  isValid: boolean; // ✅ ADD THIS
+  isValid: boolean;
   onCancel: () => void;
-  onPreview: () => void;
   onSaveDraft: () => void;
   onSend: () => void;
+  onPreview?: () => void; // ✅ NEW optional prop
 }
 
 export default function ProposalHeader({
   contactSelected,
   isCustomEmail,
   projectName,
-  isValid, // ✅ DESTRUCTURE THIS
+  isValid,
   onCancel,
-  onPreview,
   onSaveDraft,
   onSend,
+  onPreview,
 }: Props) {
   const { data: session } = useSession();
 

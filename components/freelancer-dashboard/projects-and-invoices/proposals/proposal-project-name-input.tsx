@@ -14,7 +14,8 @@ export default function ProposalProjectNameInput({ value, onChange }: Props) {
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-gray-700">Project Name</label>
+      <label className="text-xs text-gray-500 font-medium mb-1 block">
+        PROJECT NAME</label>
       <input
         type="text"
         placeholder="Enter project name"

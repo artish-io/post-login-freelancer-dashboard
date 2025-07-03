@@ -1,3 +1,4 @@
+import { TaskStatus } from '@/lib/projects/tasks/types';
 'use client';
 
 import { useSession } from 'next-auth/react';
@@ -5,25 +6,50 @@ import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { NotesTab } from './notes-tab';
 import ProjectNotesExpansion from './project-notes-expansion';
+import TaskDetailsModal from './projects-and-invoices/projects/task-details-modal';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
+
+import projectData from '../../data/project-tasks.json';
+import organizations from '../../data/organizations.json';
 
 type Task = {
   id: number;
   title: string;
-  status: 'Approved' | 'In review' | 'Ongoing';
+  status: TaskStatus;
   important: boolean;
   notes: number;
   projectId: number;
   projectTitle: string;
-  completed: boolean;
+  projectLogo?: string;
+  projectTags?: string[];
+  taskDescription: string;
+  briefUrl?: string;
+  workingFileUrl?: string;
+  columnId: 'todo' | 'upcoming' | 'review';
+};
+
+type Project = {
+  projectId: number;
+  title: string;
+  organizationId: number;
+  typeTags: string[];
+};
+
+type Organization = {
+  id: number;
+  name: string;
+  logo: string;
 };
 
 const tabs = ['All', 'Important', 'Notes'] as const;
 
-const statusColors: Record<Task['status'], string> = {
+const statusColors: Record<TaskStatus, string> = {
   Approved: 'bg-green-100 text-green-700',
   'In review': 'bg-red-100 text-red-700',
   Ongoing: 'bg-yellow-100 text-yellow-800',
+  Submitted: 'bg-blue-100 text-blue-700',
+  Rejected: 'bg-gray-100 text-gray-600',
 };
 
 export default function TodayTasksPanel() {
@@ -31,6 +57,7 @@ export default function TodayTasksPanel() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [activeTab, setActiveTab] = useState<typeof tabs[number]>('All');
   const [expandedProject, setExpandedProject] = useState<number | null>(null);
+  const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
 
   useEffect(() => {
     if (!session?.user?.id) return;
@@ -45,9 +72,8 @@ export default function TodayTasksPanel() {
         const taskData = await taskRes.json();
         const notes = await notesRes.json();
 
-        const enriched = taskData.map((task: Omit<Task, 'completed'>) => ({
+        const enriched = taskData.map((task: Task) => ({
           ...task,
-          completed: task.status === 'Approved' || task.status === 'In review',
           notes: notes.taskIds.includes(task.id) ? 1 : 0,
         }));
 
@@ -61,14 +87,14 @@ export default function TodayTasksPanel() {
   }, [session?.user?.id]);
 
   const countAll = tasks.length;
-  const countImportant = tasks.filter((t) => t.important && !t.completed).length;
+  const countImportant = tasks.filter((t) => t.important).length;
   const countNotes = tasks.filter((t) => t.notes > 0).length;
 
   const displayed = tasks
     .filter((task) => {
       switch (activeTab) {
         case 'Important':
-          return task.important && !task.completed;
+          return task.important;
         case 'Notes':
           return task.notes > 0;
         default:
@@ -78,6 +104,19 @@ export default function TodayTasksPanel() {
     .slice(0, 5);
 
   const projectIds = Array.from(new Set(tasks.map((t) => t.projectId)));
+  const activeTask = tasks.find((t) => t.id === activeTaskId);
+
+  let enrichedTask = null;
+  if (activeTask) {
+    const project = (projectData as Project[]).find((p) => p.projectId === activeTask.projectId);
+    const org = (organizations as Organization[]).find((o) => o.id === project?.organizationId);
+
+    enrichedTask = {
+      ...activeTask,
+      projectTags: project?.typeTags || [],
+      projectLogo: org?.logo || '',
+    };
+  }
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6">
@@ -147,18 +186,19 @@ export default function TodayTasksPanel() {
                 {displayed.map((task) => (
                   <li
                     key={task.id}
-                    className="flex justify-between items-center text-sm"
+                    className="flex justify-between items-center text-sm cursor-pointer"
+                    onClick={() => setActiveTaskId(task.id)}
                   >
                     <div className="flex items-center gap-3">
                       <span
                         className={clsx(
                           'w-5 h-5 rounded-full border flex items-center justify-center',
-                          task.completed
+                          ['Approved', 'In review'].includes(task.status)
                             ? 'bg-pink-500 text-white border-pink-500'
                             : 'border-gray-400'
                         )}
                       >
-                        {task.completed && (
+                        {(['Approved', 'In review'].includes(task.status)) && (
                           <svg
                             className="w-3 h-3"
                             viewBox="0 0 20 20"
@@ -190,9 +230,12 @@ export default function TodayTasksPanel() {
 
       {/* View All CTA */}
       <div className="flex justify-end mt-6">
-        <button className="text-sm px-4 py-2 rounded-full border text-gray-800 hover:bg-gray-100 transition">
+        <Link
+          href="/freelancer-dashboard/projects-and-invoices/task-board"
+          className="text-sm px-4 py-2 rounded-full border text-gray-800 hover:bg-gray-100 transition"
+        >
           View All
-        </button>
+        </Link>
       </div>
 
       {/* Expansion modal */}
@@ -200,6 +243,29 @@ export default function TodayTasksPanel() {
         <ProjectNotesExpansion
           projectId={expandedProject}
           onClose={() => setExpandedProject(null)}
+        />
+      )}
+
+      {/* Task Details Modal */}
+      {enrichedTask && (
+        <TaskDetailsModal
+          isOpen={true}
+          onClose={() => setActiveTaskId(null)}
+          projectLogo={enrichedTask.projectLogo}
+          projectTitle={enrichedTask.projectTitle}
+          projectTags={enrichedTask.projectTags || []}
+          taskIndex={1}
+          totalTasks={1}
+          taskTitle={enrichedTask.title}
+          taskDescription={enrichedTask.taskDescription}
+          briefUrl={enrichedTask.briefUrl}
+          workingFileUrl={enrichedTask.workingFileUrl}
+          columnId={enrichedTask.columnId}
+          status={enrichedTask.status}
+          onSubmit={() => {
+            console.log('Submit task:', enrichedTask.id);
+            setActiveTaskId(null);
+          }}
         />
       )}
     </div>

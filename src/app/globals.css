@@ -28,69 +28,108 @@
   }
 }
 
-/* -------------------------
-   DayPicker (react-day-picker) custom overrides
-   Pink/black palette, kill all blue, even for chevrons
--------------------------- */
+/* -------------------------------------------------------
+   DayPicker Theme — ARTISH Pink, Clean, Stable, Accessible
+-------------------------------------------------------- */
 
-/* Nav chevrons/arrows: always black */
-.rdp-nav_button svg {
-  fill: #000 !important;
-  stroke: #000 !important;
-  color: #000 !important;
-  opacity: 1 !important;
-}
-
-/* Remove nav button background, focus outline, and box shadow */
-.rdp-nav_button {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-.rdp-nav_button:focus {
-  outline: none !important;
-}
-
-/* Selected day: pink border, light pink bg, pink text */
-.rdp-day_selected,
-.rdp-day_selected:focus,
-.rdp-day_selected:active {
-  background-color: #FCD5E3 !important; /* Light pink bg */
-  color: #eb1966 !important;            /* Pink text */
-  border-radius: 9999px !important;
-  border: 2px solid #eb1966 !important; /* Pink outline */
-}
-
-/* Hover state for selected day: solid pink bg, white text */
-.rdp-day_selected:hover {
-  background-color: #eb1966 !important;
-  color: #fff !important;
-}
-
-/* Today (unselected): pink outline, pink text */
-.rdp-day_today:not(.rdp-day_selected) {
-  border: 2px solid #eb1966 !important;
-  color: #eb1966 !important;
-  border-radius: 9999px !important;
-}
-
-/* No box shadow on focused/selected day */
-.rdp-day:focus,
-.rdp-day_selected:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* Accent color variables for react-day-picker */
-:root {
-  --rdp-accent-color: #eb1966 !important;
-  --rdp-background-color: #FCD5E3 !important;
-}
+/* Color variables */
 :root,
 .rdp-root {
   --rdp-accent-color: #eb1966 !important;
   --rdp-background-color: #FCD5E3 !important;
   --rdp-accent-color-dark: #eb1966 !important;
   --rdp-background-color-dark: #FCD5E3 !important;
-  --rdp-outline: 2px solid #FCD5E3 !important;
-  --rdp-outline-selected: 2px solid #eb1966 !important;
+  --rdp-outline: none !important;
+  --rdp-outline-selected: none !important;
+}
+
+/* Core button layout: all day buttons uniform */
+.rdp-button {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Clean up day wrappers */
+.rdp-day,
+.rdp-cell,
+td[role='gridcell'] {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* ✅ Selected day */
+[aria-selected='true'] {
+  background-color: #FCD5E3 !important;
+  color: #eb1966 !important;
+  font-weight: 600 !important;
+  border: 2px solid #eb1966 !important;
+  border-radius: 9999px !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* ✅ Hovered selected day */
+[aria-selected='true']:hover {
+  background-color: #eb1966 !important;
+  color: #fff !important;
+}
+
+/* ✅ Today (unselected) */
+.rdp-day_today:not([aria-selected='true']) > button {
+  border: 2px solid #eb1966 !important;
+  color: #eb1966 !important;
+  border-radius: 9999px !important;
+}
+
+/* ✅ Focus ring for keyboard users */
+.rdp-button:focus-visible {
+  outline: 2px solid #eb1966 !important;
+  outline-offset: 2px;
+  border-radius: 9999px;
+}
+
+/* ✅ Disabled past dates — greyed out + unclickable */
+.rdp-day_disabled:hover {
+  background: transparent !important;
+  color: #d1d5db !important;
+}
+
+/* ✅ Nav arrows — always black */
+.rdp-nav_button svg {
+  fill: #000 !important;
+  stroke: #000 !important;
+  color: #000 !important;
+  opacity: 1 !important;
+}
+.rdp-nav_button {
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.rdp-day_button[disabled] {
+  color: #d1d5db !important;             /* grey */
+  background: transparent !important;
+  border: none !important;
+  cursor: not-allowed !important;
+  opacity: 0.4 !important;
+  pointer-events: none !important;
 }

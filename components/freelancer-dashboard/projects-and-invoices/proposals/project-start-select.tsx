@@ -49,9 +49,8 @@ export default function ProjectStartSelect({
 
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-gray-700">
-        When should this project start?
-      </label>
+      <label className="text-xs text-gray-500 font-medium mb-1 block">
+        WHEN SHOULD THIS PROJECT START</label>
       <Listbox value={value} onChange={handleDropdownChange}>
         {({ open }) => (
           <div className="relative">

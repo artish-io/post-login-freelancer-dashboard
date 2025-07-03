@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import InvoiceHeader from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-header';
 import InvoiceMetaSection from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-meta-section';
@@ -10,11 +10,13 @@ import ProjectSelectDropdown from '../../../../../components/freelancer-dashboar
 import MilestoneListEditor from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/milestone-list-editor';
 import AdditionalNotes from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/additional-notes';
 
-import PROJECTS from '../../../../../data/projects.json';
-
 export default function CreateInvoicePage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const resumeInvoiceNumber = searchParams.get('invoiceNumber');
+  const isResumeMode = searchParams.get('pageState') === 'resume';
 
   const [invoiceNumber, setInvoiceNumber] = useState('');
   const [issueDate, setIssueDate] = useState('');
@@ -24,19 +26,55 @@ export default function CreateInvoicePage() {
   const [notes, setNotes] = useState('');
 
   const [selectedProject, setSelectedProject] = useState<{
-  projectId: number | null;
-  title: string;
-}>({
-  projectId: null,
-  title: '',
-});
+    projectId: number | null;
+    title: string;
+  }>({
+    projectId: null,
+    title: '',
+  });
 
   const [milestones, setMilestones] = useState([
     { id: Date.now(), title: '', description: '', rate: 0 },
   ]);
 
+  // Load preview cache if returning from preview
+  useEffect(() => {
+    const hydrateFromPreview = async () => {
+      if (!resumeInvoiceNumber) return;
+
+      try {
+        const res = await fetch(
+          `/api/invoices/preview-meta/invoice-preview-cache/${resumeInvoiceNumber}`
+        );
+        const data = await res.json();
+
+        if (!res.ok || !data.invoiceNumber) return;
+
+        setInvoiceNumber(data.invoiceNumber);
+        setIssueDate(data.issueDate);
+        setDueDate(data.dueDate);
+        setExecutionTiming(data.executionTiming);
+        setBillTo(data.billTo);
+        setSelectedProject(data.project || { projectId: null, title: '' });
+        setMilestones(data.milestones || []);
+        setNotes(data.notes || '');
+
+        console.log('✅ Hydrated invoice from preview cache');
+      } catch (err) {
+        console.error('❌ Failed to hydrate from preview cache:', err);
+      }
+    };
+
+    if (isResumeMode && resumeInvoiceNumber) {
+      hydrateFromPreview();
+    }
+  }, [isResumeMode, resumeInvoiceNumber]);
+
+  // Only generate invoice number if not resuming
   useEffect(() => {
     const fetchInvoiceNumber = async () => {
+      if (isResumeMode && resumeInvoiceNumber) return;
+
       try {
         const res = await fetch('/api/dashboard/invoice-meta/generate-number');
         const data = await res.json();
@@ -48,41 +86,40 @@ export default function CreateInvoicePage() {
     };
 
     fetchInvoiceNumber();
-  }, []);
+  }, [isResumeMode, resumeInvoiceNumber]);
 
   useEffect(() => {
-  const now = new Date().toISOString();
+    const now = new Date().toISOString();
 
-  if (executionTiming === 'immediate') {
-    setIssueDate(now);
-    setDueDate(now);
-  } else if (executionTiming === 'on-completion') {
-    const nextWeek = new Date();
-    nextWeek.setDate(nextWeek.getDate() + 7);
-    setIssueDate(now);
-    setDueDate(nextWeek.toISOString());
-  } else if (executionTiming === 'custom') {
-    setIssueDate(now); // dueDate set manually via Calendar
-  } else if (!isNaN(Date.parse(executionTiming))) {
-    // This is a custom ISO date
-    setIssueDate(now); // ← Only update issueDate
-    setDueDate(new Date(executionTiming).toISOString()); // ← Assign custom date to dueDate
-  }
-}, [executionTiming]);
+    if (executionTiming === 'immediate') {
+      setIssueDate(now);
+      setDueDate(now);
+    } else if (executionTiming === 'on-completion') {
+      const nextWeek = new Date();
+      nextWeek.setDate(nextWeek.getDate() + 7);
+      setIssueDate(now);
+      setDueDate(nextWeek.toISOString());
+    } else if (executionTiming === 'custom') {
+      setIssueDate(now);
+    } else if (!isNaN(Date.parse(executionTiming))) {
+      setIssueDate(now);
+      setDueDate(new Date(executionTiming).toISOString());
+    }
+  }, [executionTiming]);
 
   const updateMilestone = (
-  id: number,
-  field: 'title' | 'description' | 'rate',
-  value: string | number
-) => {
-  setMilestones((prev) =>
-    prev.map((m) => (m.id === id ? { ...m, [field]: value } : m))
-  );
-};
+    id: number,
+    field: 'title' | 'description' | 'rate',
+    value: string | number
+  ) => {
+    setMilestones((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, [field]: value } : m))
+    );
+  };
 
-const removeMilestone = (id: number) => {
-  setMilestones((prev) => prev.filter((m) => m.id !== id));
-};
+  const removeMilestone = (id: number) => {
+    setMilestones((prev) => prev.filter((m) => m.id !== id));
+  };
 
   const addMilestone = () => {
     const newId =
@@ -108,8 +145,6 @@ const removeMilestone = (id: number) => {
   };
 
   const handleSendInvoice = async () => {
-    console.log('📤 Sending Invoice:', invoicePayload);
-
     try {
       const res = await fetch(
         '/api/freelancer-dashboard/projects-and-invoices/create-invoice',
@@ -121,8 +156,6 @@ const removeMilestone = (id: number) => {
       );
 
       const result = await res.json();
-      console.log('✅ Invoice sent response:', result);
-
       if (result.invoiceNumber) {
         router.push(`/freelancer-dashboard/preview-invoice/${result.invoiceNumber}`);
       }
@@ -132,8 +165,6 @@ const removeMilestone = (id: number) => {
   };
 
   const handleSaveDraft = async () => {
-    console.log('💾 Saving Draft:', invoicePayload);
-
     try {
       const res = await fetch(
         '/api/freelancer-dashboard/projects-and-invoices/save-draft',
@@ -152,23 +183,6 @@ const removeMilestone = (id: number) => {
   };
 
   const handlePreviewInvoice = async () => {
-    console.log('🟧 handlePreviewInvoice triggered');
-
-    const previewPayload = {
-      invoiceNumber,
-      issueDate,
-      dueDate,
-      executionTiming,
-      billTo,
-      project: selectedProject,
-      milestones,
-      total,
-      notes,
-      freelancerId: session?.user?.id,
-    };
-
-    console.log('📦 Preview Payload:', previewPayload);
-
     if (!invoiceNumber) {
       alert('Please wait — invoice number is still generating.');
       return;
@@ -180,14 +194,15 @@ const removeMilestone = (id: number) => {
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(previewPayload),
+          body: JSON.stringify(invoicePayload),
         }
       );
 
       if (!res.ok) throw new Error('Failed to store preview');
 
-      console.log('✅ Preview stored successfully');
-      router.push(`/freelancer-dashboard/preview-invoice/${invoiceNumber}`);
+      router.push(
+        `/freelancer-dashboard/preview-invoice/${invoiceNumber}?pageState=resume`
+      );
     } catch (err) {
       console.error('❌ Error generating preview:', err);
     }

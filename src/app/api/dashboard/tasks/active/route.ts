@@ -1,0 +1,62 @@
+// src/app/api/dashboard/tasks/active/route.ts
+
+import { NextResponse } from 'next/server';
+import path from 'path';
+import { readFile } from 'fs/promises';
+import { calculateTaskPriority } from '@/lib/task-priority.util';
+
+const TASKS_PATH = path.join(process.cwd(), 'data', 'project-tasks.json');
+
+function isSameDay(date1: Date, date2: Date) {
+  return date1.toDateString() === date2.toDateString();
+}
+
+export async function GET() {
+  try {
+    const file = await readFile(TASKS_PATH, 'utf-8');
+    const projects = JSON.parse(file);
+
+    const today = new Date();
+    const endOfWeek = new Date();
+    endOfWeek.setDate(today.getDate() + 7);
+
+    const result = {
+      today: [] as any[],
+      thisWeek: [] as any[],
+      awaitingReview: [] as any[],
+    };
+
+    for (const project of projects) {
+      const { projectId, title: projectTitle, logoUrl, tasks } = project;
+
+      for (const task of tasks) {
+        if (task.completed) continue;
+
+        const dueDate = new Date(task.dueDate);
+        const enrichedTask = {
+          ...task,
+          projectId,
+          projectTitle,
+          logoUrl,
+        };
+
+        if (task.status === 'In review') {
+          result.awaitingReview.push(enrichedTask);
+        } else if (isSameDay(dueDate, today)) {
+          enrichedTask.priorityScore = calculateTaskPriority(task);
+          result.today.push(enrichedTask);
+        } else if (dueDate > today && dueDate <= endOfWeek) {
+          result.thisWeek.push(enrichedTask);
+        }
+      }
+    }
+
+    // Sort today's tasks by priority
+    result.today.sort((a, b) => b.priorityScore - a.priorityScore);
+
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error('Failed to load tasks:', error);
+    return NextResponse.json({ error: 'Failed to load active tasks' }, { status: 500 });
+  }
+}

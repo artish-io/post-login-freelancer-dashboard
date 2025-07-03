@@ -2,8 +2,11 @@
   {
     "projectId": 301,
     "title": "Lagos Parks Services website re-design",
-    "logoUrl": "/icons/lagos-parks-logo.png",
-    "typeTags": ["Brand Design", "Content Design"],
+    "organizationId": 1,
+    "typeTags": [
+      "Brand Design",
+      "Content Design"
+    ],
     "tasks": [
       {
         "id": 1,
@@ -11,7 +14,13 @@
         "status": "Approved",
         "completed": true,
         "order": 1,
-        "link": "https://figma.com/file/color-palette-link"
+        "link": "https://figma.com/file/color-palette-link",
+        "dueDate": "2025-07-02T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create a fresh color scheme aligned with the brand’s visual identity."
       },
       {
         "id": 2,
@@ -19,119 +28,169 @@
         "status": "Ongoing",
         "completed": false,
         "order": 2,
-        "link": "https://figma.com/file/hero-section-link"
-      },
-      {
-        "id": 3,
-        "title": "10 year anniversary graphic assets",
-        "status": "Ongoing",
-        "completed": false,
-        "order": 3,
-        "link": "https://figma.com/file/anniversary-assets-link"
-      },
-      {
-        "id": 4,
-        "title": "Featured blog content transfer",
-        "status": "Ongoing",
-        "completed": false,
-        "order": 4,
-        "link": "https://docs.google.com/document/blog-content-transfer"
-      },
-      {
-        "id": 5,
-        "title": "Final web design and project handoff",
-        "status": "Ongoing",
-        "completed": false,
-        "order": 5,
-        "link": "https://figma.com/file/final-web-design-handoff"
+        "link": "https://figma.com/file/hero-section-link",
+        "dueDate": "2025-07-03T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 1,
+        "pushedBack": true,
+        "version": 2,
+        "description": "Design the landing page’s hero section with clear messaging and CTAs."
       }
     ]
   },
   {
     "projectId": 302,
-    "title": "Media channel branding",
-    "logoUrl": "/icons/media-channel-logo.png",
-    "typeTags": ["Brand Design", "Motion Design"],
+    "title": "Urbana channel brand refresh",
+    "organizationId": 2,
+    "typeTags": [
+      "Motion Design",
+      "Brand Strategy"
+    ],
     "tasks": [
       {
-        "id": 4,
-        "title": "Brand concept iteration",
+        "id": 3,
+        "title": "Motion intro animation",
         "status": "In review",
         "completed": false,
         "order": 1,
-        "link": "https://figma.com/file/brand-concept"
+        "link": "https://figma.com/file/motion-intro",
+        "dueDate": "2025-07-04T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 2,
+        "pushedBack": true,
+        "version": 1,
+        "description": "Animate a branded motion intro for Urbana’s digital presence."
       },
       {
-        "id": 5,
-        "title": "Motion graphics intro",
+        "id": 4,
+        "title": "Visual identity lockup",
         "status": "Approved",
         "completed": true,
         "order": 2,
-        "link": "https://figma.com/file/motion-intro"
-      },
-      {
-        "id": 6,
-        "title": "UX Research for iOS",
-        "status": "In review",
-        "completed": false,
-        "order": 3,
-        "link": "https://figma.com/file/ux-research-ios"
-      },
-      {
-        "id": 7,
-        "title": "Content Development for promo",
-        "status": "Approved",
-        "completed": true,
-        "order": 4,
-        "link": "https://docs.google.com/document/promo-content"
-      },
-      {
-        "id": 8,
-        "title": "Welcome Brochure graphic assets",
-        "status": "Ongoing",
-        "completed": false,
-        "order": 5,
-        "link": "https://figma.com/file/brochure-assets"
-      },
-      {
-        "id": 9,
-        "title": "Proofread final technical documentation",
-        "status": "In review",
-        "completed": false,
-        "order": 6,
-        "link": "https://docs.google.com/document/tech-doc"
+        "link": "https://figma.com/file/visual-id",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Consolidate logo and visual identity assets into a consistent lockup."
       }
     ]
   },
   {
     "projectId": 303,
-    "title": "Corlax iOS app development",
-    "logoUrl": "/icons/corlax-ios-logo.png",
-    "typeTags": ["Mobile Design", "Engineering"],
+    "title": "Corlax iOS app UX",
+    "organizationId": 3,
+    "typeTags": [
+      "Mobile Design",
+      "UX Research"
+    ],
     "tasks": [
       {
-        "id": 6,
-        "title": "Login & onboarding flow",
+        "id": 5,
+        "title": "Login & signup flows",
         "status": "Approved",
         "completed": true,
         "order": 1,
-        "link": "https://figma.com/file/login-onboarding"
+        "link": "https://figma.com/file/login-flow",
+        "dueDate": "2025-07-06T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design intuitive login and signup flows for the iOS app."
       },
       {
-        "id": 7,
-        "title": "iOS testing & deployment",
-        "status": "Approved",
-        "completed": true,
+        "id": 6,
+        "title": "Scroll gestures & microinteractions",
+        "status": "Ongoing",
+        "completed": false,
         "order": 2,
-        "link": "https://figma.com/file/ios-testing"
+        "link": "https://figma.com/file/scroll-gestures",
+        "dueDate": "2025-07-07T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 1,
+        "pushedBack": true,
+        "version": 2,
+        "description": "Prototype scroll interactions and subtle animations for mobile UI."
+      }
+    ]
+  },
+  {
+    "projectId": 304,
+    "title": "Zynate events brand toolkit",
+    "organizationId": 4,
+    "typeTags": [
+      "Print Design",
+      "Events"
+    ],
+    "tasks": [
+      {
+        "id": 7,
+        "title": "Design event templates",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 1,
+        "link": "https://figma.com/file/event-templates",
+        "dueDate": "2025-07-08T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design reusable templates for event promotional materials."
+      },
+      {
+        "id": 8,
+        "title": "Print-ready social media assets",
+        "status": "In review",
+        "completed": false,
+        "order": 2,
+        "link": "https://figma.com/file/social-assets",
+        "dueDate": "2025-07-09T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": true,
+        "version": 1,
+        "description": "Prepare print-ready social assets optimized for various platforms."
+      }
+    ]
+  },
+  {
+    "projectId": 305,
+    "title": "HERO research launch collateral",
+    "organizationId": 5,
+    "typeTags": [
+      "Content Strategy",
+      "Editorial Design"
+    ],
+    "tasks": [
+      {
+        "id": 9,
+        "title": "Write product documentation",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 1,
+        "link": "https://docs.google.com/document/product-docs",
+        "dueDate": "2025-07-10T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 3,
+        "pushedBack": true,
+        "version": 1,
+        "description": "Document the product’s features, usage guidelines, and workflows."
       },
       {
         "id": 10,
-        "title": "Responsive scroll effect design",
+        "title": "Internal training slides",
         "status": "Approved",
         "completed": true,
-        "order": 3,
-        "link": "https://figma.com/file/scroll-effect"
+        "order": 2,
+        "link": "https://figma.com/file/training-slides",
+        "dueDate": "2025-07-11T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create internal slides for onboarding and training sessions."
       }
     ]
   }

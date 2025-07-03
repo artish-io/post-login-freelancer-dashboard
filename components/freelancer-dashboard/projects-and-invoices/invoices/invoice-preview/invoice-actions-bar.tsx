@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '../../../../ui/button';
-import { Download, Save, Send } from 'lucide-react';
+import { Download, Send, CornerUpLeft } from 'lucide-react';
 
 type Props = {
   invoiceData: any;
@@ -11,28 +11,17 @@ type Props = {
 };
 
 export default function InvoiceActionsBar({ invoiceData, onSend, onDownload }: Props) {
-  const [isSaving, setIsSaving] = useState(false);
+  const router = useRouter();
 
-  const handleSaveDraft = async () => {
-    setIsSaving(true);
-    try {
-      const res = await fetch('/api/invoices/save-draft', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(invoiceData),
-      });
-      const result = await res.json();
-
-      if (!res.ok) {
-        console.error('❌ Save draft failed:', result?.error || result);
-      } else {
-        console.log('✅ Draft saved:', result);
-      }
-    } catch (err) {
-      console.error('❌ Error saving draft:', err);
-    } finally {
-      setIsSaving(false);
+  const handleBack = () => {
+    if (!invoiceData?.invoiceNumber) {
+      console.warn('⚠️ Missing invoice number for back navigation');
+      return;
     }
+
+    router.push(
+      `/freelancer-dashboard/projects-and-invoices/create-invoice?pageState=resume&invoiceNumber=${invoiceData.invoiceNumber}`
+    );
   };
 
   return (
@@ -49,16 +38,15 @@ export default function InvoiceActionsBar({ invoiceData, onSend, onDownload }: P
         </Button>
       </div>
 
-      {/* Compact Save Draft & Download buttons */}
+      {/* Back & Download buttons */}
       <div className="flex flex-row gap-3 w-full">
         <Button
-          onClick={handleSaveDraft}
+          onClick={handleBack}
           variant="secondary"
           className="w-1/2 px-3 py-2 text-xs flex items-center justify-center gap-1 rounded-xl"
-          disabled={isSaving}
         >
-          <Save className="w-4 h-4" />
-          {isSaving ? 'Saving...' : 'Save'}
+          <CornerUpLeft className="w-4 h-4" />
+          Back
         </Button>
 
         <Button
