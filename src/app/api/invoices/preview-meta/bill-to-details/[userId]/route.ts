@@ -9,10 +9,11 @@ const ORGS_PATH = path.join(process.cwd(), 'data', 'organizations.json');
 
 export async function GET(
   _req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
-    const userId = parseInt(params.userId);
+    const { userId: userIdParam } = await params;
+    const userId = parseInt(userIdParam);
     if (isNaN(userId)) {
       return NextResponse.json({ error: 'Invalid userId' }, { status: 400 });
     }

@@ -43,9 +43,10 @@ interface Project {
 
 export async function GET(
   _req: Request,
-  { params }: { params: { freelancerId: string } }
+  { params }: { params: Promise<{ freelancerId: string }> }
 ) {
-  const freelancerId = Number(params.freelancerId);
+  const { freelancerId: freelancerIdParam } = await params;
+  const freelancerId = Number(freelancerIdParam);
 
   try {
     const [usersRaw, orgsRaw, projectsRaw] = await Promise.all([

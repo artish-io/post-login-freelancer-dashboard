@@ -6,14 +6,15 @@ const filePath = path.join(process.cwd(), 'data', 'organizations.json');
 
 export async function GET(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const data = await readFile(filePath, 'utf-8');
     const organizations = JSON.parse(data);
 
     const organization = organizations.find(
-      (org: any) => String(org.id) === params.id
+      (org: any) => String(org.id) === id
     );
 
     if (!organization) {

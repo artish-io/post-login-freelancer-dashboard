@@ -1,5 +1,6 @@
-import { TaskStatus } from '@/lib/projects/tasks/types';
 'use client';
+
+import { TaskStatus } from '@/lib/projects/tasks/types';
 
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';

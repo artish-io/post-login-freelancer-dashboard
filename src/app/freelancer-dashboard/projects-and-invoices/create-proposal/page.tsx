@@ -84,7 +84,10 @@ export default function CreateProposalPage() {
 
   // 💰 Milestone + Upfront Validation
   useEffect(() => {
-    if (paymentCycle !== 'Fixed Amount') return;
+    if (paymentCycle !== 'Fixed Amount') {
+      setMismatchError(null); // reset error if switching away from Fixed
+      return;
+    }
 
     const bid = Number(totalAmount) || 0;
     const deposit = Number(upfrontPayment) || 0;

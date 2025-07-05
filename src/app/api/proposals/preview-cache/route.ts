@@ -54,7 +54,7 @@ export async function POST(req: Request) {
     } catch {}
 
     // Merge updates
-    let updatedDraft: DraftUpdate = {
+    const updatedDraft: DraftUpdate = {
       ...existing,
       ...body,
       maxHours:

@@ -2559,5 +2559,27 @@
     "total": 1000,
     "notes": "",
     "freelancerId": "31"
+  },
+  {
+    "invoiceNumber": "MF-G7IS0",
+    "issueDate": "2025-07-03T13:09:45.302Z",
+    "dueDate": "2025-07-03T13:09:45.302Z",
+    "executionTiming": "immediate",
+    "billTo": "matte.hannery@example.com",
+    "project": {
+      "projectId": 301,
+      "title": "Lagos Parks Services website re-design"
+    },
+    "milestones": [
+      {
+        "id": 1751548165635,
+        "title": "Ruka is funny",
+        "description": "I love lagos",
+        "rate": 5000
+      }
+    ],
+    "total": 5000,
+    "notes": "",
+    "freelancerId": "31"
   }
 ]

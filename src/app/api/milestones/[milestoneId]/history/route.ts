@@ -6,9 +6,9 @@ import { readFile } from 'fs/promises';
 
 export async function GET(
   _req: Request,
-  { params }: { params: { milestoneId: string } }
+  { params }: { params: Promise<{ milestoneId: string }> }
 ) {
-  const { milestoneId } = params;
+  const { milestoneId } = await params;
 
   if (!milestoneId) {
     return NextResponse.json({ error: 'Missing milestone ID' }, { status: 400 });

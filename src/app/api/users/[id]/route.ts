@@ -6,12 +6,13 @@ const filePath = path.join(process.cwd(), 'data', 'users.json');
 
 export async function GET(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const data = await readFile(filePath, 'utf-8');
     const users = JSON.parse(data);
-    const user = users.find((u: any) => String(u.id) === params.id);
+    const user = users.find((u: any) => String(u.id) === id);
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -26,10 +27,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
     const updates = await request.json();
 
     const data = await readFile(filePath, 'utf-8');

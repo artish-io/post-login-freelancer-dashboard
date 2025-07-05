@@ -20,10 +20,10 @@ async function writeInvoices(invoices: Invoice[]) {
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { invoiceId: string } }
+  { params }: { params: Promise<{ invoiceId: string }> }
 ) {
   try {
-    const invoiceId = params.invoiceId;
+    const { invoiceId } = await params;
     const invoices = await readInvoices();
     const invoice = invoices.find(inv => inv.invoiceNumber === invoiceId);
 
@@ -40,10 +40,10 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { invoiceId: string } }
+  { params }: { params: Promise<{ invoiceId: string }> }
 ) {
   try {
-    const invoiceId = params.invoiceId;
+    const { invoiceId } = await params;
     const updatedInvoice = await request.json();
 
     const invoices = await readInvoices();
@@ -65,10 +65,10 @@ export async function PUT(
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: { invoiceId: string } }
+  { params }: { params: Promise<{ invoiceId: string }> }
 ) {
   try {
-    const invoiceId = params.invoiceId;
+    const { invoiceId } = await params;
 
     const invoices = await readInvoices();
     const index = invoices.findIndex(inv => inv.invoiceNumber === invoiceId);
