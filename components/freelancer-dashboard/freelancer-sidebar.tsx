@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useUnreadMessages } from '../../src/hooks/useUnreadMessages';
 
 const sidebarItems = [
-  { label: 'Home', icon: '/home-logo (sidebar).png', href: '#' },
+  { label: 'Home', icon: '/home-logo (sidebar).png', href: '/freelancer-dashboard' },
   { label: 'Explore Gigs', icon: '/explore-gigs-logo (sidebar).png', href: '#' },
   { label: 'Messages', icon: '/messages-logo (sidebar).png', href: '/freelancer-dashboard/messages' },
   { label: 'Gig Requests', icon: '/gig-requests-logo (sidebar).png', href: '#' },
@@ -17,60 +16,30 @@ const sidebarItems = [
   { label: 'Settings', icon: '/account-settings-logo (sidebar).png', href: '#' },
 ];
 
-export default function FreelancerSidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const { data: session } = useSession();
+interface FreelancerSidebarProps {
+  isMobileMenuOpen?: boolean;
+  onMobileMenuClose?: () => void;
+}
+
+export default function FreelancerSidebar({
+  isMobileMenuOpen = false,
+  onMobileMenuClose
+}: FreelancerSidebarProps = {}) {
   const pathname = usePathname();
-
-  useEffect(() => {
-    if (!session?.user?.id) return;
-
-    const fetchUnread = async () => {
-      try {
-        const res = await fetch(
-          `/api/dashboard/messages/count?userId=${session.user.id}`
-        );
-        const data = await res.json();
-        if (typeof data.unreadCount === "number") {
-          setUnreadCount(data.unreadCount);
-        }
-      } catch (err) {
-        console.error("[sidebar] Failed to fetch unread count:", err);
-      }
-    };
-
-    fetchUnread();
-    const interval = setInterval(fetchUnread, 15000);
-
-    return () => clearInterval(interval);
-  }, [session?.user?.id]);
+  const { unreadCount } = useUnreadMessages();
 
   return (
     <>
-      {/* Mobile toggle */}
-      <button
-        className="md:hidden fixed top-4 left-4 z-50 p-2 bg-black text-white rounded-md"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        ☰
-      </button>
-
-      {isOpen && (
+      {/* Mobile Overlay for small screens */}
+      {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 sm:hidden"
+          onClick={onMobileMenuClose}
         />
       )}
 
-      <aside
-        className={`
-          fixed top-0 left-0 h-screen w-60 bg-black text-white z-50 transform
-          transition-transform duration-300 ease-in-out
-          ${isOpen ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0 md:relative md:block
-        `}
-      >
+      {/* Desktop Sidebar (lg+) */}
+      <aside className="hidden lg:block fixed top-[80px] left-0 h-[calc(100vh-80px)] w-60 bg-black text-white z-40">
         <div className="px-6 pt-8 pb-10 flex flex-col gap-8">
           <nav className="flex flex-col gap-6">
             {sidebarItems.map((item) => {
@@ -94,13 +63,95 @@ export default function FreelancerSidebar() {
                       width={20}
                       height={20}
                     />
+                  </div>
+                  <span>
+                    {item.label}
                     {isMessages && unreadCount > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-pink-300 text-pink-900 rounded-full px-1.5 text-[10px] font-semibold md:hidden">
+                      <span className="ml-2 bg-pink-200 text-pink-800 text-[10px] font-semibold px-2 py-0.5 rounded-full">
                         {unreadCount}
                       </span>
                     )}
+                  </span>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </aside>
+
+      {/* Icon-Only Sidebar for large mobile (md-lg) */}
+      <aside className="hidden md:block lg:hidden fixed top-[80px] left-0 h-[calc(100vh-80px)] w-16 bg-black text-white z-40">
+        <div className="px-3 pt-8 pb-10 flex flex-col gap-8">
+          <nav className="flex flex-col gap-6">
+            {sidebarItems.map((item) => {
+              const isMessages = item.label === 'Messages';
+              const isActive = pathname.startsWith(item.href) && item.href !== '#';
+
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className={`flex items-center justify-center relative transition-all p-2 rounded-lg ${
+                    isActive
+                      ? 'text-white bg-pink-600'
+                      : 'text-pink-200 hover:text-white hover:bg-gray-800'
+                  }`}
+                  title={item.label}
+                >
+                  <div className="relative">
+                    <Image
+                      src={item.icon}
+                      alt={item.label}
+                      width={20}
+                      height={20}
+                    />
+                    {isMessages && unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-pink-300 text-pink-900 rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-semibold">
+                        {unreadCount > 9 ? '9+' : unreadCount}
+                      </span>
+                    )}
                   </div>
-                  <span className="md:inline hidden">
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </aside>
+
+      {/* Mobile Slide-out Menu for small screens (sm and below) */}
+      <aside
+        className={`
+          fixed top-0 left-0 h-screen w-60 bg-black text-white z-50 transform
+          transition-transform duration-300 ease-in-out sm:hidden
+          ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}
+        `}
+      >
+        <div className="px-6 pt-8 pb-10 flex flex-col gap-8">
+          <nav className="flex flex-col gap-6">
+            {sidebarItems.map((item) => {
+              const isMessages = item.label === 'Messages';
+              const isActive = pathname.startsWith(item.href) && item.href !== '#';
+
+              return (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  onClick={onMobileMenuClose}
+                  className={`flex items-center gap-3 text-sm relative transition-all ${
+                    isActive
+                      ? 'text-white font-semibold border-l-4 border-pink-300 pl-2'
+                      : 'text-pink-200 hover:text-white'
+                  }`}
+                >
+                  <div className="relative">
+                    <Image
+                      src={item.icon}
+                      alt={item.label}
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                  <span>
                     {item.label}
                     {isMessages && unreadCount > 0 && (
                       <span className="ml-2 bg-pink-200 text-pink-800 text-[10px] font-semibold px-2 py-0.5 rounded-full">

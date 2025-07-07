@@ -38,5 +38,21 @@
     "logo": "/logos/hero-research.png",
     "address": "22 Insights Blvd, Nairobi, Kenya",
     "contactPersonId": 36
+  },
+  {
+    "id": 6,
+    "name": "TechShowcase Productions",
+    "email": "sarah.c@techshowcase.com",
+    "logo": "/logos/techshowcase-logo.png",
+    "address": "45 Innovation Drive, San Francisco, CA, USA",
+    "contactPersonId": 37
+  },
+  {
+    "id": 7,
+    "name": "AccessFirst UX Consultancy",
+    "email": "m.torres@accessfirst.com",
+    "logo": "/logos/accessfirst-logo.png",
+    "address": "88 Inclusive Way, Austin, TX, USA",
+    "contactPersonId": 38
   }
 ]

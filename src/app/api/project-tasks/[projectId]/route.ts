@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       projectId: project.projectId,
       title: project.title,
+      dueDate: project.dueDate,
       tasks: project.tasks
     });
   } catch (error) {

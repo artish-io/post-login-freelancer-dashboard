@@ -10,7 +10,18 @@ export default function FreelancerDashboardLayout({
   children: React.ReactNode;
 }) {
   const [mounted, setMounted] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   useEffect(() => setMounted(true), []);
+
+  const handleMobileMenuToggle = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleMobileMenuClose = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   if (!mounted) return null;
 
   return (
@@ -35,15 +46,21 @@ export default function FreelancerDashboardLayout({
       `}</style>
 
       <header className="sticky top-0 z-50 w-full bg-white shadow">
-        <TopNavbar />
+        <TopNavbar
+          isMobileMenuOpen={isMobileMenuOpen}
+          onMobileMenuToggle={handleMobileMenuToggle}
+        />
       </header>
 
       <div className="flex flex-1">
-        <aside className="hidden md:block fixed top-[80px] left-0 h-[calc(100vh-80px)] w-60 z-40">
-          <FreelancerSidebar />
-        </aside>
+        {/* Responsive Sidebar */}
+        <FreelancerSidebar
+          isMobileMenuOpen={isMobileMenuOpen}
+          onMobileMenuClose={handleMobileMenuClose}
+        />
 
-        <div className="flex-1 flex flex-col bg-gray-50 ml-0 md:ml-60">
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col bg-gray-50 ml-0 md:ml-16 lg:ml-60">
           {children}
         </div>
       </div>

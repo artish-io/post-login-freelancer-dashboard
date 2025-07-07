@@ -1,11 +1,14 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { X, ArrowLeft, Link2 } from 'lucide-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
 import type { TaskStatus } from '@/lib/projects/tasks/types';
+import useSubmitTask from '@/lib/hooks/useSubmitTask';
+import { checkTaskSubmissionRules, type TaskSubmissionRule } from '@/lib/task-submission-rules';
+import { checkAndExecuteAutoMovement } from '@/lib/auto-task-movement';
 
 type Props = {
   isOpen: boolean;
@@ -21,7 +24,9 @@ type Props = {
   workingFileUrl?: string;
   columnId: 'todo' | 'upcoming' | 'review';
   status: TaskStatus;
-  onSubmit: () => void;
+  projectId: number;
+  taskId: number;
+  onTaskSubmitted?: () => void;
 };
 
 export default function TaskDetailsModal({
@@ -38,8 +43,15 @@ export default function TaskDetailsModal({
   workingFileUrl,
   columnId,
   status,
-  onSubmit,
+  projectId,
+  taskId,
+  onTaskSubmitted,
 }: Props) {
+  const [referenceUrl, setReferenceUrl] = useState('');
+  const [submissionRule, setSubmissionRule] = useState<TaskSubmissionRule>({ canSubmit: true });
+  const [checkingRules, setCheckingRules] = useState(false);
+  const { submitTask, loading, error, success } = useSubmitTask();
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -52,9 +64,45 @@ export default function TaskDetailsModal({
     };
   }, [isOpen]);
 
+  // Check submission rules when modal opens or column changes
+  useEffect(() => {
+    if (isOpen) {
+      setCheckingRules(true);
+      checkTaskSubmissionRules(taskId, projectId, columnId)
+        .then(setSubmissionRule)
+        .finally(() => setCheckingRules(false));
+    }
+  }, [isOpen, taskId, projectId, columnId]);
+
   if (!isOpen) return null;
 
   const isWritable = columnId !== 'review' && status !== 'Approved';
+
+  const handleSubmit = async () => {
+    if (!referenceUrl) return;
+
+    // Check submission rules before submitting
+    if (!submissionRule.canSubmit) {
+      alert(submissionRule.reason || 'Task cannot be submitted at this time.');
+      return;
+    }
+
+    await submitTask({ projectId, taskId, referenceUrl });
+
+    // Trigger auto-movement after successful submission
+    try {
+      const movementResult = await checkAndExecuteAutoMovement();
+      if (movementResult.moved) {
+        console.log('🔄 Auto-movement executed:', movementResult.message);
+        console.log('📋 Moved tasks:', movementResult.movedTasks);
+      }
+    } catch (error) {
+      console.error('Error in auto-movement:', error);
+    }
+
+    onTaskSubmitted?.(); // Trigger refresh
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 bg-black/30 flex items-end sm:items-center justify-center px-2 sm:px-4">
@@ -155,6 +203,8 @@ export default function TaskDetailsModal({
             <input
               type="url"
               placeholder="Link to reference file"
+              value={referenceUrl}
+              onChange={(e) => setReferenceUrl(e.target.value)}
               className="flex-1 outline-none text-sm bg-transparent placeholder-gray-400"
             />
             <Link2 className="w-4 h-4 text-gray-400 shrink-0" />
@@ -163,12 +213,34 @@ export default function TaskDetailsModal({
 
         {/* CTA or Lock Message */}
         {isWritable ? (
-          <button
-            onClick={onSubmit}
-            className="w-full bg-black text-white rounded-xl py-3 text-sm font-medium hover:opacity-90 transition"
-          >
-            Submit for Review
-          </button>
+          <>
+            {/* Submission Rules Warning */}
+            {!submissionRule.canSubmit && (
+              <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-xs text-yellow-800">{submissionRule.reason}</p>
+              </div>
+            )}
+
+            <button
+              onClick={handleSubmit}
+              className={clsx(
+                "w-full rounded-xl py-3 text-sm font-medium transition",
+                submissionRule.canSubmit && !loading
+                  ? "bg-black text-white hover:opacity-90"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              )}
+              disabled={loading || checkingRules || !submissionRule.canSubmit}
+            >
+              {checkingRules
+                ? "Checking submission rules..."
+                : loading
+                ? "Submitting..."
+                : "Submit for Review"
+              }
+            </button>
+            {error && <p className="text-xs text-red-500 mt-2">{error}</p>}
+            {success && <p className="text-xs text-green-600 mt-2">Task submitted successfully.</p>}
+          </>
         ) : status === 'Approved' ? (
           <p className="text-xs text-center text-gray-500 italic">
             This task has been approved by the project commissioner. No further edits can be made.

@@ -77,11 +77,17 @@ export default function MessageThread({ threadId }: Props) {
         }
 
         // PATCH to mark all messages in thread as read
-        await fetch(`/api/dashboard/messages/${threadId}/mark-read`, {
+        const markReadRes = await fetch(`/api/dashboard/messages/${threadId}/mark-read`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId }),
         });
+
+        // Trigger unread count refresh if marking as read was successful
+        if (markReadRes.ok) {
+          console.log('📧 Messages marked as read, refreshing unread count');
+          window.dispatchEvent(new CustomEvent('refreshUnreadCount'));
+        }
       } catch (err) {
         console.error('[message-thread] Failed to load or mark messages:', err);
       } finally {

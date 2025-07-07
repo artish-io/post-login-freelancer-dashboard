@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import clsx from "clsx";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { useReadNotes } from "../../src/hooks/useReadNotes";
 
 type Note = {
   date: string;
@@ -10,6 +12,7 @@ type Note = {
 };
 
 type Task = {
+  taskId: number;
   taskTitle: string;
   notes: Note[];
 };
@@ -25,6 +28,7 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
   const [logoUrl, setLogoUrl] = useState("/icons/lagos-parks-logo.png");
   const [typeTags, setTypeTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const { markMultipleAsRead } = useReadNotes();
 
   useEffect(() => {
     async function fetchProjectDetails() {
@@ -47,11 +51,69 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
     fetchProjectDetails();
   }, [projectId]);
 
+  // Mark all notes as read when the expansion opens and tasks are loaded
+  useEffect(() => {
+    if (!loading && tasks.length > 0) {
+      const noteIds: string[] = [];
+
+      tasks.forEach((task) => {
+        task.notes.forEach((note) => {
+          // Create the same noteId format used in notes-tab.tsx: `${taskId}-${date}`
+          const noteId = `${task.taskId}-${note.date}`;
+          noteIds.push(noteId);
+        });
+      });
+
+      // Mark all notes as read in one batch operation
+      if (noteIds.length > 0) {
+        markMultipleAsRead(noteIds);
+        console.log(`📖 Marked ${noteIds.length} notes as read for project ${projectId}`);
+      }
+    }
+  }, [loading, tasks, markMultipleAsRead, projectId]);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-      <div
-        className="relative bg-white rounded-2xl w-full max-w-3xl mx-auto pointer-events-auto shadow-xl"
+    <motion.div
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center pointer-events-none"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Backdrop */}
+      <motion.div
+        className="absolute inset-0 bg-black/50"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <motion.div
+        className="relative bg-white rounded-t-2xl md:rounded-2xl w-full max-w-3xl mx-auto pointer-events-auto shadow-xl"
         style={{ maxHeight: "90vh", overflowY: "auto" }}
+        initial={{
+          y: "100%",
+          opacity: 0,
+          scale: 0.95
+        }}
+        animate={{
+          y: 0,
+          opacity: 1,
+          scale: 1
+        }}
+        exit={{
+          y: "100%",
+          opacity: 0,
+          scale: 0.95
+        }}
+        transition={{
+          type: "spring",
+          damping: 25,
+          stiffness: 300,
+          duration: 0.4
+        }}
       >
         {/* Sticky Header */}
         <div className="sticky top-0 z-10 bg-white pt-8 pb-4 pl-8 pr-4 shadow-[rgba(0,0,0,0.05)_-2px_2px_10px]">
@@ -153,7 +215,7 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
             )}
           </ul>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

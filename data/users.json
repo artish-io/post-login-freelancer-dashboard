@@ -327,5 +327,25 @@
   "email": "felix.damini@example.com",
   "address": "36 Remote Lane, Virtual City, Country",
   "organizationId": 5
+},
+{
+  "id": 37,
+  "name": "Sarah Chen",
+  "title": "Marketing Director",
+  "avatar": "/avatars/sarah.png",
+  "type": "commissioner",
+  "email": "sarah.c@techshowcase.com",
+  "address": "45 Innovation Drive, San Francisco, CA, USA",
+  "organizationId": 6
+},
+{
+  "id": 38,
+  "name": "Dr. Michael Torres",
+  "title": "Research Director",
+  "avatar": "/avatars/michael.png",
+  "type": "commissioner",
+  "email": "m.torres@accessfirst.com",
+  "address": "88 Inclusive Way, Austin, TX, USA",
+  "organizationId": 7
 }
 ]

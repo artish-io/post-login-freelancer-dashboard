@@ -4,8 +4,17 @@ import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import NotificationDropdown from './notification-dropdown';
+import MobileMenuToggle from './mobile-menu-toggle';
 
-export default function TopNavbar() {
+interface TopNavbarProps {
+  isMobileMenuOpen?: boolean;
+  onMobileMenuToggle?: () => void;
+}
+
+export default function TopNavbar({
+  isMobileMenuOpen = false,
+  onMobileMenuToggle
+}: TopNavbarProps = {}) {
   const { data: session } = useSession();
 
   const [avatar, setAvatar] = useState('/avatar.png');
@@ -31,15 +40,26 @@ export default function TopNavbar() {
 
   return (
     <div className="flex items-center justify-between w-full px-6 py-5 bg-white border-b border-gray-200">
-      {/* Logo */}
-      <div className="pl-2">
-        <Image
-          src="/artish-logo.png"
-          alt="Artish Logo"
-          width={42}
-          height={42}
-          className="rounded-full shadow-sm hover:shadow-md transition"
-        />
+      {/* Left side: Mobile menu toggle + Logo */}
+      <div className="flex items-center gap-4">
+        {/* Mobile Menu Toggle (only on small screens) */}
+        {onMobileMenuToggle && (
+          <MobileMenuToggle
+            isOpen={isMobileMenuOpen}
+            onToggle={onMobileMenuToggle}
+          />
+        )}
+
+        {/* Logo */}
+        <div className="pl-2">
+          <Image
+            src="/artish-logo.png"
+            alt="Artish Logo"
+            width={42}
+            height={42}
+            className="rounded-full shadow-sm hover:shadow-md transition"
+          />
+        </div>
       </div>
 
       {/* Icons */}

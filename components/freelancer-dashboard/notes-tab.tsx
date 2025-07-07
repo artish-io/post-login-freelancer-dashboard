@@ -19,6 +19,7 @@ type NotesTabProps = {
 export function NotesTab({ projectIds, onExpand }: NotesTabProps) {
   const [data, setData] = useState<NoteItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [forceUpdate, setForceUpdate] = useState(0);
   const { isNoteRead, markAsRead } = useReadNotes();
 
   useEffect(() => {
@@ -44,6 +45,16 @@ export function NotesTab({ projectIds, onExpand }: NotesTabProps) {
     }
   }, [projectIds]);
 
+  // Listen for read state changes and force re-render
+  useEffect(() => {
+    const handleReadNotesChange = () => {
+      setForceUpdate(prev => prev + 1);
+    };
+
+    window.addEventListener('readNotesChanged', handleReadNotesChange);
+    return () => window.removeEventListener('readNotesChanged', handleReadNotesChange);
+  }, []);
+
   if (loading) return <p className="text-sm text-gray-500">Loading notes...</p>;
   if (!data.length) return <p className="text-sm text-gray-500">No notes yet.</p>;
 
@@ -58,6 +69,16 @@ export function NotesTab({ projectIds, onExpand }: NotesTabProps) {
   )
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
+
+  // Debug: Log read states on render
+  console.log('📖 Notes Tab Render - Read States:',
+    latestNotesByTask.map(note => ({
+      taskId: note.taskId,
+      date: note.date,
+      noteId: `${note.taskId}-${note.date}`,
+      isRead: isNoteRead(`${note.taskId}-${note.date}`)
+    }))
+  );
 
   return (
     <ul className="space-y-4">

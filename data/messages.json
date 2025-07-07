@@ -85,6 +85,36 @@
           "31": true,
           "32": true
         }
+      },
+      {
+        "messageId": "msg-1019",
+        "senderId": 32,
+        "timestamp": "2025-07-07T10:30:00Z",
+        "text": "Hey! Just wanted to check in on the project progress. How are the wireframes coming along?",
+        "read": {
+          "31": true,
+          "32": true
+        }
+      },
+      {
+        "messageId": "msg-1020",
+        "senderId": 32,
+        "timestamp": "2025-07-07T11:15:00Z",
+        "text": "Also, the client wants to schedule a review meeting for next week. Are you available Tuesday afternoon?",
+        "read": {
+          "31": true,
+          "32": true
+        }
+      },
+      {
+        "messageId": "msg-1021",
+        "senderId": 32,
+        "timestamp": "2025-07-07T14:45:00Z",
+        "text": "One more thing - they've updated the brand guidelines. I'll send you the new color palette shortly.",
+        "read": {
+          "31": true,
+          "32": true
+        }
       }
     ]
   },
@@ -130,6 +160,26 @@
         "senderId": 33,
         "timestamp": "2025-06-16T13:01:00Z",
         "text": "[Test] Unread message from contact 33.",
+        "read": {
+          "31": true,
+          "33": true
+        }
+      },
+      {
+        "messageId": "msg-1022",
+        "senderId": 33,
+        "timestamp": "2025-07-07T09:20:00Z",
+        "text": "Morning! Quick question about the design system components - should the buttons follow the new brand colors?",
+        "read": {
+          "31": true,
+          "33": true
+        }
+      },
+      {
+        "messageId": "msg-1023",
+        "senderId": 33,
+        "timestamp": "2025-07-07T12:30:00Z",
+        "text": "Also, I've finished the mobile mockups. Want to review them before I send to the client?",
         "read": {
           "31": true,
           "33": true
@@ -183,6 +233,16 @@
           "31": true,
           "34": true
         }
+      },
+      {
+        "messageId": "msg-1024",
+        "senderId": 34,
+        "timestamp": "2025-07-07T16:00:00Z",
+        "text": "Hi! The client loved the latest designs. They want to move forward with implementation. Can we schedule a kickoff call?",
+        "read": {
+          "31": false,
+          "34": true
+        }
       }
     ]
   },
@@ -222,6 +282,16 @@
           "31": true,
           "35": true
         }
+      },
+      {
+        "messageId": "msg-1025",
+        "senderId": 35,
+        "timestamp": "2025-07-07T17:30:00Z",
+        "text": "Payment processed successfully! Thanks for the quick turnaround on the invoice. Looking forward to the next project.",
+        "read": {
+          "31": false,
+          "35": true
+        }
       }
     ]
   },
@@ -259,6 +329,16 @@
         "text": "[Test] Unread message from contact 36.",
         "read": {
           "31": true,
+          "36": true
+        }
+      },
+      {
+        "messageId": "msg-1026",
+        "senderId": 36,
+        "timestamp": "2025-07-07T18:45:00Z",
+        "text": "Hey! Just confirming our meeting is still on for tomorrow at 4PM. I have some exciting updates to share about the project scope.",
+        "read": {
+          "31": false,
           "36": true
         }
       }

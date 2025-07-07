@@ -1,27 +1,18 @@
 {
-  "title": "Toye Sokunbi",
-  "summary": "nnkjwkkwewe",
+  "title": "",
+  "summary": "",
   "logoUrl": "/logos/corlax-ios-logo.png",
   "typeTags": [],
-  "milestones": [
-    {
-      "id": "83c5766c-27b3-4cd5-9963-2ed181c3f354",
-      "title": "",
-      "description": "wewe",
-      "startDate": "2025-07-18T04:00:00.000Z",
-      "endDate": "2025-07-31T04:00:00.000Z",
-      "amount": 0
-    }
-  ],
-  "paymentCycle": "Hourly Rate",
+  "milestones": [],
+  "paymentCycle": "Fixed Amount",
   "rate": 32,
-  "projectId": "TU-0GFVLY",
-  "totalBid": 4352,
-  "customStartDate": "2025-07-09T04:00:00.000Z",
+  "projectId": "TU-5MKU8Q",
+  "totalBid": 0,
+  "customStartDate": null,
   "endDate": "2025-07-31T04:00:00.000Z",
   "maxHours": 8,
   "depositRate": "12",
-  "expectedDurationDays": 22,
+  "expectedDurationDays": 25,
   "executionMethod": "completion",
   "startType": "Immediately",
   "contact": {

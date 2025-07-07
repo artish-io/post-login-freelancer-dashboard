@@ -2,6 +2,8 @@
 
 import { TaskStatus } from '@/lib/projects/tasks/types';
 
+
+
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
@@ -59,6 +61,8 @@ export default function TodayTasksPanel() {
   const [activeTab, setActiveTab] = useState<typeof tabs[number]>('All');
   const [expandedProject, setExpandedProject] = useState<number | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
+
+
 
   useEffect(() => {
     if (!session?.user?.id) return;
@@ -240,12 +244,14 @@ export default function TodayTasksPanel() {
       </div>
 
       {/* Expansion modal */}
-      {expandedProject !== null && (
-        <ProjectNotesExpansion
-          projectId={expandedProject}
-          onClose={() => setExpandedProject(null)}
-        />
-      )}
+      <AnimatePresence>
+        {expandedProject !== null && (
+          <ProjectNotesExpansion
+            projectId={expandedProject}
+            onClose={() => setExpandedProject(null)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Task Details Modal */}
       {enrichedTask && (
@@ -263,10 +269,8 @@ export default function TodayTasksPanel() {
           workingFileUrl={enrichedTask.workingFileUrl}
           columnId={enrichedTask.columnId}
           status={enrichedTask.status}
-          onSubmit={() => {
-            console.log('Submit task:', enrichedTask.id);
-            setActiveTaskId(null);
-          }}
+          projectId={enrichedTask.projectId}
+          taskId={enrichedTask.id}
         />
       )}
     </div>

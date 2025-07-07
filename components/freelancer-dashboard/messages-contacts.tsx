@@ -95,6 +95,10 @@ export default function MessagesContacts({
       // ✅ Only remove badge after server confirms write
       setUnreadThreads((prev) => prev.filter((id) => id !== threadId));
       console.log(`[messages-contacts] Marked thread ${threadId} as read`);
+
+      // Trigger unread count refresh
+      console.log('📧 Thread marked as read, refreshing unread count');
+      window.dispatchEvent(new CustomEvent('refreshUnreadCount'));
     } catch (err) {
       console.warn(`[messages-contacts] Failed to mark thread ${threadId} as read`, err);
     }

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import TaskDetailsModal from './task-details-modal';
 import { TaskStatus } from '@/lib/projects/tasks/types';
 
+
 type Props = {
   tag: string;
   title: string;
@@ -21,6 +22,9 @@ type Props = {
   briefUrl?: string;
   workingFileUrl?: string;
   columnId: 'todo' | 'upcoming' | 'review';
+  projectId?: number;
+  taskId?: number;
+  onTaskSubmitted?: () => void;
 };
 
 export default function TaskCard({
@@ -38,10 +42,11 @@ export default function TaskCard({
   briefUrl = '',
   workingFileUrl = '',
   columnId,
+  projectId = 1,
+  taskId = 1,
+  onTaskSubmitted,
 }: Props) {
   const [showDetails, setShowDetails] = useState(false);
-  const [avatarSrc, setAvatarSrc] = useState(avatarUrl || '/avatars/default-avatar.png');
-  const [logoSrc, setLogoSrc] = useState(projectLogo);
 
   return (
     <>
@@ -95,7 +100,7 @@ export default function TaskCard({
       <TaskDetailsModal
         isOpen={showDetails}
         onClose={() => setShowDetails(false)}
-        projectLogo={logoSrc}
+        projectLogo={projectLogo}
         projectTitle={projectTitle}
         projectTags={projectTags}
         taskIndex={taskIndex}
@@ -106,10 +111,9 @@ export default function TaskCard({
         workingFileUrl={workingFileUrl}
         columnId={columnId}
         status={status}
-        onSubmit={() => {
-          setShowDetails(false);
-          console.log('Submit for review!');
-        }}
+        projectId={projectId}
+        taskId={taskId}
+        onTaskSubmitted={onTaskSubmitted}
       />
     </>
   );

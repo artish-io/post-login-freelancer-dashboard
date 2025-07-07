@@ -22,3 +22,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
+
+export async function GET_ALL_PROJECTS() {
+  try {
+    const filePath = path.join(process.cwd(), 'data', 'projects.json');
+    const file = await readFile(filePath, 'utf-8');
+    const projects = JSON.parse(file);
+    return NextResponse.json(projects);
+  } catch (error) {
+    console.error('Error reading project data:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
