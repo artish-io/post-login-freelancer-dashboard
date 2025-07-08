@@ -20,7 +20,7 @@ export default function FreelancerDashboardPage() {
         {/* Left column: Main content */}
         <div className="order-2 lg:order-1 space-y-6">
           {/* Earnings shown first on mobile */}
-          <div className="lg:hidden">
+          <div className="lg:hidden flex justify-center">
             <EarningsCard />
           </div>
           <ProjectStatsRow />

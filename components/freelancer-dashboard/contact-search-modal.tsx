@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import users from '@/../data/users.json';
 
 type Contact = {
   id: number;
@@ -19,15 +18,31 @@ type ContactSearchModalProps = {
 export default function ContactSearchModal({ onSelect, disabled }: ContactSearchModalProps) {
   const [query, setQuery] = useState('');
   const [filtered, setFiltered] = useState<Contact[]>([]);
+  const [allUsers, setAllUsers] = useState<Contact[]>([]);
 
+  // Fetch users on component mount
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await fetch('/api/users');
+        const users = await res.json();
+        setAllUsers(users);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  // Filter users based on query
   useEffect(() => {
     const q = query.toLowerCase();
-    const result = users.filter(
+    const result = allUsers.filter(
       (user: Contact) =>
         user.name.toLowerCase().includes(q) || user.title.toLowerCase().includes(q)
     );
     setFiltered(result);
-  }, [query]);
+  }, [query, allUsers]);
 
   return (
     <div className="p-4">

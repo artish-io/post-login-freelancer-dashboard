@@ -7,7 +7,7 @@ import { useUnreadMessages } from '../../src/hooks/useUnreadMessages';
 
 const sidebarItems = [
   { label: 'Home', icon: '/home-logo (sidebar).png', href: '/freelancer-dashboard' },
-  { label: 'Explore Gigs', icon: '/explore-gigs-logo (sidebar).png', href: '#' },
+  { label: 'Explore Gigs', icon: '/explore-gigs-logo (sidebar).png', href: '/freelancer-dashboard/gigs/explore-gigs' },
   { label: 'Messages', icon: '/messages-logo (sidebar).png', href: '/freelancer-dashboard/messages' },
   { label: 'Gig Requests', icon: '/gig-requests-logo (sidebar).png', href: '#' },
   { label: 'Projects & Invoices', icon: '/projects-invoices-logo (sidebar).png', href: '/freelancer-dashboard/projects-and-invoices' },

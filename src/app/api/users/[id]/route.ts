@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readFile, writeFile } from 'fs/promises';
+import fs from 'fs';
 import path from 'path';
 
 const filePath = path.join(process.cwd(), 'data', 'users.json');
@@ -10,7 +10,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const data = await readFile(filePath, 'utf-8');
+    const data = fs.readFileSync(filePath, 'utf-8');
     const users = JSON.parse(data);
     const user = users.find((u: any) => String(u.id) === id);
 
@@ -33,7 +33,7 @@ export async function PUT(
     const { id } = await params;
     const updates = await request.json();
 
-    const data = await readFile(filePath, 'utf-8');
+    const data = fs.readFileSync(filePath, 'utf-8');
     const users = JSON.parse(data);
 
     const index = users.findIndex((u: any) => String(u.id) === id);
@@ -43,7 +43,7 @@ export async function PUT(
 
     users[index] = { ...users[index], ...updates };
 
-    await writeFile(filePath, JSON.stringify(users, null, 2));
+    fs.writeFileSync(filePath, JSON.stringify(users, null, 2));
 
     return NextResponse.json({ message: 'User updated successfully', user: users[index] });
   } catch (error) {
