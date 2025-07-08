@@ -14,7 +14,8 @@ export default function GigCard({ gig }: GigCardProps) {
     specializations = [],
     rate,
     location,
-    rating
+    rating,
+    avatar = '/avatar.png' // Default fallback avatar
   } = gig;
 
   const skillIcons: Record<string, string> = {
@@ -54,8 +55,8 @@ export default function GigCard({ gig }: GigCardProps) {
       {/* Top: Avatar + Name + Rating */}
       <div className="p-4 flex items-center space-x-4">
         <Image
-          src="/avatar.png"
-          alt="Avatar"
+          src={avatar}
+          alt={`${name} Avatar`}
           width={56}
           height={56}
           className="rounded-full border-4 border-pink-200"

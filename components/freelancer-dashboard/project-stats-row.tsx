@@ -20,6 +20,7 @@ export default function ProjectStatsRow() {
     tasksToday: 0,
     ongoingProjects: 0,
     upcomingDeadlines: 0,
+    overdueDeadlines: 0,
   });
 
   useEffect(() => {
@@ -41,13 +42,24 @@ export default function ProjectStatsRow() {
   const cards = [
     { label: 'Tasks for today', value: stats.tasksToday, bgColor: '#FCD5E3' },
     { label: 'Ongoing projects', value: stats.ongoingProjects, bgColor: '#F4DBE4' },
-    { label: 'Upcoming Deadlines', value: stats.upcomingDeadlines, bgColor: '#FFEEF4' },
+    {
+      label: 'Upcoming Deadlines',
+      value: stats.upcomingDeadlines,
+      bgColor: '#FFEEF4',
+      overdueCount: stats.overdueDeadlines
+    },
   ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-4 w-full justify-items-center">
       {cards.map((card, index) => (
-        <ProjectStatsCard key={index} label={card.label} value={card.value} bgColor={card.bgColor} />
+        <ProjectStatsCard
+          key={index}
+          label={card.label}
+          value={card.value}
+          bgColor={card.bgColor}
+          overdueCount={card.overdueCount}
+        />
       ))}
     </div>
   );

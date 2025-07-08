@@ -201,29 +201,46 @@ export default function GigDetailsExpansion({ gig, isOpen, onClose }: Props) {
 
       {/* Right */}
       <div className="w-full md:w-64 flex-shrink-0 p-4 bg-white border border-gray-200 rounded-2xl">
-        <div className="flex flex-col gap-3 text-sm">
-          <div className="flex justify-between">
+        <div className="flex flex-col gap-4 text-sm">
+          {/* Status */}
+          <div className="flex flex-col gap-2">
             <span className="text-[#eb1966] font-semibold">Status:</span>
-            <span className="flex items-center gap-2 text-green-600 font-semibold">
-              <span className="w-3 h-3 rounded-full bg-green-600 inline-block" />
+            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium w-fit flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
               Available
             </span>
           </div>
-          <div className="flex justify-between">
+
+          {/* Estimated Delivery Time */}
+          <div className="flex flex-col gap-2">
             <span className="text-[#eb1966] font-semibold">Estimated Delivery Time:</span>
-            <span className="text-gray-800">{deliveryTimeWeeks} Weeks</span>
+            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium w-fit">
+              {deliveryTimeWeeks} Weeks
+            </span>
           </div>
-          <div className="flex justify-between">
+
+          {/* Hours of Work */}
+          <div className="flex flex-col gap-2">
             <span className="text-[#eb1966] font-semibold">Hours of Work:</span>
-            <span className="text-gray-800">{estimatedHours} Hours</span>
+            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium w-fit">
+              {estimatedHours} Hours
+            </span>
           </div>
-          <div className="flex justify-between">
+
+          {/* Max Rate */}
+          <div className="flex flex-col gap-2">
             <span className="text-[#eb1966] font-semibold">Max Rate:</span>
-            <span className="text-gray-800">${hourlyRateMax * estimatedHours}</span>
+            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium w-fit">
+              ${hourlyRateMax * estimatedHours}
+            </span>
           </div>
-          <div className="flex justify-between">
+
+          {/* Min Rate */}
+          <div className="flex flex-col gap-2">
             <span className="text-[#eb1966] font-semibold">Min Rate:</span>
-            <span className="text-gray-800">${hourlyRateMin * estimatedHours}</span>
+            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium w-fit">
+              ${hourlyRateMin * estimatedHours}
+            </span>
           </div>
         </div>
       </div>
@@ -247,7 +264,7 @@ export default function GigDetailsExpansion({ gig, isOpen, onClose }: Props) {
                     className="rounded-md object-contain"
                   />
                 )}
-                <h2 className="text-xl font-thin" style={{ color: '#eb1966' }}>{title}</h2>
+                <h2 className="text-2xl font-normal" style={{ color: '#eb1966', fontWeight: '450' }}>{title}</h2>
               </div>
               <button
                 onClick={() => setShowApply(false)}

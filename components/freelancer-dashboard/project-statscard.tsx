@@ -8,6 +8,7 @@ export type ProjectStatsCardProps = {
   bgColor?: string;
   icon?: React.ReactNode;
   className?: string;
+  overdueCount?: number;
 };
 
 const ProjectStatsCard: React.FC<ProjectStatsCardProps> = ({
@@ -16,6 +17,7 @@ const ProjectStatsCard: React.FC<ProjectStatsCardProps> = ({
   bgColor = '#FCD5E3',
   icon,
   className = '',
+  overdueCount,
 }) => {
   return (
     <div
@@ -28,6 +30,11 @@ const ProjectStatsCard: React.FC<ProjectStatsCardProps> = ({
         </span>
       </div>
       <div className="text-[56px] leading-none font-bold text-black mt-4">{value}</div>
+      {overdueCount !== undefined && overdueCount > 0 && (
+        <div className="text-[12px] text-red-600 font-medium mt-1 opacity-90">
+          {overdueCount} Deadlines Overdue
+        </div>
+      )}
     </div>
   );
 };

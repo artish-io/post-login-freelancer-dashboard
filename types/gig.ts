@@ -10,4 +10,7 @@ export interface Gig {
   maxRate: number;
   location: string;
   rating: number;
+  avatar?: string; // ✅ Add avatar field from user data
+  email?: string; // ✅ Add email field from user data
+  address?: string; // ✅ Add address field from user data
 }

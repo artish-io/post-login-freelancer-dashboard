@@ -45,6 +45,7 @@ export default function TaskColumn({ columnId, title }: Props) {
   const [tasks, setTasks] = useState<any[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [projectsInfo, setProjectsInfo] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [taskCounts, setTaskCounts] = useState({
     todayUrgent: 0,
@@ -53,19 +54,44 @@ export default function TaskColumn({ columnId, title }: Props) {
     review: 0
   });
 
+  // Helper function to check if a project is paused
+  const isProjectPaused = (projectId: number): boolean => {
+    if (!projectsInfo || projectsInfo.length === 0) return false;
+    const projectInfo = projectsInfo.find(p => p.projectId === projectId);
+    return projectInfo?.status?.toLowerCase() === 'paused';
+  };
+
   // Fetch data dynamically
   const fetchData = async () => {
     try {
-      const [projectsRes, orgsRes] = await Promise.all([
+      const [projectsRes, orgsRes, projectInfoRes] = await Promise.all([
         fetch('/api/project-tasks'),
-        fetch('/api/organizations')
+        fetch('/api/organizations'),
+        fetch('/api/projects')
       ]);
 
       if (projectsRes.ok && orgsRes.ok) {
         const projectsData = await projectsRes.json();
         const orgsData = await orgsRes.json();
+
+        // Fetch project status info for paused project filtering
+        let projectInfoData: any[] = [];
+        if (projectInfoRes.ok) {
+          try {
+            projectInfoData = await projectInfoRes.json();
+            console.log('✅ Successfully fetched project status information for task filtering');
+          } catch (error) {
+            console.warn('⚠️ Failed to parse project status info:', error);
+            projectInfoData = [];
+          }
+        } else {
+          console.warn('⚠️ Failed to fetch project status info. Status:', projectInfoRes.status);
+          projectInfoData = [];
+        }
+
         setProjects(projectsData);
         setOrganizations(orgsData);
+        setProjectsInfo(projectInfoData);
 
         // Check for auto-movement after data refresh
         try {
@@ -177,11 +203,19 @@ export default function TaskColumn({ columnId, title }: Props) {
 
         const isIncompleteTask = !task.completed && task.status === 'Ongoing';
         const isInReview = task.status === 'In review';
+        const isPaused = isProjectPaused(project.projectId);
 
+        // Paused project tasks should NEVER appear in today's column
+        // They can only appear in upcoming column
         const shouldInclude =
-          (columnId === 'todo' && isIncompleteTask) ||
+          (columnId === 'todo' && isIncompleteTask && !isPaused) ||
           (columnId === 'upcoming' && isIncompleteTask) ||
           (columnId === 'review' && isInReview);
+
+        // Log paused project task exclusion from today's column
+        if (columnId === 'todo' && isIncompleteTask && isPaused) {
+          console.log(`🚫 Excluding paused project task from today's column: ${task.title} (Project: ${project.title})`);
+        }
 
         if (!shouldInclude) return;
 
@@ -239,10 +273,17 @@ export default function TaskColumn({ columnId, title }: Props) {
         project.tasks.forEach((task, index) => {
           // Only include incomplete tasks (regardless of due date)
           if (!task.completed && task.status === 'Ongoing') {
+            const isPaused = isProjectPaused(project.projectId);
+
             let tag = project.typeTags[0] ?? 'General';
             if (task.rejected) tag = 'Rejected';
             else if (task.feedbackCount > 0) tag = `Feedback ×${task.feedbackCount}`;
             else if (task.pushedBack) tag = 'Delayed';
+
+            // Add paused indicator for paused project tasks
+            if (isPaused) {
+              tag = `${tag} (Paused Project)`;
+            }
 
             allIncompleteTasks.push({
               taskIndex: index + 1,
@@ -265,17 +306,24 @@ export default function TaskColumn({ columnId, title }: Props) {
         });
       });
 
-      // Sort all incomplete tasks by priority
+      // Sort all incomplete tasks by priority, but ensure paused project tasks don't take today's slots
       const sortedIncompleteTasks = allIncompleteTasks.sort((a, b) => {
         const aIsUrgent = a.tag === 'Rejected' || a.tag === 'Delayed' || a.tag.includes('Feedback');
         const bIsUrgent = b.tag === 'Rejected' || b.tag === 'Delayed' || b.tag.includes('Feedback');
+        const aIsPaused = a.tag.includes('(Paused Project)');
+        const bIsPaused = b.tag.includes('(Paused Project)');
 
+        // Paused project tasks should never be in the first 3 positions (today's tasks)
+        if (aIsPaused && !bIsPaused) return 1; // Move paused tasks to end
+        if (!aIsPaused && bIsPaused) return -1; // Keep active tasks at start
+
+        // For non-paused tasks, sort by urgency
         if (aIsUrgent && !bIsUrgent) return -1;
         if (!aIsUrgent && bIsUrgent) return 1;
         return 0;
       });
 
-      // Get tasks that didn't make it into today's top 3 (overflow tasks)
+      // Get tasks that didn't make it into today's top 3 (overflow tasks) + all paused project tasks
       const overflowTasks = sortedIncompleteTasks.slice(3);
       setTasks(overflowTasks);
     } else {

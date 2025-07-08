@@ -8,6 +8,7 @@
 
 import Image from 'next/image';
 import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 type Props = {
   id: number;
@@ -33,7 +34,7 @@ export default function ContactListCard({
   }, [isUnread, isActive, id, name]);
 
   return (
-    <li
+    <motion.li
       onClick={onClick}
       className={`flex items-center justify-between cursor-pointer px-4 py-3 rounded-xl transition ${
         isActive
@@ -42,6 +43,9 @@ export default function ContactListCard({
           ? 'bg-[#FFF5F8] hover:bg-[#FCEAF0]'
           : 'hover:bg-gray-50'
       }`}
+      whileHover={{ scale: 1.02, x: 4 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
     >
       <div className="flex items-center gap-3 overflow-hidden">
         <Image
@@ -76,6 +80,6 @@ export default function ContactListCard({
           className={`${isUnread ? 'opacity-100' : 'opacity-50'}`}
         />
       </div>
-    </li>
+    </motion.li>
   );
 }

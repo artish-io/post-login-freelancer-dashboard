@@ -19,18 +19,37 @@ export type TaskMovementResult = {
  */
 export async function checkAndExecuteAutoMovement(): Promise<TaskMovementResult> {
   try {
-    // Fetch current project data
-    const response = await fetch('/api/project-tasks');
-    if (!response.ok) {
-      throw new Error('Failed to fetch project data');
+    // Fetch current project data and project status information
+    const [projectTasksRes, projectsRes] = await Promise.all([
+      fetch('/api/project-tasks'),
+      fetch('/api/projects')
+    ]);
+
+    if (!projectTasksRes.ok) {
+      throw new Error('Failed to fetch project-tasks data');
+    }
+
+    const projects = await projectTasksRes.json();
+    let projectsInfo: any[] = [];
+
+    // Handle projects.json API failure gracefully
+    if (projectsRes.ok) {
+      try {
+        projectsInfo = await projectsRes.json();
+        console.log('✅ Successfully fetched project status information');
+      } catch (error) {
+        console.warn('⚠️ Failed to parse projects.json, proceeding without project status info:', error);
+        projectsInfo = [];
+      }
+    } else {
+      console.warn('⚠️ Failed to fetch projects.json, proceeding without project status info. Status:', projectsRes.status);
+      projectsInfo = [];
     }
     
-    const projects = await response.json();
-    
-    // Count current urgent tasks in today's column
-    const todayUrgentCount = countTodayUrgentTasks(projects);
-    const todayTotalCount = countTodayTasks(projects);
-    const upcomingCount = countUpcomingTasks(projects);
+    // Count current urgent tasks in today's column (excluding paused projects)
+    const todayUrgentCount = countTodayUrgentTasks(projects, projectsInfo);
+    const todayTotalCount = countTodayTasks(projects, projectsInfo);
+    const upcomingCount = countUpcomingTasks(projects, projectsInfo);
 
     console.log('🔍 Auto-movement check:', {
       todayUrgentCount,
@@ -69,8 +88,8 @@ export async function checkAndExecuteAutoMovement(): Promise<TaskMovementResult>
       };
     }
 
-    // Find tasks from upcoming that can be moved to today
-    const tasksToMove = findTasksToMove(projects, maxToMove);
+    // Find tasks from upcoming that can be moved to today (excluding paused projects)
+    const tasksToMove = findTasksToMove(projects, maxToMove, projectsInfo);
 
     console.log('📋 Tasks available to move:', tasksToMove.map(t => ({
       id: t.id,
@@ -125,11 +144,22 @@ export async function checkAndExecuteAutoMovement(): Promise<TaskMovementResult>
 /**
  * Count urgent tasks due today
  */
-function countTodayUrgentTasks(projects: any[]): number {
+function countTodayUrgentTasks(projects: any[], projectsInfo: any[]): number {
   let count = 0;
   const today = startOfDay(new Date());
 
   projects.forEach(project => {
+    // Check if project is paused (only if projectsInfo is available)
+    if (projectsInfo && projectsInfo.length > 0) {
+      const projectInfo = projectsInfo.find(p => p.projectId === project.projectId);
+      const isProjectPaused = projectInfo?.status?.toLowerCase() === 'paused';
+
+      if (isProjectPaused) {
+        console.log(`🚫 Skipping paused project: ${project.title} (ID: ${project.projectId})`);
+        return; // Skip paused projects
+      }
+    }
+
     project.tasks.forEach((task: any) => {
       if (task.completed || task.status === 'In review') return;
 
@@ -137,9 +167,9 @@ function countTodayUrgentTasks(projects: any[]): number {
       const localDueDate = new Date(dueDateString + 'T00:00:00');
       const dueDay = startOfDay(localDueDate);
       const isTaskToday = dueDay.getTime() === today.getTime();
-      
+
       const isUrgent = task.rejected || task.pushedBack || (task.feedbackCount && task.feedbackCount > 0);
-      
+
       if (isTaskToday && isUrgent) {
         count++;
       }
@@ -152,18 +182,28 @@ function countTodayUrgentTasks(projects: any[]): number {
 /**
  * Count all tasks due today
  */
-function countTodayTasks(projects: any[]): number {
+function countTodayTasks(projects: any[], projectsInfo: any[]): number {
   let count = 0;
   const today = startOfDay(new Date());
 
   projects.forEach(project => {
+    // Check if project is paused (only if projectsInfo is available)
+    if (projectsInfo && projectsInfo.length > 0) {
+      const projectInfo = projectsInfo.find(p => p.projectId === project.projectId);
+      const isProjectPaused = projectInfo?.status?.toLowerCase() === 'paused';
+
+      if (isProjectPaused) {
+        return; // Skip paused projects
+      }
+    }
+
     project.tasks.forEach((task: any) => {
       if (task.completed || task.status === 'In review') return;
 
       const dueDateString = task.dueDate.split('T')[0];
       const localDueDate = new Date(dueDateString + 'T00:00:00');
       const dueDay = startOfDay(localDueDate);
-      
+
       if (dueDay.getTime() === today.getTime()) {
         count++;
       }
@@ -176,18 +216,28 @@ function countTodayTasks(projects: any[]): number {
 /**
  * Count upcoming tasks
  */
-function countUpcomingTasks(projects: any[]): number {
+function countUpcomingTasks(projects: any[], projectsInfo: any[]): number {
   let count = 0;
   const today = startOfDay(new Date());
 
   projects.forEach(project => {
+    // Check if project is paused (only if projectsInfo is available)
+    if (projectsInfo && projectsInfo.length > 0) {
+      const projectInfo = projectsInfo.find(p => p.projectId === project.projectId);
+      const isProjectPaused = projectInfo?.status?.toLowerCase() === 'paused';
+
+      if (isProjectPaused) {
+        return; // Skip paused projects
+      }
+    }
+
     project.tasks.forEach((task: any) => {
       if (task.completed || task.status === 'In review') return;
 
       const dueDateString = task.dueDate.split('T')[0];
       const localDueDate = new Date(dueDateString + 'T00:00:00');
       const dueDay = startOfDay(localDueDate);
-      
+
       if (dueDay.getTime() > today.getTime()) {
         count++;
       }
@@ -201,18 +251,29 @@ function countUpcomingTasks(projects: any[]): number {
  * Find tasks from upcoming that should be moved to today
  * Prioritizes urgent tasks first
  */
-function findTasksToMove(projects: any[], maxToMove: number): any[] {
+function findTasksToMove(projects: any[], maxToMove: number, projectsInfo: any[]): any[] {
   const today = startOfDay(new Date());
   const candidates: any[] = [];
 
   projects.forEach(project => {
+    // Check if project is paused (only if projectsInfo is available)
+    if (projectsInfo && projectsInfo.length > 0) {
+      const projectInfo = projectsInfo.find(p => p.projectId === project.projectId);
+      const isProjectPaused = projectInfo?.status?.toLowerCase() === 'paused';
+
+      if (isProjectPaused) {
+        console.log(`🚫 Excluding paused project from task movement: ${project.title} (ID: ${project.projectId})`);
+        return; // Skip paused projects
+      }
+    }
+
     project.tasks.forEach((task: any) => {
       if (task.completed || task.status === 'In review') return;
 
       const dueDateString = task.dueDate.split('T')[0];
       const localDueDate = new Date(dueDateString + 'T00:00:00');
       const dueDay = startOfDay(localDueDate);
-      
+
       // Only consider upcoming tasks (not today)
       if (dueDay.getTime() > today.getTime()) {
         const isUrgent = task.rejected || task.pushedBack || (task.feedbackCount && task.feedbackCount > 0);

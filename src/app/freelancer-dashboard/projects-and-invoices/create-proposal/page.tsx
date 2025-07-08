@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 
 import ProposalHeader from '../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/proposal-header';
 import ProposalMetaInfo from '../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/proposal-meta-info';
@@ -215,19 +216,35 @@ export default function CreateProposalPage() {
   };
 
   return (
-    <section className="w-full px-4 md:px-10 py-6 flex flex-col gap-8">
-      <ProposalHeader
-        contactSelected={contactSelected}
-        isCustomEmail={isCustomEmail}
-        projectName={projectName}
-        isValid={isValid}
-        onSaveDraft={() => console.log('Saving draft...')}
-        onCancel={() => console.log('Cancelled.')}
-        onSend={() => console.log('Sending proposal...')}
-        onPreview={handlePreview}
-      />
+    <motion.section
+      className="w-full px-4 md:px-10 py-6 flex flex-col gap-8"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+      >
+        <ProposalHeader
+          contactSelected={contactSelected}
+          isCustomEmail={isCustomEmail}
+          projectName={projectName}
+          isValid={isValid}
+          onSaveDraft={() => console.log('Saving draft...')}
+          onCancel={() => console.log('Cancelled.')}
+          onSend={() => console.log('Sending proposal...')}
+          onPreview={handlePreview}
+        />
+      </motion.div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col gap-6">
+      <motion.div
+        className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col gap-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+      >
         <ProposalMetaInfo
           selectedContact={selectedContact}
           onSelectContact={setSelectedContact}
@@ -279,7 +296,7 @@ export default function CreateProposalPage() {
           paymentCycle={paymentCycle}
           projectEndDate={endDate}
         />
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 }

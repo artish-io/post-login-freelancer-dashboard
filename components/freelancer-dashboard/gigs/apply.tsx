@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import gigCategories from '../../../data/gigs/gig-categories.json';
 import gigs from '../../../data/gigs/gigs.json';
 import organizations from '../../../data/organizations.json';
@@ -84,14 +85,22 @@ const Apply: React.FC<ApplyProps> = ({ gig: propGig, organization: propOrganizat
   console.log('🛠️ tools:', tools);
 
   return (
-    <div className="flex flex-col gap-4 text-sm text-gray-900 w-full max-w-3xl">{/* Removed px-4 pb-10 since modal handles padding */}
-      <textarea
+    <motion.div
+      className="flex flex-col gap-4 text-sm text-gray-900 w-full"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <motion.textarea
         placeholder="Short quick pitch about why you’d be perfect for this project"
         value={pitch}
         onChange={(e) => setPitch(e.target.value)}
         maxLength={600}
         rows={4}
         className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black resize-none"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
       />
       <div className="relative">
         <input
@@ -166,8 +175,20 @@ const Apply: React.FC<ApplyProps> = ({ gig: propGig, organization: propOrganizat
           </span>
         ))}
       </div>
-      <p className="mt-4 text-sm font-medium">Which of these tools are you familiar with?</p>
-      <div className="flex flex-wrap gap-3">
+      <motion.p
+        className="mt-4 text-sm font-medium"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.3, ease: "easeOut" }}
+      >
+        Which of these tools are you familiar with?
+      </motion.p>
+      <motion.div
+        className="flex flex-wrap gap-3"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.4, ease: "easeOut" }}
+      >
         {tools.length > 0 ? (
           tools.map((tool: string) => (
             <button
@@ -194,14 +215,14 @@ const Apply: React.FC<ApplyProps> = ({ gig: propGig, organization: propOrganizat
         ) : (
           <p className="text-gray-500 text-sm">No specific tools required for this gig.</p>
         )}
-      </div>
+      </motion.div>
       <button
         onClick={handleSubmit}
         className="mt-6 bg-white border border-black text-black px-6 py-3 rounded-xl hover:bg-black hover:text-white transition-all text-sm self-center"
       >
         Submit Application
       </button>
-    </div>
+    </motion.div>
   );
 };
 

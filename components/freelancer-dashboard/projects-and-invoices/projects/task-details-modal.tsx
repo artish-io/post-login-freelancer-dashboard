@@ -50,6 +50,8 @@ export default function TaskDetailsModal({
   const [referenceUrl, setReferenceUrl] = useState('');
   const [submissionRule, setSubmissionRule] = useState<TaskSubmissionRule>({ canSubmit: true });
   const [checkingRules, setCheckingRules] = useState(false);
+  const [isProjectPaused, setIsProjectPaused] = useState(false);
+  const [projectInfo, setProjectInfo] = useState<any>(null);
   const { submitTask, loading, error, success } = useSubmitTask();
 
   useEffect(() => {
@@ -64,13 +66,54 @@ export default function TaskDetailsModal({
     };
   }, [isOpen]);
 
-  // Check submission rules when modal opens or column changes
+  // Check submission rules and project status when modal opens or column changes
   useEffect(() => {
     if (isOpen) {
       setCheckingRules(true);
-      checkTaskSubmissionRules(taskId, projectId, columnId)
-        .then(setSubmissionRule)
-        .finally(() => setCheckingRules(false));
+
+      const checkRulesAndProjectStatus = async () => {
+        try {
+          // Check if project is paused
+          let isPaused = false;
+          try {
+            const projectsRes = await fetch('/api/projects');
+            if (projectsRes.ok) {
+              const projects = await projectsRes.json();
+              const currentProject = projects.find((p: any) => p.projectId === projectId);
+              setProjectInfo(currentProject);
+
+              isPaused = currentProject?.status?.toLowerCase() === 'paused';
+              setIsProjectPaused(isPaused);
+
+              if (isPaused) {
+                setSubmissionRule({
+                  canSubmit: false,
+                  reason: 'This project is paused. Contact project commissioner for more information.'
+                });
+                return;
+              }
+            } else {
+              console.warn('⚠️ Failed to fetch project status info for modal, proceeding with normal rules');
+            }
+          } catch (projectError) {
+            console.warn('⚠️ Error fetching project status info for modal:', projectError);
+          }
+
+          // If project is not paused (or status unknown), check normal submission rules
+          const rule = await checkTaskSubmissionRules(taskId, projectId, columnId);
+          setSubmissionRule(rule);
+        } catch (error) {
+          console.error('Error checking submission rules:', error);
+          setSubmissionRule({
+            canSubmit: false,
+            reason: 'Error checking submission rules. Please try again.'
+          });
+        } finally {
+          setCheckingRules(false);
+        }
+      };
+
+      checkRulesAndProjectStatus();
     }
   }, [isOpen, taskId, projectId, columnId]);
 

@@ -10,6 +10,7 @@ import SidebarFilters from '../../../components/store-search/sidebar-filters';
 import GigCardGrid from '../../../components/store-search/gig-card-grid';
 import { Gig } from '../../../types/gig';
 import freelancers from '../../../data/freelancers.json';
+import users from '../../../data/users.json';
 
 export default function MarketplaceSearchPage() {
   // New: query state for search bar
@@ -21,7 +22,18 @@ export default function MarketplaceSearchPage() {
   const [maxRate, setMaxRate] = useState<string>('');
   const [selectedRating, setSelectedRating] = useState<string>('');
 
-  const allGigs: Gig[] = freelancers as Gig[];
+  // Enrich freelancer data with user information (avatar, etc.)
+  const enrichedFreelancers = freelancers.map(freelancer => {
+    const userInfo = users.find(user => user.id === freelancer.id);
+    return {
+      ...freelancer,
+      avatar: userInfo?.avatar || '/avatar.png', // Fallback to default avatar
+      email: userInfo?.email,
+      address: userInfo?.address,
+    };
+  });
+
+  const allGigs: Gig[] = enrichedFreelancers as Gig[];
   const allCardsCount = allGigs.length;
 
   // Tag toggle logic
@@ -31,7 +43,50 @@ export default function MarketplaceSearchPage() {
     );
   };
 
-  // Filtering logic (now includes search query)
+  // Enhanced keyword mapping for better matching
+  const categoryKeywordMap: Record<string, string[]> = {
+    'Engineering': ['Software Development', 'Web Development', 'Programming', 'Development'],
+    'Design': ['Design', 'Graphic Design', 'UI/UX', 'Visual Design'],
+    'Marketing': ['Marketing', 'Digital Marketing', 'Social Media'],
+    'Writing': ['Writing', 'Content Writing', 'Copywriting'],
+    'Video Production': ['Video', 'Production', 'Media'],
+    'Audio & Music': ['Audio', 'Music', 'Sound'],
+  };
+
+  const skillKeywordMap: Record<string, string[]> = {
+    'Web Development': ['JavaScript', 'HTML5', 'CSS', 'React', 'Vue', 'Angular', 'Node.js', 'TypeScript', 'Web Development', 'Frontend', 'Backend', 'Full Stack'],
+    'Frontend': ['JavaScript', 'HTML5', 'CSS', 'React', 'Vue', 'Angular', 'TypeScript', 'Frontend', 'UI', 'Tailwind'],
+    'Backend': ['Node.js', 'Python', 'Ruby', 'PHP', 'Java', 'Backend', 'API', 'MongoDB', 'GraphQL', 'Django', 'Pandas'],
+    'Blockchain': ['Blockchain', 'Smart Contracts', 'Web3', 'Ethereum', 'Solidity', 'Crypto'],
+    'Smart Contracts': ['Smart Contracts', 'Blockchain', 'Web3', 'Ethereum', 'Solidity'],
+    'DevOps': ['DevOps', 'Docker', 'AWS', 'CI/CD', 'Kubernetes', 'Cloud'],
+    'Programming': ['JavaScript', 'Python', 'Ruby', 'Java', 'C++', 'Programming', 'TypeScript', 'HTML5'],
+    'Mobile Development': ['React Native', 'Flutter', 'iOS', 'Android', 'Mobile', 'App Development'],
+    // Add more comprehensive mappings
+    'App Development': ['App Development', 'Mobile', 'React Native', 'Flutter', 'iOS', 'Android'],
+    'Full Stack': ['Full Stack', 'Web Development', 'Frontend', 'Backend', 'JavaScript', 'Node.js', 'React'],
+  };
+
+  // Helper function to check if category matches using keywords
+  const matchesCategory = (gigCategory: string, filterCategory: string): boolean => {
+    const keywords = categoryKeywordMap[filterCategory] || [filterCategory];
+    return keywords.some(keyword =>
+      gigCategory.toLowerCase().includes(keyword.toLowerCase())
+    );
+  };
+
+  // Helper function to check if skills match using keywords
+  const matchesSkillTag = (gigSkills: string[], filterTag: string): boolean => {
+    const keywords = skillKeywordMap[filterTag] || [filterTag];
+    return keywords.some(keyword =>
+      gigSkills.some(skill =>
+        skill.toLowerCase().includes(keyword.toLowerCase()) ||
+        keyword.toLowerCase().includes(skill.toLowerCase())
+      )
+    );
+  };
+
+  // Filtering logic (now includes search query and enhanced matching)
   const filteredGigs = allGigs.filter((gig) => {
     // Search logic (matches name, title, category, or skills)
     const queryMatch =
@@ -42,14 +97,12 @@ export default function MarketplaceSearchPage() {
       gig.skills.some(skill => skill.toLowerCase().includes(query.toLowerCase()));
 
     const categoryMatch = activeCategory
-      ? gig.category.toLowerCase().includes(activeCategory.toLowerCase())
+      ? matchesCategory(gig.category, activeCategory)
       : true;
 
     const tagMatch =
       selectedTags.length === 0 ||
-      selectedTags.every(tag =>
-        gig.skills.map(s => s.toLowerCase()).includes(tag.toLowerCase())
-      );
+      selectedTags.some(tag => matchesSkillTag(gig.skills, tag));
 
     const gigMin = gig.minRate;
     const gigMax = gig.maxRate;

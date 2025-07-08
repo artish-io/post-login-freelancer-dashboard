@@ -9,7 +9,7 @@ const sidebarItems = [
   { label: 'Home', icon: '/home-logo (sidebar).png', href: '/freelancer-dashboard' },
   { label: 'Explore Gigs', icon: '/explore-gigs-logo (sidebar).png', href: '/freelancer-dashboard/gigs/explore-gigs' },
   { label: 'Messages', icon: '/messages-logo (sidebar).png', href: '/freelancer-dashboard/messages' },
-  { label: 'Gig Requests', icon: '/gig-requests-logo (sidebar).png', href: '#' },
+  { label: 'Gig Requests', icon: '/gig-requests-logo (sidebar).png', href: '/freelancer-dashboard/gig-requests' },
   { label: 'Projects & Invoices', icon: '/projects-invoices-logo (sidebar).png', href: '/freelancer-dashboard/projects-and-invoices' },
   { label: 'Wallet', icon: '/wallet-logo (sidebar).png', href: '#' },
   { label: 'Storefront', icon: '/storefront-logo (sidebar).png', href: '#' },
@@ -44,7 +44,12 @@ export default function FreelancerSidebar({
           <nav className="flex flex-col gap-6">
             {sidebarItems.map((item) => {
               const isMessages = item.label === 'Messages';
-              const isActive = pathname.startsWith(item.href) && item.href !== '#';
+              // Fix home button active state - exact match for home, startsWith for others
+              const isActive = item.href !== '#' && (
+                item.label === 'Home'
+                  ? pathname === item.href
+                  : pathname.startsWith(item.href)
+              );
 
               return (
                 <Link
@@ -85,7 +90,12 @@ export default function FreelancerSidebar({
           <nav className="flex flex-col gap-6">
             {sidebarItems.map((item) => {
               const isMessages = item.label === 'Messages';
-              const isActive = pathname.startsWith(item.href) && item.href !== '#';
+              // Fix home button active state - exact match for home, startsWith for others
+              const isActive = item.href !== '#' && (
+                item.label === 'Home'
+                  ? pathname === item.href
+                  : pathname.startsWith(item.href)
+              );
 
               return (
                 <Link
@@ -130,7 +140,12 @@ export default function FreelancerSidebar({
           <nav className="flex flex-col gap-6">
             {sidebarItems.map((item) => {
               const isMessages = item.label === 'Messages';
-              const isActive = pathname.startsWith(item.href) && item.href !== '#';
+              // Fix home button active state - exact match for home, startsWith for others
+              const isActive = item.href !== '#' && (
+                item.label === 'Home'
+                  ? pathname === item.href
+                  : pathname.startsWith(item.href)
+              );
 
               return (
                 <Link

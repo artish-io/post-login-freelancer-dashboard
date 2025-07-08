@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Gig } from '../../types/gig'; // ✅ Fixed path
+import gigCategories from '../../data/gigs/gig-categories.json';
 
 type SidebarFiltersProps = {
   gigCards: Gig[];
@@ -76,7 +77,7 @@ export default function SidebarFilters({
   selectedRating,
   onRatingChange,
 }: SidebarFiltersProps) {
-  const [expandedCategory, setExpandedCategory] = useState<string | null>('Software Development');
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(gigCategories[0]?.label || null);
   const [sortOpen, setSortOpen] = useState(false);
   const [sortValue, setSortValue] = useState(sortOptions[0].value);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -93,25 +94,11 @@ export default function SidebarFilters({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [sortOpen]);
 
-  const categories: Record<string, string[]> = {
-    'Software Development': [
-      'Programming',
-      'JavaScript',
-      'Python',
-      'App Development',
-      'Mobile Development',
-      'Hardware',
-      'Web Development',
-    ],
-    Marketing: ['Product Marketing', 'UX Marketing', 'Go-To-Market Strategy'],
-    'Creative Writing': ['Songwriting', 'Fiction', 'Poetry'],
-    Design: ['Illustration', 'Fashion', 'Print', 'Canva', 'Figma'],
-    'Video Production': ['YouTube', 'Shorts', 'TikTok', 'Instagram Reels'],
-    'Film & Events': ['DOP', 'Lighting', 'Camera'],
-    Fashion: ['Sketching', 'Tech Packs', 'Trends'],
-    'Event Production': ['Stage Design', 'Security', 'Catering'],
-    Printing: ['Books', 'Banners', 'Magazines', 'Pamphlets'],
-  };
+  // Convert gig-categories.json data to the expected format
+  const categories: Record<string, string[]> = gigCategories.reduce((acc, category) => {
+    acc[category.label] = category.subcategories;
+    return acc;
+  }, {} as Record<string, string[]>);
 
   const toggleCategory = (category: string) => {
     const next = expandedCategory === category ? null : category;

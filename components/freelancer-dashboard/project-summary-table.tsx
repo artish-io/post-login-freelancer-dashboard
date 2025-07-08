@@ -282,7 +282,7 @@ export default function ProjectSummaryTable() {
       <div className="flex justify-end mt-4">
         <button
           onClick={() => router.push('/freelancer-dashboard/projects-and-invoices/project-list')}
-          className="text-sm px-4 py-2 rounded-full border text-gray-800 hover:bg-gray-100 transition"
+          className="text-sm px-4 py-2 rounded-full border text-gray-800 hover:bg-gray-100 hover:border-gray-400 transition-all duration-200 transform hover:scale-105 active:scale-95"
         >
           View All
         </button>
