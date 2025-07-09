@@ -1,0 +1,156 @@
+[
+  {
+    "id": 1000,
+    "userId": "31",
+    "commissionerId": 32,
+    "organizationId": 1,
+    "projectId": 301,
+    "type": "credit",
+    "amount": 299.12,
+    "currency": "USD",
+    "date": "2025-06-26T12:00:00Z"
+  },
+  {
+    "id": 1001,
+    "userId": "31",
+    "commissionerId": 33,
+    "organizationId": 2,
+    "projectId": 302,
+    "type": "credit",
+    "amount": 287.98,
+    "currency": "USD",
+    "date": "2025-06-27T12:00:00Z"
+  },
+  {
+    "id": 1002,
+    "userId": "31",
+    "commissionerId": 37,
+    "organizationId": 6,
+    "projectId": 300,
+    "type": "credit",
+    "amount": 206.85,
+    "currency": "USD",
+    "date": "2025-06-28T12:00:00Z"
+  },
+  {
+    "id": 1003,
+    "userId": "31",
+    "commissionerId": 35,
+    "organizationId": 4,
+    "projectId": 304,
+    "type": "credit",
+    "amount": 298.31,
+    "currency": "USD",
+    "date": "2025-06-29T12:00:00Z"
+  },
+  {
+    "id": 1004,
+    "userId": "31",
+    "commissionerId": 38,
+    "organizationId": 7,
+    "projectId": 299,
+    "type": "credit",
+    "amount": 507.66,
+    "currency": "USD",
+    "date": "2025-06-30T12:00:00Z"
+  },
+  {
+    "id": 1005,
+    "userId": "31",
+    "commissionerId": 37,
+    "organizationId": 6,
+    "projectId": 300,
+    "type": "credit",
+    "amount": 532.93,
+    "currency": "USD",
+    "date": "2025-07-01T12:00:00Z"
+  },
+  {
+    "id": 1006,
+    "userId": "31",
+    "commissionerId": 36,
+    "organizationId": 5,
+    "projectId": 305,
+    "type": "credit",
+    "amount": 303.33,
+    "currency": "USD",
+    "date": "2025-07-02T12:00:00Z"
+  },
+  {
+    "id": 1007,
+    "userId": "31",
+    "commissionerId": 32,
+    "organizationId": 1,
+    "projectId": 301,
+    "type": "credit",
+    "amount": 433.03,
+    "currency": "USD",
+    "date": "2025-07-03T12:00:00Z"
+  },
+  {
+    "id": 1008,
+    "userId": "31",
+    "commissionerId": 32,
+    "organizationId": 1,
+    "projectId": 301,
+    "type": "credit",
+    "amount": 376.49,
+    "currency": "USD",
+    "date": "2025-07-04T12:00:00Z"
+  },
+  {
+    "id": 1009,
+    "userId": "31",
+    "commissionerId": 33,
+    "organizationId": 2,
+    "projectId": 302,
+    "type": "credit",
+    "amount": 304.28,
+    "currency": "USD",
+    "date": "2025-07-05T12:00:00Z"
+  },
+  {
+    "id": 1010,
+    "userId": "31",
+    "commissionerId": 35,
+    "organizationId": 4,
+    "projectId": 304,
+    "type": "credit",
+    "amount": 330.81,
+    "currency": "USD",
+    "date": "2025-07-06T12:00:00Z"
+  },
+  {
+    "id": 1011,
+    "userId": "31",
+    "commissionerId": 36,
+    "organizationId": 5,
+    "projectId": 305,
+    "type": "credit",
+    "amount": 155.52,
+    "currency": "USD",
+    "date": "2025-07-07T12:00:00Z"
+  },
+  {
+    "id": 1012,
+    "userId": "31",
+    "commissionerId": 38,
+    "organizationId": 7,
+    "projectId": 299,
+    "type": "credit",
+    "amount": 282.04,
+    "currency": "USD",
+    "date": "2025-07-08T12:00:00Z"
+  },
+  {
+    "id": 1013,
+    "userId": "31",
+    "commissionerId": 38,
+    "organizationId": 7,
+    "projectId": 299,
+    "type": "credit",
+    "amount": 226.36,
+    "currency": "USD",
+    "date": "2025-07-09T12:00:00Z"
+  }
+]

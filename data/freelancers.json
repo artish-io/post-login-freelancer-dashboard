@@ -16,7 +16,8 @@
     "maxRate": 200,
     "location": "NG",
     "rating": 5,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 2,
@@ -36,7 +37,8 @@
     "maxRate": 70,
     "location": "US",
     "rating": 4,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 3,
@@ -56,7 +58,8 @@
     "maxRate": 100,
     "location": "CA",
     "rating": 4,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 4,
@@ -76,7 +79,8 @@
     "maxRate": 55,
     "location": "NG",
     "rating": 5,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 5,
@@ -93,7 +97,8 @@
     "maxRate": 35,
     "location": "GH",
     "rating": 3,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 6,
@@ -110,7 +115,8 @@
     "maxRate": 40,
     "location": "PH",
     "rating": 2,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 7,
@@ -127,7 +133,8 @@
     "maxRate": 65,
     "location": "UK",
     "rating": 4,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 8,
@@ -144,7 +151,8 @@
     "maxRate": 45,
     "location": "GH",
     "rating": 4,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 9,
@@ -161,7 +169,8 @@
     "maxRate": 60,
     "location": "NG",
     "rating": 5,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 10,
@@ -179,7 +188,8 @@
     "maxRate": 25,
     "location": "ZA",
     "rating": 2,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 11,
@@ -200,7 +210,8 @@
     "maxRate": 50,
     "location": "IN",
     "rating": 4,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 12,
@@ -220,7 +231,8 @@
     "maxRate": 70,
     "location": "FR",
     "rating": 5,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 13,
@@ -240,7 +252,8 @@
     "maxRate": 80,
     "location": "DE",
     "rating": 4,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 14,
@@ -258,7 +271,8 @@
     "maxRate": 120,
     "location": "TH",
     "rating": 5,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 15,
@@ -275,7 +289,8 @@
     "maxRate": 40,
     "location": "RW",
     "rating": 3,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 16,
@@ -296,7 +311,8 @@
     "maxRate": 60,
     "location": "KE",
     "rating": 5,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 17,
@@ -313,7 +329,8 @@
     "maxRate": 15,
     "location": "ID",
     "rating": 3,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 18,
@@ -330,7 +347,8 @@
     "maxRate": 45,
     "location": "FR",
     "rating": 4,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 19,
@@ -347,7 +365,8 @@
     "maxRate": 150,
     "location": "DE",
     "rating": 5,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 20,
@@ -364,7 +383,8 @@
     "maxRate": 50,
     "location": "IN",
     "rating": 4,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 21,
@@ -383,7 +403,8 @@
     "maxRate": 100,
     "location": "SG",
     "rating": 5,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 22,
@@ -400,7 +421,8 @@
     "maxRate": 120,
     "location": "MX",
     "rating": 4,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 23,
@@ -417,7 +439,8 @@
     "maxRate": 110,
     "location": "NG",
     "rating": 4,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 24,
@@ -434,7 +457,8 @@
     "maxRate": 60,
     "location": "KR",
     "rating": 3,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 25,
@@ -451,7 +475,8 @@
     "maxRate": 130,
     "location": "DE",
     "rating": 5,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 26,
@@ -468,7 +493,8 @@
     "maxRate": 35,
     "location": "RU",
     "rating": 3,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 27,
@@ -484,7 +510,8 @@
     "maxRate": 95,
     "location": "NG",
     "rating": 4,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 28,
@@ -501,7 +528,8 @@
     "maxRate": 40,
     "location": "IT",
     "rating": 3,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 29,
@@ -521,7 +549,8 @@
     "maxRate": 160,
     "location": "US",
     "rating": 5,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "bank_transfer"
   },
   {
     "id": 30,
@@ -538,7 +567,8 @@
     "maxRate": 30,
     "location": "UK",
     "rating": 2,
-    "availability": "Available"
+    "availability": "Available",
+    "withdrawalMethod": "paypal"
   },
   {
     "id": 31,
@@ -556,6 +586,7 @@
     "rating": 4.3,
     "trend": 1.78,
     "avatar": "/avatars/margsate-flether.png",
+    "withdrawalMethod": "bank_transfer",
     "about": "I am a user interface designer with 5+ years of experience designing complex digital experiences with human-centered design for startups. I've worked inside design and programming teams which gives me a broader vision in a graphic and technological context. I am known for always creating products that customers love with excellent interface, interactions (Interaction Design), micro-interactions, sketching, prototyping (Figma) and construction of design systems.",
     "skills": [
       "Wireframes",

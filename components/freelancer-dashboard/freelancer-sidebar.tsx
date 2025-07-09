@@ -11,7 +11,7 @@ const sidebarItems = [
   { label: 'Messages', icon: '/messages-logo (sidebar).png', href: '/freelancer-dashboard/messages' },
   { label: 'Gig Requests', icon: '/gig-requests-logo (sidebar).png', href: '/freelancer-dashboard/gig-requests' },
   { label: 'Projects & Invoices', icon: '/projects-invoices-logo (sidebar).png', href: '/freelancer-dashboard/projects-and-invoices' },
-  { label: 'Wallet', icon: '/wallet-logo (sidebar).png', href: '#' },
+  { label: 'Wallet', icon: '/wallet-logo (sidebar).png', href: '/freelancer-dashboard/wallet' },
   { label: 'Storefront', icon: '/storefront-logo (sidebar).png', href: '#' },
   { label: 'Settings', icon: '/account-settings-logo (sidebar).png', href: '#' },
 ];
