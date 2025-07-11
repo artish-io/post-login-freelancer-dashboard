@@ -1,0 +1,42 @@
+[
+  {
+    "userId": 31,
+    "contacts": [1, 2, 5, 7, 12, 16, 32, 33, 34, 35, 36]
+  },
+  {
+    "userId": 1,
+    "contacts": [31, 2, 3]
+  },
+  {
+    "userId": 2,
+    "contacts": [1, 31, 5]
+  },
+  {
+    "userId": 5,
+    "contacts": [2, 31]
+  },
+  {
+    "userId": 7,
+    "contacts": [31]
+  },
+  {
+    "userId": 12,
+    "contacts": [31]
+  },
+  {
+    "userId": 16,
+    "contacts": [31]
+  },
+  {
+    "userId": 32,
+    "contacts": [31]
+  },
+  {
+    "userId": 33,
+    "contacts": [31]
+  },
+  {
+    "userId": 34,
+    "contacts": [31]
+  }
+]

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { staggerContainer, staggerItem, fadeIn } from '../../../../components/ui/page-transition';
 // Using correct relative path from src/app/freelancer-dashboard/gig-requests/ to components/
 import GigRequestsSidebar from '../../../../components/freelancer-dashboard/gigs/gig-requests/gig-requests-nav';
 import GigRequestTable from '../../../../components/freelancer-dashboard/gigs/gig-requests/gig-request-table';

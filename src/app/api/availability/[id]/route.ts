@@ -13,14 +13,14 @@ export async function GET(
     const data = await readFile(filePath, "utf-8");
     const freelancers = JSON.parse(data);
 
-    const user = freelancers.find((f: any) => String(f.id) === id);
+    const freelancer = freelancers.find((f: any) => String(f.userId) === id);
 
-    if (!user) {
-      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    if (!freelancer) {
+      return NextResponse.json({ error: "Freelancer not found" }, { status: 404 });
     }
 
     return NextResponse.json({
-      availability: user.availability || "Unavailable",
+      availability: freelancer.availability || "Unavailable",
     });
   } catch (error) {
     console.error("Error reading availability:", error);

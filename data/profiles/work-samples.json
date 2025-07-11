@@ -1,0 +1,52 @@
+[
+  {
+    "id": "ws-31-001",
+    "userId": 31,
+    "title": "Rotundo Agency / Web Design",
+    "image": "/uploads/work-samples/31/rotundo-agency.jpg",
+    "skill": "UI",
+    "tool": "Figma",
+    "year": 2023,
+    "url": "https://rotundo.agency/demo"
+  },
+  {
+    "id": "ws-31-002",
+    "userId": 31,
+    "title": "Real-Time Palette Generator",
+    "image": "/uploads/work-samples/31/palette-generator.png",
+    "skill": "UI",
+    "tool": "Figma",
+    "year": 2021,
+    "url": "https://dribbble.com/shots/12345678-palette-generator"
+  },
+  {
+    "id": "ws-31-003",
+    "userId": 31,
+    "title": "Spider‑Man 2 / Hero Landing Page",
+    "image": "/uploads/work-samples/31/spiderman-hero.jpg",
+    "skill": "Branding",
+    "tool": "Adobe XD",
+    "year": 2023,
+    "url": "https://behance.net/gallery/987654321/spiderman2-hero"
+  },
+  {
+    "id": "ws-31-004",
+    "userId": 31,
+    "title": "Mavin Records / Web Design",
+    "image": "/uploads/work-samples/31/mavin-records.jpg",
+    "skill": "UI",
+    "tool": "Figma",
+    "year": 2021,
+    "url": "https://mavinrecords.com"
+  },
+  {
+    "id": "ws-31-005",
+    "userId": 31,
+    "title": "UI Iconography Pack",
+    "image": "/uploads/work-samples/31/icon-pack.jpg",
+    "skill": "Iconography",
+    "tool": "Sketch",
+    "year": 2024,
+    "url": "https://gumroad.com/l/ui-icon-pack"
+  }
+]

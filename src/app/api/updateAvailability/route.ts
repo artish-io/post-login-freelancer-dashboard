@@ -26,9 +26,9 @@ export async function POST(request: Request) {
     const data = await readFile(filePath, 'utf-8');
     const freelancers = JSON.parse(data);
 
-    const index = freelancers.findIndex((f: any) => String(f.id) === body.id);
+    const index = freelancers.findIndex((f: any) => String(f.userId) === body.id);
     if (index === -1) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Freelancer not found' }, { status: 404 });
     }
 
     freelancers[index].availability = body.status;

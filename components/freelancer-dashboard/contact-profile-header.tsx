@@ -7,6 +7,7 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface ContactProfileHeaderProps {
   contactId: number;
@@ -20,6 +21,7 @@ type Contact = {
 };
 
 export default function ContactProfileHeader({ contactId }: ContactProfileHeaderProps) {
+  const router = useRouter();
   const [contact, setContact] = useState<Contact | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -40,6 +42,12 @@ export default function ContactProfileHeader({ contactId }: ContactProfileHeader
     fetchContact();
   }, [contactId]);
 
+  const handleAvatarClick = () => {
+    if (contact) {
+      router.push(`/freelancer-dashboard/profile/${contact.id}`);
+    }
+  };
+
   if (loading || !contact) {
     return (
       <div
@@ -54,15 +62,25 @@ export default function ContactProfileHeader({ contactId }: ContactProfileHeader
   return (
     <div className="pt-6 pb-4 px-4 rounded-t-2xl" style={{ backgroundColor: '#FCD5E3' }}>
       <div className="flex flex-col items-center justify-center text-center">
-        <div className="w-20 h-20 relative mb-3">
+        <button
+          onClick={handleAvatarClick}
+          className="w-20 h-20 relative mb-3 group cursor-pointer transition-transform hover:scale-105"
+          title={`View ${contact.name}'s profile`}
+        >
           <Image
             src={contact.avatar}
             alt={contact.name}
             fill
-            className="rounded-full object-cover"
+            className="rounded-full object-cover group-hover:ring-2 group-hover:ring-white group-hover:ring-offset-2 transition-all"
           />
-        </div>
-        <h2 className="text-lg font-semibold text-gray-800">{contact.name}</h2>
+        </button>
+        <button
+          onClick={handleAvatarClick}
+          className="text-lg font-semibold text-gray-800 hover:text-gray-900 transition-colors cursor-pointer"
+          title={`View ${contact.name}'s profile`}
+        >
+          {contact.name}
+        </button>
         <p className="text-sm text-gray-600">{contact.title}</p>
 
         <div className="flex gap-4 mt-4">

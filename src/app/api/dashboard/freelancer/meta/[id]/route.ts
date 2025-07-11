@@ -9,22 +9,33 @@ export async function GET(
   const { id } = await params;
 
   try {
-    const filePath = path.join(process.cwd(), 'data', 'freelancers.json');
-    const data = await readFile(filePath, 'utf-8');
-    const freelancers = JSON.parse(data);
+    const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
+    const usersPath = path.join(process.cwd(), 'data', 'users.json');
+
+    const [freelancersData, usersData] = await Promise.all([
+      readFile(freelancersPath, 'utf-8'),
+      readFile(usersPath, 'utf-8')
+    ]);
+
+    const freelancers = JSON.parse(freelancersData);
+    const users = JSON.parse(usersData);
 
     const freelancer = freelancers.find((f: any) => String(f.id) === id);
-
     if (!freelancer) {
       return NextResponse.json({ error: 'Freelancer not found' }, { status: 404 });
+    }
+
+    const user = users.find((u: any) => u.id === freelancer.userId);
+    if (!user) {
+      return NextResponse.json({ error: 'User data not found' }, { status: 404 });
     }
 
     // Return a stripped-down meta object
     const meta = {
       id: freelancer.id,
-      name: freelancer.name,
-      title: freelancer.title,
-      avatar: freelancer.avatar,
+      name: user.name,
+      title: user.title,
+      avatar: user.avatar,
       availability: freelancer.availability,
       rating: freelancer.rating,
     };

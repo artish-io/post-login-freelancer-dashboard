@@ -1,0 +1,62 @@
+[
+  {
+    "id": "design",
+    "label": "Design",
+    "subcategories": ["UI/UX Design", "Graphic Design", "Brand Design", "Marketing Design"]
+  },
+  {
+    "id": "writing",
+    "label": "Writing",
+    "subcategories": ["Content Writing", "Copywriting", "Creative Writing", "Scriptwriting", "Technical Writing"]
+  },
+  {
+    "id": "marketing",
+    "label": "Marketing",
+    "subcategories": ["Social Media", "Event Marketing", "Campaign Strategy", "Market Research", "User Research", "Email Marketing", "Influencer Strategy"]
+  },
+  {
+    "id": "engineering",
+    "label": "Engineering",
+    "subcategories": ["Web Development", "Frontend", "Backend", "Blockchain", "Smart Contracts", "DevOps"]
+  },
+  {
+    "id": "social-media",
+    "label": "Social Media",
+    "subcategories": ["Instagram Strategy", "Influencer Campaigns", "Community Management"]
+  },
+  {
+    "id": "visual-media",
+    "label": "Visual Media",
+    "subcategories": ["Motion Graphics", "Animation", "Explainer Videos", "Video Editing"]
+  },
+  {
+    "id": "audio-music",
+    "label": "Audio & Music",
+    "subcategories": ["Voice-Over", "Audio Editing", "Podcast Production", "Music Composition"]
+  },
+  {
+    "id": "data-analytics",
+    "label": "Data & Analytics",
+    "subcategories": ["Data Annotation", "AI Training", "Data Visualization", "ETL"]
+  },
+  {
+    "id": "product",
+    "label": "Product",
+    "subcategories": ["Product Strategy", "Prototyping", "User Testing", "Feature Specification"]
+  },
+  {
+    "id": "accounting",
+    "label": "Accounting",
+    "subcategories": ["Freelancer Invoicing", "Project Budgeting", "Bookkeeping"]
+  },
+  {
+    "id": "events",
+    "label": "Events",
+    "subcategories": ["Virtual Events", "Experiential", "Live Shows", "Personal Events", "Corporate Events"]
+  },
+  {
+    "id": "others",
+    "label": "Others",
+    "subcategories": ["Experimental", "Other Services"]
+  }
+]

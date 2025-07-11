@@ -1,0 +1,146 @@
+[
+  {
+    "id": 201,
+    "freelancerId": 1,
+    "gigId": 101,
+    "organizationId": 1,
+    "commissioner": {
+      "id": 32,
+      "name": "Neilsan Mando",
+      "avatar": "/avatars/neilsan.png",
+      "title": "Product Manager"
+    },
+    "title": "Park Services Website Rebrand",
+    "skills": ["Web Design", "UI/UX Design"],
+    "tools": ["Figma", "Adobe Photoshop"],
+    "notes": "Help us redesign our digital presence for better accessibility.",
+    "budget": {
+      "min": 3500,
+      "max": 5000,
+      "currency": "USD"
+    },
+    "status": "Available",
+    "createdAt": "2025-07-05T10:12:00Z",
+    "responses": []
+  },
+  {
+    "id": 202,
+    "freelancerId": 3,
+    "gigId": 102,
+    "organizationId": 2,
+    "commissioner": {
+      "id": 33,
+      "name": "Tiruvellly Priya",
+      "avatar": "/avatars/priyaa.png",
+      "title": "Brand Director"
+    },
+    "title": "Channel Identity Toolkit",
+    "skills": ["Branding", "Brand Design", "Motion Graphics"],
+    "tools": ["Adobe Illustrator", "After Effects"],
+    "notes": "Create identity assets for Urbana's new documentary stream.",
+    "budget": {
+      "min": 2800,
+      "max": 4200,
+      "currency": "USD"
+    },
+    "status": "Pending",
+    "createdAt": "2025-07-06T14:45:00Z",
+    "responses": []
+  },
+  {
+    "id": 203,
+    "freelancerId": 6,
+    "gigId": 103,
+    "organizationId": 3,
+    "commissioner": {
+      "id": 34,
+      "name": "Matte Hannery",
+      "avatar": "/avatars/matte.png",
+      "title": "Startup Founder"
+    },
+    "title": "App Promo Video",
+    "skills": ["Video Editing", "Motion Graphics"],
+    "tools": ["Premiere Pro", "After Effects"],
+    "notes": "Edit a 60s vertical promo for Corlax's new wellness app.",
+    "budget": {
+      "min": 1500,
+      "max": 2500,
+      "currency": "USD"
+    },
+    "status": "Rejected",
+    "createdAt": "2025-07-03T08:20:00Z",
+    "responses": []
+  },
+  {
+    "id": 204,
+    "freelancerId": 2,
+    "gigId": 104,
+    "organizationId": 5,
+    "commissioner": {
+      "id": 36,
+      "name": "Felix Damini",
+      "avatar": "/avatars/felix.png",
+      "title": "UX Research Lead"
+    },
+    "title": "Concept Testing Deck",
+    "skills": ["Design Research", "User Research", "Content Design"],
+    "tools": ["PowerPoint", "Figma", "Miro"],
+    "notes": "Build out visual layouts for an insights deck to present to board.",
+    "budget": {
+      "min": 2200,
+      "max": 3800,
+      "currency": "USD"
+    },
+    "status": "Accepted",
+    "createdAt": "2025-07-01T17:50:00Z",
+    "responses": []
+  },
+  {
+    "id": 205,
+    "freelancerId": 5,
+    "gigId": 105,
+    "organizationId": 6,
+    "commissioner": {
+      "id": 37,
+      "name": "Sarah Chen",
+      "avatar": "/avatars/sarah.png",
+      "title": "Marketing Director"
+    },
+    "title": "Tech Showcase Speaker Reel",
+    "skills": ["Video Editing", "Motion Graphics"],
+    "tools": ["After Effects", "Premiere Pro"],
+    "notes": "Edit highlight reel of our keynote speakers and testimonials.",
+    "budget": {
+      "min": 3200,
+      "max": 4800,
+      "currency": "USD"
+    },
+    "status": "Available",
+    "createdAt": "2025-07-07T12:00:00Z",
+    "responses": []
+  },
+  {
+    "id": 206,
+    "freelancerId": 7,
+    "gigId": 106,
+    "organizationId": 7,
+    "commissioner": {
+      "id": 38,
+      "name": "Dr. Michael Torres",
+      "avatar": "/avatars/michael.png",
+      "title": "Research Director"
+    },
+    "title": "UX Audit Walkthrough",
+    "skills": ["UX Research", "Heuristic Review", "User Testing"],
+    "tools": ["Notion", "Figma", "Hotjar"],
+    "notes": "Record a UX walkthrough audit of our app based on given heuristics.",
+    "budget": {
+      "min": 2500,
+      "max": 4000,
+      "currency": "USD"
+    },
+    "status": "Available",
+    "createdAt": "2025-07-07T14:30:00Z",
+    "responses": []
+  }
+]

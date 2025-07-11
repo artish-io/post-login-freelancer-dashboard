@@ -1,0 +1,83 @@
+[
+  {
+    "id": "#101001",
+    "title": "Digital Marketing Playbook",
+    "category": "Digital Course",
+    "status": "Approved",
+    "price": 15,
+    "coverImage": "/images/products/marketing-playbook.webp",
+    "authorId": 31,
+    "downloadLink": "/downloads/marketing-playbook.pdf",
+    "description": "A comprehensive guide to executing marketing campaigns in the digital age.",
+    "productDetails": "1 PDF",
+    "assets": [
+      "pdf"
+    ],
+    "reviews": [
+      "Essential reading for new marketers.",
+      "Straightforward and well-structured."
+    ]
+  },
+  {
+    "id": "#101002",
+    "title": "Content Design 101",
+    "category": "Digital Course",
+    "status": "Approved",
+    "price": 25,
+    "coverImage": "/images/products/content-design-101.webp",
+    "authorId": 31,
+    "downloadLink": "/downloads/content-design-101.pdf",
+    "description": "Content Design 101 is a practical introduction to designing clear, user-centered content that meets both business goals and audience needs. You’ll learn how to structure information, write for usability, and collaborate with product teams to build intuitive digital experiences. Perfect for writers, designers, and anyone curious about",
+    "productDetails": "3 Videos, 1 PDF",
+    "assets": [
+      "mp4",
+      "mp4",
+      "mp4",
+      "pdf"
+    ],
+    "reviews": [
+      "Very helpful framework.",
+      "Excellent for beginners in UX writing."
+    ]
+  },
+  {
+    "id": "#101003",
+    "title": "UX Writing For Beginners",
+    "category": "Digital Course",
+    "status": "Pending",
+    "price": 250,
+    "coverImage": "/images/products/ux-writing.webp",
+    "authorId": 31,
+    "downloadLink": null,
+    "description": "Beginner-friendly lessons on writing clear, helpful interface content.",
+    "productDetails": "4 Videos",
+    "assets": [
+      "mp4",
+      "mp4",
+      "mp4",
+      "mp4"
+    ],
+    "reviews": []
+  },
+  {
+    "id": "#101004",
+    "title": "Python For Dummies",
+    "category": "Digital Course",
+    "status": "Approved",
+    "price": 10,
+    "coverImage": "/images/products/python-dummies.webp",
+    "authorId": 23,
+    "downloadLink": "/downloads/python-for-dummies.pdf",
+    "description": "An easy-to-follow introduction to Python programming for non-coders.",
+    "productDetails": "2 Videos, 1 PDF",
+    "assets": [
+      "mp4",
+      "mp4",
+      "pdf"
+    ],
+    "reviews": [
+      "Great crash course in Python!",
+      "Simple and effective."
+    ]
+  }
+]

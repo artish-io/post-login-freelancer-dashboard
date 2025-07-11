@@ -6,39 +6,59 @@ import EarningsCard from '../../../components/freelancer-dashboard/earnings-card
 import ProjectSummaryTable from '../../../components/freelancer-dashboard/project-summary-table';
 import TodayTasksPanel from '../../../components/freelancer-dashboard/today-tasks-panel';
 import MessagesPreview from '../../../components/freelancer-dashboard/messages-preview';
+import { motion } from 'framer-motion';
+import { staggerContainer, staggerItem } from '../../../components/ui/page-transition';
 
 export default function FreelancerDashboardPage() {
   return (
-    <div className="flex-1 flex flex-col bg-gray-50">
+    <motion.div
+      className="flex-1 flex flex-col bg-gray-50"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="show"
+    >
       {/* Sticky Freelancer Header */}
-      <section className="sticky top-[80px] z-40 bg-gray-50 px-4 sm:px-6 py-2">
+      <motion.section
+        variants={staggerItem}
+        className="sticky top-[80px] z-40 bg-gray-50 px-4 sm:px-6 py-2"
+      >
         <FreelancerHeader />
-      </section>
+      </motion.section>
 
       {/* Responsive Grid Layout */}
       <section className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4 px-4 sm:px-6 py-4">
         {/* Left column: Main content */}
         <div className="order-2 lg:order-1 space-y-6">
           {/* Earnings shown first on mobile */}
-          <div className="lg:hidden flex justify-center">
+          <motion.div variants={staggerItem} className="lg:hidden flex justify-center">
             <EarningsCard />
-          </div>
-          <ProjectStatsRow />
-          <ProjectSummaryTable />
-          <TodayTasksPanel />
+          </motion.div>
+          <motion.div variants={staggerItem}>
+            <ProjectStatsRow />
+          </motion.div>
+          <motion.div variants={staggerItem}>
+            <ProjectSummaryTable />
+          </motion.div>
+          <motion.div variants={staggerItem}>
+            <TodayTasksPanel />
+          </motion.div>
 
           {/* MessagesPreview only on mobile */}
-          <div className="lg:hidden">
+          <motion.div variants={staggerItem} className="lg:hidden">
             <MessagesPreview />
-          </div>
+          </motion.div>
         </div>
 
         {/* Right column: Sidebar on large screens */}
         <div className="order-1 lg:order-2 hidden lg:flex flex-col gap-6">
-          <EarningsCard />
-          <MessagesPreview />
+          <motion.div variants={staggerItem}>
+            <EarningsCard />
+          </motion.div>
+          <motion.div variants={staggerItem}>
+            <MessagesPreview />
+          </motion.div>
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 }

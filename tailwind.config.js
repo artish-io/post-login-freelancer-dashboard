@@ -22,7 +22,7 @@ module.exports = {
         sans: ['var(--font-jakarta)', ...fontFamily.sans],
         jakarta: ['var(--font-jakarta)'],
         "Text-Regular-Normal": ['"Plus Jakarta Sans"', ...fontFamily.sans],
-        "button-medium": ["Roboto", ...fontFamily.sans],
+        "button-medium": ['var(--font-jakarta)', ...fontFamily.sans],
       },
       borderRadius: {
         borderRadius: "4px",

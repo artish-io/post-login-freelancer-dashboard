@@ -83,6 +83,11 @@ export default function MessagesPreview() {
     }, 500);
   };
 
+  const handleAvatarClick = (e: React.MouseEvent, contactId: number) => {
+    e.stopPropagation(); // Prevent triggering the card's onClick
+    router.push(`/freelancer-dashboard/profile/${contactId}`);
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 flex flex-col relative">
       <div className="flex justify-between items-center mb-4">
@@ -111,13 +116,19 @@ export default function MessagesPreview() {
                   className="flex items-center justify-between cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
-                    <Image
-                      src={contact.avatar}
-                      alt={contact.name}
-                      width={40}
-                      height={40}
-                      className="rounded-full object-cover"
-                    />
+                    <button
+                      onClick={(e) => handleAvatarClick(e, contact.id)}
+                      className="rounded-full hover:ring-2 hover:ring-[#FCD5E3] hover:ring-offset-1 transition-all"
+                      title={`View ${contact.name}'s profile`}
+                    >
+                      <Image
+                        src={contact.avatar}
+                        alt={contact.name}
+                        width={40}
+                        height={40}
+                        className="rounded-full object-cover"
+                      />
+                    </button>
                     <div className="flex flex-col text-sm">
                       <span
                         className={`truncate ${

@@ -1,0 +1,532 @@
+[
+  {
+    "projectId": 301,
+    "title": "Lagos Parks Services website re-design",
+    "organizationId": 1,
+    "typeTags": [
+      "Brand Design",
+      "Content Design"
+    ],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Develop colour palette",
+        "status": "Approved",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/color-palette-link",
+        "dueDate": "2025-07-02T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create a fresh color scheme aligned with the brand’s visual identity."
+      },
+      {
+        "id": 2,
+        "title": "Hero section design",
+        "status": "Submitted",
+        "completed": true,
+        "order": 2,
+        "link": "https://figma.com/file/hero-section-link",
+        "dueDate": "2025-07-03T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 1,
+        "pushedBack": true,
+        "version": 2,
+        "description": "Design the landing page’s hero section with clear messaging and CTAs."
+      },
+      {
+        "id": 3,
+        "title": "10 year anniversary graphic assets",
+        "status": "Approved",
+        "completed": true,
+        "order": 3,
+        "link": "https://figma.com/file/anniversary-assets",
+        "dueDate": "2025-06-12T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create commemorative graphic assets for the 10-year anniversary celebration."
+      },
+      {
+        "id": 11,
+        "title": "Testimonial section design",
+        "status": "In review",
+        "completed": true,
+        "order": 4,
+        "link": "https://figma.com/file/testimonials",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Design a testimonial section with 3–4 quotes and brand-aligned visuals."
+      }
+    ]
+  },
+  {
+    "projectId": 302,
+    "title": "Urbana channel brand refresh",
+    "organizationId": 2,
+    "typeTags": [
+      "Motion Design",
+      "Brand Strategy"
+    ],
+    "tasks": [
+      {
+        "id": 4,
+        "title": "Brand concept iteration",
+        "status": "In review",
+        "completed": false,
+        "order": 1,
+        "link": "https://figma.com/file/brand-concept",
+        "dueDate": "2025-06-28T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 2,
+        "pushedBack": true,
+        "version": 2,
+        "description": "Iterate on brand concept direction based on client feedback."
+      },
+      {
+        "id": 5,
+        "title": "Motion intro animation",
+        "status": "In review",
+        "completed": false,
+        "order": 2,
+        "link": "https://figma.com/file/motion-intro",
+        "dueDate": "2025-07-04T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Animate a branded motion intro for Urbana’s digital presence."
+      },
+      {
+        "id": 14,
+        "title": "Visual identity lockup",
+        "status": "Approved",
+        "completed": true,
+        "order": 3,
+        "link": "https://figma.com/file/visual-id",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Consolidate logo and visual identity assets into a consistent lockup."
+      },
+      {
+        "id": 15,
+        "title": "Finalize brand icons",
+        "status": "In review",
+        "completed": true,
+        "order": 4,
+        "link": "https://figma.com/file/brand-icons",
+        "dueDate": "2025-07-06T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Refine and finalize the brand's primary and secondary icon set."
+      },
+      {
+        "id": 13,
+        "title": "Client review deck",
+        "status": "In review",
+        "completed": true,
+        "order": 4,
+        "link": "https://figma.com/file/client-deck",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Prepare a presentation deck to walk the client through the updated design system."
+      }
+    ]
+  },
+  {
+    "projectId": 303,
+    "title": "Corlax iOS app UX",
+    "organizationId": 3,
+    "typeTags": [
+      "Mobile Design",
+      "UX Research"
+    ],
+    "tasks": [
+      {
+        "id": 6,
+        "title": "Login & onboarding flow",
+        "status": "Approved",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/login-onboarding",
+        "dueDate": "2025-05-31T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design intuitive login and onboarding flows for the iOS app."
+      },
+      {
+        "id": 7,
+        "title": "iOS testing & deployment",
+        "status": "Approved",
+        "completed": true,
+        "order": 2,
+        "link": "https://testflight.apple.com/app-build",
+        "dueDate": "2025-06-02T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 2,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Test app functionality and deploy to App Store for review."
+      },
+      {
+        "id": 16,
+        "title": "Scroll gestures & microinteractions",
+        "status": "In review",
+        "completed": true,
+        "order": 3,
+        "link": "https://figma.com/file/scroll-gestures",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 1,
+        "pushedBack": true,
+        "version": 3,
+        "description": "Prototype scroll interactions and subtle animations for mobile UI."
+      }
+    ]
+  },
+  {
+    "projectId": 304,
+    "title": "Zynate events brand toolkit",
+    "organizationId": 4,
+    "typeTags": [
+      "Print Design",
+      "Events"
+    ],
+    "tasks": [
+      {
+        "id": 7,
+        "title": "Design event templates",
+        "status": "In review",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/event-templates",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Design reusable templates for event promotional materials."
+      },
+      {
+        "id": 8,
+        "title": "Print-ready social media assets",
+        "status": "In review",
+        "completed": false,
+        "order": 2,
+        "link": "https://figma.com/file/social-assets",
+        "dueDate": "2025-07-09T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": true,
+        "version": 1,
+        "description": "Prepare print-ready social assets optimized for various platforms."
+      }
+    ]
+  },
+  {
+    "projectId": 305,
+    "title": "HERO research launch collateral",
+    "organizationId": 5,
+    "typeTags": [
+      "Content Strategy",
+      "Editorial Design"
+    ],
+    "tasks": [
+      {
+        "id": 9,
+        "title": "Write product documentation",
+        "status": "In review",
+        "completed": true,
+        "order": 1,
+        "link": "https://docs.google.com/document/product-docs",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 3,
+        "pushedBack": true,
+        "version": 2,
+        "description": "Document the product’s features, usage guidelines, and workflows."
+      },
+      {
+        "id": 10,
+        "title": "Internal training slides",
+        "status": "Approved",
+        "completed": true,
+        "order": 2,
+        "link": "https://figma.com/file/training-slides",
+        "dueDate": "2025-07-11T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create internal slides for onboarding and training sessions."
+      }
+    ]
+  },
+  {
+    "projectId": 306,
+    "title": "Nebula CMS landing redesign",
+    "organizationId": 3,
+    "typeTags": [
+      "Web Design",
+      "UX Strategy"
+    ],
+    "tasks": [
+      {
+        "id": 21,
+        "title": "CTA Button States",
+        "status": "In review",
+        "completed": true,
+        "order": 4,
+        "link": "https://figma.com/file/cta-buttons",
+        "dueDate": "2025-07-05T00:00:00Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Design various hover and active states for CTAs."
+      },
+      {
+        "id": 22,
+        "title": "Analytics tag setup",
+        "status": "In review",
+        "completed": true,
+        "order": 5,
+        "link": "https://figma.com/file/analytics-tags",
+        "dueDate": "2025-07-05T00:00:00Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Configure tracking for scroll events and button clicks."
+      },
+      {
+        "id": 23,
+        "title": "Mobile nav menu prototype",
+        "status": "In review",
+        "completed": true,
+        "order": 6,
+        "link": "https://figma.com/file/mobile-nav",
+        "dueDate": "2025-07-05T00:00:00Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": true,
+        "version": 3,
+        "description": "Build interactive prototype of mobile navigation."
+      },
+      {
+        "id": 24,
+        "title": "Carousel animation mock",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 7,
+        "link": "https://figma.com/file/carousel-animation",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design a looping carousel animation for the homepage."
+      },
+      {
+        "id": 25,
+        "title": "404 error page concept",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 8,
+        "link": "https://figma.com/file/404-concept",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create a playful and branded 404 error page."
+      },
+      {
+        "id": 26,
+        "title": "Global search UI wireframe",
+        "status": "In review",
+        "completed": true,
+        "order": 9,
+        "link": "https://figma.com/file/global-search",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 2,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Wireframe layout for global site-wide search feature."
+      },
+      {
+        "id": 27,
+        "title": "Accessibility audit pass",
+        "status": "In review",
+        "completed": true,
+        "order": 10,
+        "link": "https://figma.com/file/a11y-check",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": true,
+        "version": 2,
+        "description": "Run final accessibility audit and implement fixes."
+      },
+      {
+        "id": 28,
+        "title": "URGENT: Header redesign",
+        "status": "In review",
+        "completed": true,
+        "order": 11,
+        "link": "https://figma.com/file/header-redesign",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 2,
+        "pushedBack": false,
+        "version": 4,
+        "description": "Redesign the main header with new navigation structure - URGENT."
+      },
+      {
+        "id": 29,
+        "title": "URGENT: Footer contact form",
+        "status": "In review",
+        "completed": true,
+        "order": 12,
+        "link": "https://figma.com/file/footer-form",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 3,
+        "pushedBack": true,
+        "version": 3,
+        "description": "Add contact form to footer section - high priority."
+      },
+      {
+        "id": 30,
+        "title": "Blog layout template",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 13,
+        "link": "https://figma.com/file/blog-template",
+        "dueDate": "2025-07-05T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create reusable blog post layout template."
+      }
+    ]
+  },
+  {
+    "projectId": 300,
+    "title": "Event Production",
+    "organizationId": 6,
+    "typeTags": ["Event Management", "Brand Design"],
+    "tasks": [
+      {
+        "id": 21,
+        "title": "Event branding package",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 1,
+        "link": "https://figma.com/file/event-branding",
+        "dueDate": "2024-01-10T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design comprehensive branding package for tech showcase event."
+      },
+      {
+        "id": 22,
+        "title": "Venue signage design",
+        "status": "Paused",
+        "completed": false,
+        "order": 2,
+        "link": "https://figma.com/file/venue-signage",
+        "dueDate": "2024-01-12T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": true,
+        "version": 1,
+        "description": "Create wayfinding and promotional signage for event venue."
+      },
+      {
+        "id": 23,
+        "title": "Speaker presentation templates",
+        "status": "Paused",
+        "completed": false,
+        "order": 3,
+        "link": "https://figma.com/file/speaker-templates",
+        "dueDate": "2024-01-15T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design standardized presentation templates for all speakers."
+      }
+    ]
+  },
+  {
+    "projectId": 299,
+    "title": "UX Writing",
+    "organizationId": 7,
+    "typeTags": ["Content Strategy", "UX Writing"],
+    "tasks": [
+      {
+        "id": 24,
+        "title": "Accessibility microcopy audit",
+        "status": "Ongoing",
+        "completed": true,
+        "order": 1,
+        "link": "https://docs.google.com/document/accessibility-audit",
+        "dueDate": "2024-02-10T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Comprehensive audit of existing microcopy for accessibility compliance."
+      },
+      {
+        "id": 25,
+        "title": "Error message redesign",
+        "status": "In review",
+        "completed": true,
+        "order": 2,
+        "link": "https://docs.google.com/document/error-messages",
+        "dueDate": "2024-02-12T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Rewrite all error messages for clarity and user-friendliness."
+      },
+      {
+        "id": 26,
+        "title": "Onboarding flow copy",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 3,
+        "link": "https://docs.google.com/document/onboarding-copy",
+        "dueDate": "2024-02-14T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Write engaging and clear copy for user onboarding experience."
+      }
+    ]
+  }
+]

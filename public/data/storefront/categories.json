@@ -1,0 +1,72 @@
+[
+  {
+    "id": "software-development",
+    "name": "Software development",
+    "description": "Apps, websites, and software solutions"
+  },
+  {
+    "id": "design",
+    "name": "Design",
+    "description": "Graphics, UI/UX, and visual content"
+  },
+  {
+    "id": "events-live-shows",
+    "name": "Events & live shows",
+    "description": "Virtual events, webinars, and live performances"
+  },
+  {
+    "id": "photography",
+    "name": "Photography",
+    "description": "Stock photos, photo collections, and presets"
+  },
+  {
+    "id": "finance-business",
+    "name": "Finance & business",
+    "description": "Business tools, templates, and financial resources"
+  },
+  {
+    "id": "writing-publishing",
+    "name": "Writing and publishing",
+    "description": "Books, articles, and written content"
+  },
+  {
+    "id": "film-video",
+    "name": "Film and video",
+    "description": "Video content, tutorials, and media"
+  },
+  {
+    "id": "ebooks-courses",
+    "name": "E-Books & courses",
+    "description": "Educational content and learning materials"
+  },
+  {
+    "id": "education",
+    "name": "Education",
+    "description": "Teaching materials and educational resources"
+  },
+  {
+    "id": "comics-graphic-novels",
+    "name": "Comics & graphic novels",
+    "description": "Digital comics and illustrated stories"
+  },
+  {
+    "id": "music-audio",
+    "name": "Music and Audio",
+    "description": "Music tracks, sound effects, and audio content"
+  },
+  {
+    "id": "fitness-wellness",
+    "name": "Fitness and wellness",
+    "description": "Workout plans, wellness guides, and health content"
+  },
+  {
+    "id": "gaming",
+    "name": "Gaming",
+    "description": "Game assets, mods, and gaming content"
+  },
+  {
+    "id": "others",
+    "name": "Others",
+    "description": "Miscellaneous digital products"
+  }
+]

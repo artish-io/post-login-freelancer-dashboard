@@ -2,6 +2,7 @@
 
 import TopNavbar from '../../../components/freelancer-dashboard/top-navbar';
 import FreelancerSidebar from '../../../components/freelancer-dashboard/freelancer-sidebar';
+import PageTransition from '../../../components/ui/page-transition';
 import { useEffect, useState } from 'react';
 
 export default function FreelancerDashboardLayout({
@@ -61,7 +62,9 @@ export default function FreelancerDashboardLayout({
 
         {/* Main Content Area */}
         <div className="flex-1 flex flex-col bg-gray-50 ml-0 md:ml-16 lg:ml-60">
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
         </div>
       </div>
     </main>

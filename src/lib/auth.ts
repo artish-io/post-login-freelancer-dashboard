@@ -15,14 +15,14 @@ export const authOptions: NextAuthOptions = {
         console.log('🧪 Trying to authorize:', credentials);
 
         try {
-          const filePath = path.join(process.cwd(), 'data', 'freelancers.json');
+          const filePath = path.join(process.cwd(), 'data', 'users.json');
           const file = await fs.readFile(filePath, 'utf-8');
-          const freelancers = JSON.parse(file);
+          const users = JSON.parse(file);
 
-          const user = freelancers.find(
-            (f: any) =>
-              f.username === credentials?.username &&
-              f.password === credentials?.password
+          const user = users.find(
+            (u: any) =>
+              u.username === credentials?.username &&
+              u.password === credentials?.password
           );
 
           if (user) {
@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
           console.warn('❌ No match found for credentials:', credentials);
           return null;
         } catch (err) {
-          console.error('🔥 Error reading freelancers.json:', err);
+          console.error('🔥 Error reading users.json:', err);
           return null;
         }
       },

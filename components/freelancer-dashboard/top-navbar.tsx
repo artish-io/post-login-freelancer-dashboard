@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import NotificationDropdown from './notification-dropdown';
 import MobileMenuToggle from './mobile-menu-toggle';
+import UserProfileDropdown from './user-profile-dropdown';
 
 interface TopNavbarProps {
   isMobileMenuOpen?: boolean;
@@ -19,6 +20,7 @@ export default function TopNavbar({
 
   const [avatar, setAvatar] = useState('/avatar.png');
   const [name, setName] = useState('...');
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   useEffect(() => {
     if (!session?.user?.id) return;
@@ -66,14 +68,27 @@ export default function TopNavbar({
       <div className="flex items-center gap-5 pr-2">
         <NotificationDropdown />
 
-        <Image
-          src={avatar}
-          alt={`${name}'s Avatar`}
-          width={44}
-          height={44}
-          className="rounded-full border-2 border-black/10 shadow-sm hover:shadow-md transition object-cover"
-          onError={() => setAvatar('/avatar.png')}
-        />
+        <div className="relative">
+          <button
+            onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+            className="focus:outline-none"
+          >
+            <Image
+              src={avatar}
+              alt={`${name}'s Avatar`}
+              width={44}
+              height={44}
+              className="rounded-full border-2 border-black/10 shadow-sm hover:shadow-md transition object-cover cursor-pointer"
+              onError={() => setAvatar('/avatar.png')}
+            />
+          </button>
+
+          <UserProfileDropdown
+            isOpen={isProfileDropdownOpen}
+            onToggle={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
+            onClose={() => setIsProfileDropdownOpen(false)}
+          />
+        </div>
       </div>
     </div>
   );

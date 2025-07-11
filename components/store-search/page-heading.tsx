@@ -8,7 +8,7 @@ export default function PageHeading({ heading }: PageHeadingProps) {
   return (
     <div className="max-w-7xl mx-auto px-4 pt-4 pb-4">
       {/* Page title */}
-      <h1 className="text-[40px] leading-tight font-bold text-black mb-4 font-plus-jakarta-sans">
+      <h1 className="text-[40px] leading-tight font-bold text-black mb-4">
         {heading}
       </h1>
 

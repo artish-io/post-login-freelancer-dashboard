@@ -1,0 +1,28 @@
+[
+  {
+    "invoiceNumber": "MF-98FHX",
+    "issueDate": "2025-06-26T19:45:45.929Z",
+    "dueDate": "2025-07-03T19:45:45.929Z",
+    "executionTiming": "on-completion",
+    "billTo": "matte.hannery@example.com",
+    "project": {
+      "projectId": 303,
+      "title": "Corlax iOS app development"
+    },
+    "milestones": [
+      {
+        "id": 1750967142925,
+        "title": "toye sokunbi",
+        "description": "wee",
+        "rate": 5000
+      }
+    ],
+    "total": 5000,
+    "notes": "",
+    "freelancerId": "31",
+    "id": 1,
+    "uuid": "9886fb2c-9a31-41f8-bd58-35d1909c93bf",
+    "status": "draft",
+    "createdAt": "2025-06-26T20:26:47.515Z"
+  }
+]

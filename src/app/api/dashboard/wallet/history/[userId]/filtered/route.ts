@@ -7,10 +7,10 @@ const WALLET_HISTORY_PATH = path.join(process.cwd(), 'data/wallet/wallet-history
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
+  const { userId } = await params;
   const { searchParams } = new URL(req.url);
-  const userId = params.userId;
 
   const projectId = searchParams.get('projectId');
   const organizationId = searchParams.get('organizationId');

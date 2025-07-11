@@ -22,7 +22,7 @@ export default function WalletPage() {
       try {
         const res = await fetch(`/api/dashboard/wallet/summary?range=${range}`);
         const data = await res.json();
-        setLastMonthTotal(data.lastWeekTotal || 0);
+        setLastMonthTotal(data.previousTotal || 0);
       } catch (err) {
         console.error('Failed to load last month data:', err);
       }

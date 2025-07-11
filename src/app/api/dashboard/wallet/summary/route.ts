@@ -124,6 +124,7 @@ export async function GET(req: Request) {
       range,
       currentTotal: Number(currentTotal.toFixed(2)),
       lastWeekTotal: Number(lastWeekTotal.toFixed(2)),
+      previousTotal: Number(previousTotal.toFixed(2)),
       monthlyGrowthPercent,
       dailyBreakdown,
     });

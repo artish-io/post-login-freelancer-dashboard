@@ -9,6 +9,7 @@
 import Image from 'next/image';
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   id: number;
@@ -29,9 +30,16 @@ export default function ContactListCard({
   isActive,
   onClick,
 }: Props) {
+  const router = useRouter();
+
   useEffect(() => {
     console.log(`[ContactListCard] Rendered for ${name} (ID: ${id}) → isUnread: ${isUnread} | isActive: ${isActive}`);
   }, [isUnread, isActive, id, name]);
+
+  const handleAvatarClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent triggering the card's onClick
+    router.push(`/freelancer-dashboard/profile/${id}`);
+  };
 
   return (
     <motion.li
@@ -48,13 +56,19 @@ export default function ContactListCard({
       transition={{ duration: 0.2, ease: "easeOut" }}
     >
       <div className="flex items-center gap-3 overflow-hidden">
-        <Image
-          src={avatar}
-          alt={name}
-          width={40}
-          height={40}
-          className="rounded-full object-cover shrink-0"
-        />
+        <button
+          onClick={handleAvatarClick}
+          className="rounded-full shrink-0 hover:ring-2 hover:ring-[#FCD5E3] hover:ring-offset-1 transition-all"
+          title={`View ${name}'s profile`}
+        >
+          <Image
+            src={avatar}
+            alt={name}
+            width={40}
+            height={40}
+            className="rounded-full object-cover"
+          />
+        </button>
         <div className="flex flex-col overflow-hidden">
           <span
             className={`text-sm truncate ${

@@ -1,0 +1,68 @@
+[
+  {
+    "productId": "#101001",
+    "date": "2025-07-01",
+    "amount": 15
+  },
+  {
+    "productId": "#101001",
+    "date": "2025-07-02",
+    "amount": 15
+  },
+  {
+    "productId": "#101001",
+    "date": "2025-07-03",
+    "amount": 15
+  },
+  {
+    "productId": "#101002",
+    "date": "2025-07-01",
+    "amount": 25
+  },
+  {
+    "productId": "#101002",
+    "date": "2025-07-04",
+    "amount": 25
+  },
+  {
+    "productId": "#101004",
+    "date": "2025-07-02",
+    "amount": 10
+  },
+  {
+    "productId": "#101004",
+    "date": "2025-07-05",
+    "amount": 10
+  },
+  {
+    "productId": "#101004",
+    "date": "2025-07-06",
+    "amount": 10
+  },
+  {
+    "productId": "#101004",
+    "date": "2025-07-07",
+    "amount": 10
+  },
+  {
+    "productId": "#101004",
+    "date": "2025-07-08",
+    "amount": 10
+  },
+  {
+    "productId": "#101001",
+    "date": "2025-07-09",
+    "amount": 15
+  },
+  {
+    "productId": "#101002",
+    "date": "2025-07-10",
+    "amount": 25
+  },
+  {
+    "productId": "#101002",
+    "date": "2025-07-11",
+    "amount": 25,
+    "buyerId": "test-buyer-1752192721814"
+  }
+]

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from 'next/image';
-import Link from 'next/link';
+import SmoothLink from '../ui/smooth-link';
 import { usePathname } from 'next/navigation';
 import { useUnreadMessages } from '../../src/hooks/useUnreadMessages';
 
@@ -12,7 +12,7 @@ const sidebarItems = [
   { label: 'Gig Requests', icon: '/gig-requests-logo (sidebar).png', href: '/freelancer-dashboard/gig-requests' },
   { label: 'Projects & Invoices', icon: '/projects-invoices-logo (sidebar).png', href: '/freelancer-dashboard/projects-and-invoices' },
   { label: 'Wallet', icon: '/wallet-logo (sidebar).png', href: '/freelancer-dashboard/wallet' },
-  { label: 'Storefront', icon: '/storefront-logo (sidebar).png', href: '#' },
+  { label: 'Storefront', icon: '/storefront-logo (sidebar).png', href: '/freelancer-dashboard/storefront' },
   { label: 'Settings', icon: '/account-settings-logo (sidebar).png', href: '#' },
 ];
 
@@ -52,7 +52,7 @@ export default function FreelancerSidebar({
               );
 
               return (
-                <Link
+                <SmoothLink
                   key={item.label}
                   href={item.href}
                   className={`flex items-center gap-3 text-sm relative transition-all ${
@@ -77,7 +77,7 @@ export default function FreelancerSidebar({
                       </span>
                     )}
                   </span>
-                </Link>
+                </SmoothLink>
               );
             })}
           </nav>
@@ -98,7 +98,7 @@ export default function FreelancerSidebar({
               );
 
               return (
-                <Link
+                <SmoothLink
                   key={item.label}
                   href={item.href}
                   className={`flex items-center justify-center relative transition-all p-2 rounded-lg ${
@@ -106,9 +106,8 @@ export default function FreelancerSidebar({
                       ? 'text-white bg-pink-600'
                       : 'text-pink-200 hover:text-white hover:bg-gray-800'
                   }`}
-                  title={item.label}
                 >
-                  <div className="relative">
+                  <div className="relative" title={item.label}>
                     <Image
                       src={item.icon}
                       alt={item.label}
@@ -121,7 +120,7 @@ export default function FreelancerSidebar({
                       </span>
                     )}
                   </div>
-                </Link>
+                </SmoothLink>
               );
             })}
           </nav>
@@ -148,7 +147,7 @@ export default function FreelancerSidebar({
               );
 
               return (
-                <Link
+                <SmoothLink
                   key={item.label}
                   href={item.href}
                   onClick={onMobileMenuClose}
@@ -174,7 +173,7 @@ export default function FreelancerSidebar({
                       </span>
                     )}
                   </span>
-                </Link>
+                </SmoothLink>
               );
             })}
           </nav>

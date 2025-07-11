@@ -1,0 +1,38 @@
+[
+  {
+    "title": "I love lagos",
+    "summary": "Some apps and websites can access network volumes to provide you with services and features. For example, an app might access information from a network volume to provide you with specific updates or files.\n\nTo authorize an app or a website to access network volumes, click Allow in the dialog. If you don’t want to authorize access to network volumes, click Don’t Allow.\n\n",
+    "logoUrl": "/logos/corlax-ios-logo.png",
+    "typeTags": [],
+    "milestones": [
+      {
+        "id": "44bec85a-40bf-43be-9c6a-ed67a7c5cf92",
+        "title": "Some apps and websites can access network",
+        "description": "Some apps and websites can access network volumes to provide you with services and features. For example, an app might access information from a network volume to provide you with specific updates or files.\n\nTo authorize an app or a website to access network volumes, click Allow in the dialog. If you don’t want to authorize access to network volumes, click Don’t Allow.\n\n",
+        "startDate": "2025-07-01T04:00:00.000Z",
+        "endDate": "2025-07-11T04:00:00.000Z",
+        "amount": 0
+      },
+      {
+        "id": "b3d6efb0-6528-4b26-88e8-83c1affbc893",
+        "title": "To authorize an app or a website to access network",
+        "description": "If you allow third-party apps or websites to access network volumes, any information they collect is governed by their terms and privacy policies. It’s recommended that you learn about the privacy practices of those parties.\n\nYou can review and change which apps and websites can access network volumes in Network settings.\n\n",
+        "startDate": "2025-07-12T04:00:00.000Z",
+        "endDate": "2025-07-23T04:00:00.000Z",
+        "amount": 0
+      }
+    ],
+    "paymentCycle": "Hourly Rate",
+    "rate": 32,
+    "projectId": "mXgfdKVQ2V",
+    "totalBid": 0,
+    "customStartDate": null,
+    "endDate": "2025-07-23T04:00:00.000Z",
+    "maxHours": "8",
+    "depositRate": "",
+    "id": "proposal-1751309391472",
+    "createdAt": "2025-06-30T18:49:51.472Z",
+    "status": "sent",
+    "hiddenFor": []
+  }
+]
