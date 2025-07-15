@@ -2603,5 +2603,71 @@
     "total": 50000,
     "notes": "",
     "freelancerId": "31"
+  },
+  {
+    "invoiceNumber": "MF-135GG",
+    "issueDate": null,
+    "dueDate": null,
+    "executionTiming": "",
+    "billTo": "matte.hannery@example.com",
+    "project": {
+      "projectId": 301,
+      "title": "Lagos Parks Services website re-design"
+    },
+    "milestones": [
+      {
+        "id": 1752272418871,
+        "title": "heowenwnooconewoif",
+        "description": "kjehriewhrieriewhr",
+        "rate": 5500
+      }
+    ],
+    "total": 5500,
+    "notes": "",
+    "freelancerId": "31"
+  },
+  {
+    "invoiceNumber": "MF-EZJFE",
+    "issueDate": null,
+    "dueDate": null,
+    "executionTiming": "",
+    "billTo": "matte.hannery@example.com",
+    "project": {
+      "projectId": 303,
+      "title": "Corlax iOS app UX"
+    },
+    "milestones": [
+      {
+        "id": 1752310701612,
+        "title": "vhjbuhkilnlkjbuhkln",
+        "description": "bluvyttykjgfcikhgbftjckvbfjyckuvh",
+        "rate": 100
+      }
+    ],
+    "total": 100,
+    "notes": "",
+    "freelancerId": "31"
+  },
+  {
+    "invoiceNumber": "MF-FIQ8L",
+    "issueDate": "2025-07-12T08:59:24.370Z",
+    "dueDate": "2025-07-12T08:59:24.370Z",
+    "executionTiming": "immediate",
+    "billTo": "matte.hannery@example.com",
+    "project": {
+      "projectId": null,
+      "title": ""
+    },
+    "milestones": [
+      {
+        "id": 1752310751651,
+        "title": "",
+        "description": "",
+        "rate": 0
+      }
+    ],
+    "total": 0,
+    "notes": "",
+    "freelancerId": "31"
   }
 ]

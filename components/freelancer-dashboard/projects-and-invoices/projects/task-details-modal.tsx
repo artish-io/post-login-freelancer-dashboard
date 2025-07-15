@@ -132,19 +132,24 @@ export default function TaskDetailsModal({
 
     await submitTask({ projectId, taskId, referenceUrl });
 
-    // Trigger auto-movement after successful submission
-    try {
-      const movementResult = await checkAndExecuteAutoMovement();
-      if (movementResult.moved) {
-        console.log('🔄 Auto-movement executed:', movementResult.message);
-        console.log('📋 Moved tasks:', movementResult.movedTasks);
-      }
-    } catch (error) {
-      console.error('Error in auto-movement:', error);
-    }
+    // Immediate callback for optimistic updates
+    onTaskSubmitted?.();
 
-    onTaskSubmitted?.(); // Trigger refresh
+    // Close modal immediately for better UX
     onClose();
+
+    // Trigger auto-movement in background (non-blocking)
+    setTimeout(async () => {
+      try {
+        const movementResult = await checkAndExecuteAutoMovement();
+        if (movementResult.moved) {
+          console.log('🔄 Auto-movement executed:', movementResult.message);
+          console.log('📋 Moved tasks:', movementResult.movedTasks);
+        }
+      } catch (error) {
+        console.error('Error in auto-movement:', error);
+      }
+    }, 100);
   };
 
   return (

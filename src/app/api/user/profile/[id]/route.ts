@@ -45,6 +45,7 @@ export async function GET(
 
     // ---------- Look‑ups ----------
     const user = users.find((u: any) => String(u.id) === id);
+    const isOnline = user?.isOnline ?? false; // persist online status per user
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
@@ -80,6 +81,7 @@ export async function GET(
         name: user.name,
         title: user.title,
         avatar: user.avatar,
+        isOnline,
         type: user.type,
         location: freelancer.location,
         rate: freelancer.rate,
@@ -137,6 +139,7 @@ export async function GET(
         name: user.name,
         title: user.title,
         avatar: user.avatar,
+        isOnline,
         type: user.type,
         about: user.about || '',
         organization: organization ? {

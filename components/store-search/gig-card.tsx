@@ -10,13 +10,18 @@ export default function GigCard({ gig }: GigCardProps) {
     name,
     title,
     category,
-    skills,
+    skills = [],
+    skillCategories = [],
+    tools = [],
     specializations = [],
     rate,
     location,
     rating,
     avatar = '/avatar.png' // Default fallback avatar
   } = gig;
+
+  // Combine all skill-related data for display
+  const allSkills = [...skills, ...skillCategories, ...tools];
 
   const skillIcons: Record<string, string> = {
     HTML5: '/HTML5-logo.png',
@@ -41,14 +46,14 @@ export default function GigCard({ gig }: GigCardProps) {
   const toolList = Object.keys(skillIcons);
   const isTool = (tag: string) => toolList.includes(tag);
 
-  const filteredSkills = skills.filter(
+  const filteredSkills = allSkills.filter(
     (skill) =>
       !isTool(skill) &&
       skill !== title &&
       skill !== category
   );
 
-  const tools = skills.filter(isTool);
+  const toolsFromSkills = allSkills.filter(isTool);
 
   return (
     <div className="border rounded-2xl shadow-sm w-full max-w-sm bg-white overflow-hidden">
@@ -100,7 +105,7 @@ export default function GigCard({ gig }: GigCardProps) {
           💲 {rate}
         </div>
 
-        {tools.slice(0, 4).map((tool) => (
+        {toolsFromSkills.slice(0, 4).map((tool) => (
           <div
             key={tool}
             className="flex items-center gap-1 text-xs px-2 py-1 rounded-full border border-gray-300 text-gray-800"
@@ -117,9 +122,9 @@ export default function GigCard({ gig }: GigCardProps) {
           </div>
         ))}
 
-        {tools.length > 4 && (
+        {toolsFromSkills.length > 4 && (
           <span className="text-xs px-2 py-1 rounded-full border border-gray-300 text-gray-500">
-            {tools.length - 4}+
+            {toolsFromSkills.length - 4}+
           </span>
         )}
       </div>

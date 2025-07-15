@@ -24,9 +24,11 @@ export default function MarketplaceSearchPage() {
 
   // Enrich freelancer data with user information (avatar, etc.)
   const enrichedFreelancers = freelancers.map(freelancer => {
-    const userInfo = users.find(user => user.id === freelancer.id);
+    const userInfo = users.find(user => user.id === freelancer.userId);
     return {
       ...freelancer,
+      name: userInfo?.name || 'Unknown User',
+      title: userInfo?.title || 'Freelancer',
       avatar: userInfo?.avatar || '/avatar.png', // Fallback to default avatar
       email: userInfo?.email,
       address: userInfo?.address,
@@ -76,10 +78,17 @@ export default function MarketplaceSearchPage() {
   };
 
   // Helper function to check if skills match using keywords
-  const matchesSkillTag = (gigSkills: string[], filterTag: string): boolean => {
+  const matchesSkillTag = (gig: any, filterTag: string): boolean => {
     const keywords = skillKeywordMap[filterTag] || [filterTag];
+    const gigSkills = gig.skills || [];
+    const gigSkillCategories = gig.skillCategories || [];
+    const gigTools = gig.tools || [];
+
+    // Check against all skill-related fields
+    const allSkillData = [...gigSkills, ...gigSkillCategories, ...gigTools];
+
     return keywords.some(keyword =>
-      gigSkills.some(skill =>
+      allSkillData.some(skill =>
         skill.toLowerCase().includes(keyword.toLowerCase()) ||
         keyword.toLowerCase().includes(skill.toLowerCase())
       )
@@ -91,10 +100,10 @@ export default function MarketplaceSearchPage() {
     // Search logic (matches name, title, category, or skills)
     const queryMatch =
       !query ||
-      gig.name.toLowerCase().includes(query.toLowerCase()) ||
-      gig.title.toLowerCase().includes(query.toLowerCase()) ||
-      gig.category.toLowerCase().includes(query.toLowerCase()) ||
-      gig.skills.some(skill => skill.toLowerCase().includes(query.toLowerCase()));
+      (gig.name || '').toLowerCase().includes(query.toLowerCase()) ||
+      (gig.title || '').toLowerCase().includes(query.toLowerCase()) ||
+      (gig.category || '').toLowerCase().includes(query.toLowerCase()) ||
+      (gig.skills || []).some(skill => skill.toLowerCase().includes(query.toLowerCase()));
 
     const categoryMatch = activeCategory
       ? matchesCategory(gig.category, activeCategory)
@@ -102,7 +111,7 @@ export default function MarketplaceSearchPage() {
 
     const tagMatch =
       selectedTags.length === 0 ||
-      selectedTags.some(tag => matchesSkillTag(gig.skills, tag));
+      selectedTags.some(tag => matchesSkillTag(gig, tag));
 
     const gigMin = gig.minRate;
     const gigMax = gig.maxRate;
@@ -119,14 +128,22 @@ export default function MarketplaceSearchPage() {
   const sortGigs = (gigs: Gig[]) => {
     switch (sortOption) {
       case 'rateLowToHigh':
-        return [...gigs].sort((a, b) => a.minRate - b.minRate);
+        return [...gigs].sort((a, b) => (a.minRate || 0) - (b.minRate || 0));
       case 'rateHighToLow':
-        return [...gigs].sort((a, b) => b.maxRate - a.maxRate);
+        return [...gigs].sort((a, b) => (b.maxRate || 0) - (a.maxRate || 0));
       case 'tools':
-        return [...gigs].sort((a, b) => a.skills.join(',').localeCompare(b.skills.join(',')));
+        return [...gigs].sort((a, b) => {
+          const aSkills = (a.skills || []).join(',');
+          const bSkills = (b.skills || []).join(',');
+          return aSkills.localeCompare(bSkills);
+        });
       case 'skill':
       default:
-        return [...gigs].sort((a, b) => a.title.localeCompare(b.title));
+        return [...gigs].sort((a, b) => {
+          const aTitle = a.title || '';
+          const bTitle = b.title || '';
+          return aTitle.localeCompare(bTitle);
+        });
     }
   };
 

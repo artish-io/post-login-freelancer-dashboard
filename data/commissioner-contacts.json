@@ -1,0 +1,113 @@
+[
+  {
+    "commissionerId": 32,
+    "contacts": [
+      {
+        "freelancerId": 31,
+        "name": "Natali Craig",
+        "title": "Brand Designer",
+        "avatar": "/avatars/natali.png",
+        "status": "active",
+        "lastProject": "Lagos Parks Services website re-design",
+        "connectionDate": "2024-06-15",
+        "projectsCompleted": 3,
+        "rating": 4.8,
+        "skills": ["Brand Design", "Content Design", "UI/UX Design"]
+      },
+      {
+        "freelancerId": 29,
+        "name": "Damini Adeleke",
+        "title": "Game Designer",
+        "avatar": "/avatars/damini.png",
+        "status": "active",
+        "lastProject": "Lagos Parks Mobile App Development",
+        "connectionDate": "2024-07-01",
+        "projectsCompleted": 1,
+        "rating": 4.9,
+        "skills": ["Game Design", "Mobile Design", "Interactive Design"]
+      },
+      {
+        "freelancerId": 28,
+        "name": "Billy Parker",
+        "title": "Motion Designer",
+        "avatar": "/avatars/billy.png",
+        "status": "completed",
+        "lastProject": "Brand Animation Package",
+        "connectionDate": "2024-05-20",
+        "projectsCompleted": 2,
+        "rating": 4.7,
+        "skills": ["Motion Design", "Animation", "Video Editing"]
+      },
+      {
+        "freelancerId": 27,
+        "name": "Nancy Salmon",
+        "title": "Sales Manager",
+        "avatar": "/avatars/nancy.png",
+        "status": "connected",
+        "lastProject": null,
+        "connectionDate": "2024-07-10",
+        "projectsCompleted": 0,
+        "rating": 0,
+        "skills": ["Sales Strategy", "Client Relations", "Business Development"]
+      },
+      {
+        "freelancerId": 26,
+        "name": "Stella Maxwell",
+        "title": "Designer",
+        "avatar": "/avatars/stella.png",
+        "status": "active",
+        "lastProject": "UI Component Library",
+        "connectionDate": "2024-06-01",
+        "projectsCompleted": 2,
+        "rating": 4.6,
+        "skills": ["UI Design", "Design Systems", "Prototyping"]
+      },
+      {
+        "freelancerId": 25,
+        "name": "Didi Adeleke",
+        "title": "Filmmaker",
+        "avatar": "/avatars/didi.png",
+        "status": "completed",
+        "lastProject": "Corporate Video Production",
+        "connectionDate": "2024-04-15",
+        "projectsCompleted": 1,
+        "rating": 4.8,
+        "skills": ["Video Production", "Cinematography", "Post-Production"]
+      }
+    ]
+  },
+  {
+    "commissionerId": 33,
+    "contacts": [
+      {
+        "freelancerId": 31,
+        "name": "Natali Craig",
+        "title": "Brand Designer",
+        "avatar": "/avatars/natali.png",
+        "status": "active",
+        "lastProject": "Urbana channel brand refresh",
+        "connectionDate": "2024-06-20",
+        "projectsCompleted": 1,
+        "rating": 4.8,
+        "skills": ["Brand Design", "Content Design", "UI/UX Design"]
+      }
+    ]
+  },
+  {
+    "commissionerId": 34,
+    "contacts": [
+      {
+        "freelancerId": 31,
+        "name": "Natali Craig",
+        "title": "Brand Designer",
+        "avatar": "/avatars/natali.png",
+        "status": "active",
+        "lastProject": "Corlax iOS app UX",
+        "connectionDate": "2024-07-05",
+        "projectsCompleted": 1,
+        "rating": 4.8,
+        "skills": ["Brand Design", "Content Design", "UI/UX Design"]
+      }
+    ]
+  }
+]

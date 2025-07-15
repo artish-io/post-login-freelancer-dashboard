@@ -23,7 +23,7 @@
         "text": "We can meet on Sunday BTW",
         "read": {
           "31": true,
-          "32": false
+          "32": true
         }
       },
       {
@@ -43,7 +43,7 @@
         "text": "3pm is fine. What’s the scope of this new project tho?",
         "read": {
           "31": true,
-          "32": false
+          "32": true
         }
       },
       {
@@ -63,7 +63,7 @@
         "text": "Okay but I need a better timeline this time. Last sprint was too chaotic.",
         "read": {
           "31": true,
-          "32": false
+          "32": true
         }
       },
       {
@@ -340,6 +340,122 @@
         "read": {
           "31": false,
           "36": true
+        }
+      }
+    ]
+  },
+  {
+    "threadId": "28-32",
+    "participants": [
+      28,
+      32
+    ],
+    "messages": [
+      {
+        "messageId": "msg-2001",
+        "senderId": 28,
+        "timestamp": "2025-07-13T14:20:00Z",
+        "text": "Hi Neilsan! Just finished the motion graphics for the Lagos Parks project. Ready for review!",
+        "read": {
+          "28": true,
+          "32": false
+        }
+      },
+      {
+        "messageId": "msg-2002",
+        "senderId": 32,
+        "timestamp": "2025-07-13T14:45:00Z",
+        "text": "Great work Billy! I'll review it this afternoon and get back to you.",
+        "read": {
+          "28": false,
+          "32": true
+        }
+      }
+    ]
+  },
+  {
+    "threadId": "29-32",
+    "participants": [
+      29,
+      32
+    ],
+    "messages": [
+      {
+        "messageId": "msg-3001",
+        "senderId": 29,
+        "timestamp": "2025-07-14T10:15:00Z",
+        "text": "Good morning! I have some questions about the mobile app wireframes. Can we schedule a quick call?",
+        "read": {
+          "29": true,
+          "32": false
+        }
+      },
+      {
+        "messageId": "msg-3002",
+        "senderId": 32,
+        "timestamp": "2025-07-14T10:30:00Z",
+        "text": "Sure! How about 2pm today? I'm free for about 30 minutes.",
+        "read": {
+          "29": false,
+          "32": true
+        }
+      },
+      {
+        "messageId": "msg-3003",
+        "senderId": 29,
+        "timestamp": "2025-07-14T10:32:00Z",
+        "text": "Perfect! I'll send you the meeting link shortly.",
+        "read": {
+          "29": true,
+          "32": false
+        }
+      }
+    ]
+  },
+  {
+    "threadId": "27-32",
+    "participants": [
+      27,
+      32
+    ],
+    "messages": [
+      {
+        "messageId": "msg-4001",
+        "senderId": 27,
+        "timestamp": "2025-07-12T16:30:00Z",
+        "text": "Hi! I saw your post about the new project opportunities. I'd love to discuss potential collaboration.",
+        "read": {
+          "27": true,
+          "32": true
+        }
+      },
+      {
+        "messageId": "msg-4002",
+        "senderId": 32,
+        "timestamp": "2025-07-12T17:15:00Z",
+        "text": "Hi Nancy! Thanks for reaching out. Let's set up a time to chat about your background and what you're looking for.",
+        "read": {
+          "27": true,
+          "32": true
+        }
+      }
+    ]
+  },
+  {
+    "threadId": "26-32",
+    "participants": [
+      26,
+      32
+    ],
+    "messages": [
+      {
+        "messageId": "msg-5001",
+        "senderId": 26,
+        "timestamp": "2025-07-14T08:45:00Z",
+        "text": "Morning! The UI components are ready for the design system. Should I proceed with the documentation?",
+        "read": {
+          "26": true,
+          "32": false
         }
       }
     ]

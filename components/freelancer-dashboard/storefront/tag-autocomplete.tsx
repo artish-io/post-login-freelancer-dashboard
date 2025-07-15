@@ -27,7 +27,7 @@ export default function TagAutocomplete({ value, onChange, placeholder = "Tags (
   useEffect(() => {
     const loadGigCategories = async () => {
       try {
-        const response = await fetch('/data/gigs/gig-categories.json');
+        const response = await fetch('/api/gigs/gig-categories');
         const data = await response.json();
         setGigCategories(data);
       } catch (error) {

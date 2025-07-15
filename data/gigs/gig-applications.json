@@ -1,1 +1,41 @@
-[]
+[
+  {
+    "id": 1,
+    "gigId": 5,
+    "freelancerId": 29,
+    "pitch": "I have extensive experience with React and GIS mapping solutions. I've built similar interactive map applications for tourism and urban planning projects. I can deliver a mobile-first solution that meets all your requirements.",
+    "sampleLinks": [
+      "https://portfolio.example.com/interactive-maps",
+      "https://github.com/damini/react-gis-app"
+    ],
+    "skills": ["React", "GIS", "Frontend Development", "Mobile-First Design"],
+    "tools": ["React", "Mapbox", "Tailwind CSS", "JavaScript"],
+    "submittedAt": "2025-07-13T10:30:00Z"
+  },
+  {
+    "id": 2,
+    "gigId": 5,
+    "freelancerId": 1,
+    "pitch": "Frontend developer with 5+ years experience in React and mapping libraries. I specialize in creating responsive, accessible web applications with clean, maintainable code. I can deliver this project within your 5-week timeline.",
+    "sampleLinks": [
+      "https://portfolio.example.com/react-projects",
+      "https://demo.mapapp.example.com"
+    ],
+    "skills": ["React", "TypeScript", "Web Development", "API Integration"],
+    "tools": ["React", "TypeScript", "Mapbox", "Tailwind CSS"],
+    "submittedAt": "2025-07-12T14:15:00Z"
+  },
+  {
+    "id": 3,
+    "gigId": 5,
+    "freelancerId": 3,
+    "pitch": "Specialized in interactive web applications and geospatial data visualization. I have a strong background in creating user-friendly interfaces for complex mapping systems. I'd love to contribute to this Lagos Parks project.",
+    "sampleLinks": [
+      "https://portfolio.example.com/gis-projects",
+      "https://interactive-maps.example.com"
+    ],
+    "skills": ["UI/UX Design", "Frontend Development", "Data Visualization", "GIS"],
+    "tools": ["React", "D3.js", "Mapbox", "Figma"],
+    "submittedAt": "2025-07-11T16:45:00Z"
+  }
+]

@@ -85,14 +85,14 @@ export default function ProfilePage() {
 
     const fetchDropdownData = async () => {
       try {
-        // Fetch skills from gig-categories.json
-        const categoriesResponse = await fetch('/data/gigs/gig-categories.json');
+        // Fetch skills from gig-categories API
+        const categoriesResponse = await fetch('/api/gigs/gig-categories');
         const categoriesData = await categoriesResponse.json();
         const allSkills = categoriesData.flatMap((category: any) => category.subcategories);
         setAvailableSkills(allSkills);
 
-        // Fetch tools from gig-tools.json
-        const toolsResponse = await fetch('/data/gigs/gig-tools.json');
+        // Fetch tools from gig-tools API
+        const toolsResponse = await fetch('/api/gigs/gig-tools');
         const toolsData = await toolsResponse.json();
         const allTools = toolsData.flatMap((category: any) =>
           category.tools.map((tool: any) => tool.name)

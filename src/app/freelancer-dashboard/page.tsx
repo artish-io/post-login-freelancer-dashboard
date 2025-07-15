@@ -3,8 +3,8 @@
 import FreelancerHeader from '../../../components/freelancer-dashboard/freelancer-header';
 import ProjectStatsRow from '../../../components/freelancer-dashboard/project-stats-row';
 import EarningsCard from '../../../components/freelancer-dashboard/earnings-card';
-import ProjectSummaryTable from '../../../components/freelancer-dashboard/project-summary-table';
-import TodayTasksPanel from '../../../components/freelancer-dashboard/today-tasks-panel';
+import ProjectSummaryTable from '../../../components/shared/project-summary-table';
+import TasksPanel from '../../../components/shared/tasks-panel';
 import MessagesPreview from '../../../components/freelancer-dashboard/messages-preview';
 import { motion } from 'framer-motion';
 import { staggerContainer, staggerItem } from '../../../components/ui/page-transition';
@@ -37,10 +37,14 @@ export default function FreelancerDashboardPage() {
             <ProjectStatsRow />
           </motion.div>
           <motion.div variants={staggerItem}>
-            <ProjectSummaryTable />
+            <ProjectSummaryTable viewType="freelancer" />
           </motion.div>
           <motion.div variants={staggerItem}>
-            <TodayTasksPanel />
+            <TasksPanel
+              viewType="freelancer"
+              title="Today's tasks"
+              showNotesTab={true}
+            />
           </motion.div>
 
           {/* MessagesPreview only on mobile */}

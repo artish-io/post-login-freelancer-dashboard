@@ -1,0 +1,232 @@
+[
+  {
+    "commissionerId": 32,
+    "notifications": [
+      {
+        "id": "task-2-301",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Hero section design\" is awaiting your review",
+        "timestamp": "2025-07-12T11:51:51.676Z",
+        "isRead": true,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 301,
+          "title": "Lagos Parks Services website re-design"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-101-311",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"User authentication flow design\" is awaiting your review",
+        "timestamp": "2025-07-08T11:39:37.155Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 311,
+          "title": "Lagos Parks Mobile App Development"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-102-311",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Park booking interface mockups\" is awaiting your review",
+        "timestamp": "2025-07-08T18:12:23.463Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 311,
+          "title": "Lagos Parks Mobile App Development"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-103-311",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Maintenance reporting feature\" is awaiting your review",
+        "timestamp": "2025-07-10T11:02:22.443Z",
+        "isRead": true,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 311,
+          "title": "Lagos Parks Mobile App Development"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-104-311",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Navigation and menu structure\" is awaiting your review",
+        "timestamp": "2025-07-12T11:07:10.530Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 311,
+          "title": "Lagos Parks Mobile App Development"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-105-311",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Push notification system design\" is awaiting your review",
+        "timestamp": "2025-07-09T04:24:39.468Z",
+        "isRead": true,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 311,
+          "title": "Lagos Parks Mobile App Development"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "gig-app-network-5",
+        "type": "gig_application",
+        "title": "Isaac Johnson applied for Interactive Park Map Web App",
+        "message": "1 network application for \"Interactive Park Map Web App\"",
+        "timestamp": "2025-07-13T10:30:00Z",
+        "isRead": true,
+        "user": {
+          "id": 29,
+          "name": "Isaac Johnson",
+          "avatar": "/avatars/isaac.png"
+        },
+        "gig": {
+          "id": 5,
+          "title": "Interactive Park Map Web App"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "gig-app-public-5",
+        "type": "gig_application",
+        "title": "Tobi Philly and 1 other applied for Interactive Park Map Web App",
+        "message": "2 applications for \"Interactive Park Map Web App\"",
+        "timestamp": "2025-07-12T14:15:00Z",
+        "isRead": false,
+        "user": {
+          "id": 1,
+          "name": "Tobi Philly",
+          "avatar": "/avatars/tobi.png"
+        },
+        "gig": {
+          "id": 5,
+          "title": "Interactive Park Map Web App"
+        },
+        "isFromNetwork": false
+      },
+      {
+        "id": "project-pause-1",
+        "type": "project_pause",
+        "title": "Sofia Rossi requested a pause for your Brand Animation Package project",
+        "message": "Motion graphics project needs temporary pause",
+        "timestamp": "2025-07-12T21:06:35.376Z",
+        "isRead": false,
+        "user": {
+          "id": 28,
+          "name": "Sofia Rossi",
+          "avatar": "/avatars/sofia.png",
+          "title": "Motion Designer"
+        },
+        "project": {
+          "id": 301,
+          "title": "Brand Animation Package"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "project-accepted-1",
+        "type": "project_accepted",
+        "title": "Nadia Petrov accepted your project",
+        "message": "UI component library project has been accepted and will start soon",
+        "timestamp": "2025-07-13T21:06:35.376Z",
+        "isRead": false,
+        "user": {
+          "id": 26,
+          "name": "Nadia Petrov",
+          "avatar": "/avatars/nadia.png",
+          "title": "Designer"
+        },
+        "project": {
+          "id": 302,
+          "title": "UI Component Library"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "proposal-1",
+        "type": "proposal_sent",
+        "title": "Lucas Meyer sent you a proposal",
+        "message": "New project proposal for video production services",
+        "timestamp": "2025-07-13T21:06:35.376Z",
+        "isRead": false,
+        "user": {
+          "id": 25,
+          "name": "Lucas Meyer",
+          "avatar": "/avatars/lucas.png",
+          "title": "Filmmaker"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "invoice-1",
+        "type": "invoice_sent",
+        "title": "Margsate Flether sent you a new invoice",
+        "message": "Invoice MGL100000 for Lagos Parks Services website re-design",
+        "timestamp": "2025-07-14T18:06:35.376Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png",
+          "title": "Brand Designer"
+        },
+        "invoice": {
+          "number": "MGL100000",
+          "amount": 5244,
+          "projectTitle": "Lagos Parks Services website re-design"
+        },
+        "isFromNetwork": true
+      }
+    ]
+  },
+  {
+    "commissionerId": 33,
+    "notifications": []
+  },
+  {
+    "commissionerId": 34,
+    "notifications": []
+  }
+]

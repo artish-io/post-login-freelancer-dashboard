@@ -42,7 +42,7 @@ export default function ContactListCard({
   };
 
   return (
-    <motion.li
+    <motion.div
       onClick={onClick}
       className={`flex items-center justify-between cursor-pointer px-4 py-3 rounded-xl transition ${
         isActive
@@ -94,6 +94,6 @@ export default function ContactListCard({
           className={`${isUnread ? 'opacity-100' : 'opacity-50'}`}
         />
       </div>
-    </motion.li>
+    </motion.div>
   );
 }

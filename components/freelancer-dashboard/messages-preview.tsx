@@ -5,15 +5,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 
-type Contact = {
-  id: number;
+type ThreadPreview = {
+  threadId: string;
+  contactId: number;
   name: string;
   title: string;
   avatar: string;
-};
-
-type ThreadPreview = {
-  threadId: string;
+  lastMessage: string;
+  lastTimestamp: string;
   isUnread: boolean;
 };
 
@@ -21,10 +20,8 @@ export default function MessagesPreview() {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [unreadThreads, setUnreadThreads] = useState<string[]>([]);
+  const [threadPreviews, setThreadPreviews] = useState<ThreadPreview[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshKey, setRefreshKey] = useState(0);
 
   const userId = Number(session?.user?.id);
 
@@ -34,53 +31,44 @@ export default function MessagesPreview() {
     const loadData = async () => {
       setLoading(true);
       try {
-        // Fetch contacts
-        const res = await fetch(`/api/dashboard/contact-profiles?userId=${userId}`);
-        const contactData = await res.json();
-        setContacts(Array.isArray(contactData) ? contactData : []);
-
-        // Fetch thread previews
-        const previewRes = await fetch(`/api/dashboard/messages/preview?userId=${userId}`);
+        // Fetch thread previews using universal API
+        const previewRes = await fetch(`/api/messages/preview?userId=${userId}`);
         const rawPreview = await previewRes.json();
         console.log('[messages-preview] Raw preview data:', rawPreview);
 
-        // ✅ Defensive check before filtering
+        // Defensive check before setting data
         if (!Array.isArray(rawPreview)) {
           console.warn('[messages-preview] Invalid preview data, skipping:', rawPreview);
-          setUnreadThreads([]);
+          setThreadPreviews([]);
           return;
         }
 
-        const unread = rawPreview
-          .filter((thread: ThreadPreview) => thread.isUnread)
-          .map((thread: ThreadPreview) => thread.threadId);
-
-        setUnreadThreads(unread);
+        setThreadPreviews(rawPreview);
       } catch (err) {
         console.error('[messages-preview] Failed to fetch preview data:', err);
-        setContacts([]);
-        setUnreadThreads([]);
+        setThreadPreviews([]);
       } finally {
         setLoading(false);
       }
     };
 
     loadData();
-  }, [userId, refreshKey]);
+  }, [userId]);
 
-  const handleContactClick = (contactId: number) => {
-    const sorted = [userId, contactId].sort((a, b) => a - b);
-    const threadId = `${sorted[0]}-${sorted[1]}`;
+  const handleContactClick = (threadId: string) => {
+    // For now, assume freelancer route - can be enhanced later
+    const route = `/freelancer-dashboard/messages?thread=${threadId}`;
 
-    router.push(`/freelancer-dashboard/messages?thread=${threadId}`);
+    router.push(route);
 
     // Optimistically mark as read
-    setUnreadThreads((prev) => prev.filter((id) => id !== threadId));
-
-    // Allow backend to process
-    setTimeout(() => {
-      setRefreshKey((prev) => prev + 1);
-    }, 500);
+    setThreadPreviews(prev =>
+      prev.map(thread =>
+        thread.threadId === threadId
+          ? { ...thread, isUnread: false }
+          : thread
+      )
+    );
   };
 
   const handleAvatarClick = (e: React.MouseEvent, contactId: number) => {
@@ -94,36 +82,34 @@ export default function MessagesPreview() {
         <h2 className="text-base font-semibold text-gray-900">Messages</h2>
         <div className="flex items-center gap-2 text-sm bg-pink-100 text-pink-800 px-3 py-1 rounded-full">
           <span className="text-lg">👤</span>
-          <span>{contacts.length}</span>
+          <span>{threadPreviews.length}</span>
         </div>
       </div>
 
       <div className="relative">
         <div className="space-y-4 overflow-y-auto pr-1 max-h-[240px]">
-          {loading && <p className="text-sm text-gray-400">Loading contacts...</p>}
-          {!loading && contacts.length === 0 && (
-            <p className="text-sm text-gray-400">No contacts found.</p>
+          {loading && <p className="text-sm text-gray-400">Loading conversations...</p>}
+          {!loading && threadPreviews.length === 0 && (
+            <p className="text-sm text-gray-400">No conversations found.</p>
           )}
           {!loading &&
-            contacts.map((contact) => {
-              const threadId = [userId, contact.id].sort((a, b) => a - b).join('-');
-              const isUnread = unreadThreads.includes(threadId);
+            threadPreviews.map((thread) => {
 
               return (
                 <div
-                  key={contact.id}
-                  onClick={() => handleContactClick(contact.id)}
+                  key={thread.threadId}
+                  onClick={() => handleContactClick(thread.threadId)}
                   className="flex items-center justify-between cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <button
-                      onClick={(e) => handleAvatarClick(e, contact.id)}
+                      onClick={(e) => handleAvatarClick(e, thread.contactId)}
                       className="rounded-full hover:ring-2 hover:ring-[#FCD5E3] hover:ring-offset-1 transition-all"
-                      title={`View ${contact.name}'s profile`}
+                      title={`View ${thread.name}'s profile`}
                     >
                       <Image
-                        src={contact.avatar}
-                        alt={contact.name}
+                        src={thread.avatar}
+                        alt={thread.name}
                         width={40}
                         height={40}
                         className="rounded-full object-cover"
@@ -132,18 +118,18 @@ export default function MessagesPreview() {
                     <div className="flex flex-col text-sm">
                       <span
                         className={`truncate ${
-                          isUnread ? 'font-semibold text-gray-900' : 'text-gray-800'
+                          thread.isUnread ? 'font-semibold text-gray-900' : 'text-gray-800'
                         }`}
                       >
-                        {contact.name}
+                        {thread.name}
                       </span>
-                      <span className="text-xs text-gray-500 truncate">{contact.title}</span>
+                      <span className="text-xs text-gray-500 truncate">{thread.title}</span>
                     </div>
                   </div>
 
                   <div
                     className={`rounded-full p-2 transition ${
-                      isUnread ? 'bg-[#FCD5E3]' : ''
+                      thread.isUnread ? 'bg-[#FCD5E3]' : ''
                     }`}
                   >
                     <Image
@@ -151,7 +137,7 @@ export default function MessagesPreview() {
                       alt="message"
                       width={16}
                       height={16}
-                      className={`${isUnread ? 'opacity-100' : 'opacity-50'}`}
+                      className={`${thread.isUnread ? 'opacity-100' : 'opacity-50'}`}
                     />
                   </div>
                 </div>
@@ -162,19 +148,26 @@ export default function MessagesPreview() {
         <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none rounded-b-xl" />
       </div>
 
-      <div className="flex justify-center mt-4">
-        <button className="bg-pink-100 hover:bg-pink-200 p-2 rounded-full shadow-sm">
-          <svg
-            className="w-4 h-4 text-pink-700"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={2}
-            viewBox="0 0 24 24"
+      {/* Only show expansion caret if there are multiple conversations */}
+      {threadPreviews.length > 1 && (
+        <div className="flex justify-center mt-4">
+          <button
+            className="bg-pink-100 hover:bg-pink-200 p-2 rounded-full shadow-sm transition-colors"
+            onClick={() => router.push('/commissioner-dashboard/messages')}
+            title="View all messages"
           >
-            <path d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-      </div>
+            <svg
+              className="w-4 h-4 text-pink-700"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 24 24"
+            >
+              <path d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

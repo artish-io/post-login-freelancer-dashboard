@@ -338,7 +338,9 @@
     "type": "commissioner",
     "email": "neilsan.mando@example.com",
     "address": "32 Remote Lane, Virtual City, Country",
-    "organizationId": 1
+    "organizationId": 1,
+    "username": "neilsan",
+    "password": "testpass"
   },
   {
     "id": 33,

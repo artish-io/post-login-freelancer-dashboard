@@ -31,22 +31,31 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'submit':
+        // First submission: mark as completed and in review, but don't increment version yet
         task.completed = true;
         task.status = 'In review';
-        task.version = (task.version || 1) + 1;
+        // Version stays the same (1) for first submission
+        if (!task.version) task.version = 1;
         break;
       case 'resubmit':
+        // Resubmission after rejection: increment version and mark as in review
         task.rejected = false;
+        task.completed = true;
         task.status = 'In review';
         task.version = (task.version || 1) + 1;
         break;
       case 'complete':
+        // Commissioner approves the task
         task.completed = true;
         task.status = 'Approved';
+        task.rejected = false;
         break;
       case 'reject':
+        // Commissioner rejects the task - freelancer needs to work on it again
         task.rejected = true;
-        task.status = 'In review';
+        task.completed = false;
+        task.status = 'Ongoing'; // Back to ongoing so freelancer can work on it
+        task.feedbackCount = (task.feedbackCount || 0) + 1;
         break;
       default:
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 });

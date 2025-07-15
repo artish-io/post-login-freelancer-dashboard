@@ -26,13 +26,14 @@ export const authOptions: NextAuthOptions = {
           );
 
           if (user) {
-            const { id, name, email, avatar } = user;
+            const { id, name, email, avatar, type } = user;
 
             return {
               id: String(id),
               name,
               email,
               image: avatar,
+              userType: type, // Add user type for routing
             };
           }
 
@@ -53,6 +54,7 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name;
         token.email = user.email;
         token.image = user.image;
+        token.userType = (user as any).userType; // Include user type in token
       }
       return token;
     },
@@ -61,6 +63,7 @@ export const authOptions: NextAuthOptions = {
       session.user.name = typeof token.name === 'string' ? token.name : undefined;
       session.user.email = typeof token.email === 'string' ? token.email : undefined;
       session.user.image = typeof token.image === 'string' ? token.image : undefined;
+      (session.user as any).userType = token.userType; // Include user type in session
       return session;
     },
   },

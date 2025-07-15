@@ -42,13 +42,13 @@ export function useDashboardStats(options: UseDashboardStatsOptions = {}) {
         const data = await response.json();
         setStats(data);
       } else {
-        // Fetch from static JSON file
-        const response = await fetch('/data/dashboard-stats.json');
-        
+        // Fetch from API endpoint
+        const response = await fetch('/api/dashboard-stats');
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data: DashboardStats[] = await response.json();
         
         if (userId) {

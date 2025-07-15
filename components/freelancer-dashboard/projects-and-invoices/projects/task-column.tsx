@@ -61,6 +61,22 @@ export default function TaskColumn({ columnId, title }: Props) {
     return projectInfo?.status?.toLowerCase() === 'paused';
   };
 
+  // Optimistic update function for smooth task transitions
+  const handleOptimisticTaskUpdate = (projectId: number, taskId: number, newStatus: string) => {
+    setTasks(currentTasks => {
+      // Remove the task from current column if it's moving to review
+      if (newStatus === 'In review' && columnId !== 'review') {
+        return currentTasks.filter(task => !(task.projectId === projectId && task.taskId === taskId));
+      }
+      return currentTasks;
+    });
+
+    // Trigger a delayed refresh to sync with server state
+    setTimeout(() => {
+      fetchData();
+    }, 500);
+  };
+
   // Fetch data dynamically
   const fetchData = async () => {
     try {
@@ -121,16 +137,16 @@ export default function TaskColumn({ columnId, title }: Props) {
     fetchData();
   }, []);
 
-  // Add refresh mechanism - refetch data every 2 seconds to catch updates
+  // Optimized refresh mechanism - less aggressive polling
   useEffect(() => {
     const interval = setInterval(() => {
       fetchData();
-    }, 2000); // Reduced to 2 seconds for faster task movement
+    }, 10000); // Reduced frequency to 10 seconds
 
     return () => clearInterval(interval);
   }, []);
 
-  // Enhanced auto-movement trigger - check more frequently for today's column
+  // Enhanced auto-movement trigger - check less frequently
   useEffect(() => {
     if (columnId === 'todo') {
       const checkMovement = async () => {
@@ -146,8 +162,8 @@ export default function TaskColumn({ columnId, title }: Props) {
         }
       };
 
-      // Check for movement every 5 seconds for today's column
-      const movementInterval = setInterval(checkMovement, 5000);
+      // Check for movement every 15 seconds for today's column
+      const movementInterval = setInterval(checkMovement, 15000);
       return () => clearInterval(movementInterval);
     }
   }, [columnId]);
@@ -427,7 +443,10 @@ export default function TaskColumn({ columnId, title }: Props) {
                   status={task.status as 'Ongoing' | 'In review' | 'Approved'}
                   projectId={task.projectId}
                   taskId={task.taskId}
-                  onTaskSubmitted={fetchData}
+                  onTaskSubmitted={() => {
+                    // Optimistic update for smooth transition
+                    handleOptimisticTaskUpdate(task.projectId, task.taskId, 'In review');
+                  }}
                 />
               </motion.div>
             ))
