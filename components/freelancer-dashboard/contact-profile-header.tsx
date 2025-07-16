@@ -8,9 +8,13 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { ArrowLeft } from 'lucide-react';
 
 interface ContactProfileHeaderProps {
   contactId: number;
+  onBack?: () => void;
+  showBackButton?: boolean;
 }
 
 type Contact = {
@@ -20,15 +24,18 @@ type Contact = {
   avatar: string;
 };
 
-export default function ContactProfileHeader({ contactId }: ContactProfileHeaderProps) {
+export default function ContactProfileHeader({ contactId, onBack, showBackButton = false }: ContactProfileHeaderProps) {
   const router = useRouter();
+  const { data: session } = useSession();
   const [contact, setContact] = useState<Contact | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!session?.user?.id) return;
+
     const fetchContact = async () => {
       try {
-        const res = await fetch('/api/dashboard/contact-profiles?userId=31');
+        const res = await fetch(`/api/dashboard/contact-profiles?userId=${session.user.id}`);
         const data: Contact[] = await res.json();
         const found = data.find((c) => c.id === contactId);
         if (found) setContact(found);
@@ -40,7 +47,7 @@ export default function ContactProfileHeader({ contactId }: ContactProfileHeader
     };
 
     fetchContact();
-  }, [contactId]);
+  }, [contactId, session?.user?.id]);
 
   const handleAvatarClick = () => {
     if (contact) {
@@ -60,7 +67,18 @@ export default function ContactProfileHeader({ contactId }: ContactProfileHeader
   }
 
   return (
-    <div className="pt-6 pb-4 px-4 rounded-t-2xl" style={{ backgroundColor: '#FCD5E3' }}>
+    <div className="pt-6 pb-4 px-4 rounded-t-2xl relative" style={{ backgroundColor: '#FCD5E3' }}>
+      {/* Back Button - Mobile Only */}
+      {showBackButton && onBack && (
+        <button
+          onClick={onBack}
+          className="absolute left-4 top-6 p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors md:hidden"
+          title="Back to contacts"
+        >
+          <ArrowLeft className="w-5 h-5 text-gray-700" />
+        </button>
+      )}
+
       <div className="flex flex-col items-center justify-center text-center">
         <button
           onClick={handleAvatarClick}

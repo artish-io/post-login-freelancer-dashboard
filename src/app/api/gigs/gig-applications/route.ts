@@ -29,7 +29,7 @@ export async function GET(req: Request) {
       );
     }
 
-    return NextResponse.json({ applications: filteredApplications });
+    return NextResponse.json(filteredApplications);
   } catch (error) {
     console.error('Failed to fetch applications:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

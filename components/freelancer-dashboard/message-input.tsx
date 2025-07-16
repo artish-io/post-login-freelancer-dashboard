@@ -3,6 +3,8 @@
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { Paperclip, SendHorizontal } from 'lucide-react'; // Lucide icons
+import { useEncryption } from '@/hooks/useEncryption';
+import EncryptionIndicator from '../shared/encryption-indicator';
 
 interface MessageInputProps {
   threadId: string;
@@ -10,27 +12,46 @@ interface MessageInputProps {
 
 export default function MessageInput({ threadId }: MessageInputProps) {
   const { data: session } = useSession();
+  const { isReady, encryptMessage } = useEncryption();
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSend = async () => {
-    if (!text.trim() || loading || !session?.user?.id) return;
+    if (!text.trim() || loading || !session?.user?.id || !isReady) return;
 
     setLoading(true);
 
     try {
+      // Get recipient ID from threadId
+      const threadParts = threadId.split('-').map(Number);
+      const recipientId = threadParts.find(id => id !== Number(session.user.id));
+
+      if (!recipientId) {
+        console.error('Could not determine recipient from threadId:', threadId);
+        return;
+      }
+
+      // Encrypt the message
+      const encryptedText = await encryptMessage(text.trim(), recipientId.toString());
+
       const res = await fetch('/api/dashboard/messages/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          userId: Number(session.user.id),
           threadId,
-          text: text.trim(),
+          text: encryptedText,
+          isEncrypted: true,
         }),
       });
 
       const json = await res.json();
       if (!json.success) {
         console.warn('[message-input] Failed to send message:', json.error);
+      } else {
+        // Dispatch custom event to notify thread to refresh
+        window.dispatchEvent(new CustomEvent('messageSent'));
+        console.log('📨 Message sent successfully, dispatched refresh event');
       }
     } catch (err) {
       console.error('[message-input] Send error:', err);
@@ -58,6 +79,9 @@ export default function MessageInput({ threadId }: MessageInputProps) {
           if (e.key === 'Enter') handleSend();
         }}
       />
+
+      {/* Encryption Indicator */}
+      <EncryptionIndicator className="flex-shrink-0" />
 
       {/* Send Button */}
       <button

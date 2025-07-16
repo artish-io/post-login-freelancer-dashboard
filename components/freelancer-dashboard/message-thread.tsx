@@ -6,12 +6,14 @@
 // In production, migrate to SSR + secure tokens. Do not expose raw query params in public APIs.
 
 import { useSession } from 'next-auth/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEncryption } from '@/hooks/useEncryption';
 
 type Message = {
   senderId: number;
   timestamp: string;
   text: string;
+  isEncrypted?: boolean;
 };
 
 type Props = {
@@ -25,10 +27,30 @@ type GroupedMessage = {
 
 export default function MessageThread({ threadId }: Props) {
   const { data: session } = useSession();
+  const { isReady, decryptMessage } = useEncryption();
   const userId = Number(session?.user?.id);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Helper function to scroll to bottom
+  const scrollToBottom = (delay = 100) => {
+    if (scrollRef.current) {
+      const scrollElement = scrollRef.current;
+
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          if (scrollElement) {
+            scrollElement.scrollTo({
+              top: scrollElement.scrollHeight,
+              behavior: 'smooth'
+            });
+            console.log('📜 Scrolled to bottom');
+          }
+        }, delay);
+      });
+    }
+  };
 
   // Helper: Group messages by date label
   const groupMessagesByDate = (msgs: Message[]): GroupedMessage[] => {
@@ -64,46 +86,99 @@ export default function MessageThread({ threadId }: Props) {
   };
 
   // Fetch messages and mark them as read using /mark-read
+  const fetchAndMarkRead = useCallback(async () => {
+    if (!threadId || !userId) return;
+
+    try {
+      const res = await fetch(`/api/dashboard/messages/${threadId}?userId=${userId}`);
+      const json = await res.json();
+
+      if (json?.messages) {
+        // Decrypt messages if encryption is ready
+        if (isReady) {
+          const decryptedMessages = await Promise.all(
+            json.messages.map(async (msg: Message) => {
+              if (msg.isEncrypted && msg.senderId !== userId) {
+                try {
+                  const decryptedText = await decryptMessage(msg.text, msg.senderId.toString());
+                  return { ...msg, text: decryptedText };
+                } catch (error) {
+                  console.error('Failed to decrypt message:', error);
+                  return { ...msg, text: '[Encrypted message - decryption failed]' };
+                }
+              }
+              return msg;
+            })
+          );
+          setMessages(decryptedMessages);
+        } else {
+          // If encryption not ready, show encrypted messages as-is
+          setMessages(json.messages);
+        }
+      }
+
+      // PATCH to mark all messages in thread as read
+      const markReadRes = await fetch(`/api/dashboard/messages/${threadId}/mark-read`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+
+      // Trigger unread count refresh if marking as read was successful
+      if (markReadRes.ok) {
+        console.log('📧 Messages marked as read, refreshing unread count');
+        window.dispatchEvent(new CustomEvent('refreshUnreadCount'));
+      }
+    } catch (err) {
+      console.error('[message-thread] Failed to load or mark messages:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [threadId, userId, isReady, decryptMessage]);
+
+  useEffect(() => {
+    fetchAndMarkRead();
+    // Scroll to bottom when thread first loads
+    scrollToBottom(500);
+  }, [threadId, userId]);
+
+  // Listen for message sent events to refresh the thread
+  useEffect(() => {
+    const handleMessageSent = () => {
+      console.log('📨 Message sent event received, refreshing thread');
+      fetchAndMarkRead();
+
+      // Force scroll to bottom after a message is sent with longer delay
+      scrollToBottom(300);
+    };
+
+    window.addEventListener('messageSent', handleMessageSent);
+    return () => window.removeEventListener('messageSent', handleMessageSent);
+  }, [fetchAndMarkRead]);
+
+  // Poll for new messages every 3 seconds
   useEffect(() => {
     if (!threadId || !userId) return;
 
-    const fetchAndMarkRead = async () => {
-      try {
-        const res = await fetch(`/api/dashboard/messages/${threadId}?userId=${userId}`);
-        const json = await res.json();
+    const interval = setInterval(() => {
+      console.log('🔄 Polling for new messages...');
+      fetchAndMarkRead();
+    }, 3000);
 
-        if (json?.messages) {
-          setMessages(json.messages);
-        }
+    return () => clearInterval(interval);
+  }, [fetchAndMarkRead]);
 
-        // PATCH to mark all messages in thread as read
-        const markReadRes = await fetch(`/api/dashboard/messages/${threadId}/mark-read`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId }),
-        });
-
-        // Trigger unread count refresh if marking as read was successful
-        if (markReadRes.ok) {
-          console.log('📧 Messages marked as read, refreshing unread count');
-          window.dispatchEvent(new CustomEvent('refreshUnreadCount'));
-        }
-      } catch (err) {
-        console.error('[message-thread] Failed to load or mark messages:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAndMarkRead();
-  }, [threadId, userId]);
-
-  // Auto scroll to bottom on load
+  // Auto scroll to bottom when messages change
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    scrollToBottom(100);
   }, [messages]);
+
+  // Scroll to bottom when loading completes and we have messages
+  useEffect(() => {
+    if (!loading && messages.length > 0) {
+      scrollToBottom(200);
+    }
+  }, [loading, messages.length]);
 
   if (loading) {
     return <div className="p-4 text-sm text-gray-400">Loading conversation...</div>;

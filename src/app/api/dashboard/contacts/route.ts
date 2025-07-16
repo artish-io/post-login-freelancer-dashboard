@@ -13,7 +13,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const contactsFilePath = path.join(process.cwd(), 'data/freelancer-contacts.json');
+  const contactsFilePath = path.join(process.cwd(), 'data/contacts.json');
   const fileContent = await fs.readFile(contactsFilePath, 'utf8');
   const allContacts = JSON.parse(fileContent);
 

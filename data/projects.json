@@ -17,8 +17,7 @@
     "freelancerId": 31,
     "status": "Delayed",
     "dueDate": "2025-08-12",
-    "totalTasks": 5,
-    "progress": 35
+    "totalTasks": 5
   },
   {
     "projectId": 302,
@@ -38,8 +37,7 @@
     "freelancerId": 31,
     "status": "At risk",
     "dueDate": "2025-08-16",
-    "totalTasks": 4,
-    "progress": 75
+    "totalTasks": 4
   },
   {
     "projectId": 303,
@@ -59,8 +57,7 @@
     "freelancerId": 31,
     "status": "Completed",
     "dueDate": "2025-08-30",
-    "totalTasks": 3,
-    "progress": 100
+    "totalTasks": 3
   },
   {
     "projectId": 300,
@@ -80,8 +77,7 @@
     "freelancerId": 31,
     "status": "Paused",
     "dueDate": "2025-08-25",
-    "totalTasks": 53,
-    "progress": 29
+    "totalTasks": 53
   },
   {
     "projectId": 299,
@@ -101,8 +97,7 @@
     "freelancerId": 31,
     "status": "Ongoing",
     "dueDate": "2025-08-10",
-    "totalTasks": 10,
-    "progress": 80
+    "totalTasks": 10
   },
   {
     "projectId": 304,
@@ -122,8 +117,7 @@
     "freelancerId": 31,
     "status": "Ongoing",
     "dueDate": "2025-08-12",
-    "totalTasks": 3,
-    "progress": 67
+    "totalTasks": 3
   },
   {
     "projectId": 305,
@@ -143,8 +137,7 @@
     "freelancerId": 31,
     "status": "Ongoing",
     "dueDate": "2025-08-29",
-    "totalTasks": 3,
-    "progress": 33
+    "totalTasks": 3
   },
   {
     "projectId": 306,
@@ -164,8 +157,7 @@
     "freelancerId": 31,
     "status": "Ongoing",
     "dueDate": "2025-08-05",
-    "totalTasks": 4,
-    "progress": 50
+    "totalTasks": 4
   },
   {
     "projectId": 311,
@@ -185,7 +177,6 @@
     "freelancerId": 31,
     "status": "Active",
     "dueDate": "2025-09-15",
-    "totalTasks": 8,
-    "progress": 25
+    "totalTasks": 8
   }
 ]

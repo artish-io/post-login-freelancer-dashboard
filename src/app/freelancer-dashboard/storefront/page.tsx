@@ -21,15 +21,23 @@ export default function StorefrontDashboardPage() {
   const formattedEnd = endDate ? format(endDate, 'yyyy-MM-dd') : '';
 
   return (
-    <div className="w-full px-4 sm:px-6 md:px-10 py-8 flex flex-col gap-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Storefront Dashboard</h1>
-          <p className="text-sm text-gray-500">Sales analytics for digital products</p>
-        </div>
+    <div
+      className="w-full max-w-6xl mx-auto px-4 md:px-6 py-8"
+      style={{
+        maxWidth: '100vw',
+        overflow: 'hidden',
+        boxSizing: 'border-box'
+      }}
+    >
+      <div className="w-full" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-900">Storefront Dashboard</h1>
+            <p className="text-sm text-gray-500">Sales analytics for digital products</p>
+          </div>
 
-        {/* Separate Start and End Date Pickers */}
-        <div className="flex items-center gap-3">
+          {/* Separate Start and End Date Pickers */}
+          <div className="flex items-center gap-3">
           <Popover className="relative">
             <Popover.Button className="flex items-center gap-2 border border-gray-300 rounded-md px-3 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-50">
               <CalendarIcon className="w-4 h-4" />
@@ -63,42 +71,48 @@ export default function StorefrontDashboardPage() {
               />
             </Popover.Panel>
           </Popover>
+          </div>
         </div>
       </div>
 
-      <StorefrontSummaryStatsRow
-        startDate={formattedStart}
-        endDate={formattedEnd}
-      />
-
-      {/* Mobile: Action buttons before table */}
-      <div className="block lg:hidden">
-        <ActionButtons />
-      </div>
-
-      {/* Two-column layout: Main content + Sidebar */}
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Left column - Charts and Tables */}
-        <div className="flex-1 flex flex-col gap-6">
-          <RevenueLineChart
+      {/* Main Content */}
+      <div className="mt-8 space-y-8" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+        <div className="w-full" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+          <StorefrontSummaryStatsRow
             startDate={formattedStart}
             endDate={formattedEnd}
           />
-          <RecentSalesTable />
         </div>
 
-        {/* Right column - Sidebar (hidden on mobile) */}
-        <div className="hidden lg:flex lg:w-80 flex-col gap-6">
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4">Most Sold Items</h3>
-            <TopProductsBarChart />
+        {/* Mobile: Action buttons before table */}
+        <div className="block lg:hidden w-full" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+          <ActionButtons />
+        </div>
+
+        {/* Two-column layout: Main content + Sidebar */}
+        <div className="flex flex-col lg:flex-row gap-6 w-full" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+          {/* Left column - Charts and Tables */}
+          <div className="flex-1 flex flex-col gap-6" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+            <RevenueLineChart
+              startDate={formattedStart}
+              endDate={formattedEnd}
+            />
+            <RecentSalesTable />
           </div>
 
-          <ActionButtons />
+          {/* Right column - Sidebar (hidden on mobile) */}
+          <div className="hidden lg:flex lg:w-80 flex-col gap-6" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold mb-4">Most Sold Items</h3>
+              <TopProductsBarChart />
+            </div>
 
-          <div className="bg-white rounded-2xl p-6 shadow-sm">
-            <h3 className="text-lg font-semibold mb-4">Total Sales</h3>
-            <SalesSourcesPieChart />
+            <ActionButtons />
+
+            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <h3 className="text-lg font-semibold mb-4">Total Sales</h3>
+              <SalesSourcesPieChart />
+            </div>
           </div>
         </div>
       </div>

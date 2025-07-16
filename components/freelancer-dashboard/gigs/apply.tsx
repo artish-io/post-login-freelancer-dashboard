@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useSession } from 'next-auth/react';
 import gigCategories from '../../../data/gigs/gig-categories.json';
 import gigs from '../../../data/gigs/gigs.json';
 import organizations from '../../../data/organizations.json';
@@ -14,6 +15,7 @@ interface ApplyProps {
 }
 
 const Apply: React.FC<ApplyProps> = ({ gig: propGig, organization: propOrganization }) => {
+  const { data: session } = useSession();
   const [skills, setSkills] = useState<string[]>([]);
   const [pitch, setPitch] = useState('');
   const [links, setLinks] = useState<string[]>([]);
@@ -21,6 +23,7 @@ const Apply: React.FC<ApplyProps> = ({ gig: propGig, organization: propOrganizat
   const [toolFamiliarity, setToolFamiliarity] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [freelancerId, setFreelancerId] = useState<number | null>(null);
 
   const params = useParams();
   const gigId = params?.id;
@@ -48,28 +51,70 @@ const Apply: React.FC<ApplyProps> = ({ gig: propGig, organization: propOrganizat
     setSuggestions(filtered);
   }, [inputValue, skills]);
 
+  // Fetch freelancer ID from session
+  useEffect(() => {
+    const fetchFreelancerId = async () => {
+      if (!session?.user?.id) return;
+
+      try {
+        const response = await fetch(`/api/user/profile/${session.user.id}`);
+        const userData = await response.json();
+
+        // Get freelancer data to find freelancer ID
+        const freelancersResponse = await fetch('/api/freelancers');
+        const freelancers = await freelancersResponse.json();
+
+        const freelancer = freelancers.find((f: any) => f.userId === userData.id);
+        if (freelancer) {
+          setFreelancerId(freelancer.id);
+        }
+      } catch (error) {
+        console.error('Failed to fetch freelancer ID:', error);
+      }
+    };
+
+    fetchFreelancerId();
+  }, [session?.user?.id]);
+
   const handleSubmit = async () => {
+    if (!freelancerId) {
+      alert('Please log in to submit an application');
+      return;
+    }
+
     const payload = {
+      freelancerId,
       pitch,
-      links,
+      sampleLinks: links,
       skills,
       tools: toolFamiliarity,
     };
 
     try {
-      const res = await fetch(`/api/gigs/${gigId}/submit-application`, {
+      const res = await fetch(`/api/gigs/gig-applications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          gigId: Number(gigId),
+          ...payload
+        }),
       });
 
       if (!res.ok) {
         throw new Error('Failed to submit application');
       }
 
-      alert('Application submitted!');
+      alert('Application submitted successfully!');
+
+      // Reset form
+      setPitch('');
+      setLinks([]);
+      setSkills([]);
+      setToolFamiliarity([]);
+      setCurrentLink('');
+      setInputValue('');
     } catch (error) {
       console.error(error);
       alert('Error submitting application');

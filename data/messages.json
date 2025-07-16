@@ -14,7 +14,8 @@
         "read": {
           "31": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1002",
@@ -24,7 +25,8 @@
         "read": {
           "31": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1003",
@@ -34,7 +36,8 @@
         "read": {
           "31": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1004",
@@ -44,7 +47,8 @@
         "read": {
           "31": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1005",
@@ -54,7 +58,8 @@
         "read": {
           "31": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1006",
@@ -64,7 +69,8 @@
         "read": {
           "31": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1007",
@@ -74,7 +80,8 @@
         "read": {
           "31": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1018",
@@ -84,7 +91,8 @@
         "read": {
           "31": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1019",
@@ -94,7 +102,8 @@
         "read": {
           "31": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1020",
@@ -104,13 +113,255 @@
         "read": {
           "31": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1021",
         "senderId": 32,
         "timestamp": "2025-07-07T14:45:00Z",
         "text": "One more thing - they've updated the brand guidelines. I'll send you the new color palette shortly.",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T17:22:24.206Z",
+        "text": "hey",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T17:22:35.033Z",
+        "text": "hey baby",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 32,
+        "timestamp": "2025-07-15T17:22:54.791Z",
+        "text": "how are you?",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 32,
+        "timestamp": "2025-07-15T17:31:11.699Z",
+        "text": "hey",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:02:36.694Z",
+        "text": "hey",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 32,
+        "timestamp": "2025-07-15T19:03:04.282Z",
+        "text": "how are you?",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 32,
+        "timestamp": "2025-07-15T19:03:20.014Z",
+        "text": "how are you?",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 32,
+        "timestamp": "2025-07-15T19:03:35.665Z",
+        "text": "ibwibfie",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:04:23.799Z",
+        "text": "my oga",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:04:36.062Z",
+        "text": "my oga",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:04:50.194Z",
+        "text": "pasa",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:04:53.980Z",
+        "text": "wewe",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 32,
+        "timestamp": "2025-07-15T19:06:07.812Z",
+        "text": "ewewe",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:06:32.306Z",
+        "text": "hey yo",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:06:43.353Z",
+        "text": "hey yo",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:07:10.355Z",
+        "text": "my boss",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 32,
+        "timestamp": "2025-07-15T19:16:58.048Z",
+        "text": "hey kiddo",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 32,
+        "timestamp": "2025-07-15T19:17:45.876Z",
+        "text": "hey kiddo",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:26:57.384Z",
+        "text": "dude",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:27:14.522Z",
+        "text": "dude",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 32,
+        "timestamp": "2025-07-15T19:28:01.121Z",
+        "text": "tell me something wey i no fit do",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:28:26.084Z",
+        "text": "tell me somethign wey i no fit do",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:28:51.582Z",
+        "text": "tell me something wey i no fit do",
+        "read": {
+          "31": true,
+          "32": true
+        },
+        "isEncrypted": false
+      },
+      {
+        "senderId": 31,
+        "timestamp": "2025-07-15T19:47:34.044Z",
+        "text": "hey",
+        "isEncrypted": false,
         "read": {
           "31": true,
           "32": true
@@ -133,7 +384,8 @@
         "read": {
           "31": true,
           "33": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1009",
@@ -143,7 +395,8 @@
         "read": {
           "31": true,
           "33": false
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1010",
@@ -153,7 +406,8 @@
         "read": {
           "31": true,
           "33": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1019",
@@ -163,7 +417,8 @@
         "read": {
           "31": true,
           "33": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1022",
@@ -173,7 +428,8 @@
         "read": {
           "31": true,
           "33": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1023",
@@ -183,7 +439,8 @@
         "read": {
           "31": true,
           "33": true
-        }
+        },
+        "isEncrypted": false
       }
     ]
   },
@@ -202,7 +459,8 @@
         "read": {
           "31": true,
           "34": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1012",
@@ -212,7 +470,8 @@
         "read": {
           "31": true,
           "34": false
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1013",
@@ -222,7 +481,8 @@
         "read": {
           "31": true,
           "34": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1020",
@@ -232,7 +492,8 @@
         "read": {
           "31": true,
           "34": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1024",
@@ -240,9 +501,10 @@
         "timestamp": "2025-07-07T16:00:00Z",
         "text": "Hi! The client loved the latest designs. They want to move forward with implementation. Can we schedule a kickoff call?",
         "read": {
-          "31": false,
+          "31": true,
           "34": true
-        }
+        },
+        "isEncrypted": false
       }
     ]
   },
@@ -261,7 +523,8 @@
         "read": {
           "31": true,
           "35": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1015",
@@ -271,7 +534,8 @@
         "read": {
           "31": true,
           "35": false
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1021",
@@ -281,7 +545,8 @@
         "read": {
           "31": true,
           "35": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1025",
@@ -291,7 +556,8 @@
         "read": {
           "31": false,
           "35": true
-        }
+        },
+        "isEncrypted": false
       }
     ]
   },
@@ -310,7 +576,8 @@
         "read": {
           "31": true,
           "36": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1017",
@@ -320,7 +587,8 @@
         "read": {
           "31": true,
           "36": false
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1022",
@@ -330,7 +598,8 @@
         "read": {
           "31": true,
           "36": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-1026",
@@ -340,7 +609,8 @@
         "read": {
           "31": false,
           "36": true
-        }
+        },
+        "isEncrypted": false
       }
     ]
   },
@@ -358,8 +628,9 @@
         "text": "Hi Neilsan! Just finished the motion graphics for the Lagos Parks project. Ready for review!",
         "read": {
           "28": true,
-          "32": false
-        }
+          "32": true
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-2002",
@@ -369,7 +640,8 @@
         "read": {
           "28": false,
           "32": true
-        }
+        },
+        "isEncrypted": false
       }
     ]
   },
@@ -387,8 +659,9 @@
         "text": "Good morning! I have some questions about the mobile app wireframes. Can we schedule a quick call?",
         "read": {
           "29": true,
-          "32": false
-        }
+          "32": true
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-3002",
@@ -398,7 +671,8 @@
         "read": {
           "29": false,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-3003",
@@ -407,8 +681,9 @@
         "text": "Perfect! I'll send you the meeting link shortly.",
         "read": {
           "29": true,
-          "32": false
-        }
+          "32": true
+        },
+        "isEncrypted": false
       }
     ]
   },
@@ -427,7 +702,8 @@
         "read": {
           "27": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       },
       {
         "messageId": "msg-4002",
@@ -437,7 +713,8 @@
         "read": {
           "27": true,
           "32": true
-        }
+        },
+        "isEncrypted": false
       }
     ]
   },
@@ -456,7 +733,8 @@
         "read": {
           "26": true,
           "32": false
-        }
+        },
+        "isEncrypted": false
       }
     ]
   }

@@ -23,7 +23,7 @@ export async function GET(req: Request) {
 
   try {
     const usersFile = path.join(process.cwd(), 'data/users.json');
-    const contactsFile = path.join(process.cwd(), 'data/freelancer-contacts.json');
+    const contactsFile = path.join(process.cwd(), 'data/contacts.json');
 
     const [usersData, contactsData] = await Promise.all([
       fs.readFile(usersFile, 'utf-8'),
@@ -33,14 +33,16 @@ export async function GET(req: Request) {
     const users = JSON.parse(usersData);
     const contacts = JSON.parse(contactsData);
 
-    const currentUserContacts = contacts.find((entry: any) => entry.userId === userId);
+    // Find user's contacts (works for both freelancers and commissioners)
+    const userContacts = contacts.find((entry: any) => entry.userId === userId);
 
-    if (!currentUserContacts) {
+    if (!userContacts) {
       return NextResponse.json([], { status: 200 });
     }
 
+    // Return contact profiles from users.json
     const contactProfiles = users.filter((user: any) =>
-      currentUserContacts.contacts.includes(user.id)
+      userContacts.contacts.includes(user.id)
     );
 
     return NextResponse.json(contactProfiles, { status: 200 });

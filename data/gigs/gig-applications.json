@@ -37,5 +37,31 @@
     "skills": ["UI/UX Design", "Frontend Development", "Data Visualization", "GIS"],
     "tools": ["React", "D3.js", "Mapbox", "Figma"],
     "submittedAt": "2025-07-11T16:45:00Z"
+  },
+  {
+    "id": 4,
+    "gigId": 6,
+    "freelancerId": 11,
+    "pitch": "Mobile app developer with 4+ years experience in React Native. I've built several location-based apps and have experience with park management systems. I can deliver a user-friendly app that enhances the park visitor experience.",
+    "sampleLinks": [
+      "https://portfolio.example.com/mobile-apps",
+      "https://github.com/riya/park-finder-app"
+    ],
+    "skills": ["React Native", "Mobile Development", "Firebase", "Maps Integration"],
+    "tools": ["React Native", "Firebase", "Google Maps API", "Expo"],
+    "submittedAt": "2025-07-12T09:15:00Z"
+  },
+  {
+    "id": 5,
+    "gigId": 7,
+    "freelancerId": 2,
+    "pitch": "Graphic designer specializing in digital signage and content management systems. I have experience creating intuitive interfaces for non-technical users and understand the importance of accessibility in public spaces.",
+    "sampleLinks": [
+      "https://portfolio.example.com/digital-signage",
+      "https://behance.net/jenny/signage-projects"
+    ],
+    "skills": ["Digital Design", "Content Management", "UI Design", "Accessibility"],
+    "tools": ["Figma", "Adobe Creative Suite", "Sketch", "InVision"],
+    "submittedAt": "2025-07-13T14:30:00Z"
   }
 ]

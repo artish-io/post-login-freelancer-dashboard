@@ -1,5 +1,6 @@
 export interface Gig {
   id: number;
+  userId?: number; // ✅ Add userId field from freelancer data
   name: string;
   title: string;
   category: string;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import TopNavbar from '../../../components/commissioner-dashboard/top-navbar';
 import CommissionerSidebar from '../../../components/commissioner-dashboard/commissioner-sidebar';
@@ -13,7 +13,11 @@ export default function CommissionerDashboardLayout({
 }) {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Check if current page is messages to remove padding for full-width layout
+  const isMessagesPage = pathname === '/commissioner-dashboard/messages';
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -54,7 +58,7 @@ export default function CommissionerDashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" style={{ overflow: 'hidden', maxWidth: '100vw' }}>
       {/* Top Navbar - fixed at top, stretches full width */}
       <TopNavbar
         isMobileMenuOpen={isMobileMenuOpen}
@@ -62,7 +66,7 @@ export default function CommissionerDashboardLayout({
       />
 
       {/* Content Area with Sidebar - starts below fixed navbar */}
-      <div className="pt-20 flex">
+      <div className="pt-20 flex" style={{ maxWidth: '100vw', overflow: 'hidden' }}>
         {/* Sidebar */}
         <CommissionerSidebar
           isMobileMenuOpen={isMobileMenuOpen}
@@ -70,7 +74,10 @@ export default function CommissionerDashboardLayout({
         />
 
         {/* Main Content Area */}
-        <main className="flex-1 lg:ml-60 p-6">
+        <main
+          className={`flex-1 lg:ml-60 ${isMessagesPage ? '' : 'py-6'}`}
+          style={{ maxWidth: '100%', overflow: 'hidden' }}
+        >
           {children}
         </main>
       </div>

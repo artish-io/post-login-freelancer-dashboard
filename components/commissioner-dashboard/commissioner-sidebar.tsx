@@ -6,13 +6,13 @@ import { usePathname } from 'next/navigation';
 import { useUnreadMessages } from '../../src/hooks/useUnreadMessages';
 
 const sidebarItems = [
-  { label: 'Home', icon: '/side-bar-logos/commisoners/home.png', href: '#' },
-  { label: 'Discover Talent', icon: '/side-bar-logos/commisoners/discover-talent.png', href: '#' },
-  { label: 'Messages', icon: '/side-bar-logos/commisoners/messages.png', href: '#' },
-  { label: 'Job Listings', icon: '/side-bar-logos/commisoners/job-listings.png', href: '#' },
+  { label: 'Home', icon: '/side-bar-logos/commisoners/home.png', href: '/commissioner-dashboard' },
+  { label: 'Discover Talent', icon: '/side-bar-logos/commisoners/discover-talent.png', href: '/commissioner-dashboard/discover-talent' },
+  { label: 'Messages', icon: '/side-bar-logos/commisoners/messages.png', href: '/commissioner-dashboard/messages' },
+  { label: 'Job Listings', icon: '/side-bar-logos/commisoners/job-listings.png', href: '/commissioner-dashboard/job-listings' },
   { label: 'Projects & Invoices', icon: '/side-bar-logos/commisoners/projects+invoices.png', href: '#' },
   { label: 'Payments', icon: '/side-bar-logos/commisoners/payments.png', href: '#' },
-  { label: 'Storefront', icon: '/side-bar-logos/commisoners/storefront.png', href: '#' },
+  { label: 'Storefront', icon: '/side-bar-logos/commisoners/storefront.png', href: '/commissioner-dashboard/storefront' },
   { label: 'Settings', icon: '/side-bar-logos/commisoners/settings.png', href: '#' },
 ];
 
@@ -28,8 +28,22 @@ export default function CommissionerSidebar({
   const pathname = usePathname();
   const { unreadCount } = useUnreadMessages();
 
-  const isActive = (label: string) =>
-    label === 'Home' ? pathname === '#' : false; // until real routes exist
+  const isActive = (label: string) => {
+    switch (label) {
+      case 'Home':
+        return pathname === '/commissioner-dashboard';
+      case 'Discover Talent':
+        return pathname === '/commissioner-dashboard/discover-talent';
+      case 'Messages':
+        return pathname === '/commissioner-dashboard/messages';
+      case 'Job Listings':
+        return pathname === '/commissioner-dashboard/job-listings';
+      case 'Storefront':
+        return pathname === '/commissioner-dashboard/storefront';
+      default:
+        return false;
+    }
+  };
 
   return (
     <>

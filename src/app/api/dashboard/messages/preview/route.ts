@@ -18,7 +18,7 @@ export async function GET(req: Request) {
     const [messagesData, usersData, contactsData] = await Promise.all([
       fs.readFile(path.join(process.cwd(), 'data/messages.json'), 'utf-8'),
       fs.readFile(path.join(process.cwd(), 'data/users.json'), 'utf-8'),
-      fs.readFile(path.join(process.cwd(), 'data/freelancer-contacts.json'), 'utf-8'),
+      fs.readFile(path.join(process.cwd(), 'data/contacts.json'), 'utf-8'),
     ]);
 
     const messages = JSON.parse(messagesData);

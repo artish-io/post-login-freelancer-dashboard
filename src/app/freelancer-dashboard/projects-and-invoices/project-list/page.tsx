@@ -11,11 +11,11 @@ import type { Project } from '../../../../lib/projects/tasks/types';
 // Helper function to calculate project status based on tasks
 function calculateProjectStatus(project: any): 'ongoing' | 'paused' | 'completed' {
   const tasks = project.tasks || [];
-  const completedTasks = tasks.filter((task: any) => task.completed).length;
+  const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
   const totalTasks = tasks.length;
 
   if (totalTasks === 0) return 'paused';
-  if (completedTasks === totalTasks) return 'completed';
+  if (approvedTasks === totalTasks) return 'completed';
 
   // Check if project has recent activity (tasks in review or recently updated)
   const hasRecentActivity = tasks.some((task: any) =>
@@ -75,9 +75,9 @@ export default function ProjectListPage() {
             // Find the corresponding project from projects.json
             const projectInfo = projectsData.find((p: any) => p.projectId === projectTasks.projectId);
             const tasks = projectTasks.tasks || [];
-            const completedTasks = tasks.filter((task: any) => task.completed).length;
+            const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
             const totalTasks = tasks.length;
-            const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            const progress = totalTasks > 0 ? Math.round((approvedTasks / totalTasks) * 100) : 0;
 
             // Get due date from projects.json if available, otherwise from earliest incomplete task
             let dueDate = projectInfo?.dueDate || null;
@@ -115,16 +115,16 @@ export default function ProjectListPage() {
             let completionDate = null;
 
             if (projectStatus === 'completed') {
-              // Find the latest completion date from completed tasks
-              const completedTasks = tasks.filter((task: any) => task.completed);
-              if (completedTasks.length > 0) {
-                // Use the latest task completion as project completion
-                // For now, we'll estimate it as the latest due date of completed tasks
-                const latestCompletedDate = completedTasks
+              // Find the latest completion date from approved tasks
+              const approvedTasks = tasks.filter((task: any) => task.status === 'Approved');
+              if (approvedTasks.length > 0) {
+                // Use the latest task approval as project completion
+                // For now, we'll estimate it as the latest due date of approved tasks
+                const latestApprovedDate = approvedTasks
                   .map((task: any) => task.dueDate)
                   .sort()
                   .pop();
-                completionDate = latestCompletedDate;
+                completionDate = latestApprovedDate;
               }
             }
 
@@ -163,9 +163,9 @@ export default function ProjectListPage() {
           // Transform without projects.json data (use calculated status)
           const transformedProjects = projectTasksData.map((projectTasks: any) => {
             const tasks = projectTasks.tasks || [];
-            const completedTasks = tasks.filter((task: any) => task.completed).length;
+            const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
             const totalTasks = tasks.length;
-            const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            const progress = totalTasks > 0 ? Math.round((approvedTasks / totalTasks) * 100) : 0;
 
             // Get due date from earliest incomplete task
             const incompleteTasks = tasks.filter((task: any) => !task.completed);
@@ -182,12 +182,12 @@ export default function ProjectListPage() {
 
             let completionDate = null;
             if (projectStatus === 'completed') {
-              const completedTasks = tasks.filter((task: any) => task.completed);
-              if (completedTasks.length > 0) {
-                const latestCompletionDate = completedTasks
+              const approvedTasks = tasks.filter((task: any) => task.status === 'Approved');
+              if (approvedTasks.length > 0) {
+                const latestApprovalDate = approvedTasks
                   .map((task: any) => new Date(task.dueDate))
                   .sort((a: Date, b: Date) => b.getTime() - a.getTime())[0];
-                completionDate = latestCompletionDate.toISOString();
+                completionDate = latestApprovalDate.toISOString();
               }
             }
 

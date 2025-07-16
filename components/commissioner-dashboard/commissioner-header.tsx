@@ -42,9 +42,9 @@ export default function CommissionerHeader() {
   });
 
   return (
-    <div className="w-full flex flex-col sm:flex-row justify-between items-start sm:items-center">
+    <div className="w-full flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-6">
       {/* Left: Avatar and Name */}
-      <div className="flex items-center gap-4 relative">
+      <div className="flex items-center gap-4 relative flex-shrink-0">
         <div className="relative">
           <Image
             src={avatar}
@@ -58,25 +58,26 @@ export default function CommissionerHeader() {
             <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white bg-green-500" />
           )}
         </div>
-        <div>
-          <h2 className="font-semibold text-lg text-gray-900">{name}</h2>
-          <p className="text-sm text-gray-500">{organizationName}</p>
+        <div className="min-w-0 flex-1">
+          <h2 className="font-semibold text-lg text-gray-900 truncate">{name}</h2>
+          <p className="text-sm text-gray-500 truncate">{organizationName}</p>
         </div>
       </div>
 
       {/* Right: Date and Search */}
-      <div className="flex flex-col sm:flex-row gap-4 mt-4 sm:mt-0 items-center">
-        <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-sm text-gray-800">
+      <div className="flex flex-col sm:flex-row gap-3 flex-shrink-0">
+        {/* Calendar - hidden on mobile */}
+        <div className="hidden sm:flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-sm text-gray-800 whitespace-nowrap">
           <Image src="/calendar-icon.png" alt="Calendar" width={16} height={16} />
           <span>{formattedDate}</span>
         </div>
 
-        <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full w-full sm:w-72">
+        <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full w-full sm:w-80 lg:w-72">
           <Image src="/search-icon.png" alt="Search" width={16} height={16} />
           <input
             type="text"
             placeholder="Search"
-            className="bg-transparent outline-none w-full text-sm"
+            className="bg-transparent outline-none w-full text-sm min-w-0"
           />
         </div>
       </div>

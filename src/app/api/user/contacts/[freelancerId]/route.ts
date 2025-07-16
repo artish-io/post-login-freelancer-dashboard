@@ -10,7 +10,7 @@ export async function GET(
     const { freelancerId } = await context.params;
     const freelancerIdNum = Number(freelancerId);
 
-    const contactsPath = path.join(process.cwd(), 'data', 'freelancer-contacts.json');
+    const contactsPath = path.join(process.cwd(), 'data', 'contacts.json');
     const usersPath = path.join(process.cwd(), 'data', 'users.json');
 
     const [contactsRaw, usersRaw] = await Promise.all([

@@ -17,6 +17,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.16.0",
+    "libsodium-wrappers": "^0.7.15",
     "lucide-react": "^0.515.0",
     "next": "^15.3.5",
     "next-auth": "^4.24.11",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@types/chart.js": "^2.9.41",
+    "@types/libsodium-wrappers": "^0.7.14",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-day-picker": "^5.2.1",

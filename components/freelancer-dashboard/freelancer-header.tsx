@@ -123,7 +123,8 @@ export default function FreelancerHeader() {
 
       {/* Right: Date and Search */}
       <div className="flex flex-col sm:flex-row gap-4 mt-4 sm:mt-0 items-center">
-        <div className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-sm text-gray-800">
+        {/* Calendar - hidden on mobile */}
+        <div className="hidden sm:flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full text-sm text-gray-800">
           <Image src="/calendar-icon.png" alt="Calendar" width={16} height={16} />
           <span>{formattedDate}</span>
         </div>

@@ -21,7 +21,7 @@ export type Contact = {
 type Props = {
   userId: string;
   selectedThreadId: string | null;
-  setSelectedThreadId: (threadId: string) => void;
+  setSelectedThreadId: (contactId: number, threadId: string) => void;
   setActiveContact: (contactId: number) => void;
 };
 
@@ -71,13 +71,47 @@ export default function MessagesContacts({
     };
 
     fetchUnreadThreads();
+
+    // Listen for real-time updates
+    const handleUnreadCountChange = () => {
+      console.log('📧 Unread count changed, refreshing contact list unread state');
+      fetchUnreadThreads();
+    };
+
+    const handleMessageSent = () => {
+      console.log('📨 Message sent, refreshing contact list unread state');
+      fetchUnreadThreads();
+    };
+
+    const handleRefreshUnreadCount = () => {
+      console.log('📧 Manual refresh triggered, refreshing contact list unread state');
+      fetchUnreadThreads();
+    };
+
+    // Listen for various events that should trigger unread state refresh
+    window.addEventListener('unreadCountChanged', handleUnreadCountChange);
+    window.addEventListener('messageSent', handleMessageSent);
+    window.addEventListener('refreshUnreadCount', handleRefreshUnreadCount);
+
+    // Poll for unread state changes every 5 seconds (slightly longer than message thread polling)
+    const interval = setInterval(() => {
+      console.log('🔄 Polling for contact list unread state changes...');
+      fetchUnreadThreads();
+    }, 5000);
+
+    return () => {
+      window.removeEventListener('unreadCountChanged', handleUnreadCountChange);
+      window.removeEventListener('messageSent', handleMessageSent);
+      window.removeEventListener('refreshUnreadCount', handleRefreshUnreadCount);
+      clearInterval(interval);
+    };
   }, [userId]);
 
   const handleSelect = async (contactId: number) => {
     const sorted = [Number(userId), contactId].sort((a, b) => a - b);
     const threadId = `${sorted[0]}-${sorted[1]}`;
 
-    setSelectedThreadId(threadId);
+    setSelectedThreadId(contactId, threadId);
     setActiveContact(contactId);
 
     try {
@@ -105,7 +139,7 @@ export default function MessagesContacts({
   };
 
   return (
-    <aside className="w-full max-w-xs py-4 px-2 overflow-y-auto">
+    <aside className="w-full py-4 px-2 overflow-y-auto">
       <ul className="space-y-2">
         {contacts.map((contact) => {
           const threadId = [Number(userId), contact.id].sort((a, b) => a - b).join('-');

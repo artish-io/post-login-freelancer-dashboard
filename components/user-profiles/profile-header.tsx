@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { MapPin, Star } from 'lucide-react';
+import { MapPin, Star, MessageCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 interface Profile {
   id: string;
@@ -54,6 +55,14 @@ const getSocialIcon = (platform: string) => {
 };
 
 export default function ProfileHeader({ profile }: ProfileHeaderProps) {
+  const router = useRouter();
+
+  const handleDirectMessage = () => {
+    // Navigate to messages with this user
+    // In a real app, this would create a new thread or navigate to existing one
+    router.push(`/commissioner-dashboard/messages?userId=${profile.id}`);
+  };
+
   return (
     <div className="flex items-start gap-6 mb-8">
       {/* Profile Image - Large circular avatar */}
@@ -71,12 +80,24 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
       <div className="flex-1 mt-2">
         <h1 className="text-2xl font-semibold text-gray-900 mb-4">{profile.name}</h1>
 
-        {/* Location pill */}
-        <div className="mb-3">
+        {/* Location pill and Direct Message button */}
+        <div className="mb-3 flex items-center gap-3">
           <div className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-full text-sm text-gray-700">
             <MapPin className="w-4 h-4 text-gray-500" />
             <span>{profile.location}</span>
           </div>
+
+          {/* Direct Message Button */}
+          <button
+            onClick={handleDirectMessage}
+            className="inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-colors text-gray-700 hover:bg-opacity-40"
+            style={{
+              backgroundColor: 'rgba(252, 213, 227, 0.3)'
+            }}
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span>Message</span>
+          </button>
         </div>
 
         {/* Rate pill - wider and centered below location */}

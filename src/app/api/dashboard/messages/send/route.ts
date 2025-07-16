@@ -11,7 +11,7 @@ import { promises as fs } from 'fs';
 // In production, secure this via `getServerSession()` or auth tokens.
 
 export async function POST(request: Request) {
-  const { userId, threadId, text } = await request.json();
+  const { userId, threadId, text, isEncrypted } = await request.json();
 
   if (!userId || !threadId || !text) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -32,6 +32,7 @@ export async function POST(request: Request) {
       senderId: userId,
       timestamp: new Date().toISOString(),
       text,
+      isEncrypted: isEncrypted || false,
       read: { [userId]: true }, // sender already "read" it
     };
 

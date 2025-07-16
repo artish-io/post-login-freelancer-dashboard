@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     const gigApplicationsPath = path.join(process.cwd(), 'data', 'gigs', 'gig-applications.json');
     const usersPath = path.join(process.cwd(), 'data', 'users.json');
     const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
-    const commissionerContactsPath = path.join(process.cwd(), 'data', 'commissioner-contacts.json');
+    const contactsPath = path.join(process.cwd(), 'data', 'contacts.json');
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
     const commissionerNotificationsPath = path.join(process.cwd(), 'data', 'notifications', 'commissioners.json');
     const invoicesPath = path.join(process.cwd(), 'data', 'invoices.json');
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     const gigApplicationsData = JSON.parse(fs.readFileSync(gigApplicationsPath, 'utf8'));
     const usersData = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
     const freelancersData = JSON.parse(fs.readFileSync(freelancersPath, 'utf8'));
-    const commissionerContactsData = JSON.parse(fs.readFileSync(commissionerContactsPath, 'utf8'));
+    const contactsData = JSON.parse(fs.readFileSync(contactsPath, 'utf8'));
     const organizationsData = JSON.parse(fs.readFileSync(organizationsPath, 'utf8'));
     const commissionerNotificationsData = JSON.parse(fs.readFileSync(commissionerNotificationsPath, 'utf8'));
     const invoicesData = JSON.parse(fs.readFileSync(invoicesPath, 'utf8'));
@@ -52,10 +52,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Get commissioner's network
-    const commissionerContacts = commissionerContactsData.find((contact: any) => 
-      contact.commissionerId === parseInt(commissionerId)
+    const commissionerContacts = contactsData.find((contact: any) =>
+      contact.userId === parseInt(commissionerId)
     );
-    const networkFreelancerIds = commissionerContacts?.contacts?.map((c: any) => c.freelancerId) || [];
+    const networkFreelancerIds = commissionerContacts?.contacts || [];
 
     // Generate notifications
     const notifications: any[] = [];

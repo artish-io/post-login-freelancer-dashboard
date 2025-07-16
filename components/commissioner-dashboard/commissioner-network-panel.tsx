@@ -9,10 +9,7 @@ type NetworkContact = {
   name: string;
   title: string;
   avatar: string;
-  isOnline?: boolean;
-  lastActive?: string;
   relationshipTypes: string[]; // e.g., ['project', 'messages', 'gig_application']
-  lastInteraction?: string;
 };
 
 /**
@@ -161,53 +158,18 @@ export default function CommissionerNetworkPanel() {
             if (user && user.type === 'freelancer') {
               const relationship = userRelationships.get(userId);
 
-              // Calculate realistic online status based on last interaction
-              let isOnline = false;
-              let lastActive: string | undefined = undefined;
-
-              if (relationship?.lastInteraction) {
-                const lastInteractionDate = new Date(relationship.lastInteraction);
-                const now = new Date();
-                const hoursSinceLastInteraction = (now.getTime() - lastInteractionDate.getTime()) / (1000 * 60 * 60);
-
-                // Consider online if last interaction was within 2 hours
-                isOnline = hoursSinceLastInteraction < 2;
-
-                // Generate realistic "last active" time if not online
-                if (!isOnline) {
-                  if (hoursSinceLastInteraction < 24) {
-                    lastActive = `${Math.floor(hoursSinceLastInteraction)}h ago`;
-                  } else {
-                    const daysSince = Math.floor(hoursSinceLastInteraction / 24);
-                    lastActive = `${daysSince}d ago`;
-                  }
-                }
-              } else {
-                // No interaction data - assume offline with generic time
-                isOnline = false;
-                lastActive = '1d ago';
-              }
-
               networkContacts.push({
                 id: user.id,
                 name: user.name,
                 title: user.title,
                 avatar: user.avatar,
-                isOnline: isOnline,
-                lastActive: lastActive,
-                relationshipTypes: relationship ? Array.from(relationship.types) : [],
-                lastInteraction: relationship?.lastInteraction || ''
+                relationshipTypes: relationship ? Array.from(relationship.types) : []
               });
             }
           });
 
-          // Sort by most recent interaction
-          networkContacts.sort((a, b) => {
-            if (!a.lastInteraction && !b.lastInteraction) return 0;
-            if (!a.lastInteraction) return 1;
-            if (!b.lastInteraction) return -1;
-            return new Date(b.lastInteraction).getTime() - new Date(a.lastInteraction).getTime();
-          });
+          // Sort alphabetically by name
+          networkContacts.sort((a, b) => a.name.localeCompare(b.name));
 
           setContacts(networkContacts);
       } catch (error) {
@@ -222,7 +184,6 @@ export default function CommissionerNetworkPanel() {
   }, []);
 
   const displayedContacts = showAll ? contacts : contacts.slice(0, 5);
-  const onlineCount = contacts.filter(c => c.isOnline).length;
 
   const handleContactClick = (contactId: number) => {
     // Navigate to freelancer profile
@@ -253,7 +214,7 @@ export default function CommissionerNetworkPanel() {
       <div className="px-6 py-4">
         <h3 className="text-base font-semibold text-gray-900">Network</h3>
         <span className="text-sm text-gray-500">
-          {contacts.length} contacts • {onlineCount} online
+          {contacts.length} contacts
         </span>
       </div>
 
@@ -277,9 +238,6 @@ export default function CommissionerNetworkPanel() {
                     height={40}
                     className="rounded-full"
                   />
-                  {contact.isOnline && (
-                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-                  )}
                 </div>
                 
                 <div className="flex-1 min-w-0">
@@ -316,20 +274,6 @@ export default function CommissionerNetworkPanel() {
                       </span>
                     )}
                   </div>
-
-                  {!contact.isOnline && contact.lastActive && (
-                    <div className="text-xs text-gray-400 mt-1">
-                      {contact.lastActive}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-shrink-0">
-                  {contact.isOnline ? (
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  ) : (
-                    <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-                  )}
                 </div>
               </motion.div>
             ))}

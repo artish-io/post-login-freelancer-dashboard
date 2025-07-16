@@ -23,6 +23,7 @@ export default function MessagesExpansion() {
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   const [activeContact, setActiveContact] = useState<number | null>(null);
   const [showNewMessageModal, setShowNewMessageModal] = useState(false);
+  const [showContactList, setShowContactList] = useState(true); // Mobile state management
 
   const userId = Number(session?.user?.id);
 
@@ -44,16 +45,32 @@ export default function MessagesExpansion() {
   const handleThreadCreated = (newThreadId: string) => {
     setSelectedThreadId(newThreadId);
     setShowNewMessageModal(false);
+    setShowContactList(false); // Hide contact list on mobile when thread is selected
 
     const ids = newThreadId.split('-').map(Number);
     const otherId = ids.find((id) => id !== userId);
     if (otherId) setActiveContact(otherId);
   };
 
+  const handleContactSelect = (contactId: number, threadId: string) => {
+    setSelectedThreadId(threadId);
+    setActiveContact(contactId);
+    setShowContactList(false); // Hide contact list on mobile when contact is selected
+  };
+
+  const handleBackToContacts = () => {
+    setShowContactList(true);
+    setSelectedThreadId(null);
+    setActiveContact(null);
+  };
+
   return (
-    <div className="flex h-full w-full overflow-hidden px-4 pb-4 pt-2 bg-gray-50">
-      {/* Contacts List */}
-      <aside className="w-[300px] flex flex-col pr-2">
+    <div className="flex h-full w-full overflow-hidden bg-gray-50 px-0 md:px-6">
+      {/* Contacts List - Hidden on mobile when thread is selected */}
+      <aside className={`
+        w-full md:w-[300px] flex flex-col
+        ${showContactList ? 'block' : 'hidden md:block'}
+      `}>
         <div className="flex justify-between items-center px-4 py-3">
           <h2 className="font-semibold text-gray-800 text-lg">Contacts</h2>
           <button
@@ -66,13 +83,17 @@ export default function MessagesExpansion() {
         <MessagesContacts
           userId={String(userId)}
           selectedThreadId={selectedThreadId}
-          setSelectedThreadId={setSelectedThreadId}
+          setSelectedThreadId={handleContactSelect}
           setActiveContact={setActiveContact}
         />
       </aside>
 
-      {/* Message Thread Panel */}
-      <section className="flex-1 flex flex-col bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+      {/* Message Thread Panel - Full width on mobile when contact is selected */}
+      <section className={`
+        flex-1 flex flex-col bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden
+        ${!showContactList ? 'block' : 'hidden md:block'}
+        md:ml-4
+      `}>
         <AnimatePresence mode="wait">
           {activeContact !== null && selectedThreadId ? (
             <motion.div
@@ -88,7 +109,11 @@ export default function MessagesExpansion() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.1, ease: "easeOut" }}
               >
-                <ContactProfileHeader contactId={activeContact} />
+                <ContactProfileHeader
+                  contactId={activeContact}
+                  onBack={handleBackToContacts}
+                  showBackButton={!showContactList}
+                />
               </motion.div>
               <motion.div
                 className="flex-1 overflow-y-auto"

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
+import { validateDataIntegrity, logDataIntegrityReport } from '../../src/lib/data-integrity';
 
 export type ProjectSummaryItem = {
   projectId: number;
@@ -41,11 +42,11 @@ const statusLabels: Record<ProjectSummaryItem['status'], string> = {
 // Helper function to calculate project status based on tasks and due dates
 function calculateProjectStatus(project: any, earliestDueDate: string | null): 'ongoing' | 'paused' | 'completed' | 'delayed' {
   const tasks = project.tasks || [];
-  const completedTasks = tasks.filter((task: any) => task.completed).length;
+  const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
   const totalTasks = tasks.length;
 
   if (totalTasks === 0) return 'paused';
-  if (completedTasks === totalTasks) return 'completed';
+  if (approvedTasks === totalTasks) return 'completed';
 
   // Check if project has recent activity (tasks in review or recently updated)
   const hasRecentActivity = tasks.some((task: any) =>
@@ -129,35 +130,95 @@ export default function ProjectSummaryTable({
         setLoading(true);
 
         if (viewType === 'commissioner') {
-          // Commissioner view - use mock data for now
-          const mockCommissionerProjects = [
-            {
-              projectId: 301,
-              name: 'Datascale AI app',
-              person: 'Neilsan Mando',
-              dueDate: 'Jun 20, 2023',
-              dueDateRaw: '2023-06-20',
-              status: 'ongoing' as const,
-              progress: 35,
-              totalTasks: 8
-            },
-            {
-              projectId: 302,
-              name: 'Media channel branding',
-              person: 'Tiruvelly Priya',
-              dueDate: 'Jul 13, 2023',
-              dueDateRaw: '2023-07-13',
-              status: 'ongoing' as const,
-              progress: 60,
-              totalTasks: 12
-            }
-          ];
+          // Commissioner view - fetch dynamic data
+          const [projectTasksRes, projectsRes, userRes, orgRes] = await Promise.all([
+            fetch('/api/project-tasks'),
+            fetch('/api/projects'),
+            fetch('/api/users'),
+            fetch('/api/organizations')
+          ]);
 
-          // Filter only active projects (ongoing and delayed)
-          const activeProjects = mockCommissionerProjects.filter(
-            project => project.status === 'ongoing' || project.status === 'delayed'
-          );
-          setProjects(activeProjects);
+          if (projectTasksRes.ok && projectsRes.ok && userRes.ok && orgRes.ok) {
+            const projectTasksData = await projectTasksRes.json();
+            const projectsData = await projectsRes.json();
+            const users = await userRes.json();
+            const organizations = await orgRes.json();
+
+            // Run data integrity check in development
+            if (process.env.NODE_ENV === 'development') {
+              const integrityReport = validateDataIntegrity(projectsData, projectTasksData);
+              logDataIntegrityReport(integrityReport);
+            }
+
+            // For demo purposes, use commissioner 32 (Lagos Parks Services)
+            const commissionerId = 32;
+            const commissionerOrg = organizations.find((org: any) => org.contactPersonId === commissionerId);
+
+            if (commissionerOrg) {
+              // Filter projects for this commissioner's organization
+              const commissionerProjects = projectsData.filter((project: any) =>
+                project.organizationId === commissionerOrg.id
+              );
+
+              // Transform project data for commissioner view
+              const transformedProjects = commissionerProjects.map((project: any) => {
+                // Find corresponding project tasks
+                const projectTasks = projectTasksData.find((pt: any) => pt.projectId === project.projectId);
+                const tasks = projectTasks?.tasks || [];
+                // Progress should be based on approved tasks, not just completed/submitted tasks
+                const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
+                const totalTasks = tasks.length;
+                const progress = totalTasks > 0 ? Math.round((approvedTasks / totalTasks) * 100) : 0;
+
+                // Find the freelancer assigned to this project
+                const freelancer = users.find((user: any) =>
+                  user.id === project.freelancerId && user.type === 'freelancer'
+                );
+
+                // Calculate project status - normalize status values
+                let projectStatus = project.status?.toLowerCase() || calculateProjectStatus(projectTasks, project.dueDate);
+
+                // Map status values to expected format
+                if (projectStatus === 'active') {
+                  projectStatus = 'ongoing';
+                }
+
+                return {
+                  projectId: project.projectId,
+                  name: project.title,
+                  person: freelancer ? freelancer.name : 'Unassigned',
+                  dueDate: project.dueDate ? new Date(project.dueDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  }) : 'No due date',
+                  dueDateRaw: project.dueDate,
+                  status: projectStatus,
+                  progress,
+                  totalTasks
+                };
+              });
+
+              // Filter out completed projects - only show ongoing, paused, and delayed
+              const activeProjects = transformedProjects.filter((project: any) =>
+                project.status === 'ongoing' || project.status === 'paused' || project.status === 'delayed'
+              );
+
+              // Sort by priority: delayed first, then by due date (earliest first)
+              const sortedProjects = activeProjects.sort((a: any, b: any) => {
+                if (a.status === 'delayed' && b.status !== 'delayed') return -1;
+                if (b.status === 'delayed' && a.status !== 'delayed') return 1;
+
+                if (!a.dueDateRaw && !b.dueDateRaw) return 0;
+                if (!a.dueDateRaw) return 1;
+                if (!b.dueDateRaw) return -1;
+
+                return new Date(a.dueDateRaw).getTime() - new Date(b.dueDateRaw).getTime();
+              });
+
+              setProjects(sortedProjects.slice(0, maxItems));
+            }
+          }
         } else {
           // Freelancer view - use existing API logic
           const [projectTasksRes, projectsRes, userRes, orgRes] = await Promise.all([
@@ -176,9 +237,10 @@ export default function ProjectSummaryTable({
             // Transform project-tasks data
             const transformedProjects = projectTasksData.map((project: any) => {
               const tasks = project.tasks || [];
-              const completedTasks = tasks.filter((task: any) => task.completed).length;
+              // Progress should be based on approved tasks, not just completed/submitted tasks
+              const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
               const totalTasks = tasks.length;
-              const progress = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+              const progress = totalTasks > 0 ? Math.round((approvedTasks / totalTasks) * 100) : 0;
 
               // Get due date from projects.json
               const projectInfo = projectsData.find((p: any) => p.projectId === project.projectId);
@@ -305,64 +367,45 @@ export default function ProjectSummaryTable({
                   </td>
                 )}
                 <td className="py-3">
-                  {viewType === 'commissioner' ? (
-                    // Commissioner view - simple progress bar
-                    <div className="flex items-center">
-                      <div className="text-sm font-medium text-gray-900 mr-2">
-                        {project.progress}%
-                      </div>
-                      <div className="w-16 bg-gray-200 rounded-full h-2">
-                        <div
-                          className={clsx(
-                            'h-2 rounded-full transition-all duration-300',
-                            project.progress < 50 ? 'bg-red-500' :
-                            project.progress < 75 ? 'bg-yellow-500' : 'bg-green-500'
-                          )}
-                          style={{ width: `${project.progress}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  ) : (
-                    // Freelancer view - circular progress ring
-                    <div className="flex items-center justify-center">
-                      {(() => {
-                        const ringStyles = getRingStyles(project.progress);
-                        const progressRing = getProgressRing(project.progress);
+                  {/* Both views now use circular progress rings */}
+                  <div className="flex items-center justify-center">
+                    {(() => {
+                      const ringStyles = getRingStyles(project.progress);
+                      const progressRing = getProgressRing(project.progress);
 
-                        return (
-                          <div className="relative w-7 h-7">
-                            <svg className="w-7 h-7 transform -rotate-90" viewBox="0 0 28 28">
-                              <circle
-                                cx="14"
-                                cy="14"
-                                r={progressRing.radius}
-                                stroke="#E5E7EB"
-                                strokeWidth="2"
-                                fill="none"
-                              />
-                              <circle
-                                cx="14"
-                                cy="14"
-                                r={progressRing.radius}
-                                stroke={ringStyles.strokeColor}
-                                strokeWidth="2"
-                                fill="none"
-                                strokeLinecap="round"
-                                strokeDasharray={progressRing.strokeDasharray}
-                                strokeDashoffset={progressRing.strokeDashoffset}
-                                style={{
-                                  transition: 'stroke-dashoffset 0.5s ease-in-out'
-                                }}
-                              />
-                            </svg>
-                            <div className={`absolute inset-0 flex items-center justify-center text-[9px] font-bold ${ringStyles.textColor}`}>
-                              {project.progress}%
-                            </div>
+                      return (
+                        <div className="relative w-7 h-7">
+                          <svg className="w-7 h-7 transform -rotate-90" viewBox="0 0 28 28">
+                            <circle
+                              cx="14"
+                              cy="14"
+                              r={progressRing.radius}
+                              stroke="#E5E7EB"
+                              strokeWidth="2"
+                              fill="none"
+                            />
+                            <circle
+                              cx="14"
+                              cy="14"
+                              r={progressRing.radius}
+                              stroke={ringStyles.strokeColor}
+                              strokeWidth="2"
+                              fill="none"
+                              strokeLinecap="round"
+                              strokeDasharray={progressRing.strokeDasharray}
+                              strokeDashoffset={progressRing.strokeDashoffset}
+                              style={{
+                                transition: 'stroke-dashoffset 0.5s ease-in-out'
+                              }}
+                            />
+                          </svg>
+                          <div className={`absolute inset-0 flex items-center justify-center text-[9px] font-bold ${ringStyles.textColor}`}>
+                            {project.progress}%
                           </div>
-                        );
-                      })()}
-                    </div>
-                  )}
+                        </div>
+                      );
+                    })()}
+                  </div>
                 </td>
               </tr>
             ))}

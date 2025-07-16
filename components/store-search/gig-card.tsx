@@ -1,4 +1,6 @@
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { Gig } from '../../types/gig';
 
 type GigCardProps = {
@@ -6,13 +8,14 @@ type GigCardProps = {
 };
 
 export default function GigCard({ gig }: GigCardProps) {
+  const { data: session } = useSession();
+  const router = useRouter();
+
   const {
     name,
     title,
     category,
     skills = [],
-    skillCategories = [],
-    tools = [],
     specializations = [],
     rate,
     location,
@@ -20,8 +23,47 @@ export default function GigCard({ gig }: GigCardProps) {
     avatar = '/avatar.png' // Default fallback avatar
   } = gig;
 
-  // Combine all skill-related data for display
-  const allSkills = [...skills, ...skillCategories, ...tools];
+  // Use only available skills data for display
+  const allSkills = [...skills];
+
+  // Format location to show country codes for consistency
+  const formatLocation = (location: string) => {
+    if (location.toLowerCase().includes('lagos') || location.toLowerCase().includes('nigeria')) {
+      return 'NG';
+    }
+    // Add other location mappings as needed
+    if (location.toLowerCase().includes('united states') || location.toLowerCase().includes('usa')) {
+      return 'US';
+    }
+    if (location.toLowerCase().includes('canada')) {
+      return 'CA';
+    }
+    if (location.toLowerCase().includes('united kingdom') || location.toLowerCase().includes('uk')) {
+      return 'UK';
+    }
+    // Return the original location if no mapping found
+    return location;
+  };
+
+  // Handle contact button click with authentication check
+  const handleContactClick = () => {
+    if (!session?.user?.id) {
+      // User is not logged in, redirect to commissioner login
+      router.push('/login-commissioner');
+      return;
+    }
+
+    // User is logged in, navigate to messages with the freelancer
+    // Create a thread ID based on user IDs (smaller ID first for consistency)
+    const currentUserId = Number(session.user.id);
+    // Use userId from the gig data (which comes from freelancer.userId)
+    const freelancerUserId = (gig as any).userId || gig.id; // Fallback to gig.id if userId not available
+    const threadId = currentUserId < freelancerUserId
+      ? `${currentUserId}-${freelancerUserId}`
+      : `${freelancerUserId}-${currentUserId}`;
+
+    router.push(`/commissioner-dashboard/messages?thread=${threadId}`);
+  };
 
   const skillIcons: Record<string, string> = {
     HTML5: '/HTML5-logo.png',
@@ -56,43 +98,43 @@ export default function GigCard({ gig }: GigCardProps) {
   const toolsFromSkills = allSkills.filter(isTool);
 
   return (
-    <div className="border rounded-2xl shadow-sm w-full max-w-sm bg-white overflow-hidden">
+    <div className="border rounded-2xl shadow-sm w-full bg-white overflow-hidden">
       {/* Top: Avatar + Name + Rating */}
-      <div className="p-4 flex items-center space-x-4">
+      <div className="p-2 sm:p-4 flex items-center space-x-2 sm:space-x-4">
         <Image
           src={avatar}
           alt={`${name} Avatar`}
           width={56}
           height={56}
-          className="rounded-full border-4 border-pink-200"
+          className="w-10 h-10 sm:w-14 sm:h-14 rounded-full border-2 sm:border-4 border-pink-200"
         />
-        <div>
-          <h3 className="text-base font-semibold flex items-center gap-1">
-            {name}
-            <span className="text-[10px] text-gray-500 flex items-center gap-0.5">
-              {'★'.repeat(Math.floor(rating))} 
+        <div className="min-w-0 flex-1">
+          <h3 className="text-xs sm:text-base font-semibold flex flex-col sm:flex-row sm:items-center gap-0 sm:gap-1">
+            <span className="truncate">{name}</span>
+            <span className="text-[8px] sm:text-[10px] text-gray-500 flex items-center gap-0.5">
+              {'★'.repeat(Math.floor(rating))}
               <span className="ml-1">({rating.toFixed(1)})</span>
             </span>
           </h3>
-          <p className="text-sm text-gray-600">{title}</p>
-          <p className="text-xs text-gray-400">{category}</p>
+          <p className="text-xs sm:text-sm text-gray-600 truncate">{title}</p>
+          <p className="text-[10px] sm:text-xs text-gray-400 truncate">{category}</p>
         </div>
       </div>
 
       {/* Skills + Specializations */}
-      <div className="px-4 flex flex-wrap gap-2 mb-2">
+      <div className="px-2 sm:px-4 flex flex-wrap gap-1 sm:gap-2 mb-2">
         {filteredSkills.slice(0, 1).map((skill) => (
           <span
             key={skill}
-            className="px-3 py-1 text-xs font-semibold text-pink-800 bg-pink-100 rounded-full"
+            className="px-2 sm:px-3 py-1 text-[10px] sm:text-xs font-semibold text-pink-800 bg-pink-100 rounded-full"
           >
             {skill}
           </span>
         ))}
-        {specializations.map((spec: string) => (
+        {specializations.slice(0, 1).map((spec: string) => (
           <span
             key={spec}
-            className="px-3 py-1 text-xs font-medium text-pink-700 bg-pink-50 border border-pink-200 rounded-full"
+            className="px-2 sm:px-3 py-1 text-[10px] sm:text-xs font-medium text-pink-700 bg-pink-50 border border-pink-200 rounded-full"
           >
             {spec}
           </span>
@@ -100,31 +142,32 @@ export default function GigCard({ gig }: GigCardProps) {
       </div>
 
       {/* Rate + Tools */}
-      <div className="px-4 flex flex-wrap items-center gap-2 mb-3">
-        <div className="flex items-center gap-1 text-xs px-2 py-1 rounded-full border border-gray-300 text-gray-800">
+      <div className="px-2 sm:px-4 flex flex-wrap items-center gap-1 sm:gap-2 mb-2 sm:mb-3">
+        <div className="flex items-center gap-1 text-[10px] sm:text-xs px-1 sm:px-2 py-1 rounded-full border border-gray-300 text-gray-800">
           💲 {rate}
         </div>
 
-        {toolsFromSkills.slice(0, 4).map((tool) => (
+        {toolsFromSkills.slice(0, 2).map((tool) => (
           <div
             key={tool}
-            className="flex items-center gap-1 text-xs px-2 py-1 rounded-full border border-gray-300 text-gray-800"
+            className="flex items-center gap-1 text-[10px] sm:text-xs px-1 sm:px-2 py-1 rounded-full border border-gray-300 text-gray-800"
           >
             {skillIcons[tool] && (
               <Image
                 src={skillIcons[tool]}
                 alt={tool}
-                width={16}
-                height={16}
+                width={12}
+                height={12}
+                className="w-3 h-3 sm:w-4 sm:h-4"
               />
             )}
-            <span>{tool}</span>
+            <span className="hidden sm:inline">{tool}</span>
           </div>
         ))}
 
-        {toolsFromSkills.length > 4 && (
-          <span className="text-xs px-2 py-1 rounded-full border border-gray-300 text-gray-500">
-            {toolsFromSkills.length - 4}+
+        {toolsFromSkills.length > 2 && (
+          <span className="text-[10px] sm:text-xs px-1 sm:px-2 py-1 rounded-full border border-gray-300 text-gray-500">
+            {toolsFromSkills.length - 2}+
           </span>
         )}
       </div>
@@ -135,17 +178,20 @@ export default function GigCard({ gig }: GigCardProps) {
         alt="Work Sample"
         width={400}
         height={180}
-        className="w-full h-auto object-cover"
+        className="w-full h-24 sm:h-32 lg:h-auto object-cover"
       />
 
       {/* Footer */}
-      <div className="p-4 flex items-center justify-between mt-2">
-        <button className="text-2xl">＋</button>
-        <button className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2">
-          <Image src="/gig-chats.png" alt="Chat" width={18} height={18} />
-          Contact
+      <div className="p-2 sm:p-4 flex items-center justify-between mt-1 sm:mt-2">
+        <button className="text-lg sm:text-2xl">＋</button>
+        <button
+          onClick={handleContactClick}
+          className="bg-black text-white px-2 sm:px-4 py-1 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-2 hover:bg-gray-800 transition-colors"
+        >
+          <Image src="/gig-chats.png" alt="Chat" width={18} height={18} className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="text-xs sm:text-sm">Contact</span>
         </button>
-        <span className="text-sm text-gray-500">📍{location}</span>
+        <span className="text-xs sm:text-sm text-gray-500 truncate max-w-[60px] sm:max-w-none">📍{formatLocation(location)}</span>
       </div>
     </div>
   );
