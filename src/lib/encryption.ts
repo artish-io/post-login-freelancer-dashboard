@@ -68,40 +68,97 @@ export class MessageEncryption {
   static async storePrivateKey(userId: string, privateKey: string) {
     // Use IndexedDB for secure storage
     const request = indexedDB.open('ArtishKeys', 1);
-    
+
     return new Promise((resolve, reject) => {
       request.onsuccess = () => {
         const db = request.result;
+
+        // Check if the object store exists
+        if (!db.objectStoreNames.contains('keys')) {
+          // Close the database and reopen with version increment to trigger upgrade
+          db.close();
+          const upgradeRequest = indexedDB.open('ArtishKeys', 2);
+
+          upgradeRequest.onupgradeneeded = () => {
+            const upgradeDb = upgradeRequest.result;
+            if (!upgradeDb.objectStoreNames.contains('keys')) {
+              upgradeDb.createObjectStore('keys', { keyPath: 'userId' });
+            }
+          };
+
+          upgradeRequest.onsuccess = () => {
+            const upgradeDb = upgradeRequest.result;
+            const transaction = upgradeDb.transaction(['keys'], 'readwrite');
+            const store = transaction.objectStore('keys');
+            store.put({ userId, privateKey });
+            transaction.oncomplete = () => resolve(true);
+            transaction.onerror = () => reject(transaction.error);
+          };
+
+          upgradeRequest.onerror = () => reject(upgradeRequest.error);
+          return;
+        }
+
         const transaction = db.transaction(['keys'], 'readwrite');
         const store = transaction.objectStore('keys');
         store.put({ userId, privateKey });
         transaction.oncomplete = () => resolve(true);
         transaction.onerror = () => reject(transaction.error);
       };
-      
+
       request.onupgradeneeded = () => {
         const db = request.result;
-        db.createObjectStore('keys', { keyPath: 'userId' });
+        if (!db.objectStoreNames.contains('keys')) {
+          db.createObjectStore('keys', { keyPath: 'userId' });
+        }
       };
+
+      request.onerror = () => reject(request.error);
     });
   }
 
   // Retrieve private key from secure storage
   static async getPrivateKey(userId: string): Promise<string | null> {
-    const request = indexedDB.open('ArtishKeys', 1);
-    
+    const request = indexedDB.open('ArtishKeys', 2);
+
     return new Promise((resolve, reject) => {
       request.onsuccess = () => {
         const db = request.result;
+
+        // Check if the object store exists
+        if (!db.objectStoreNames.contains('keys')) {
+          // Object store doesn't exist, return null (no key stored)
+          resolve(null);
+          return;
+        }
+
         const transaction = db.transaction(['keys'], 'readonly');
         const store = transaction.objectStore('keys');
         const getRequest = store.get(userId);
-        
+
         getRequest.onsuccess = () => {
           resolve(getRequest.result?.privateKey || null);
         };
         getRequest.onerror = () => reject(getRequest.error);
       };
+
+      request.onupgradeneeded = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains('keys')) {
+          db.createObjectStore('keys', { keyPath: 'userId' });
+        }
+      };
+
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  // Reset the encryption database (useful for debugging)
+  static async resetDatabase(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const deleteRequest = indexedDB.deleteDatabase('ArtishKeys');
+      deleteRequest.onsuccess = () => resolve();
+      deleteRequest.onerror = () => reject(deleteRequest.error);
     });
   }
 }

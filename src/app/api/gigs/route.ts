@@ -18,6 +18,9 @@ export async function GET(req: Request) {
     const gigs = JSON.parse(gigsRaw);
 
     const filtered = gigs.filter((gig: any) => {
+      // Only show public gigs in the explore page
+      const isPublicGig = gig.isPublic !== false && !gig.isTargetedRequest;
+
       const matchesCategory = category ? gig.category.toLowerCase() === category : true;
 
       const matchesRateMin = !isNaN(rateMin) ? gig.hourlyRateMax >= rateMin : true;
@@ -38,6 +41,7 @@ export async function GET(req: Request) {
         : true;
 
       return (
+        isPublicGig &&
         matchesCategory &&
         matchesRateMin &&
         matchesRateMax &&

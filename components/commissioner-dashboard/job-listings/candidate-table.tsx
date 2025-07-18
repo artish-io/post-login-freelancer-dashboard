@@ -55,8 +55,12 @@ export default function CandidateTable({ onCandidateSelect }: CandidateTableProp
   useEffect(() => {
     const fetchCandidates = async () => {
       try {
-        // Default to user ID 32 (Neilsan Mando) for testing if no session
-        const userId = session?.user?.id || '32';
+        // Get user ID from session
+        if (!session?.user?.id) {
+          console.error('No user ID found in session');
+          return;
+        }
+        const userId = session.user.id;
 
         // Fetch user data to get organization
         const userResponse = await fetch(`/api/users/${userId}`);

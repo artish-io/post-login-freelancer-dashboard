@@ -3,14 +3,15 @@
 'use client';
 
 import Link from 'next/link';
-import { PauseCircle, FileText, MessageSquareText, FilePlus2 } from 'lucide-react';
+import { PauseCircle, FileText, MessageSquareText, FilePlus2, Play } from 'lucide-react';
 
 type Props = {
   projectId: number;
   onNotesClick: () => void;
+  projectStatus?: string;
 };
 
-export default function ProjectActionButtons({ projectId, onNotesClick }: Props) {
+export default function ProjectActionButtons({ projectId, onNotesClick, projectStatus }: Props) {
   return (
     <div className="flex flex-col gap-4 w-full max-w-xs lg:max-w-none mt-6">
       {/* Generate Invoice Button */}
@@ -21,11 +22,18 @@ export default function ProjectActionButtons({ projectId, onNotesClick }: Props)
         </button>
       </Link>
 
-      {/* Request Pause Button */}
-      <button className="w-full bg-gray-800 text-white text-sm font-medium px-6 py-3 rounded-2xl shadow flex items-center justify-center gap-2 hover:opacity-90 transition">
-        <PauseCircle size={16} />
-        Request Project Pause
-      </button>
+      {/* Request Pause/Re-Activation Button */}
+      {projectStatus?.toLowerCase() === 'paused' ? (
+        <button className="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-6 py-3 rounded-2xl shadow flex items-center justify-center gap-2 transition">
+          <Play size={16} />
+          Request Project Re-Activation
+        </button>
+      ) : (
+        <button className="w-full bg-gray-800 text-white text-sm font-medium px-6 py-3 rounded-2xl shadow flex items-center justify-center gap-2 hover:opacity-90 transition">
+          <PauseCircle size={16} />
+          Request Project Pause
+        </button>
+      )}
 
       {/* See All Files */}
       <Link href={`/freelancer-dashboard/projects-and-invoices/files/${projectId}`}>

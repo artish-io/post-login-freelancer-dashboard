@@ -212,33 +212,31 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    // Update the static dashboard-stats.json file
+    // Stats are now calculated dynamically from universal source files
+    // No need to update static files - return current stats instead
     const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
     const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-    const dashboardStatsPath = path.join(process.cwd(), 'data', 'dashboard-stats.json');
-    
+
     const projectsData = fs.readFileSync(projectsPath, 'utf8');
     const projectTasksData = fs.readFileSync(projectTasksPath, 'utf8');
-    
+
     const projects: Project[] = JSON.parse(projectsData);
     const projectTasks: ProjectTasks[] = JSON.parse(projectTasksData);
-    
-    // Calculate stats for all users
+
+    // Calculate stats for all users dynamically
     const userIds = [...new Set(projects.map(p => p.freelancerId))].filter(Boolean);
     const allStats = userIds.map(id => calculateUserStats(String(id), projects, projectTasks));
-    
-    // Save to file
-    fs.writeFileSync(dashboardStatsPath, JSON.stringify(allStats, null, 2));
-    
-    return NextResponse.json({ 
-      message: 'Dashboard stats updated successfully',
-      stats: allStats 
+
+    return NextResponse.json({
+      message: 'Dashboard stats calculated successfully from universal source files',
+      stats: allStats,
+      note: 'Stats are now calculated dynamically - no static file updates needed'
     });
-    
+
   } catch (error) {
-    console.error('Error updating dashboard stats:', error);
+    console.error('Error calculating dashboard stats:', error);
     return NextResponse.json(
-      { error: 'Failed to update dashboard stats' },
+      { error: 'Failed to calculate dashboard stats' },
       { status: 500 }
     );
   }

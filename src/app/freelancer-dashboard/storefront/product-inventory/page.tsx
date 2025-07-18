@@ -5,8 +5,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ChevronDownIcon, TrendingUpIcon, CalendarIcon, DollarSignIcon, TypeIcon } from 'lucide-react';
-import ProductInventoryTable from '../../../../../components/freelancer-dashboard/storefront/sales-table/product-inventory-table';
-import StoreDataNavigation from '../../../../../components/freelancer-dashboard/storefront/store-data-navigation';
+import ProductInventoryTable from '../../../../../components/shared/storefront/sales-table/product-inventory-table';
+import StoreDataNavigation from '../../../../../components/shared/storefront/store-data-navigation';
 import clsx from 'clsx';
 
 type ProductSummary = {
@@ -94,7 +94,7 @@ export default function ProductInventoryPage() {
   return (
     <section className="flex flex-col gap-6 px-6 py-6">
       {/* Page header */}
-      <StoreDataNavigation currentPage="sales" />
+      <StoreDataNavigation currentPage="sales" dashboardType="freelancer" />
 
       {/* Filters bar */}
       <div className="flex flex-col sm:flex-row gap-4 sm:items-center sm:justify-between">

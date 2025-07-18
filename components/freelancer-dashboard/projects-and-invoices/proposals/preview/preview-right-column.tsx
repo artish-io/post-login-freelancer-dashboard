@@ -5,9 +5,9 @@ import PreviewActionButtons from './preview-action-buttons';
 
 type Props = {
   totalBid: number;
-  paymentCycle: string;
-  depositRate?: number;
-  hourlyRate?: number;
+  executionMethod?: 'completion' | 'milestone';
+  upfrontAmount?: number;
+  upfrontPercentage?: number;
   startDate?: string | null;
   endDate?: string | null;
   data: any;
@@ -15,9 +15,9 @@ type Props = {
 
 export default function PreviewRightColumn({
   totalBid,
-  paymentCycle,
-  depositRate,
-  hourlyRate,
+  executionMethod,
+  upfrontAmount,
+  upfrontPercentage,
   startDate,
   endDate,
   data,
@@ -28,9 +28,9 @@ export default function PreviewRightColumn({
         {/* ↑ top-[136px] = nav (80px) + project header/summary (~56px buffer) */}
         <ProposalSummaryBox
           totalBid={totalBid}
-          paymentCycle={paymentCycle}
-          depositRate={depositRate}
-          hourlyRate={hourlyRate}
+          executionMethod={executionMethod}
+          upfrontAmount={upfrontAmount}
+          upfrontPercentage={upfrontPercentage}
           startDate={startDate}
           endDate={endDate}
         />

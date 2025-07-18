@@ -20,8 +20,12 @@ export default function ActiveGigCards() {
   useEffect(() => {
     const fetchActiveGigs = async () => {
       try {
-        // Default to user ID 32 (Neilsan Mando) for testing if no session
-        const userId = session?.user?.id || '32';
+        // Get user ID from session
+        if (!session?.user?.id) {
+          console.error('No user ID found in session');
+          return;
+        }
+        const userId = session.user.id;
 
         // Fetch user data to get organization
         const userResponse = await fetch(`/api/users/${userId}`);
@@ -44,12 +48,40 @@ export default function ActiveGigCards() {
         const applicationsResponse = await fetch('/api/gigs/gig-applications');
         const applications = await applicationsResponse.json();
 
-        // Calculate application counts and mock weekly changes
+        // Calculate application counts and dynamic weekly changes
         const gigsWithData = organizationGigs.map((gig: any) => {
-          const applicationCount = applications.filter((app: any) => app.gigId === gig.id).length;
+          const gigApplications = applications.filter((app: any) => app.gigId === gig.id);
+          const applicationCount = gigApplications.length;
 
-          // Mock weekly change calculation (in real app, this would be based on historical data)
-          const weeklyChange = Math.floor(Math.random() * 50) + 1; // Random 1-50% increase
+          // Calculate weekly change based on actual application submission dates
+          const now = new Date();
+          const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+          const twoWeeksAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+
+          // Count applications from this week vs last week
+          const thisWeekApps = gigApplications.filter((app: any) => {
+            const submittedDate = new Date(app.submittedAt);
+            return submittedDate >= oneWeekAgo;
+          }).length;
+
+          const lastWeekApps = gigApplications.filter((app: any) => {
+            const submittedDate = new Date(app.submittedAt);
+            return submittedDate >= twoWeeksAgo && submittedDate < oneWeekAgo;
+          }).length;
+
+          // Calculate percentage change (handle division by zero)
+          let weeklyChange = 0;
+          if (lastWeekApps > 0) {
+            weeklyChange = Math.round(((thisWeekApps - lastWeekApps) / lastWeekApps) * 100);
+          } else if (thisWeekApps > 0) {
+            // If no applications last week but some this week, show 100% increase
+            weeklyChange = 100;
+          }
+
+          // Ensure we show positive changes (for demo purposes, real app might show negative changes)
+          weeklyChange = Math.max(weeklyChange, 0);
+
+
 
           return {
             id: gig.id,

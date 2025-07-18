@@ -45,8 +45,8 @@ export default function GigCard({ gig }: GigCardProps) {
     return location;
   };
 
-  // Handle contact button click with authentication check
-  const handleContactClick = () => {
+  // Handle message button click with authentication check
+  const handleMessageClick = () => {
     if (!session?.user?.id) {
       // User is not logged in, redirect to commissioner login
       router.push('/login-commissioner');
@@ -63,6 +63,19 @@ export default function GigCard({ gig }: GigCardProps) {
       : `${freelancerUserId}-${currentUserId}`;
 
     router.push(`/commissioner-dashboard/messages?thread=${threadId}`);
+  };
+
+  // Handle gig request button click
+  const handleGigRequestClick = () => {
+    if (!session?.user?.id) {
+      // User is not logged in, redirect to commissioner login
+      router.push('/login-commissioner');
+      return;
+    }
+
+    // Navigate to post-a-gig flow with freelancer pre-selected
+    const freelancerUserId = (gig as any).userId || gig.id;
+    router.push(`/commissioner-dashboard/projects-and-invoices/post-a-gig?targetFreelancer=${freelancerUserId}&freelancerName=${encodeURIComponent(name)}`);
   };
 
   const skillIcons: Record<string, string> = {
@@ -183,14 +196,35 @@ export default function GigCard({ gig }: GigCardProps) {
 
       {/* Footer */}
       <div className="p-2 sm:p-4 flex items-center justify-between mt-1 sm:mt-2">
-        <button className="text-lg sm:text-2xl">＋</button>
+        {/* Message Icon - triggers DM */}
         <button
-          onClick={handleContactClick}
-          className="bg-black text-white px-2 sm:px-4 py-1 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-2 hover:bg-gray-800 transition-colors"
+          onClick={handleMessageClick}
+          className="hover:bg-gray-100 p-2 rounded-lg transition-colors"
+          title="Send direct message"
         >
-          <Image src="/gig-chats.png" alt="Chat" width={18} height={18} className="w-3 h-3 sm:w-4 sm:h-4" />
-          <span className="text-xs sm:text-sm">Contact</span>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-gray-600"
+          >
+            <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/>
+          </svg>
         </button>
+
+        {/* Send Gig Request Button - text only */}
+        <button
+          onClick={handleGigRequestClick}
+          className="bg-black text-white px-3 sm:px-4 py-1 sm:py-2 rounded-lg hover:bg-gray-800 transition-colors"
+        >
+          <span className="text-xs sm:text-sm">Send Gig Request</span>
+        </button>
+
         <span className="text-xs sm:text-sm text-gray-500 truncate max-w-[60px] sm:max-w-none">📍{formatLocation(location)}</span>
       </div>
     </div>

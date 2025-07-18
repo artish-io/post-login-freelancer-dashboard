@@ -23,6 +23,7 @@ export default function CreateInvoicePage() {
   const [dueDate, setDueDate] = useState('');
   const [executionTiming, setExecutionTiming] = useState('');
   const [billTo, setBillTo] = useState('');
+  const [selectedCommissionerId, setSelectedCommissionerId] = useState<number | null>(null);
   const [notes, setNotes] = useState('');
 
   const [selectedProject, setSelectedProject] = useState<{
@@ -146,18 +147,33 @@ export default function CreateInvoicePage() {
 
   const handleSendInvoice = async () => {
     try {
-      const res = await fetch(
-        '/api/freelancer-dashboard/projects-and-invoices/create-invoice',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(invoicePayload),
-        }
-      );
+      // Prepare invoice data for the API
+      const invoiceData = {
+        invoiceNumber,
+        freelancerId: session?.user?.id,
+        commissionerId: selectedCommissionerId,
+        projectId: selectedProject.projectId, // null for custom projects
+        projectTitle: selectedProject.projectId ? selectedProject.title : selectedProject.title,
+        issueDate,
+        dueDate,
+        totalAmount: total,
+        status: 'sent',
+        milestones: milestones.map(m => ({
+          description: m.description,
+          rate: m.rate
+        })),
+        isCustomProject: selectedProject.projectId === null
+      };
+
+      const res = await fetch('/api/dashboard/invoices/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(invoiceData),
+      });
 
       const result = await res.json();
-      if (result.invoiceNumber) {
-        router.push(`/freelancer-dashboard/preview-invoice/${result.invoiceNumber}`);
+      if (result.success && result.invoice) {
+        router.push(`/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${result.invoice.invoiceNumber}`);
       }
     } catch (err) {
       console.error('❌ Error sending invoice:', err);
@@ -166,14 +182,29 @@ export default function CreateInvoicePage() {
 
   const handleSaveDraft = async () => {
     try {
-      const res = await fetch(
-        '/api/freelancer-dashboard/projects-and-invoices/save-draft',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...invoicePayload, status: 'draft' }),
-        }
-      );
+      // Prepare draft data
+      const draftData = {
+        invoiceNumber,
+        freelancerId: session?.user?.id,
+        commissionerId: selectedCommissionerId,
+        projectId: selectedProject.projectId, // null for custom projects
+        projectTitle: selectedProject.projectId ? selectedProject.title : selectedProject.title,
+        issueDate,
+        dueDate,
+        totalAmount: total,
+        status: 'draft',
+        milestones: milestones.map(m => ({
+          description: m.description,
+          rate: m.rate
+        })),
+        isCustomProject: selectedProject.projectId === null
+      };
+
+      const res = await fetch('/api/invoices/save-draft', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(draftData),
+      });
 
       const result = await res.json();
       console.log('✅ Draft saved response:', result);
@@ -228,6 +259,7 @@ export default function CreateInvoicePage() {
           onExecutionTimingChange={setExecutionTiming}
           billTo={billTo}
           onBillToChange={setBillTo}
+          onCommissionerSelect={setSelectedCommissionerId}
         />
 
         <hr className="border-t border-gray-200 my-8" />
@@ -237,6 +269,7 @@ export default function CreateInvoicePage() {
           {session?.user?.id && (
             <ProjectSelectDropdown
               freelancerId={Number(session.user.id)}
+              commissionerId={selectedCommissionerId}
               selected={selectedProject}
               onChange={setSelectedProject}
             />

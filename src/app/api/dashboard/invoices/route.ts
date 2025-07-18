@@ -27,15 +27,16 @@ export async function GET(req: Request) {
     const userInvoices = invoices
       .filter((inv: any) => inv.freelancerId === userId)
       .map((inv: any) => {
-        const sender = users.find((u: any) => u.id === userId);
+        const client = users.find((u: any) => u.id === inv.commissionerId);
 
         return {
-          ...inv,
-          sender: {
-            name: sender?.name,
-            title: sender?.title,
-            avatar: sender?.avatar
-          }
+          id: inv.invoiceNumber,
+          client: {
+            name: client?.name || 'Unknown Client',
+            title: client?.title || 'Client',
+            avatar: client?.avatar || '/default-avatar.png'
+          },
+          status: inv.status
         };
       });
 

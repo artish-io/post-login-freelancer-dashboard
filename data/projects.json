@@ -8,16 +8,12 @@
       "Brand Design",
       "Content Design"
     ],
-    "manager": {
-      "name": "Neilsan Mando",
-      "title": "Product Manager",
-      "avatar": "/avatars/neilsan.png",
-      "email": "neilsan.mando@example.com"
-    },
+    "commissionerId": 32,
     "freelancerId": 31,
-    "status": "Delayed",
+    "status": "Ongoing",
     "dueDate": "2025-08-12",
-    "totalTasks": 5
+    "totalTasks": 5,
+    "invoicingMethod": "milestone"
   },
   {
     "projectId": 302,
@@ -28,16 +24,12 @@
       "Motion Design",
       "Brand Strategy"
     ],
-    "manager": {
-      "name": "Tiruvellly Priya",
-      "title": "Brand Director",
-      "avatar": "/avatars/priya.png",
-      "email": "priya.t@example.com"
-    },
+    "commissionerId": 33,
     "freelancerId": 31,
-    "status": "At risk",
+    "status": "Ongoing",
     "dueDate": "2025-08-16",
-    "totalTasks": 4
+    "totalTasks": 4,
+    "invoicingMethod": "milestone"
   },
   {
     "projectId": 303,
@@ -48,16 +40,12 @@
       "Mobile Design",
       "UX Research"
     ],
-    "manager": {
-      "name": "Matt Hannery",
-      "title": "Startup Founder",
-      "avatar": "/avatars/matt.png",
-      "email": "matt.h@example.com"
-    },
+    "commissionerId": 34,
     "freelancerId": 31,
-    "status": "Completed",
+    "status": "Ongoing",
     "dueDate": "2025-08-30",
-    "totalTasks": 3
+    "totalTasks": 3,
+    "invoicingMethod": "completion"
   },
   {
     "projectId": 300,
@@ -68,16 +56,12 @@
       "Event Management",
       "Brand Design"
     ],
-    "manager": {
-      "name": "Tilly Burzinsky",
-      "title": "Events Lead",
-      "avatar": "/avatars/tilly.png",
-      "email": "tilly.b@example.com"
-    },
+    "commissionerId": 37,
     "freelancerId": 31,
     "status": "Paused",
     "dueDate": "2025-08-25",
-    "totalTasks": 53
+    "totalTasks": 53,
+    "invoicingMethod": "milestone"
   },
   {
     "projectId": 299,
@@ -88,16 +72,12 @@
       "Content Strategy",
       "UX Writing"
     ],
-    "manager": {
-      "name": "Felix Damini",
-      "title": "UX Research Lead",
-      "avatar": "/avatars/felix.png",
-      "email": "felix.d@example.com"
-    },
+    "commissionerId": 38,
     "freelancerId": 31,
     "status": "Ongoing",
     "dueDate": "2025-08-10",
-    "totalTasks": 10
+    "totalTasks": 10,
+    "invoicingMethod": "milestone"
   },
   {
     "projectId": 304,
@@ -108,16 +88,12 @@
       "Print Design",
       "Events"
     ],
-    "manager": {
-      "name": "Sarah Chen",
-      "title": "Marketing Director",
-      "avatar": "/avatars/sarah.png",
-      "email": "sarah.c@zynate.com"
-    },
+    "commissionerId": 35,
     "freelancerId": 31,
     "status": "Ongoing",
     "dueDate": "2025-08-12",
-    "totalTasks": 3
+    "totalTasks": 3,
+    "invoicingMethod": "completion"
   },
   {
     "projectId": 305,
@@ -128,16 +104,12 @@
       "Content Strategy",
       "Editorial Design"
     ],
-    "manager": {
-      "name": "Dr. Michael Torres",
-      "title": "Research Director",
-      "avatar": "/avatars/michael.png",
-      "email": "m.torres@hero.org"
-    },
+    "commissionerId": 36,
     "freelancerId": 31,
     "status": "Ongoing",
     "dueDate": "2025-08-29",
-    "totalTasks": 3
+    "totalTasks": 3,
+    "invoicingMethod": "completion"
   },
   {
     "projectId": 306,
@@ -148,16 +120,12 @@
       "Web Design",
       "UX Strategy"
     ],
-    "manager": {
-      "name": "Lisa Rodriguez",
-      "title": "Product Manager",
-      "avatar": "/avatars/lisa.png",
-      "email": "lisa.r@nebula.com"
-    },
+    "commissionerId": 34,
     "freelancerId": 31,
     "status": "Ongoing",
     "dueDate": "2025-08-05",
-    "totalTasks": 4
+    "totalTasks": 4,
+    "invoicingMethod": "milestone"
   },
   {
     "projectId": 311,
@@ -168,15 +136,11 @@
       "Mobile Development",
       "UI/UX Design"
     ],
-    "manager": {
-      "name": "Neilsan Mando",
-      "title": "Product Manager",
-      "avatar": "/avatars/neilsan.png",
-      "email": "neilsan.mando@example.com"
-    },
+    "commissionerId": 32,
     "freelancerId": 31,
-    "status": "Active",
+    "status": "Ongoing",
     "dueDate": "2025-09-15",
-    "totalTasks": 8
+    "totalTasks": 8,
+    "invoicingMethod": "milestone"
   }
 ]

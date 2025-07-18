@@ -15,26 +15,54 @@ export async function GET(
   }
 
   try {
-    const milestonesPath = path.join(process.cwd(), 'data', 'milestones.json');
-    const data = await readFile(milestonesPath, 'utf-8');
-    const milestones = JSON.parse(data);
+    // Use universal source files to get milestone data
+    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
+    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
+    const milestonesMinimalPath = path.join(process.cwd(), 'data', 'milestones-minimal.json');
 
-    const milestone = milestones.find((m: any) => m.milestoneId === milestoneId);
+    const [projectsFile, projectTasksFile, milestonesFile] = await Promise.all([
+      readFile(projectsPath, 'utf-8'),
+      readFile(projectTasksPath, 'utf-8'),
+      readFile(milestonesMinimalPath, 'utf-8')
+    ]);
+
+    const projects = JSON.parse(projectsFile);
+    const projectTasks = JSON.parse(projectTasksFile);
+    const milestones = JSON.parse(milestonesFile);
+
+    // Extract milestone ID number from string (e.g., "M301-1" → 1)
+    const milestoneIdNum = parseInt(milestoneId.split('-')[1]) || parseInt(milestoneId);
+    const milestone = milestones.find((m: any) => m.id === milestoneIdNum);
 
     if (!milestone) {
       return NextResponse.json({ error: 'Milestone not found' }, { status: 404 });
     }
 
+    // Get project and tasks for this milestone
+    const project = projects.find((p: any) => p.projectId === milestone.projectId);
+    const projectTaskData = projectTasks.find((pt: any) => pt.projectId === milestone.projectId);
+
+    if (!project || !projectTaskData) {
+      return NextResponse.json({ error: 'Project data not found' }, { status: 404 });
+    }
+
+    // Map status codes to readable status
+    const statusMap = { 0: 'in progress', 1: 'pending payment', 2: 'paid' };
+
     return NextResponse.json({
-      milestoneId: milestone.milestoneId,
+      milestoneId: `M${milestone.projectId}-${milestone.id}`,
       projectId: milestone.projectId,
-      title: milestone.title,
-      tasks: milestone.tasks.map((task: any) => ({
-        taskId: task.taskId,
+      title: `Milestone for ${project.title}`,
+      status: statusMap[milestone.status as keyof typeof statusMap],
+      amount: milestone.amount,
+      dueDate: milestone.dueDate,
+      tasks: projectTaskData.tasks.map((task: any) => ({
+        taskId: task.id,
         title: task.title,
         status: task.status,
-        submittedAt: task.submittedAt,
-        completedAt: task.completedAt || null,
+        completed: task.completed,
+        submittedAt: null, // Simplified - no submission tracking
+        completedAt: task.completed ? new Date().toISOString() : null,
       }))
     });
   } catch (err) {

@@ -1,0 +1,15 @@
+{
+  "old": {
+    "commissioner": "/api/notifications?commissionerId={id}&tab={tab}",
+    "freelancer": "/api/freelancer-notifications?freelancerId={id}&tab={tab}"
+  },
+  "new": {
+    "universal": "/api/notifications-v2?userId={id}&userType={type}&tab={tab}"
+  },
+  "migration": {
+    "step1": "Update components to use new endpoint",
+    "step2": "Test with existing data",
+    "step3": "Deprecate old endpoints",
+    "step4": "Remove old notification files"
+  }
+}

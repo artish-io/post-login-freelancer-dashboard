@@ -1,21 +1,16 @@
 
 
 // NOTE: this is a Server Component
-import { cookies } from 'next/headers';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import BuyerView from '../../../../../../../components/freelancer-dashboard/storefront/sales-table/product-details/buyer-view';
-import VendorView from '../../../../../../../components/freelancer-dashboard/storefront/sales-table/product-details/vendor-view';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import BuyerView from '../../../../../../../components/shared/storefront/sales-table/product-details/buyer-view';
+import VendorView from '../../../../../../../components/shared/storefront/sales-table/product-details/vendor-view';
 
-// Mock session function for now
-async function getSession(_cookies: any) {
-  // TODO: Implement actual session logic
-  // For now, return the author ID to simulate vendor access
-  return {
-    user: {
-      id: 31 // This matches the authorId in the sample product data
-    }
-  };
+// Get session for server component
+async function getSession() {
+  return await getServerSession(authOptions);
 }
 
 async function fetchProduct(id: string) {
@@ -108,7 +103,7 @@ export default async function ProductDetailsPage({
   const id = decodeURIComponent(encodedId);
   console.log('Product page - Encoded ID:', encodedId, 'Decoded ID:', id);
 
-  const session = await getSession(cookies()); // returns null if not logged in
+  const session = await getSession(); // returns null if not logged in
   console.log('Session:', session);
 
   const product = await fetchProduct(id);
@@ -151,6 +146,6 @@ export default async function ProductDetailsPage({
   return isVendor ? (
     <VendorView product={product} />
   ) : (
-    <BuyerView product={product} isBuyer={isBuyer} userId={session?.user?.id} />
+    <BuyerView product={product} isBuyer={isBuyer} userId={session?.user?.id ? parseInt(session.user.id) : undefined} />
   );
 }

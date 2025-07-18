@@ -4,18 +4,18 @@ import { differenceInCalendarWeeks, parseISO } from 'date-fns';
 
 type Props = {
   totalBid: number;
-  paymentCycle: string;
-  depositRate?: number;
-  hourlyRate?: number;
+  executionMethod?: 'completion' | 'milestone';
+  upfrontAmount?: number;
+  upfrontPercentage?: number;
   startDate?: string | null;
   endDate?: string | null;
 };
 
 export default function ProposalSummaryBox({
   totalBid,
-  paymentCycle,
-  depositRate,
-  hourlyRate,
+  executionMethod,
+  upfrontAmount,
+  upfrontPercentage,
   startDate,
   endDate,
 }: Props) {
@@ -39,21 +39,23 @@ export default function ProposalSummaryBox({
       </div>
 
       <div className="flex justify-between text-sm text-gray-800 mb-2">
-        <span className="font-medium">Payment Cycle:</span>
-        <span className="font-semibold">{paymentCycle}</span>
+        <span className="font-medium">Payment Method:</span>
+        <span className="font-semibold">
+          {executionMethod === 'completion' ? 'Completion-based' : 'Milestone-based'}
+        </span>
       </div>
 
-      {paymentCycle === 'Hourly Rate' && hourlyRate !== undefined && (
+      {executionMethod === 'completion' && upfrontAmount !== undefined && (
         <div className="flex justify-between text-sm text-gray-800 mb-2">
-          <span className="font-medium">Hourly Rate:</span>
-          <span className="font-semibold">${hourlyRate}/hr</span>
+          <span className="font-medium">Upfront Commitment:</span>
+          <span className="font-semibold">${upfrontAmount.toLocaleString()} (12%)</span>
         </div>
       )}
 
-      {paymentCycle === 'Fixed Amount' && depositRate !== undefined && (
+      {executionMethod === 'completion' && upfrontAmount !== undefined && (
         <div className="flex justify-between text-sm text-gray-800 mb-2">
-          <span className="font-medium">Upfront Commitment:</span>
-          <span className="font-semibold">{depositRate}%</span>
+          <span className="font-medium">On Completion:</span>
+          <span className="font-semibold">${(totalBid - upfrontAmount).toLocaleString()}</span>
         </div>
       )}
 

@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { format } from 'date-fns';
 import clsx from 'clsx';
 
-type StartType = 'Immediately' | 'Select a Date';
+type StartType = 'Immediately' | 'Custom';
 
 type Props = {
   value: StartType;
@@ -16,7 +16,7 @@ type Props = {
   onCustomDateChange: (val: Date | null) => void;
 };
 
-const START_OPTIONS: StartType[] = ['Immediately', 'Select a Date'];
+const START_OPTIONS: StartType[] = ['Immediately', 'Custom'];
 
 export default function ProjectStartSelect({
   value,
@@ -28,7 +28,7 @@ export default function ProjectStartSelect({
 
   function handleDropdownChange(option: string) {
     onChange(option as StartType);
-    setShowCalendar(option === 'Select a Date');
+    setShowCalendar(option === 'Custom');
     if (option === 'Immediately') {
       onCustomDateChange(null);
     }
@@ -43,7 +43,7 @@ export default function ProjectStartSelect({
 
   // Show formatted date as label if a date is selected
   let dropdownLabel: string = value;
-  if (value === 'Select a Date' && customDate) {
+  if (value === 'Custom' && customDate) {
     dropdownLabel = format(customDate, 'PPP');
   }
 
@@ -93,7 +93,7 @@ export default function ProjectStartSelect({
           </div>
         )}
       </Listbox>
-      {value === 'Select a Date' && showCalendar && (
+      {value === 'Custom' && showCalendar && (
         <div className="mt-3 rounded-xl bg-white p-2">
           <Calendar
             mode="single"

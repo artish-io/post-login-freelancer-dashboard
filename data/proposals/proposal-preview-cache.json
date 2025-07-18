@@ -1,39 +1,19 @@
 {
-  "title": "MAVINS PRESS KITT",
-  "summary": "sample broefsample broefsample broefsample broefsample broefsample broefsample broefsample broefsample broefsample broefsample broefsample broefsample broefsample broefsample broef",
+  "title": "",
+  "summary": "",
   "logoUrl": "/logos/corlax-ios-logo.png",
-  "typeTags": [
-    "Product Marketing",
-    "Go-To-Market Strategy"
-  ],
-  "milestones": [
-    {
-      "id": "24c2c804-e3de-4660-8f7c-b6f8a349be10",
-      "title": "sample broefsample broefsample broef",
-      "description": "sample broefsample broef",
-      "startDate": "2025-07-11T04:00:00.000Z",
-      "endDate": "2025-07-15T04:00:00.000Z",
-      "amount": 0
-    },
-    {
-      "id": "69ec3bd6-8c7f-47d9-ada6-f9d1414cf045",
-      "title": "sample broefsample broefsample broef",
-      "description": "sample broefsample broefsample broefsample broefsample broefsample broef",
-      "startDate": "2025-07-16T04:00:00.000Z",
-      "endDate": "2025-08-31T04:00:00.000Z",
-      "amount": 0
-    }
-  ],
+  "typeTags": [],
+  "milestones": [],
   "paymentCycle": "Hourly Rate",
   "rate": 50,
-  "projectId": "TU-JGV2UT",
-  "totalBid": 14400,
+  "projectId": "TU-SS431I",
+  "totalBid": 0,
   "customStartDate": null,
-  "endDate": "2025-08-31T04:00:00.000Z",
-  "maxHours": 8,
+  "endDate": null,
+  "maxHours": 50000,
   "depositRate": "",
-  "expectedDurationDays": 50,
-  "executionMethod": "completion",
+  "expectedDurationDays": 1,
+  "executionMethod": "milestone",
   "startType": "Immediately",
   "contact": {
     "id": 34,
@@ -53,5 +33,7 @@
   "upfrontAmount": 0,
   "milestoneTotal": 0,
   "isAmountValid": true,
-  "upfrontValue": 0
+  "upfrontValue": 0,
+  "upfrontPercentage": 0,
+  "amountPerMilestone": 0
 }

@@ -16,6 +16,7 @@ interface Props {
   onChange: (updated: Milestone[]) => void;
   totalBid: number;
   projectEndDate: Date | null; // ✅ newly added
+  executionMethod?: 'completion' | 'milestone';
 }
 
 export default function ProposalMilestonesFixed({
@@ -23,6 +24,7 @@ export default function ProposalMilestonesFixed({
   onChange,
   totalBid,
   projectEndDate, // ✅ ensure passed from parent
+  executionMethod = 'milestone',
 }: Props) {
   const [error, setError] = useState<string | null>(null);
 
@@ -48,7 +50,19 @@ export default function ProposalMilestonesFixed({
       endDate: null,
       amount: 0,
     };
-    onChange([...milestones, newMilestone]);
+    const updatedMilestones = [...milestones, newMilestone];
+
+    // Auto-calculate amounts for milestone-based projects
+    if (executionMethod === 'milestone' && totalBid > 0) {
+      const amountPerMilestone = Math.round(totalBid / updatedMilestones.length);
+      const milestonesWithAmounts = updatedMilestones.map(m => ({
+        ...m,
+        amount: amountPerMilestone
+      }));
+      onChange(milestonesWithAmounts);
+    } else {
+      onChange(updatedMilestones);
+    }
   };
 
   const handleUpdate = (id: string, updatedFields: Partial<Milestone>) => {
@@ -60,7 +74,18 @@ export default function ProposalMilestonesFixed({
 
   const handleRemove = (id: string) => {
     const filtered = milestones.filter((m) => m.id !== id);
-    onChange(filtered);
+
+    // Auto-recalculate amounts for milestone-based projects
+    if (executionMethod === 'milestone' && totalBid > 0 && filtered.length > 0) {
+      const amountPerMilestone = Math.round(totalBid / filtered.length);
+      const milestonesWithAmounts = filtered.map(m => ({
+        ...m,
+        amount: amountPerMilestone
+      }));
+      onChange(milestonesWithAmounts);
+    } else {
+      onChange(filtered);
+    }
   };
 
   const renderDatePicker = (
@@ -148,20 +173,32 @@ export default function ProposalMilestonesFixed({
               milestone.startDate ?? today
             )}
             <div className="flex-1 min-w-[160px]">
-              <label className="text-xs font-medium text-gray-500 block mb-1">Amount</label>
+              <label className="text-xs font-medium text-gray-500 block mb-1">
+                {executionMethod === 'milestone' ? 'Payment (Auto-calculated)' : 'Amount'}
+              </label>
               <div className="relative">
                 <span className="absolute left-3 top-2.5 text-gray-500 text-sm">$</span>
                 <input
                   type="number"
                   value={milestone.amount}
                   onChange={(e) =>
-                    handleUpdate(milestone.id, {
+                    executionMethod !== 'milestone' && handleUpdate(milestone.id, {
                       amount: parseFloat(e.target.value) || 0,
                     })
                   }
-                  className="w-full pl-6 pr-3 py-2 rounded-xl border border-gray-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-black"
+                  readOnly={executionMethod === 'milestone'}
+                  className={`w-full pl-6 pr-3 py-2 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-black ${
+                    executionMethod === 'milestone'
+                      ? 'bg-gray-50 cursor-not-allowed'
+                      : 'bg-white'
+                  }`}
                 />
               </div>
+              {executionMethod === 'milestone' && (
+                <div className="text-xs text-gray-500 mt-1">
+                  Automatically calculated: ${Math.round(totalBid / milestones.length).toLocaleString()} per milestone
+                </div>
+              )}
             </div>
           </div>
         </div>

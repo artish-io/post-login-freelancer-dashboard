@@ -2,61 +2,293 @@
   {
     "id": "design",
     "label": "Design",
-    "subcategories": ["UI/UX Design", "Graphic Design", "Brand Design", "Marketing Design"]
+    "subcategories": [
+      {
+        "name": "UI/UX Design",
+        "description": "User interface and experience design for digital products and applications."
+      },
+      {
+        "name": "Graphic Design",
+        "description": "Visual communication through typography, imagery, and layout design."
+      },
+      {
+        "name": "Brand Design",
+        "description": "Creating cohesive visual identity systems including logos and brand guidelines."
+      },
+      {
+        "name": "Product Design",
+        "description": "End-to-end product design from concept to user-centered solutions."
+      },
+      {
+        "name": "3D Design",
+        "description": "Three-dimensional visual representations using specialized software."
+      },
+      {
+        "name": "Advertising Design",
+        "description": "Creative design for marketing campaigns and promotional materials."
+      },
+      {
+        "name": "Mobile Design",
+        "description": "User interface design specifically optimized for mobile applications."
+      },
+      {
+        "name": "Presentation Design",
+        "description": "Professional slide deck design for business and educational presentations."
+      }
+    ]
   },
   {
     "id": "writing",
     "label": "Writing",
-    "subcategories": ["Content Writing", "Copywriting", "Creative Writing", "Scriptwriting", "Technical Writing"]
+    "subcategories": [
+      {
+        "name": "Content Writing",
+        "description": "Creating engaging written content for websites, blogs, and digital platforms."
+      },
+      {
+        "name": "Copywriting",
+        "description": "Persuasive writing for marketing materials, advertisements, and sales content."
+      },
+      {
+        "name": "Creative Writing",
+        "description": "Original storytelling, fiction, poetry, and imaginative written works."
+      },
+      {
+        "name": "Scriptwriting",
+        "description": "Writing scripts for videos, podcasts, presentations, and multimedia content."
+      },
+      {
+        "name": "Technical Writing",
+        "description": "Clear documentation, manuals, and instructional content for technical subjects."
+      }
+    ]
   },
   {
     "id": "marketing",
     "label": "Marketing",
-    "subcategories": ["Social Media", "Event Marketing", "Campaign Strategy", "Market Research", "User Research", "Email Marketing", "Influencer Strategy"]
+    "subcategories": [
+      {
+        "name": "Social Media Marketing",
+        "description": "Strategic social media campaigns and content planning across platforms."
+      },
+      {
+        "name": "Event Marketing",
+        "description": "Promotional strategies and campaigns for events and experiential marketing."
+      },
+      {
+        "name": "Campaign Strategy",
+        "description": "Comprehensive marketing campaign planning and execution strategies."
+      },
+      {
+        "name": "Market Research",
+        "description": "Data collection and analysis to understand market trends and opportunities."
+      },
+      {
+        "name": "User Research",
+        "description": "Understanding user behavior and preferences through research methodologies."
+      },
+      {
+        "name": "Email Marketing",
+        "description": "Targeted email campaigns and automated marketing sequences."
+      },
+      {
+        "name": "Influencer Strategy",
+        "description": "Developing partnerships and campaigns with social media influencers."
+      }
+    ]
   },
   {
     "id": "engineering",
     "label": "Engineering",
-    "subcategories": ["Web Development", "Frontend", "Backend", "Blockchain", "Smart Contracts", "DevOps"]
+    "subcategories": [
+      {
+        "name": "Web Development",
+        "description": "Full-stack web application development using modern frameworks and technologies."
+      },
+      {
+        "name": "Frontend Development",
+        "description": "User-facing web interfaces using HTML, CSS, JavaScript, and modern frameworks."
+      },
+      {
+        "name": "Backend Development",
+        "description": "Server-side development, APIs, databases, and application architecture."
+      },
+      {
+        "name": "Blockchain Development",
+        "description": "Decentralized applications and blockchain-based solutions development."
+      },
+      {
+        "name": "Smart Contracts",
+        "description": "Self-executing contracts with terms directly written into code."
+      },
+      {
+        "name": "DevOps",
+        "description": "Infrastructure automation, deployment pipelines, and system administration."
+      }
+    ]
   },
   {
     "id": "social-media",
     "label": "Social Media",
-    "subcategories": ["Instagram Strategy", "Influencer Campaigns", "Community Management"]
+    "subcategories": [
+      {
+        "name": "Instagram Strategy",
+        "description": "Content planning and growth strategies specifically for Instagram platform."
+      },
+      {
+        "name": "Influencer Campaigns",
+        "description": "Managing and executing influencer marketing campaigns across platforms."
+      },
+      {
+        "name": "Community Management",
+        "description": "Building and nurturing online communities and social media engagement."
+      }
+    ]
   },
   {
     "id": "visual-media",
     "label": "Visual Media",
-    "subcategories": ["Motion Graphics", "Animation", "Explainer Videos", "Video Editing"]
+    "subcategories": [
+      {
+        "name": "Motion Graphics",
+        "description": "Animated graphics and visual effects for digital and broadcast media."
+      },
+      {
+        "name": "Animation",
+        "description": "2D and 3D animation for entertainment, education, and marketing content."
+      },
+      {
+        "name": "Explainer Videos",
+        "description": "Educational and promotional videos that explain concepts or products."
+      },
+      {
+        "name": "Video Editing",
+        "description": "Post-production editing, color correction, and video content optimization."
+      }
+    ]
   },
   {
     "id": "audio-music",
     "label": "Audio & Music",
-    "subcategories": ["Voice-Over", "Audio Editing", "Podcast Production", "Music Composition"]
+    "subcategories": [
+      {
+        "name": "Voice-Over",
+        "description": "Professional voice recording for commercials, narration, and multimedia content."
+      },
+      {
+        "name": "Audio Editing",
+        "description": "Sound editing, mixing, and post-production for various audio projects."
+      },
+      {
+        "name": "Podcast Production",
+        "description": "Complete podcast creation from recording to editing and distribution."
+      },
+      {
+        "name": "Music Composition",
+        "description": "Original music creation for media, games, and commercial applications."
+      }
+    ]
   },
   {
     "id": "data-analytics",
     "label": "Data & Analytics",
-    "subcategories": ["Data Annotation", "AI Training", "Data Visualization", "ETL"]
+    "subcategories": [
+      {
+        "name": "Data Annotation",
+        "description": "Labeling and categorizing data for machine learning and AI training."
+      },
+      {
+        "name": "AI Training",
+        "description": "Developing and training artificial intelligence models and algorithms."
+      },
+      {
+        "name": "Data Visualization",
+        "description": "Creating charts, graphs, and interactive dashboards from complex data."
+      },
+      {
+        "name": "ETL",
+        "description": "Extract, Transform, Load processes for data integration and warehousing."
+      }
+    ]
   },
   {
     "id": "product",
     "label": "Product",
-    "subcategories": ["Product Strategy", "Prototyping", "User Testing", "Feature Specification"]
+    "subcategories": [
+      {
+        "name": "Product Strategy",
+        "description": "Strategic planning and roadmap development for product development."
+      },
+      {
+        "name": "Prototyping",
+        "description": "Creating interactive prototypes and proof-of-concept demonstrations."
+      },
+      {
+        "name": "User Testing",
+        "description": "Conducting usability tests and gathering user feedback on products."
+      },
+      {
+        "name": "Feature Specification",
+        "description": "Detailed documentation and requirements for product features and functionality."
+      }
+    ]
   },
   {
     "id": "accounting",
     "label": "Accounting",
-    "subcategories": ["Freelancer Invoicing", "Project Budgeting", "Bookkeeping"]
+    "subcategories": [
+      {
+        "name": "Freelancer Invoicing",
+        "description": "Professional invoicing and billing management for freelance services."
+      },
+      {
+        "name": "Project Budgeting",
+        "description": "Financial planning and budget management for projects and campaigns."
+      },
+      {
+        "name": "Bookkeeping",
+        "description": "Maintaining financial records and transaction management for businesses."
+      }
+    ]
   },
   {
     "id": "events",
     "label": "Events",
-    "subcategories": ["Virtual Events", "Experiential", "Live Shows", "Personal Events", "Corporate Events"]
+    "subcategories": [
+      {
+        "name": "Virtual Events",
+        "description": "Planning and executing online events, webinars, and digital conferences."
+      },
+      {
+        "name": "Experiential Marketing",
+        "description": "Creating immersive brand experiences and interactive marketing events."
+      },
+      {
+        "name": "Live Shows",
+        "description": "Production and coordination of live entertainment and performance events."
+      },
+      {
+        "name": "Personal Events",
+        "description": "Planning and organizing private celebrations and personal gatherings."
+      },
+      {
+        "name": "Corporate Events",
+        "description": "Business event planning including conferences, meetings, and team building."
+      }
+    ]
   },
   {
     "id": "others",
     "label": "Others",
-    "subcategories": ["Experimental", "Other Services"]
+    "subcategories": [
+      {
+        "name": "Experimental Projects",
+        "description": "Innovative and creative projects that don't fit traditional categories."
+      },
+      {
+        "name": "Consulting Services",
+        "description": "Expert advice and strategic consultation across various industries."
+      }
+    ]
   }
 ]

@@ -2,13 +2,8 @@
   {
     "invoiceNumber": "MGL100000",
     "freelancerId": 31,
-    "projectId": 299,
-    "client": {
-      "name": "Ebi Tomcee",
-      "title": "Financial Analyst",
-      "email": "ebi.tomcee@client.com",
-      "avatar": "/avatars/ebi.png"
-    },
+    "projectId": 301,
+    "commissionerId": 32,
     "projectTitle": "Lagos Parks Services website re-design",
     "issueDate": "2025-06-01",
     "dueDate": "2025-06-10",
@@ -27,48 +22,37 @@
         "description": "Milestone 3 for Lagos Parks Services website re-design",
         "rate": 1748.0
       }
-    ]
+    ],
+    "isManualInvoice": true
   },
   {
-    "invoiceNumber": "MGL100001",
+    "invoiceNumber": "CUSTOM-001",
     "freelancerId": 31,
-    "projectId": 300,
-    "client": {
-      "name": "Megan Norton",
-      "title": "Sales Manager",
-      "email": "megan.norton@client.com",
-      "avatar": "/avatars/megan.png"
-    },
-    "projectTitle": "UX Writing Sprint",
-    "issueDate": "2025-05-20",
-    "dueDate": "2025-05-30",
-    "totalAmount": 3150.0,
-    "status": "paid",
+    "projectId": null,
+    "commissionerId": 33,
+    "projectTitle": "Custom Brand Consultation",
+    "issueDate": "2025-07-15",
+    "dueDate": "2025-07-25",
+    "totalAmount": 2500.0,
+    "status": "sent",
     "milestones": [
       {
-        "description": "Milestone 1 for UX Writing Sprint",
-        "rate": 1050.0
+        "description": "Brand strategy consultation",
+        "rate": 1500.0
       },
       {
-        "description": "Milestone 2 for UX Writing Sprint",
-        "rate": 1050.0
-      },
-      {
-        "description": "Milestone 3 for UX Writing Sprint",
-        "rate": 1050.0
+        "description": "Brand guidelines document",
+        "rate": 1000.0
       }
-    ]
+    ],
+    "isCustomProject": true,
+    "isManualInvoice": true
   },
   {
     "invoiceNumber": "MGL100002",
     "freelancerId": 31,
     "projectId": 301,
-    "client": {
-      "name": "Nancy Salmon",
-      "title": "Sales Manager",
-      "email": "nancy.salmon@client.com",
-      "avatar": "/avatars/nancy.png"
-    },
+    "commissionerId": 37,
     "projectTitle": "Media channel branding",
     "issueDate": "2025-04-18",
     "dueDate": "2025-04-25",
@@ -93,12 +77,7 @@
     "invoiceNumber": "MGL100003",
     "freelancerId": 31,
     "projectId": 302,
-    "client": {
-      "name": "Felix Damini",
-      "title": "Audio Engineer",
-      "email": "felix.damini@client.com",
-      "avatar": "/avatars/felix.png"
-    },
+    "commissionerId": 36,
     "projectTitle": "Podcast series logo design",
     "issueDate": "2025-03-10",
     "dueDate": "2025-03-20",
@@ -123,12 +102,7 @@
     "invoiceNumber": "MGL100004",
     "freelancerId": 31,
     "projectId": 303,
-    "client": {
-      "name": "Tilly Burzinsky",
-      "title": "Creative Director",
-      "email": "tilly.burzinsky@client.com",
-      "avatar": "/avatars/tilly.png"
-    },
+    "commissionerId": 35,
     "projectTitle": "Event Production Branding",
     "issueDate": "2025-06-05",
     "dueDate": "2025-06-14",
@@ -153,12 +127,7 @@
     "invoiceNumber": "MGL100005",
     "freelancerId": 31,
     "projectId": 299,
-    "client": {
-      "name": "Matt Hannery",
-      "title": "Product Manager",
-      "email": "matt.hannery@client.com",
-      "avatar": "/avatars/matte.png"
-    },
+    "commissionerId": 34,
     "projectTitle": "Corlax iOS App Launch Deck",
     "issueDate": "2025-05-01",
     "dueDate": "2025-05-09",
@@ -183,12 +152,7 @@
     "invoiceNumber": "MGL100006",
     "freelancerId": 31,
     "projectId": 300,
-    "client": {
-      "name": "Felix Damini",
-      "title": "Audio Engineer",
-      "email": "felix.damini@client.com",
-      "avatar": "/avatars/felix.png"
-    },
+    "commissionerId": 36,
     "projectTitle": "Micro-content for Launch Campaign",
     "issueDate": "2025-04-08",
     "dueDate": "2025-04-20",
@@ -213,12 +177,7 @@
     "invoiceNumber": "MGL100007",
     "freelancerId": 31,
     "projectId": 301,
-    "client": {
-      "name": "Billy Parker",
-      "title": "Media Lead",
-      "email": "billy.parker@client.com",
-      "avatar": "/avatars/billy.png"
-    },
+    "commissionerId": 32,
     "projectTitle": "Social Video Series \u2013 6 Deliverables",
     "issueDate": "2025-03-22",
     "dueDate": "2025-03-30",

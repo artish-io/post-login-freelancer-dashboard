@@ -196,11 +196,15 @@ export default function TaskDetailsModal({
         {/* Logo + Title */}
         <div className="flex items-start gap-3 sm:gap-4 mb-2">
           <Image
-            src={projectLogo}
+            src={projectLogo || '/logos/fallback-logo.png'}
             alt="Project logo"
             width={40}
             height={40}
             className="rounded-full border border-gray-300 shrink-0"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = '/logos/fallback-logo.png';
+            }}
           />
           <h1 className="text-xl sm:text-2xl font-semibold text-pink-600 leading-tight">
             {projectTitle}
@@ -208,7 +212,7 @@ export default function TaskDetailsModal({
         </div>
 
         <p className="text-sm text-gray-600 mb-6">
-          Develop a web identity in celebration of 10 years of Lagos State Park services. This project should overhaul the current website for the agency, while retaining core overarching messaging.
+          {taskDescription || 'No description provided for this task.'}
         </p>
 
         {/* Links */}

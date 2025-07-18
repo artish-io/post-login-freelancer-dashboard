@@ -13,19 +13,39 @@ export async function GET(req: Request) {
   }
 
   try {
-    const tasksPath = path.join(process.cwd(), 'app/api/dashboard/data/task-summary.json');
-    const notesPath = path.join(process.cwd(), 'app/api/dashboard/data/project-notes.json');
-    const linksPath = path.join(process.cwd(), 'app/api/dashboard/data/project-links.json');
+    // Use universal source files instead of deprecated ones
+    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
+    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
+    const notesPath = path.join(process.cwd(), 'data', 'project-notes.json');
+    const linksPath = path.join(process.cwd(), 'data', 'project-links.json');
 
-    const tasksFile = await fs.readFile(tasksPath, 'utf8');
-    const notesFile = await fs.readFile(notesPath, 'utf8');
-    const linksFile = await fs.readFile(linksPath, 'utf8');
+    const [projectsFile, projectTasksFile, notesFile, linksFile] = await Promise.all([
+      fs.readFile(projectsPath, 'utf8'),
+      fs.readFile(projectTasksPath, 'utf8'),
+      fs.readFile(notesPath, 'utf8'),
+      fs.readFile(linksPath, 'utf8')
+    ]);
 
-    const taskData = JSON.parse(tasksFile);
+    const projects = JSON.parse(projectsFile);
+    const projectTasks = JSON.parse(projectTasksFile);
     const noteData = JSON.parse(notesFile);
     const linkData = JSON.parse(linksFile);
 
-    const userTasks = taskData.find((u: any) => u.userId === userId)?.tasks || [];
+    const freelancerId = parseInt(userId);
+
+    // Get projects for this freelancer
+    const freelancerProjects = projects.filter((p: any) => p.freelancerId === freelancerId);
+    const freelancerProjectIds = freelancerProjects.map((p: any) => p.projectId);
+
+    // Get all tasks for freelancer's projects
+    const userTasks = projectTasks
+      .filter((pt: any) => freelancerProjectIds.includes(pt.projectId))
+      .flatMap((pt: any) => pt.tasks.map((task: any) => ({
+        ...task,
+        projectId: pt.projectId,
+        important: task.feedbackCount > 0 || task.rejected,
+        completed: task.completed
+      })));
 
     const important = userTasks.filter((t: any) => t.important && !t.completed).length;
 

@@ -737,5 +737,47 @@
         "isEncrypted": false
       }
     ]
+  },
+  {
+    "threadId": "1-32",
+    "participants": [
+      1,
+      32
+    ],
+    "messages": []
+  },
+  {
+    "threadId": "3-32",
+    "participants": [
+      3,
+      32
+    ],
+    "messages": []
+  },
+  {
+    "threadId": "5-32",
+    "participants": [
+      32,
+      5
+    ],
+    "messages": [],
+    "metadata": {
+      "createdAt": "2025-07-16T14:24:32.319Z",
+      "initiatedBy": 32,
+      "status": "pending_response"
+    }
+  },
+  {
+    "threadId": "8-32",
+    "participants": [
+      32,
+      8
+    ],
+    "messages": [],
+    "metadata": {
+      "createdAt": "2025-07-16T14:24:45.634Z",
+      "initiatedBy": 32,
+      "status": "pending_response"
+    }
   }
 ]

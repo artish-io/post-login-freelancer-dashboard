@@ -6,7 +6,7 @@ export interface Milestone {
   [key: string]: any;
 }
 
-export type PaymentCycle = 'Fixed Amount' | 'Hourly Rate';
+export type ExecutionMethod = 'completion' | 'milestone';
 
 export type StartMode = 'immediate' | 'custom';
 
@@ -14,15 +14,13 @@ export interface ProposalInput {
   title?: string;
   summary?: string;
   logoUrl?: string;
-  paymentCycle?: PaymentCycle;
-  rate?: number;
-  depositRate?: string;
+  executionMethod?: ExecutionMethod;
+  totalBid?: number;
   typeTags?: string[];
   milestones?: Milestone[];
   customStartDate?: Date | string | null;
   endDate?: Date | string | null;
-  maxHours?: number | string;
-  startMode?: StartMode;
+  startType?: 'Immediately' | 'Custom';
   [key: string]: any;
 }
 
@@ -31,8 +29,11 @@ export interface DraftProposal extends ProposalInput {
   totalBid: number;
   expectedDurationDays: number;
 
-  // ✅ NEW FIELDS FOR VALIDATION + UX DISPLAY
-  milestoneTotal: number;
-  upfrontAmount: number;
-  isAmountValid: boolean;
+  // ✅ FIELDS FOR COMPLETION-BASED PAYMENT
+  upfrontAmount?: number; // 12% of total for completion-based
+  upfrontPercentage?: number; // Always 12% for completion-based
+
+  // ✅ FIELDS FOR MILESTONE-BASED PAYMENT
+  milestoneTotal?: number;
+  amountPerMilestone?: number;
 }

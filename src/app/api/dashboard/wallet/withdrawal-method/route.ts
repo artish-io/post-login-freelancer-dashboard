@@ -1,18 +1,23 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
 const FREELANCERS_PATH = path.join(process.cwd(), 'data/freelancers.json');
-
-// TEMP: Replace this with actual session-based userId once auth is wired
-const MOCK_USER_ID = 31;
 
 // GET: Fetch user's withdrawal method from freelancer record
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = parseInt(session.user.id);
     const raw = await readFile(FREELANCERS_PATH, 'utf-8');
     const freelancers = JSON.parse(raw);
-    const user = freelancers.find((f: any) => f.id === MOCK_USER_ID);
+    const user = freelancers.find((f: any) => f.userId === userId);
 
     if (!user) {
       return NextResponse.json({ error: 'Freelancer not found' }, { status: 404 });
@@ -30,6 +35,11 @@ export async function GET() {
 // POST: Update user's withdrawal method
 export async function POST(req: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await req.json();
     const { method } = body;
 
@@ -40,10 +50,11 @@ export async function POST(req: Request) {
       );
     }
 
+    const userId = parseInt(session.user.id);
     const raw = await readFile(FREELANCERS_PATH, 'utf-8');
     const freelancers = JSON.parse(raw);
 
-    const index = freelancers.findIndex((f: any) => f.id === MOCK_USER_ID);
+    const index = freelancers.findIndex((f: any) => f.userId === userId);
     if (index === -1) {
       return NextResponse.json({ error: 'Freelancer not found' }, { status: 404 });
     }

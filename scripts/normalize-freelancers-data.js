@@ -39,20 +39,28 @@ const normalizedFreelancers = freelancers.map(freelancer => {
     normalized.specializations = freelancer.specializations;
   }
 
-  // Handle the special case of ID 31 which has extra fields
-  if (freelancer.id === 31) {
+  // Handle freelancers with extra fields that should be moved to users.json
+  if (freelancer.username || freelancer.about || freelancer.socialLinks || freelancer.workSamples || freelancer.trend) {
     // Move user-specific data to users.json if not already there
-    const existingUser = users.find(u => u.id === 31);
+    const existingUser = users.find(u => u.id === freelancer.userId);
     if (existingUser) {
       // Update user with additional info from freelancer record
-      existingUser.username = freelancer.username;
-      existingUser.about = freelancer.about;
-      existingUser.socialLinks = freelancer.socialLinks;
-      existingUser.workSamples = freelancer.workSamples;
-      existingUser.trend = freelancer.trend;
-      
-      // Update location format to match others
-      normalized.location = "NG"; // Convert "Lagos, Nigeria" to country code
+      if (freelancer.username) existingUser.username = freelancer.username;
+      if (freelancer.about) existingUser.about = freelancer.about;
+      if (freelancer.socialLinks) existingUser.socialLinks = freelancer.socialLinks;
+      if (freelancer.workSamples) existingUser.workSamples = freelancer.workSamples;
+      if (freelancer.trend) existingUser.trend = freelancer.trend;
+    }
+  }
+
+  // Handle location format normalization
+  if (freelancer.location && typeof freelancer.location === 'string' && freelancer.location.includes(',')) {
+    // Convert "Lagos, Nigeria" to country code format
+    if (freelancer.location.includes('Nigeria')) {
+      normalized.location = "NG";
+    } else {
+      // Keep original location if we can't determine country code
+      normalized.location = freelancer.location;
     }
   }
 
@@ -70,8 +78,8 @@ console.log(`📊 Processed ${normalizedFreelancers.length} freelancer records`)
 console.log('\n📋 Changes made:');
 console.log('• Removed duplicate name and title fields from freelancers.json');
 console.log('• Added userId references to link with users.json');
-console.log('• Moved user-specific data from freelancer ID 31 to users.json');
-console.log('• Standardized location format for ID 31');
+console.log('• Moved user-specific data from freelancers to users.json');
+console.log('• Standardized location formats');
 
 // Verify data integrity
 const duplicateUserIds = normalizedFreelancers

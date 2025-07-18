@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import WalletHistoryItem from './wallet-history-item';
 
 type WalletEntry = {
@@ -19,18 +20,24 @@ type WalletEntry = {
 };
 
 export default function WalletHistoryList() {
+  const { data: session } = useSession();
   const [entries, setEntries] = useState<WalletEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHistory = async () => {
+      if (!session?.user?.id) {
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         console.log('Fetching wallet history...');
 
         // Fetch wallet history, organizations, projects, and users data
         const [historyRes, orgsRes, projectsRes, usersRes] = await Promise.all([
-          fetch('/api/dashboard/wallet/history?userId=31'),
+          fetch(`/api/dashboard/wallet/history?userId=${session.user.id}`),
           fetch('/api/data/organizations'),
           fetch('/api/data/projects'),
           fetch('/api/data/users')

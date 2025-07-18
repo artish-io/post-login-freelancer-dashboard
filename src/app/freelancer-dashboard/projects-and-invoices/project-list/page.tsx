@@ -96,12 +96,20 @@ export default function ProjectListPage() {
             // Use actual status from projects.json if available, otherwise calculate it
             let projectStatus: 'ongoing' | 'paused' | 'completed';
             if (projectInfo?.status) {
-              // Normalize the status from projects.json (handle case variations)
+              // Map projects.json status to display status
               const normalizedStatus = projectInfo.status.toLowerCase();
               console.log(`🔍 Project ${projectTasks.projectId}: Found status "${projectInfo.status}" -> normalized to "${normalizedStatus}"`);
-              if (['ongoing', 'paused', 'completed'].includes(normalizedStatus)) {
-                projectStatus = normalizedStatus as 'ongoing' | 'paused' | 'completed';
-                console.log(`✅ Using status from projects.json: ${projectStatus}`);
+
+              // Simplified status mapping - only three statuses now
+              if (normalizedStatus === 'ongoing') {
+                projectStatus = 'ongoing';
+                console.log(`✅ Using ongoing status from projects.json`);
+              } else if (normalizedStatus === 'paused') {
+                projectStatus = 'paused';
+                console.log(`✅ Using paused status from projects.json`);
+              } else if (normalizedStatus === 'completed') {
+                projectStatus = 'completed';
+                console.log(`✅ Using completed status from projects.json`);
               } else {
                 // Fallback to calculated status if status is not recognized
                 projectStatus = calculateProjectStatus(projectTasks);

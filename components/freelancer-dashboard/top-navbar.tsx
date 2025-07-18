@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import NotificationDropdown from './notification-dropdown';
+import NotificationDropdown from '../shared/notification-dropdown';
 import MobileMenuToggle from './mobile-menu-toggle';
 import UserProfileDropdown from './user-profile-dropdown';
 
@@ -66,7 +66,7 @@ export default function TopNavbar({
 
       {/* Icons */}
       <div className="flex items-center gap-5 pr-2">
-        <NotificationDropdown />
+        <NotificationDropdown dashboardType="freelancer" />
 
         <div className="relative">
           <button

@@ -15,7 +15,7 @@ export function generateDraftProposal(data: ProposalInput): DraftProposal {
   }));
 
   const today = new Date();
-  const fallbackStart = data.startMode === 'immediate' ? today : new Date(data.customStartDate ?? today);
+  const fallbackStart = data.startType === 'Immediately' ? today : new Date(data.customStartDate ?? today);
   const end = new Date(data.endDate ?? today);
 
   const durationInDays = Math.max(
@@ -27,27 +27,28 @@ export function generateDraftProposal(data: ProposalInput): DraftProposal {
   console.log('📅 Project end:', end.toISOString());
   console.log('📏 Duration in days:', durationInDays);
 
-  const totalBid =
-    data.paymentCycle === 'Hourly Rate'
-      ? calculateHourlyProposalTotal(
-          fallbackStart,
-          end,
-          Number(data.rate) || 0,
-          Number(data.maxHours) || 0
-        )
-      : calculateTotalBid(sanitizedMilestones);
+  const totalBid = data.totalBid || 0;
 
-  const depositRate = Number(data.depositRate) || 0;
-  const upfrontAmount = Math.round((totalBid * depositRate) / 100);
-  const milestoneTotal = sanitizedMilestones.reduce((sum, m) => sum + (m.amount || 0), 0);
+  // Calculate payment details based on execution method
+  let upfrontAmount = 0;
+  let upfrontPercentage = 0;
+  let milestoneTotal = 0;
+  let amountPerMilestone = 0;
 
-  const isAmountValid = data.paymentCycle === 'Hourly Rate'
-    ? true
-    : milestoneTotal + upfrontAmount === totalBid;
+  if (data.executionMethod === 'completion') {
+    // Completion-based: 12% upfront commitment
+    upfrontPercentage = 12;
+    upfrontAmount = Math.round((totalBid * 12) / 100);
+  } else if (data.executionMethod === 'milestone') {
+    // Milestone-based: evenly distributed across milestones
+    milestoneTotal = sanitizedMilestones.reduce((sum, m) => sum + (m.amount || 0), 0);
+    amountPerMilestone = sanitizedMilestones.length > 0 ? totalBid / sanitizedMilestones.length : 0;
+  }
 
-  console.log('💰 Upfront:', upfrontAmount);
+  console.log('💰 Total Bid:', totalBid);
+  console.log('💰 Execution Method:', data.executionMethod);
+  console.log('💰 Upfront Amount:', upfrontAmount);
   console.log('💸 Milestone Total:', milestoneTotal);
-  console.log('✅ Valid Amount Split:', isAmountValid);
 
   return {
     ...data,
@@ -56,7 +57,8 @@ export function generateDraftProposal(data: ProposalInput): DraftProposal {
     totalBid,
     expectedDurationDays: durationInDays,
     upfrontAmount,
+    upfrontPercentage,
     milestoneTotal,
-    isAmountValid,
+    amountPerMilestone,
   };
 }

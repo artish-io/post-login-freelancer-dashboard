@@ -8,7 +8,7 @@ import ProposalHeader from '../../../../../components/freelancer-dashboard/proje
 import ProposalMetaInfo from '../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/proposal-meta-info';
 import ProposalScheduleSelect from '../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/proposal-schedule-select';
 import ProposalExecutionMethod from '../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/proposal-execution-method';
-import PaymentCycleSection from '../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/payment-cycle-section';
+import SimplifiedPaymentSection from '../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/simplified-payment-section';
 import ProposalProjectScopeInput from '../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/proposal-project-scope-input';
 import ProposalMilestonesEditor, {
   Milestone,
@@ -31,7 +31,6 @@ type Contact = {
 };
 
 type ExecutionMethod = 'completion' | 'milestone';
-type PaymentCycle = 'Fixed Amount' | 'Hourly Rate';
 
 export default function CreateProposalPage() {
   const router = useRouter();
@@ -39,17 +38,13 @@ export default function CreateProposalPage() {
   const [selectedContact, setSelectedContact] = useState<Contact | { email: string } | null>(null);
   const [typeTags, setTypeTags] = useState<string[]>([]);
   const [projectName, setProjectName] = useState('');
-  const [startType, setStartType] = useState<'Immediately' | 'Select a Date'>('Immediately');
+  const [startType, setStartType] = useState<'Immediately' | 'Custom'>('Immediately');
   const [customStartDate, setCustomStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [executionMethod, setExecutionMethod] = useState<ExecutionMethod>('completion');
-  const [paymentCycle, setPaymentCycle] = useState<PaymentCycle>('Fixed Amount');
   const [projectScope, setProjectScope] = useState('');
   const [milestones, setMilestones] = useState<Milestone[]>([]);
   const [totalAmount, setTotalAmount] = useState('');
-  const [upfrontPayment, setUpfrontPayment] = useState('');
-  const [hourlyRate, setHourlyRate] = useState('');
-  const [maxHours, setMaxHours] = useState('');
 
   const [mismatchError, setMismatchError] = useState<string | null>(null);
 
@@ -64,13 +59,9 @@ export default function CreateProposalPage() {
         setProjectName(data.title ?? '');
         setProjectScope(data.summary ?? '');
         setMilestones(data.milestones ?? []);
-        setPaymentCycle(data.paymentCycle ?? 'Fixed Amount');
-        if (data.rate) setHourlyRate(data.rate.toString());
-        if (data.depositRate) setUpfrontPayment(data.depositRate.toString());
         if (data.totalBid) setTotalAmount(data.totalBid.toString());
         if (data.customStartDate) setCustomStartDate(new Date(data.customStartDate));
         if (data.endDate) setEndDate(new Date(data.endDate));
-        if (data.maxHours) setMaxHours(data.maxHours.toString());
         if (data.executionMethod) setExecutionMethod(data.executionMethod);
         if (data.startType) setStartType(data.startType);
         if (data.contact) setSelectedContact(data.contact);
@@ -83,26 +74,19 @@ export default function CreateProposalPage() {
     loadDraft();
   }, []);
 
-  // 💰 Milestone + Upfront Validation
+  // 💰 Simple validation for total amount
   useEffect(() => {
-    if (paymentCycle !== 'Fixed Amount') {
-      setMismatchError(null); // reset error if switching away from Fixed
-      return;
-    }
-
     const bid = Number(totalAmount) || 0;
-    const deposit = Number(upfrontPayment) || 0;
-    const depositValue = (bid * deposit) / 100;
     const milestoneSum = milestones.reduce((acc, m) => acc + Number(m.amount || 0), 0);
 
-    if (Math.round(depositValue + milestoneSum) !== Math.round(bid)) {
+    if (executionMethod === 'milestone' && milestones.length > 0 && Math.round(milestoneSum) !== Math.round(bid)) {
       setMismatchError(
-        `Milestones ($${milestoneSum.toLocaleString()}) + upfront ($${depositValue.toLocaleString()}) must equal total bid ($${bid.toLocaleString()})`
+        `Milestones total ($${milestoneSum.toLocaleString()}) must equal total budget ($${bid.toLocaleString()})`
       );
     } else {
       setMismatchError(null);
     }
-  }, [milestones, upfrontPayment, totalAmount, paymentCycle]);
+  }, [milestones, totalAmount, executionMethod]);
 
   // ⏳ Auto-save every 500ms on field change
   useEffect(() => {
@@ -122,13 +106,9 @@ export default function CreateProposalPage() {
         contact: selectedContact ?? undefined,
         typeTags,
         milestones: sanitized,
-        paymentCycle,
-        rate: paymentCycle === 'Hourly Rate' ? Number(hourlyRate) || 0 : undefined,
-        depositRate: paymentCycle === 'Fixed Amount' ? upfrontPayment : undefined,
-        totalBid: paymentCycle === 'Fixed Amount' ? Number(totalAmount) || 0 : undefined,
+        totalBid: Number(totalAmount) || 0,
         customStartDate,
         endDate,
-        maxHours: Number(maxHours) || 0,
         executionMethod,
         startType,
       });
@@ -145,15 +125,11 @@ export default function CreateProposalPage() {
     projectName,
     projectScope,
     milestones,
-    paymentCycle,
-    hourlyRate,
-    upfrontPayment,
     totalAmount,
     selectedContact,
     typeTags,
     customStartDate,
     endDate,
-    maxHours,
     executionMethod,
     startType,
   ]);
@@ -187,13 +163,9 @@ export default function CreateProposalPage() {
       contact: selectedContact ?? undefined,
       typeTags,
       milestones: sanitizedMilestones,
-      paymentCycle,
-      rate: paymentCycle === 'Hourly Rate' ? Number(hourlyRate) || 0 : undefined,
-      depositRate: paymentCycle === 'Fixed Amount' ? upfrontPayment : undefined,
-      totalBid: paymentCycle === 'Fixed Amount' ? Number(totalAmount) || 0 : undefined,
+      totalBid: Number(totalAmount) || 0,
       customStartDate,
       endDate,
-      maxHours: Number(maxHours) || 0,
       executionMethod,
       startType,
     });
@@ -270,17 +242,11 @@ export default function CreateProposalPage() {
           <ProposalExecutionMethod value={executionMethod} onChange={setExecutionMethod} />
         </div>
 
-        <PaymentCycleSection
-          paymentCycle={paymentCycle}
-          setPaymentCycle={setPaymentCycle}
+        <SimplifiedPaymentSection
+          executionMethod={executionMethod}
           totalAmount={totalAmount}
-          upfrontPayment={upfrontPayment}
           onTotalAmountChange={setTotalAmount}
-          onUpfrontPaymentChange={setUpfrontPayment}
-          hourlyRate={hourlyRate}
-          maxHours={maxHours}
-          onHourlyRateChange={setHourlyRate}
-          onMaxHoursChange={setMaxHours}
+          milestoneCount={milestones.length}
         />
 
         {mismatchError && (
@@ -293,8 +259,8 @@ export default function CreateProposalPage() {
           milestones={milestones}
           onChange={setMilestones}
           totalBid={Number(totalAmount) || 0}
-          paymentCycle={paymentCycle}
           projectEndDate={endDate}
+          executionMethod={executionMethod}
         />
       </motion.div>
     </motion.section>

@@ -49,6 +49,20 @@ export async function GET(req: Request) {
         const contact = users.find((u: { id: number }) => u.id === contactId);
         if (!contact) return null;
 
+        // Handle threads with no messages
+        if (!lastMessage) {
+          return {
+            threadId: thread.threadId,
+            contactId,
+            name: contact.name,
+            title: contact.title,
+            avatar: contact.avatar,
+            lastMessageText: 'No messages yet',
+            lastMessageTime: new Date().toISOString(),
+            isUnread: false,
+          };
+        }
+
         return {
           threadId: thread.threadId,
           contactId,

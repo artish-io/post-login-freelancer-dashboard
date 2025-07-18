@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { NotesTab } from '../freelancer-dashboard/notes-tab';
 import ProjectNotesExpansion from '../freelancer-dashboard/project-notes-expansion';
 import TaskDetailsModal from '../freelancer-dashboard/projects-and-invoices/projects/task-details-modal';
+import TaskReviewModal from '../commissioner-dashboard/projects-and-invoices/tasks-to-review/task-review-modal';
 
 export type TasksPanelProps = {
   viewType: 'freelancer' | 'commissioner';
@@ -34,6 +35,13 @@ export type FreelancerTask = BaseTask & {
   briefUrl?: string;
   workingFileUrl?: string;
   columnId: 'todo' | 'upcoming' | 'review';
+  completed?: boolean;
+  dueDateRaw?: string;
+  rejected?: boolean;
+  feedbackCount?: number;
+  pushedBack?: boolean;
+  taskIndex?: number;
+  totalTasks?: number;
 };
 
 export type CommissionerTask = BaseTask & {
@@ -41,6 +49,28 @@ export type CommissionerTask = BaseTask & {
   submittedDate: string;
   version?: number;
   reviewed?: boolean;
+};
+
+export type TaskToReview = {
+  id: number;
+  title: string;
+  projectId: number;
+  projectTitle: string;
+  submittedDate: string;
+  freelancer: {
+    id: number;
+    name: string;
+    avatar: string;
+  };
+  version: number;
+  description: string;
+  link: string;
+  briefUrl?: string;
+  workingFileUrl?: string;
+  projectLogo: string;
+  projectTags: string[];
+  taskIndex?: number;
+  totalTasks?: number;
 };
 
 const statusColors: Record<string, string> = {
@@ -64,6 +94,7 @@ export default function TasksPanel({
   const [tasks, setTasks] = useState<(FreelancerTask | CommissionerTask)[]>([]);
   const [loading, setLoading] = useState(true);
   const [taskCounts, setTaskCounts] = useState<{all: number, important: number, notes: number} | null>(null);
+  const [selectedTaskForReview, setSelectedTaskForReview] = useState<TaskToReview | null>(null);
   
   // Dynamic tabs based on view type
   const tabs = showNotesTab && viewType === 'freelancer' 
@@ -73,6 +104,8 @@ export default function TasksPanel({
   const [activeTab, setActiveTab] = useState<typeof tabs[number]>('All');
   const [expandedProject, setExpandedProject] = useState<number | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [organizations, setOrganizations] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -82,15 +115,27 @@ export default function TasksPanel({
         if (viewType === 'freelancer') {
           if (!session?.user?.id) return;
 
-          const [taskRes, notesRes, projectsRes] = await Promise.all([
+          // Get read notes from localStorage for accurate unread count
+          const readNotesData = typeof window !== 'undefined' ? localStorage.getItem('readNotes') : null;
+          const readNotesParam = readNotesData ? encodeURIComponent(readNotesData) : '';
+
+          const [taskRes, notesRes, projectsRes, organizationsRes] = await Promise.all([
             fetch(`/api/dashboard/tasks-summary?id=${session.user.id}`),
-            fetch(`/api/dashboard/project-notes/count?userId=${session.user.id}`),
-            fetch('/api/projects')
+            fetch(`/api/dashboard/project-notes/count?userId=${session.user.id}&readNotes=${readNotesParam}`),
+            fetch('/api/projects'),
+            fetch('/api/organizations')
           ]);
 
           const taskData = await taskRes.json();
           const notes = await notesRes.json();
           const projectsData = await projectsRes.json();
+          const organizationsData = await organizationsRes.json();
+
+          // Store projects and organizations data in state for modal enrichment
+          setProjects(projectsData);
+          setOrganizations(organizationsData);
+
+
 
           // Filter out tasks from completed or paused projects
           const filteredTasks = taskData.filter((task: FreelancerTask) => {
@@ -98,10 +143,61 @@ export default function TasksPanel({
             return projectInfo && !['Completed', 'Paused'].includes(projectInfo.status);
           });
 
-          const enriched = filteredTasks.map((task: FreelancerTask) => ({
-            ...task,
-            notes: notes.taskIds.includes(task.id) ? 1 : 0,
-          }));
+
+
+          // Filter to only show tasks that should be in "Today's Tasks" based on urgency hierarchy
+          const todaysTasks = filteredTasks.filter((task: FreelancerTask) => {
+            // Only show incomplete, ongoing tasks (not in review, not completed)
+            return !task.completed && task.status === 'Ongoing';
+          });
+
+          // Sort by urgency hierarchy: rejected > feedback > pushed back > due today > others
+          const sortedByUrgency = todaysTasks.sort((a: FreelancerTask, b: FreelancerTask) => {
+            // Get task details from project-tasks data to check urgency flags
+            const getTaskUrgency = (task: FreelancerTask) => {
+              let urgencyScore = 0;
+              if (task.status === 'Rejected' || task.rejected) urgencyScore += 1000;
+              if (task.important) urgencyScore += 500; // important flag indicates feedback/rejection
+              if (task.feedbackCount && task.feedbackCount > 0) urgencyScore += 400;
+              if (task.pushedBack) urgencyScore += 300;
+
+              // Check if due today (simplified check)
+              const today = new Date().toISOString().split('T')[0];
+              const taskDueDate = task.dueDateRaw ? new Date(task.dueDateRaw).toISOString().split('T')[0] : '';
+              if (taskDueDate === today) urgencyScore += 100;
+
+              return urgencyScore;
+            };
+
+            return getTaskUrgency(b) - getTaskUrgency(a); // Higher urgency first
+          });
+
+          // Take only the top 3 most urgent tasks for "Today's Tasks"
+          const topUrgentTasks = sortedByUrgency.slice(0, 3);
+
+
+
+          const enriched = topUrgentTasks.map((task: FreelancerTask) => {
+            // Find project info to get organizationId
+            const projectInfo = projectsData.find((p: any) => p.projectId === task.projectId);
+
+            // Find organization to get logo (same approach as task-column.tsx)
+            const organization = organizationsData.find((org: any) => org.id === projectInfo?.organizationId);
+            const calculatedProjectLogo = organization?.logo || '/logos/fallback-logo.png';
+
+            const enrichedTask = {
+              ...task,
+              notes: notes.taskIds.includes(task.id) ? 1 : 0,
+              columnId: 'todo' as const, // Tasks in "Today's Tasks" panel should always be treated as 'todo' for submission
+              // Override projectLogo with calculated value (same as task-column approach)
+              projectLogo: calculatedProjectLogo,
+              projectTags: projectInfo?.typeTags || task.projectTags || []
+            };
+
+
+
+            return enrichedTask;
+          });
 
           // Calculate counts for freelancer view
           const totalCountAll = enriched.length;
@@ -219,11 +315,91 @@ export default function TasksPanel({
 
   const displayedTasks = viewType === 'freelancer' ? filteredTasks.slice(0, 5) : filteredTasks;
 
+  // Convert CommissionerTask to TaskToReview format for modal
+  const convertToTaskToReview = async (commissionerTask: CommissionerTask): Promise<TaskToReview | null> => {
+    try {
+      // Fetch additional data needed for the modal
+      const [projectTasksRes, projectsRes, organizationsRes, usersRes] = await Promise.all([
+        fetch('/api/project-tasks'),
+        fetch('/api/projects'),
+        fetch('/api/organizations'),
+        fetch('/api/users')
+      ]);
+
+      if (projectTasksRes.ok && projectsRes.ok && organizationsRes.ok && usersRes.ok) {
+        const projectTasksData = await projectTasksRes.json();
+        const projectsData = await projectsRes.json();
+        const organizationsData = await organizationsRes.json();
+        const usersData = await usersRes.json();
+
+        // Find the project and task details
+        const projectData = projectTasksData.find((p: any) => p.projectId === commissionerTask.projectId);
+        const projectInfo = projectsData.find((p: any) => p.projectId === commissionerTask.projectId);
+        const organization = organizationsData.find((org: any) => org.id === projectInfo?.organizationId);
+
+        if (projectData && projectInfo) {
+          const taskDetail = projectData.tasks?.find((t: any) => t.id === commissionerTask.id);
+          const freelancer = usersData.find((u: any) => u.id === projectInfo.freelancerId);
+
+          if (taskDetail && freelancer) {
+            return {
+              id: commissionerTask.id,
+              title: commissionerTask.title,
+              projectId: commissionerTask.projectId,
+              projectTitle: commissionerTask.projectTitle,
+              submittedDate: taskDetail.submittedDate || taskDetail.dueDate || new Date().toISOString(),
+              freelancer: {
+                id: freelancer.id,
+                name: freelancer.name,
+                avatar: freelancer.avatar || '/default-avatar.png'
+              },
+              version: commissionerTask.version || 1,
+              description: taskDetail.description || '',
+              link: taskDetail.link || '',
+              briefUrl: taskDetail.briefUrl,
+              workingFileUrl: taskDetail.workingFileUrl,
+              projectLogo: organization?.logo || '/logos/default-org.png',
+              projectTags: projectInfo.typeTags || [],
+              taskIndex: taskDetail.order || 1,
+              totalTasks: projectData.tasks?.length || 1
+            };
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error converting task for review:', error);
+    }
+    return null;
+  };
+
+  // Handle commissioner task click
+  const handleCommissionerTaskClick = async (task: CommissionerTask) => {
+    const taskToReview = await convertToTaskToReview(task);
+    if (taskToReview) {
+      setSelectedTaskForReview(taskToReview);
+    }
+  };
+
+  // Handle modal close
+  const handleCloseReviewModal = () => {
+    setSelectedTaskForReview(null);
+  };
+
+  // Handle task reviewed (refresh tasks)
+  const handleTaskReviewed = () => {
+    setSelectedTaskForReview(null);
+    setLoading(true);
+    // Trigger a re-fetch by updating the loading state
+    setTimeout(() => {
+      window.location.reload(); // Simple refresh for now
+    }, 500);
+  };
+
   const getViewAllLink = () => {
     if (viewType === 'freelancer') {
       return '/freelancer-dashboard/projects-and-invoices/task-board';
     } else {
-      return '/commissioner-dashboard/tasks';
+      return '/commissioner-dashboard/projects-and-invoices/tasks-to-review';
     }
   };
 
@@ -234,12 +410,20 @@ export default function TasksPanel({
   const activeTask = tasks.find((t) => t.id === activeTaskId);
   let enrichedTask = null;
   if (activeTask && viewType === 'freelancer') {
-    // This would need to be enriched with project data - simplified for now
+    // Properly enrich with project and organization data
+    const projectInfo = projects.find((p: any) => p.projectId === activeTask.projectId);
+    const organization = organizations.find((org: any) => org.id === projectInfo?.organizationId);
+    const calculatedProjectLogo = organization?.logo || '/logos/fallback-logo.png';
+
     enrichedTask = {
       ...activeTask,
-      projectTags: [],
-      projectLogo: '',
+      projectTags: projectInfo?.typeTags || [],
+      projectLogo: calculatedProjectLogo,
+      projectTitle: projectInfo?.title || 'Unknown Project',
+      taskDescription: activeTask.taskDescription || 'No description provided for this task.',
     };
+
+
   }
 
   if (loading) {
@@ -333,7 +517,13 @@ export default function TasksPanel({
                     <li
                       key={task.id}
                       className="flex justify-between items-center text-sm cursor-pointer"
-                      onClick={() => viewType === 'freelancer' ? setActiveTaskId(task.id) : null}
+                      onClick={() => {
+                        if (viewType === 'freelancer') {
+                          setActiveTaskId(task.id);
+                        } else {
+                          handleCommissionerTaskClick(task as CommissionerTask);
+                        }
+                      }}
                     >
                       <div className="flex items-center gap-3">
                         <span
@@ -382,14 +572,7 @@ export default function TasksPanel({
                             : task.status
                           }
                         </span>
-                        {viewType === 'commissioner' && (
-                          <Link
-                            href={`/commissioner-dashboard/projects/${task.projectId}/tasks/${task.id}`}
-                            className="text-xs text-blue-600 hover:text-blue-800 px-2 py-1 border border-blue-200 rounded"
-                          >
-                            Review
-                          </Link>
-                        )}
+
                       </div>
                     </li>
                   ))}
@@ -433,11 +616,11 @@ export default function TasksPanel({
         <TaskDetailsModal
           isOpen={true}
           onClose={() => setActiveTaskId(null)}
-          projectLogo={(enrichedTask as FreelancerTask).projectLogo || ''}
+          projectLogo={(enrichedTask as FreelancerTask).projectLogo || '/logos/fallback-logo.png'}
           projectTitle={enrichedTask.projectTitle}
           projectTags={(enrichedTask as FreelancerTask).projectTags || []}
-          taskIndex={1}
-          totalTasks={1}
+          taskIndex={(enrichedTask as FreelancerTask).taskIndex || 1}
+          totalTasks={(enrichedTask as FreelancerTask).totalTasks || 1}
           taskTitle={enrichedTask.title}
           taskDescription={enrichedTask.taskDescription}
           briefUrl={(enrichedTask as FreelancerTask).briefUrl}
@@ -446,6 +629,20 @@ export default function TasksPanel({
           status={enrichedTask.status as any}
           projectId={enrichedTask.projectId}
           taskId={enrichedTask.id}
+          onTaskSubmitted={() => {
+            // Close modal and refresh tasks
+            setActiveTaskId(null);
+          }}
+        />
+      )}
+
+      {/* Task Review Modal - commissioner only */}
+      {viewType === 'commissioner' && selectedTaskForReview && (
+        <TaskReviewModal
+          isOpen={true}
+          onClose={handleCloseReviewModal}
+          task={selectedTaskForReview}
+          onTaskReviewed={handleTaskReviewed}
         />
       )}
     </div>

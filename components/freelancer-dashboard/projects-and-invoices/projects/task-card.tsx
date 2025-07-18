@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Check } from 'lucide-react';
 import { useState } from 'react';
 import TaskDetailsModal from './task-details-modal';
 import { TaskStatus } from '@/lib/projects/tasks/types';
@@ -25,6 +25,7 @@ type Props = {
   projectId?: number;
   taskId?: number;
   onTaskSubmitted?: () => void;
+  completed?: boolean;
 };
 
 export default function TaskCard({
@@ -45,6 +46,7 @@ export default function TaskCard({
   projectId = 1,
   taskId = 1,
   onTaskSubmitted,
+  completed = false,
 }: Props) {
   const [showDetails, setShowDetails] = useState(false);
 
@@ -84,15 +86,23 @@ export default function TaskCard({
               }}
             />
           </div>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              // Placeholder for dropdown/actions
-            }}
-            className="text-gray-400 hover:text-black transition"
-          >
-            <MoreHorizontal className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            {/* Completed Check Mark */}
+            {(completed || status === 'Approved') && (
+              <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                <Check className="w-3 h-3 text-white" />
+              </div>
+            )}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                // Placeholder for dropdown/actions
+              }}
+              className="text-gray-400 hover:text-black transition"
+            >
+              <MoreHorizontal className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
 

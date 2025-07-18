@@ -12,6 +12,10 @@ type NetworkContact = {
   relationshipTypes: string[]; // e.g., ['project', 'messages', 'gig_application']
 };
 
+interface CommissionerNetworkPanelProps {
+  commissionerId: number;
+}
+
 /**
  * Commissioner Network Panel
  *
@@ -24,7 +28,7 @@ type NetworkContact = {
  * The network is built dynamically by aggregating all these engagement sources
  * and sorted by most recent interaction.
  */
-export default function CommissionerNetworkPanel() {
+export default function CommissionerNetworkPanel({ commissionerId }: CommissionerNetworkPanelProps) {
   const [contacts, setContacts] = useState<NetworkContact[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
@@ -34,8 +38,7 @@ export default function CommissionerNetworkPanel() {
       try {
         setLoading(true);
 
-        // For demo purposes, use commissioner 32 (Lagos Parks Services)
-        const commissionerId = 32;
+        // Use the provided commissionerId prop
 
         // Fetch core data sources
         const [projectsRes, organizationsRes, usersRes] = await Promise.all([
@@ -181,7 +184,7 @@ export default function CommissionerNetworkPanel() {
     };
 
     loadContacts();
-  }, []);
+  }, [commissionerId]);
 
   const displayedContacts = showAll ? contacts : contacts.slice(0, 5);
 

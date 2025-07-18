@@ -18,17 +18,17 @@ export type Milestone = {
 type Props = {
   milestones: Milestone[];
   onChange: (updated: Milestone[]) => void;
-  paymentCycle: 'Fixed Amount' | 'Hourly Rate';
   totalBid: number;
   projectEndDate: Date | null;
+  executionMethod?: 'completion' | 'milestone';
 };
 
 export default function ProposalMilestonesEditor({
   milestones,
   onChange,
-  paymentCycle,
   totalBid,
   projectEndDate,
+  executionMethod = 'milestone',
 }: Props) {
   const handleAdd = () => {
     const newMilestone: Milestone = {
@@ -60,7 +60,15 @@ export default function ProposalMilestonesEditor({
         Billable Project Milestones
       </label>
 
-      {paymentCycle === 'Hourly Rate' ? (
+      {executionMethod === 'milestone' ? (
+        <ProposalMilestonesFixed
+          milestones={milestones}
+          onChange={onChange}
+          totalBid={totalBid}
+          projectEndDate={projectEndDate}
+          executionMethod={executionMethod}
+        />
+      ) : (
         <>
           {milestones.map((milestone) => (
             <ProposalMilestoneItem
@@ -70,7 +78,7 @@ export default function ProposalMilestonesEditor({
                 handleUpdate(milestone.id, update)
               }
               onRemove={() => handleRemove(milestone.id)}
-              endLimit={projectEndDate} // ✅ constrain hourly milestones
+              endLimit={projectEndDate}
             />
           ))}
           <button
@@ -82,13 +90,6 @@ export default function ProposalMilestonesEditor({
             Add task / deliverables
           </button>
         </>
-      ) : (
-        <ProposalMilestonesFixed
-          milestones={milestones}
-          onChange={onChange}
-          totalBid={totalBid}
-          projectEndDate={projectEndDate} // ✅ FIXED: pass to calendar
-        />
       )}
     </div>
   );

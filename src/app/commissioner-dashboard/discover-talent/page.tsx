@@ -37,8 +37,17 @@ export default function DiscoverTalentPage() {
 
   // Create search data arrays for fuzzy matching
   const searchData = useMemo(() => {
-    const skills = gigCategories.flatMap(cat => [cat.label, ...cat.subcategories]);
-    const tools = gigTools.flatMap(cat => cat.tools.map(tool => tool.name));
+    // Extract skills as strings from categories and subcategories
+    const skills = gigCategories.flatMap(cat => [
+      cat.label,
+      ...cat.subcategories.map(sub => typeof sub === 'string' ? sub : sub.name)
+    ]);
+
+    // Extract tools as strings from tools data
+    const tools = gigTools.flatMap(cat =>
+      cat.tools.map(tool => typeof tool === 'string' ? tool : tool.name)
+    );
+
     const freelancerNames = enrichedFreelancers.map(f => f.name);
 
     return {

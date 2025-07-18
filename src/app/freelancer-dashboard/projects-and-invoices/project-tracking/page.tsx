@@ -18,6 +18,7 @@ export default function ProjectTrackingPage() {
     summary: string;
     logoUrl: string;
     tags: string[];
+    status: string;
   } | null>(null);
 
   const [showNotesModal, setShowNotesModal] = useState(false);
@@ -34,6 +35,7 @@ export default function ProjectTrackingPage() {
         summary: json.summary,
         logoUrl: json.logoUrl,
         tags: json.typeTags,
+        status: json.status || 'Ongoing',
       });
     }
     fetchProjectDetails();
@@ -41,7 +43,7 @@ export default function ProjectTrackingPage() {
 
   if (!projectDetails) return <div>Loading...</div>;
 
-  const { title, summary, logoUrl, tags } = projectDetails;
+  const { title, summary, logoUrl, tags, status } = projectDetails;
 
   return (
     <main className="flex flex-col min-h-screen w-full max-w-6xl mx-auto bg-white">
@@ -63,7 +65,7 @@ export default function ProjectTrackingPage() {
         {/* Action Buttons - Below timeline on mobile, sidebar on desktop */}
         <div className="w-full lg:w-[280px] shrink-0 order-2 lg:order-2">
           <div className="lg:sticky lg:top-[200px] flex justify-center lg:justify-start">
-            <ProjectActionButtons projectId={projectId} onNotesClick={handleShowNotes} />
+            <ProjectActionButtons projectId={projectId} onNotesClick={handleShowNotes} projectStatus={status} />
           </div>
         </div>
       </div>

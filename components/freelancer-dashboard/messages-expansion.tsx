@@ -19,6 +19,7 @@ export default function MessagesExpansion() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const threadParam = searchParams.get('thread');
+  const contactParam = searchParams.get('contact');
 
   const [selectedThreadId, setSelectedThreadId] = useState<string | null>(null);
   const [activeContact, setActiveContact] = useState<number | null>(null);
@@ -29,14 +30,111 @@ export default function MessagesExpansion() {
 
   // Pre-select thread & contact if URL contains ?thread=
   useEffect(() => {
-    if (!userId || !threadParam) return;
+    if (!userId || !threadParam || !session) return;
 
-    setSelectedThreadId(threadParam);
+    const ensureThreadExists = async () => {
+      const ids = threadParam.split('-').map(Number);
+      const otherId = ids.find((id) => id !== userId);
 
-    const ids = threadParam.split('-').map(Number);
-    const otherId = ids.find((id) => id !== userId);
-    if (otherId) setActiveContact(otherId);
-  }, [threadParam, userId]);
+      if (!otherId) return;
+
+      try {
+        console.log('🚀 Ensuring thread exists for users:', userId, 'and', otherId);
+
+        // Call the ensure-thread API to create thread and add contacts if needed
+        const response = await fetch('/api/dashboard/messages/ensure-thread', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId1: userId,
+            userId2: otherId,
+            initiatorId: userId // The current user is initiating the contact
+          })
+        });
+
+        const result = await response.json();
+        console.log('📡 Ensure-thread API response:', result);
+
+        if (result.success) {
+          setSelectedThreadId(result.threadId);
+          setActiveContact(otherId);
+
+          // If thread was created or contacts were updated, refresh the contact list
+          if (result.created || result.contactsUpdated) {
+            console.log('✅ Thread/contacts updated, refreshing contact list...');
+            // Force a re-render by updating a timestamp or similar
+            window.location.reload();
+          }
+        } else {
+          console.error('❌ Failed to ensure thread exists:', result.error);
+          // Fallback to basic thread selection
+          setSelectedThreadId(threadParam);
+          setActiveContact(otherId);
+        }
+      } catch (error) {
+        console.error('💥 Error ensuring thread exists:', error);
+        // Fallback to basic thread selection
+        setSelectedThreadId(threadParam);
+        const ids = threadParam.split('-').map(Number);
+        const otherId = ids.find((id) => id !== userId);
+        if (otherId) setActiveContact(otherId);
+      }
+    };
+
+    ensureThreadExists();
+  }, [threadParam, userId, session]);
+
+  // Handle ?contact= parameter to auto-start conversation with specific user
+  useEffect(() => {
+    console.log('🔍 Contact param effect triggered:', { userId, contactParam, hasSession: !!session, threadParam });
+    if (!userId || !contactParam || !session || threadParam) return; // Skip if thread param is already handling it
+
+    const startConversationWithContact = async () => {
+      const contactId = Number(contactParam);
+
+      if (!contactId || contactId === userId) {
+        console.error('Invalid contact ID or trying to message self');
+        return;
+      }
+
+      try {
+        console.log('🚀 Starting conversation with contact:', contactId);
+
+        // Call the ensure-thread API to create thread and add contacts if needed
+        const response = await fetch('/api/dashboard/messages/ensure-thread', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId1: userId,
+            userId2: contactId,
+            initiatorId: userId // The current user is initiating the contact
+          })
+        });
+
+        const result = await response.json();
+        console.log('📡 Ensure-thread API response for contact:', result);
+
+        if (result.success) {
+          setSelectedThreadId(result.threadId);
+          setActiveContact(contactId);
+          setShowContactList(false); // Hide contact list to show the conversation
+
+          // If thread was created or contacts were updated, refresh the contact list
+          if (result.created || result.contactsUpdated) {
+            console.log('✅ Thread/contacts updated for new contact, refreshing...');
+            // Force a re-render by updating a timestamp or similar
+            setTimeout(() => window.location.reload(), 100);
+          }
+        } else {
+          console.error('❌ Failed to start conversation with contact:', result.error);
+        }
+      } catch (error) {
+        console.error('💥 Error starting conversation with contact:', error);
+      }
+    };
+
+    startConversationWithContact();
+  }, [contactParam, userId, session, threadParam]);
 
   if (!session?.user?.id) {
     return <p className="p-4 text-sm text-gray-400">Loading session...</p>;

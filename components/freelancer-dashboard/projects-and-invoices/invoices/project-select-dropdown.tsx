@@ -12,20 +12,25 @@ interface ProjectOption {
 
 interface Props {
   freelancerId: number;
+  commissionerId?: number | null;
   selected: { projectId: number | null; title: string };
   onChange: (selection: { projectId: number | null; title: string }) => void;
 }
 
-export default function ProjectSelectDropdown({ freelancerId, selected, onChange }: Props) {
+export default function ProjectSelectDropdown({ freelancerId, commissionerId, selected, onChange }: Props) {
   const [projects, setProjects] = useState<ProjectOption[]>([]);
   const [customTitle, setCustomTitle] = useState('');
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    console.log('🔍 [Dropdown Mount] freelancerId:', freelancerId);
+    console.log('🔍 [Dropdown Mount] freelancerId:', freelancerId, 'commissionerId:', commissionerId);
     const fetchProjects = async () => {
       try {
-        const res = await fetch(`/api/dashboard/invoice-meta/projects?freelancerId=${freelancerId}`);
+        let url = `/api/dashboard/invoice-meta/projects?freelancerId=${freelancerId}`;
+        if (commissionerId) {
+          url += `&commissionerId=${commissionerId}`;
+        }
+        const res = await fetch(url);
         const data = await res.json();
         console.log('✅ [Fetched Projects]:', data);
         setProjects(data);
@@ -34,7 +39,7 @@ export default function ProjectSelectDropdown({ freelancerId, selected, onChange
       }
     };
     fetchProjects();
-  }, [freelancerId]);
+  }, [freelancerId, commissionerId]);
 
   const options = [
     ...projects.map((p) => ({ id: p.projectId, label: `#${p.projectId} — ${p.title}` })),

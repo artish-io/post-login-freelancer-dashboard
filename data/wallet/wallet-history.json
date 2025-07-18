@@ -1,7 +1,7 @@
 [
   {
     "id": 1000,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 32,
     "organizationId": 1,
     "projectId": 301,
@@ -12,7 +12,7 @@
   },
   {
     "id": 1001,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 33,
     "organizationId": 2,
     "projectId": 302,
@@ -23,7 +23,7 @@
   },
   {
     "id": 1002,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 37,
     "organizationId": 6,
     "projectId": 300,
@@ -34,7 +34,7 @@
   },
   {
     "id": 1003,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 35,
     "organizationId": 4,
     "projectId": 304,
@@ -45,7 +45,7 @@
   },
   {
     "id": 1004,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 38,
     "organizationId": 7,
     "projectId": 299,
@@ -56,7 +56,7 @@
   },
   {
     "id": 1005,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 37,
     "organizationId": 6,
     "projectId": 300,
@@ -67,7 +67,7 @@
   },
   {
     "id": 1006,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 36,
     "organizationId": 5,
     "projectId": 305,
@@ -78,7 +78,7 @@
   },
   {
     "id": 1007,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 32,
     "organizationId": 1,
     "projectId": 301,
@@ -89,7 +89,7 @@
   },
   {
     "id": 1008,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 32,
     "organizationId": 1,
     "projectId": 301,
@@ -100,7 +100,7 @@
   },
   {
     "id": 1009,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 33,
     "organizationId": 2,
     "projectId": 302,
@@ -111,7 +111,7 @@
   },
   {
     "id": 1010,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 35,
     "organizationId": 4,
     "projectId": 304,
@@ -122,7 +122,7 @@
   },
   {
     "id": 1011,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 36,
     "organizationId": 5,
     "projectId": 305,
@@ -133,7 +133,7 @@
   },
   {
     "id": 1012,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 38,
     "organizationId": 7,
     "projectId": 299,
@@ -144,7 +144,7 @@
   },
   {
     "id": 1013,
-    "userId": "31",
+    "userId": 31,
     "commissionerId": 38,
     "organizationId": 7,
     "projectId": 299,

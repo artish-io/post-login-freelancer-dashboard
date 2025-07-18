@@ -14,6 +14,7 @@ export default function CommissionerDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [commissionerId, setCommissionerId] = useState<number | null>(null);
   const [dashboardData, setDashboardData] = useState<{
     activeProjects: number;
     totalProjects: number;
@@ -46,9 +47,12 @@ export default function CommissionerDashboard() {
     const fetchDashboardData = async () => {
       try {
         // Get commissioner stats from API
-        // For demo purposes, use commissioner 32 (Lagos Parks Services)
-        const commissionerId = 32; // In production, this would be session.user.id
-        const response = await fetch(`/api/commissioner-stats?commissionerId=${commissionerId}`);
+        if (!session.user?.id) {
+          throw new Error('No user ID found in session');
+        }
+        const currentCommissionerId = parseInt(session.user.id);
+        setCommissionerId(currentCommissionerId);
+        const response = await fetch(`/api/commissioner-stats?commissionerId=${currentCommissionerId}`);
 
         if (!response.ok) {
           throw new Error('Failed to fetch commissioner stats');
@@ -113,7 +117,7 @@ export default function CommissionerDashboard() {
           <ProjectSummaryTable
             viewType="commissioner"
             showStatus={false}
-            showViewAllButton={false}
+            showViewAllButton={true}
           />
 
           <TasksPanel
@@ -126,7 +130,7 @@ export default function CommissionerDashboard() {
         {/* Right Column - Notifications and Network */}
         <div className="space-y-6">
           <CommissionerNotificationsPanel />
-          <CommissionerNetworkPanel />
+          {commissionerId && <CommissionerNetworkPanel commissionerId={commissionerId} />}
         </div>
       </div>
 

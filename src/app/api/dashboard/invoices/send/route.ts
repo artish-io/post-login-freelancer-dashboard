@@ -14,12 +14,13 @@ export async function POST(request: Request) {
     const {
       invoiceNumber,
       issueDate,
-      executionDate,
+      dueDate,
       freelancerId,
-      clientId,
+      commissionerId,
       projectId,
+      projectTitle,
       milestones,
-      total,
+      totalAmount,
       notes,
       isCustomProject = false,
     } = body;
@@ -28,16 +29,17 @@ export async function POST(request: Request) {
     const invoices = JSON.parse(data);
 
     const newInvoice = {
-      id: uuidv4(),
       invoiceNumber: invoiceNumber || `INV-${Date.now()}`,
-      issueDate,
-      executionDate,
       freelancerId,
-      clientId,
-      projectId,
-      isCustomProject,
+      projectId: isCustomProject ? null : projectId,
+      commissionerId,
+      projectTitle,
+      issueDate,
+      dueDate,
+      totalAmount,
+      status: 'sent',
       milestones,
-      total,
+      isCustomProject,
       notes,
       createdAt: new Date().toISOString(),
     };

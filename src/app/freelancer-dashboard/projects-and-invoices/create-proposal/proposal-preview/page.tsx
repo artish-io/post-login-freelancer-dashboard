@@ -80,17 +80,9 @@ export default function ProposalPreviewPage() {
           <div className="w-full md:w-[320px] shrink-0 relative z-20">
             <PreviewRightColumn
               totalBid={calculated.totalBid}
-              paymentCycle={data.paymentCycle || '—'}
-              depositRate={
-                data.paymentCycle === 'Fixed Amount' && data.depositRate !== undefined
-                  ? Number(data.depositRate)
-                  : undefined
-              }
-              hourlyRate={
-                data.paymentCycle === 'Hourly Rate' && data.rate !== undefined
-                  ? Number(data.rate)
-                  : undefined
-              }
+              executionMethod={data.executionMethod}
+              upfrontAmount={calculated.upfrontAmount}
+              upfrontPercentage={calculated.upfrontPercentage}
               startDate={
                 data.customStartDate
                   ? typeof data.customStartDate === 'string'

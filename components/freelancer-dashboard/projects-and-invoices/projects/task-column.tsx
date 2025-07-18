@@ -257,6 +257,7 @@ export default function TaskColumn({ columnId, title }: Props) {
           projectId: project.projectId,
           taskId: task.id,
           status: task.status,
+          completed: task.completed,
         };
 
         collected.push(cardData);
@@ -317,6 +318,7 @@ export default function TaskColumn({ columnId, title }: Props) {
               projectId: project.projectId,
               taskId: task.id,
               status: task.status,
+              completed: task.completed,
             });
           }
         });
@@ -443,6 +445,7 @@ export default function TaskColumn({ columnId, title }: Props) {
                   status={task.status as 'Ongoing' | 'In review' | 'Approved'}
                   projectId={task.projectId}
                   taskId={task.taskId}
+                  completed={task.completed}
                   onTaskSubmitted={() => {
                     // Optimistic update for smooth transition
                     handleOptimisticTaskUpdate(task.projectId, task.taskId, 'In review');

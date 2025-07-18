@@ -1,18 +1,61 @@
 [
   {
+    "id": 9,
+    "title": "UI/UX Design - Lagos State Parks Services",
+    "organizationId": 1,
+    "commissionerId": 32,
+    "category": "Design",
+    "subcategory": "UI/UX Design",
+    "tags": [
+      "UI/UX Design"
+    ],
+    "hourlyRateMin": 100,
+    "hourlyRateMax": 125,
+    "description": "qwewq",
+    "deliveryTimeWeeks": 1,
+    "estimatedHours": 40,
+    "status": "Available",
+    "toolsRequired": [
+      "Figma"
+    ],
+    "executionMethod": "completion",
+    "milestones": [
+      {
+        "id": "55042261-03da-430c-bb93-f28a45036acc",
+        "title": "ewqw",
+        "description": "wew",
+        "startDate": "2025-07-16T04:00:00.000Z",
+        "endDate": "2025-07-24T04:00:00.000Z"
+      }
+    ],
+    "startType": "Immediately",
+    "endDate": "2025-07-24T04:00:00.000Z",
+    "lowerBudget": 4000,
+    "upperBudget": 5000,
+    "postedDate": "2025-07-16",
+    "notes": "Budget range: $4,000 - $5,000"
+  },
+  {
     "id": 1,
     "title": "UX Audit & Accessibility Redesign",
     "organizationId": 7,
     "commissionerId": 38,
     "category": "Design",
-    "tags": ["UX Research", "Accessibility", "Inclusive Design"],
+    "tags": [
+      "UX Research",
+      "Accessibility",
+      "Inclusive Design"
+    ],
     "hourlyRateMin": 90,
     "hourlyRateMax": 130,
     "description": "Conduct a UX accessibility audit and propose a redesign of the client dashboard in compliance with WCAG standards.",
     "deliveryTimeWeeks": 4,
     "estimatedHours": 40,
     "status": "Available",
-    "toolsRequired": ["Figma", "Adobe Illustrator"],
+    "toolsRequired": [
+      "Figma",
+      "Adobe Illustrator"
+    ],
     "notes": "Focus on color contrast, keyboard navigation, and screen reader compatibility.",
     "postedDate": "2025-07-06"
   },
@@ -21,14 +64,21 @@
     "title": "Motion Graphics Video for Healthcare App",
     "organizationId": 3,
     "category": "Visual Media",
-    "tags": ["Animation", "Healthcare", "Explainer Video"],
+    "tags": [
+      "Animation",
+      "Healthcare",
+      "Explainer Video"
+    ],
     "hourlyRateMin": 70,
     "hourlyRateMax": 100,
     "description": "Create a 90-second animated video explaining features of Corlax's iOS wellness app.",
     "deliveryTimeWeeks": 3,
     "estimatedHours": 35,
     "status": "Available",
-    "toolsRequired": ["Adobe After Effects", "Illustrator"],
+    "toolsRequired": [
+      "Adobe After Effects",
+      "Illustrator"
+    ],
     "notes": "Maintain a calm, clean visual aesthetic aligned with healthtech branding.",
     "postedDate": "2025-07-05"
   },
@@ -37,14 +87,21 @@
     "title": "Festival Social Media Campaign Strategy",
     "organizationId": 4,
     "category": "Marketing",
-    "tags": ["Event Marketing", "Social Media", "Strategy"],
+    "tags": [
+      "Event Marketing",
+      "Social Media",
+      "Strategy"
+    ],
     "hourlyRateMin": 60,
     "hourlyRateMax": 85,
     "description": "Develop a campaign strategy for Zynate’s upcoming cultural festival including teaser content, influencer outreach, and launch calendar.",
     "deliveryTimeWeeks": 2,
     "estimatedHours": 25,
     "status": "Available",
-    "toolsRequired": ["Notion", "Canva"],
+    "toolsRequired": [
+      "Notion",
+      "Canva"
+    ],
     "notes": "Target audience includes both local attendees and tourists.",
     "postedDate": "2025-07-03"
   },
@@ -53,14 +110,21 @@
     "title": "AI Voice Dataset Annotation",
     "organizationId": 6,
     "category": "Data & Analytics",
-    "tags": ["Voice Data", "Annotation", "Machine Learning"],
+    "tags": [
+      "Voice Data",
+      "Annotation",
+      "Machine Learning"
+    ],
     "hourlyRateMin": 55,
     "hourlyRateMax": 75,
     "description": "Manually annotate voice datasets for training speech models for multiple accents.",
     "deliveryTimeWeeks": 6,
     "estimatedHours": 50,
     "status": "Available",
-    "toolsRequired": ["Audacity", "Excel"],
+    "toolsRequired": [
+      "Audacity",
+      "Excel"
+    ],
     "notes": "Accent accuracy and timestamp precision are critical.",
     "postedDate": "2025-07-02"
   },
@@ -70,14 +134,22 @@
     "organizationId": 1,
     "commissionerId": 32,
     "category": "Engineering",
-    "tags": ["Frontend", "React", "GIS"],
+    "tags": [
+      "Frontend",
+      "React",
+      "GIS"
+    ],
     "hourlyRateMin": 100,
     "hourlyRateMax": 150,
     "description": "Build an interactive web app for visualizing Lagos park layouts with routes, amenities, and accessibility features.",
     "deliveryTimeWeeks": 5,
     "estimatedHours": 45,
     "status": "Available",
-    "toolsRequired": ["React", "Mapbox", "Tailwind CSS"],
+    "toolsRequired": [
+      "React",
+      "Mapbox",
+      "Tailwind CSS"
+    ],
     "notes": "Mobile-first experience is a priority. Use open-source map APIs where possible.",
     "postedDate": "2025-07-01"
   },
@@ -87,14 +159,23 @@
     "organizationId": 1,
     "commissionerId": 32,
     "category": "Mobile Development",
-    "tags": ["React Native", "Mobile", "iOS", "Android"],
+    "tags": [
+      "React Native",
+      "Mobile",
+      "iOS",
+      "Android"
+    ],
     "hourlyRateMin": 80,
     "hourlyRateMax": 120,
     "description": "Develop a mobile app for park visitors to find amenities, book facilities, and get real-time updates.",
     "deliveryTimeWeeks": 8,
     "estimatedHours": 60,
     "status": "Available",
-    "toolsRequired": ["React Native", "Firebase", "Maps API"],
+    "toolsRequired": [
+      "React Native",
+      "Firebase",
+      "Maps API"
+    ],
     "notes": "Cross-platform compatibility required. Integration with existing park systems.",
     "postedDate": "2025-07-10"
   },
@@ -104,14 +185,22 @@
     "organizationId": 1,
     "commissionerId": 32,
     "category": "Design",
-    "tags": ["Digital Signage", "Content Management", "UI Design"],
+    "tags": [
+      "Digital Signage",
+      "Content Management",
+      "UI Design"
+    ],
     "hourlyRateMin": 60,
     "hourlyRateMax": 90,
     "description": "Create a content management system for digital signage across Lagos parks.",
     "deliveryTimeWeeks": 6,
     "estimatedHours": 40,
     "status": "Available",
-    "toolsRequired": ["Figma", "Adobe Creative Suite", "Web Technologies"],
+    "toolsRequired": [
+      "Figma",
+      "Adobe Creative Suite",
+      "Web Technologies"
+    ],
     "notes": "Must be accessible and easy to use for park staff with varying technical skills.",
     "postedDate": "2025-07-12"
   },
@@ -121,14 +210,23 @@
     "organizationId": 1,
     "commissionerId": 32,
     "category": "Data Analytics",
-    "tags": ["Analytics", "Dashboard", "Data Visualization"],
+    "tags": [
+      "Analytics",
+      "Dashboard",
+      "Data Visualization"
+    ],
     "hourlyRateMin": 90,
     "hourlyRateMax": 140,
     "description": "Build an analytics dashboard to track park usage, visitor patterns, and facility utilization.",
     "deliveryTimeWeeks": 7,
     "estimatedHours": 50,
     "status": "Available",
-    "toolsRequired": ["React", "D3.js", "Python", "SQL"],
+    "toolsRequired": [
+      "React",
+      "D3.js",
+      "Python",
+      "SQL"
+    ],
     "notes": "Real-time data processing capabilities required. Integration with IoT sensors.",
     "postedDate": "2025-07-14"
   }

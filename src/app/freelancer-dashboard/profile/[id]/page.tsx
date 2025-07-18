@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { PageSkeleton } from '../../../../../components/ui/loading-skeleton';
 import ProfileHeader from '../../../../../components/user-profiles/profile-header';
 import ProfileInfo from '../../../../../components/user-profiles/profile-info';
@@ -54,6 +55,7 @@ interface Profile {
 
 export default function ProfilePage() {
   const params = useParams();
+  const { data: session } = useSession();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAddWorkSampleModal, setShowAddWorkSampleModal] = useState(false);
@@ -62,7 +64,7 @@ export default function ProfilePage() {
   const [availableTools, setAvailableTools] = useState<string[]>([]);
 
   const userId = params?.id as string;
-  const currentUserId = '31'; // This would come from auth context - temporarily set to 31 for testing
+  const currentUserId = session?.user?.id;
   const isOwnProfile = userId === currentUserId;
 
   useEffect(() => {

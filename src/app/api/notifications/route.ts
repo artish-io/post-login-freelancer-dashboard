@@ -236,108 +236,36 @@ export async function GET(request: NextRequest) {
     const additionalNotifications: any[] = [];
 
     if (commissionerContacts?.contacts) {
-      // Project pause notification from network contact
-      const pauseContact = commissionerContacts.contacts.find((c: any) => c.freelancerId === 28); // Billy Parker
-      if (pauseContact) {
-        const billyUser = usersData.find((u: any) => u.id === 28);
-        if (billyUser) {
-          additionalNotifications.push({
-            id: 'project-pause-1',
-            type: 'project_pause',
-            title: `${billyUser.name} requested a pause for your Brand Animation Package project`,
-            message: 'Motion graphics project needs temporary pause',
-            timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-            isRead: false,
-            user: {
-              id: billyUser.id,
-              name: billyUser.name,
-              avatar: billyUser.avatar,
-              title: pauseContact.title
-            },
-            project: {
-              id: 301,
-              title: pauseContact.lastProject
-            },
-            isFromNetwork: true
-          });
-        }
-      }
+      // Project pause notification from network contacts
+      const pauseContacts = commissionerContacts.contacts.filter((c: any) => c.freelancerId);
+      if (pauseContacts.length > 0) {
+        // Get the first contact for pause notification
+        const pauseContact = pauseContacts[0];
+        const pauseUser = usersData.find((u: any) => u.id === pauseContact.freelancerId);
+        if (pauseUser) {
+          // Find a project involving this freelancer and commissioner
+          const relatedProject = projectsData.find((p: any) =>
+            p.freelancerId === pauseContact.freelancerId &&
+            p.commissionerId === parseInt(commissionerId)
+          );
 
-      // Project accepted notification from network contact
-      const acceptContact = commissionerContacts.contacts.find((c: any) => c.freelancerId === 26); // Stella Maxwell
-      if (acceptContact) {
-        const stellaUser = usersData.find((u: any) => u.id === 26);
-        if (stellaUser) {
-          additionalNotifications.push({
-            id: 'project-accepted-1',
-            type: 'project_accepted',
-            title: `${stellaUser.name} accepted your project`,
-            message: 'UI component library project has been accepted and will start soon',
-            timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-            isRead: false,
-            user: {
-              id: stellaUser.id,
-              name: stellaUser.name,
-              avatar: stellaUser.avatar,
-              title: acceptContact.title
-            },
-            project: {
-              id: 302,
-              title: acceptContact.lastProject
-            },
-            isFromNetwork: true
-          });
-        }
-      }
-
-      // Proposal notification from network contact
-      const proposalContact = commissionerContacts.contacts.find((c: any) => c.freelancerId === 25); // Didi Adeleke
-      if (proposalContact) {
-        const didiUser = usersData.find((u: any) => u.id === 25);
-        if (didiUser) {
-          additionalNotifications.push({
-            id: 'proposal-1',
-            type: 'proposal_sent',
-            title: `${didiUser.name} sent you a proposal`,
-            message: 'New project proposal for video production services',
-            timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-            isRead: false,
-            user: {
-              id: didiUser.id,
-              name: didiUser.name,
-              avatar: didiUser.avatar,
-              title: proposalContact.title
-            },
-            isFromNetwork: true
-          });
-        }
-      }
-
-      // Invoice notification from network contact
-      const invoiceContact = commissionerContacts.contacts.find((c: any) => c.freelancerId === 31); // Margsate Flether
-      if (invoiceContact) {
-        const margsateUser = usersData.find((u: any) => u.id === 31);
-        if (margsateUser) {
-          // Find an invoice from this freelancer
-          const freelancerInvoice = invoicesData.find((inv: any) => inv.freelancerId === 31);
-          if (freelancerInvoice) {
+          if (relatedProject) {
             additionalNotifications.push({
-              id: 'invoice-1',
-              type: 'invoice_sent',
-              title: `${margsateUser.name} sent you a new invoice`,
-              message: `Invoice ${freelancerInvoice.invoiceNumber} for ${freelancerInvoice.projectTitle}`,
-              timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+              id: 'project-pause-1',
+              type: 'project_pause',
+              title: `${pauseUser.name} requested a pause for your ${relatedProject.title} project`,
+              message: 'Project needs temporary pause',
+              timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
               isRead: false,
               user: {
-                id: margsateUser.id,
-                name: margsateUser.name,
-                avatar: margsateUser.avatar,
-                title: invoiceContact.title
+                id: pauseUser.id,
+                name: pauseUser.name,
+                avatar: pauseUser.avatar,
+                title: pauseContact.title
               },
-              invoice: {
-                number: freelancerInvoice.invoiceNumber,
-                amount: freelancerInvoice.totalAmount,
-                projectTitle: freelancerInvoice.projectTitle
+              project: {
+                id: relatedProject.projectId,
+                title: relatedProject.title
               },
               isFromNetwork: true
             });
@@ -345,10 +273,154 @@ export async function GET(request: NextRequest) {
         }
       }
 
+      // Project accepted notification from network contacts
+      const acceptContacts = commissionerContacts.contacts.filter((c: any) => c.freelancerId);
+      if (acceptContacts.length > 1) {
+        // Get the second contact for accept notification
+        const acceptContact = acceptContacts[1];
+        const acceptUser = usersData.find((u: any) => u.id === acceptContact.freelancerId);
+        if (acceptUser) {
+          // Find a project involving this freelancer and commissioner
+          const relatedProject = projectsData.find((p: any) =>
+            p.freelancerId === acceptContact.freelancerId &&
+            p.commissionerId === parseInt(commissionerId)
+          );
 
+          if (relatedProject) {
+            additionalNotifications.push({
+              id: 'project-accepted-1',
+              type: 'project_accepted',
+              title: `${acceptUser.name} accepted your project`,
+              message: `${relatedProject.title} project has been accepted and will start soon`,
+              timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+              isRead: false,
+              user: {
+                id: acceptUser.id,
+                name: acceptUser.name,
+                avatar: acceptUser.avatar,
+                title: acceptContact.title
+              },
+              project: {
+                id: relatedProject.projectId,
+                title: relatedProject.title
+              },
+              isFromNetwork: true
+            });
+          }
+        }
+      }
+
+      // Proposal notification from network contacts
+      const proposalContacts = commissionerContacts.contacts.filter((c: any) => c.freelancerId);
+      if (proposalContacts.length > 2) {
+        // Get the third contact for proposal notification
+        const proposalContact = proposalContacts[2];
+        const proposalUser = usersData.find((u: any) => u.id === proposalContact.freelancerId);
+        if (proposalUser) {
+          additionalNotifications.push({
+            id: 'proposal-1',
+            type: 'proposal_sent',
+            title: `${proposalUser.name} sent you a proposal`,
+            message: 'New project proposal for video production services',
+            timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            isRead: false,
+            user: {
+              id: proposalUser.id,
+              name: proposalUser.name,
+              avatar: proposalUser.avatar,
+              title: proposalContact.title
+            },
+            isFromNetwork: true
+          });
+        }
+      }
+
+      // Invoice notification from network contacts
+      const invoiceContacts = commissionerContacts.contacts.filter((c: any) => c.freelancerId);
+      if (invoiceContacts.length > 0) {
+        // Get the first contact with an invoice
+        const contactWithInvoice = invoiceContacts.find((contact: any) => {
+          return invoicesData.some((inv: any) => inv.freelancerId === contact.freelancerId);
+        });
+
+        if (contactWithInvoice) {
+          const freelancerUser = usersData.find((u: any) => u.id === contactWithInvoice.freelancerId);
+          if (freelancerUser) {
+            // Find an invoice from this freelancer
+            const freelancerInvoice = invoicesData.find((inv: any) => inv.freelancerId === contactWithInvoice.freelancerId);
+            if (freelancerInvoice) {
+              additionalNotifications.push({
+                id: 'invoice-1',
+                type: 'invoice_sent',
+                title: `${freelancerUser.name} sent you a new invoice`,
+                message: `Invoice ${freelancerInvoice.invoiceNumber} for ${freelancerInvoice.projectTitle}`,
+                timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+                isRead: false,
+                user: {
+                  id: freelancerUser.id,
+                  name: freelancerUser.name,
+                  avatar: freelancerUser.avatar,
+                  title: contactWithInvoice.title
+                },
+                invoice: {
+                  number: freelancerInvoice.invoiceNumber,
+                  amount: freelancerInvoice.totalAmount,
+                  projectTitle: freelancerInvoice.projectTitle
+                },
+                isFromNetwork: true
+              });
+            }
+          }
+        }
+      }
+
+      // Add sample notifications for new types
+      const sampleNotifications = [
+        // Invoice paid notification
+        {
+          id: 'invoice-paid-1',
+          type: 'invoice_paid',
+          title: 'Invoice payment processed',
+          message: 'Payment for milestone 2 has been processed successfully',
+          timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+          isRead: false,
+          project: {
+            id: 1,
+            title: 'Interactive Park Map Web App'
+          },
+          isFromNetwork: false
+        },
+        // Project pause accepted notification
+        {
+          id: 'project-pause-accepted-1',
+          type: 'project_pause_accepted',
+          title: 'Project pause request approved',
+          message: 'Your request to pause the Interactive Park Map project has been approved',
+          timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+          isRead: false,
+          project: {
+            id: 1,
+            title: 'Interactive Park Map Web App'
+          },
+          isFromNetwork: false
+        },
+        // Storefront purchase notification
+        {
+          id: 'storefront-purchase-1',
+          type: 'storefront_purchase',
+          title: 'Marsgate Fletcher just purchased Poetry Slam Live tickets',
+          message: 'New sale on your storefront',
+          timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+          isRead: false,
+          isFromNetwork: false
+        }
+      ];
+
+      additionalNotifications.push(...sampleNotifications);
+
+      // Add additional notifications to main notifications array
+      notifications.push(...additionalNotifications);
     }
-
-    notifications.push(...additionalNotifications);
 
     // Get existing persistent notifications for this commissioner
     let commissionerNotifications = commissionerNotificationsData.find((cn: any) =>
@@ -376,13 +448,32 @@ export async function GET(request: NextRequest) {
       fs.writeFileSync(commissionerNotificationsPath, JSON.stringify(commissionerNotificationsData, null, 2));
     }
 
-    // Combine all notifications
+    // Combine all notifications and enrich with user data
     const allNotifications = [...commissionerNotifications.notifications];
 
+    // Enrich notifications with user data if they have userId but no user object
+    const enrichedNotifications = allNotifications.map((notification: any) => {
+      if (notification.userId && !notification.user) {
+        const user = usersData.find((u: any) => u.id === notification.userId);
+        if (user) {
+          return {
+            ...notification,
+            user: {
+              id: user.id,
+              name: user.name,
+              avatar: user.avatar,
+              title: user.title
+            }
+          };
+        }
+      }
+      return notification;
+    });
+
     // Filter based on tab
-    let filteredNotifications = allNotifications;
+    let filteredNotifications = enrichedNotifications;
     if (tab === 'network') {
-      filteredNotifications = allNotifications.filter((n: any) => n.isFromNetwork);
+      filteredNotifications = enrichedNotifications.filter((n: any) => n.isFromNetwork);
     }
 
     // Sort by timestamp (newest first)

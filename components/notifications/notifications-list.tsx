@@ -6,15 +6,17 @@ import NotificationItem, { NotificationData } from './notification-item';
 import NotificationsEmptyState from './notifications-empty-state';
 
 interface NotificationsListProps {
-  activeTab: 'all' | 'network';
+  activeTab: 'all' | 'network' | 'projects' | 'gigs';
   commissionerId: number;
+  userType?: 'commissioner' | 'freelancer';
   onNotificationClick?: (notification: NotificationData) => void;
-  onCountsUpdate?: (counts: { all: number; network: number }) => void;
+  onCountsUpdate?: (counts: { all: number; network?: number; projects?: number; gigs?: number }) => void;
 }
 
 export default function NotificationsList({
   activeTab,
   commissionerId,
+  userType = 'commissioner',
   onNotificationClick,
   onCountsUpdate
 }: NotificationsListProps) {
@@ -28,7 +30,11 @@ export default function NotificationsList({
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/notifications?commissionerId=${commissionerId}&tab=${activeTab}`);
+
+      // Use the new event-driven API
+      const endpoint = `/api/notifications-v2?userId=${commissionerId}&userType=${userType}&tab=${activeTab}`;
+
+      const response = await fetch(endpoint);
 
       if (!response.ok) {
         throw new Error('Failed to fetch notifications');

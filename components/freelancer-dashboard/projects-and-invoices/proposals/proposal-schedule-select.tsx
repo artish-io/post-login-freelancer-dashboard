@@ -4,8 +4,8 @@ import ProjectStartSelect from './project-start-select';
 import ProjectDurationPicker from './project-duration-picker';
 
 type Props = {
-  startType: 'Immediately' | 'Select a Date';
-  onStartTypeChange: (val: 'Immediately' | 'Select a Date') => void;
+  startType: 'Immediately' | 'Custom';
+  onStartTypeChange: (val: 'Immediately' | 'Custom') => void;
   customStartDate: Date | null;
   onCustomStartDateChange: (val: Date | null) => void;
   endDate: Date | null;

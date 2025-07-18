@@ -30,10 +30,12 @@ export default function NotificationsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <CommissionerHeader />
+      <div className="w-full max-w-6xl mx-auto px-4 md:px-6 pt-8 pb-2">
+        <CommissionerHeader />
+      </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Notifications Panel - Left/Main Column */}
           <div className="lg:col-span-2">
@@ -43,8 +45,8 @@ export default function NotificationsPage() {
             />
           </div>
 
-          {/* Messages Preview - Right Column */}
-          <div className="lg:col-span-1">
+          {/* Messages Preview - Right Column - Completely hidden on mobile */}
+          <div className="hidden lg:block lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm border border-gray-200">
               <div className="p-0">
                 <MessagesPreview />

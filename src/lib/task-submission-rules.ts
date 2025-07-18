@@ -33,25 +33,40 @@ export async function checkTaskSubmissionRules(
   columnId: 'todo' | 'upcoming' | 'review'
 ): Promise<TaskSubmissionRule> {
   try {
-    // Rule 1: Never allow submissions from upcoming column
+    // Check if project is paused first
+    try {
+      const projectsRes = await fetch('/api/projects');
+      if (projectsRes.ok) {
+        const projects = await projectsRes.json();
+        const currentProject = projects.find((p: any) => p.projectId === projectId);
+
+        if (currentProject?.status?.toLowerCase() === 'paused') {
+          return {
+            canSubmit: false,
+            reason: 'This project is paused. Contact project commissioner for more information.'
+          };
+        }
+      }
+    } catch (error) {
+      console.warn('Could not check project status, proceeding with normal rules');
+    }
+
+    // Rule 1: Tasks in "Today" column can always be submitted
+    if (columnId === 'todo') {
+      return { canSubmit: true };
+    }
+
+    // Rule 2: Review column submissions are always allowed (resubmissions)
+    if (columnId === 'review') {
+      return { canSubmit: true };
+    }
+
+    // Rule 3: Upcoming tasks cannot be submitted directly
     if (columnId === 'upcoming') {
       return {
         canSubmit: false,
         reason: "Tasks in the 'Upcoming This Week' column cannot be submitted. Please wait until they move to 'Today's Tasks'."
       };
-    }
-
-    // Rule 2: Only allow submissions from todo and review columns
-    if (columnId === 'review') {
-      // Review column submissions are always allowed (resubmissions)
-      return { canSubmit: true };
-    }
-
-    // Rule 3: Tasks in "Today" column can always be submitted
-    if (columnId === 'todo') {
-      // Tasks already in today's column are not subject to the 3-task limit
-      // They can always be submitted regardless of how many urgent tasks exist
-      return { canSubmit: true };
     }
 
     return { canSubmit: false, reason: 'Invalid column for task submission.' };

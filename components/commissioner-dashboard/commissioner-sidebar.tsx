@@ -10,7 +10,7 @@ const sidebarItems = [
   { label: 'Discover Talent', icon: '/side-bar-logos/commisoners/discover-talent.png', href: '/commissioner-dashboard/discover-talent' },
   { label: 'Messages', icon: '/side-bar-logos/commisoners/messages.png', href: '/commissioner-dashboard/messages' },
   { label: 'Job Listings', icon: '/side-bar-logos/commisoners/job-listings.png', href: '/commissioner-dashboard/job-listings' },
-  { label: 'Projects & Invoices', icon: '/side-bar-logos/commisoners/projects+invoices.png', href: '#' },
+  { label: 'Projects & Invoices', icon: '/side-bar-logos/commisoners/projects+invoices.png', href: '/commissioner-dashboard/projects-and-invoices' },
   { label: 'Payments', icon: '/side-bar-logos/commisoners/payments.png', href: '#' },
   { label: 'Storefront', icon: '/side-bar-logos/commisoners/storefront.png', href: '/commissioner-dashboard/storefront' },
   { label: 'Settings', icon: '/side-bar-logos/commisoners/settings.png', href: '#' },
@@ -38,6 +38,8 @@ export default function CommissionerSidebar({
         return pathname === '/commissioner-dashboard/messages';
       case 'Job Listings':
         return pathname === '/commissioner-dashboard/job-listings';
+      case 'Projects & Invoices':
+        return pathname === '/commissioner-dashboard/projects-and-invoices';
       case 'Storefront':
         return pathname === '/commissioner-dashboard/storefront';
       default:

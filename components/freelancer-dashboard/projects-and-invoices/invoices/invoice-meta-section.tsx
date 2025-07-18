@@ -19,6 +19,7 @@ export type InvoiceMetaSectionProps = {
   onExecutionTimingChange: (value: string) => void;
   billTo: string;
   onBillToChange: (value: string) => void;
+  onCommissionerSelect?: (commissionerId: number) => void;
   dueDate: string;
   onDueDateChange: (value: string) => void;
 };
@@ -31,6 +32,7 @@ export default function InvoiceMetaSection({
   onExecutionTimingChange,
   billTo,
   onBillToChange,
+  onCommissionerSelect,
   dueDate,
   onDueDateChange,
 }: InvoiceMetaSectionProps) {
@@ -130,7 +132,12 @@ export default function InvoiceMetaSection({
                 freelancerId={Number(session.user.id)}
                 value={billTo}
                 onChange={onBillToChange}
-                onSelect={(contact) => onBillToChange(contact.email)}
+                onSelect={(contact) => {
+                  onBillToChange(contact.email);
+                  if (onCommissionerSelect) {
+                    onCommissionerSelect(contact.commissionerId);
+                  }
+                }}
               />
             )}
           </div>

@@ -6,32 +6,60 @@ import { readFile } from 'fs/promises';
 
 export async function GET() {
   try {
-    const milestonesPath = path.join(process.cwd(), 'data', 'milestones.json');
-    const file = await readFile(milestonesPath, 'utf-8');
-    const milestones = JSON.parse(file);
+    // Calculate milestones from universal source files
+    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
+    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
 
-    // Filter for unpaid milestones — assume not 'completed' means unpaid
-    const unpaid = milestones.filter(
-      (m: any) =>
-        m.status !== 'completed' &&
-        m.tasks?.some((t: any) => t.status === 'submitted' || t.status === 'completed')
-    );
+    const [projectsFile, projectTasksFile] = await Promise.all([
+      readFile(projectsPath, 'utf-8'),
+      readFile(projectTasksPath, 'utf-8')
+    ]);
 
-    const response = unpaid.map((m: any) => ({
-      milestoneId: m.milestoneId,
-      projectId: m.projectId,
-      title: m.title,
-      amount: m.amount,
-      dueDate: m.dueDate,
-      status: m.status,
-      taskCount: m.tasks?.length ?? 0,
-      submittedTasks: m.tasks?.filter((t: any) => t.status === 'submitted').length ?? 0,
-      completedTasks: m.tasks?.filter((t: any) => t.status === 'completed').length ?? 0,
-    }));
+    const projects = JSON.parse(projectsFile);
+    const projectTasks = JSON.parse(projectTasksFile);
 
-    return NextResponse.json(response);
+    // Generate milestones dynamically from project data
+    const unpaidMilestones: any[] = [];
+
+    projects.forEach((project: any) => {
+      const projectTaskData = projectTasks.find((pt: any) => pt.projectId === project.projectId);
+
+      if (projectTaskData && project.status !== 'Completed') {
+        const completedTasks = projectTaskData.tasks.filter((t: any) => t.completed);
+        const approvedTasks = projectTaskData.tasks.filter((t: any) => t.completed && t.status === 'Approved');
+        const submittedTasks = projectTaskData.tasks.filter((t: any) => t.status === 'In review');
+
+        // Only include if there are completed or submitted tasks (work done but not paid)
+        if (completedTasks.length > 0 || submittedTasks.length > 0) {
+          // Calculate milestone status based on your business logic
+          let milestoneStatus = 'in progress';
+          if (approvedTasks.length === projectTaskData.tasks.length) {
+            milestoneStatus = 'completed';
+          } else if (submittedTasks.length > 0) {
+            milestoneStatus = 'pending approval';
+          }
+
+          // Estimate amount based on project value (you can adjust this logic)
+          const estimatedAmount = Math.round((completedTasks.length / projectTaskData.tasks.length) * 1000);
+
+          unpaidMilestones.push({
+            milestoneId: `M${project.projectId}-1`,
+            projectId: project.projectId,
+            title: `Milestone for ${project.title}`,
+            amount: estimatedAmount,
+            dueDate: project.dueDate,
+            status: milestoneStatus,
+            taskCount: projectTaskData.tasks.length,
+            submittedTasks: submittedTasks.length,
+            completedTasks: completedTasks.length,
+          });
+        }
+      }
+    });
+
+    return NextResponse.json(unpaidMilestones);
   } catch (err) {
-    console.error('❌ Error loading unpaid milestones:', err);
-    return NextResponse.json({ error: 'Failed to load unpaid milestones' }, { status: 500 });
+    console.error('❌ Error calculating unpaid milestones:', err);
+    return NextResponse.json({ error: 'Failed to calculate unpaid milestones' }, { status: 500 });
   }
 }

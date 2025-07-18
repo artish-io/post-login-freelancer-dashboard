@@ -16,6 +16,7 @@ type BillToContact = {
   email: string;
   avatar: string;
   address: string;
+  commissionerId: number;
 };
 
 type Props = {
@@ -81,6 +82,7 @@ export default function BillToInput({
       email: contact.email,
       avatar: contact.avatar,
       address: contact.title || '—',
+      commissionerId: contact.id,
     });
     setShowDropdown(false);
   };

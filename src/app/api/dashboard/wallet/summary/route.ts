@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import {
   parseISO,
   subDays,
@@ -15,10 +17,8 @@ import {
 
 const HISTORY_PATH = path.join(process.cwd(), 'data/wallet/wallet-history.json');
 
-const userId = '31';
-
 type Transaction = {
-  userId: string;
+  userId: number;
   amount: number;
   type: 'credit' | 'debit';
   date: string;
@@ -26,6 +26,12 @@ type Transaction = {
 
 export async function GET(req: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = parseInt(session.user.id);
     const url = new URL(req.url);
     const range = url.searchParams.get('range') || 'month';
 
@@ -34,7 +40,7 @@ export async function GET(req: Request) {
 
     const now = new Date();
     const userHistory = history.filter(
-      (tx) => String(tx.userId) === userId && tx.type === 'credit'
+      (tx) => tx.userId === userId && tx.type === 'credit'
     );
 
     // Note: earnings data available if needed for future enhancements

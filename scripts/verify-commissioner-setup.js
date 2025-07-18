@@ -1,5 +1,6 @@
 /**
  * Script to verify commissioner login and dashboard setup
+ * Usage: node verify-commissioner-setup.js <userId>
  */
 
 const fs = require('fs');
@@ -8,30 +9,40 @@ const path = require('path');
 console.log('👔 Commissioner Dashboard Setup Verification\n');
 console.log('=' .repeat(60));
 
-// Check if Neilsan has login credentials
+// Get commissioner ID from command line args
+if (!process.argv[2]) {
+  console.log('❌ Please provide a commissioner user ID');
+  console.log('Usage: node verify-commissioner-setup.js <userId>');
+  process.exit(1);
+}
+
+const commissionerId = parseInt(process.argv[2]);
+console.log(`🔍 Checking commissioner with ID: ${commissionerId}\n`);
+
+// Check if commissioner has login credentials
 const usersPath = path.join(__dirname, '..', 'data', 'users.json');
 const users = JSON.parse(fs.readFileSync(usersPath, 'utf-8'));
 
-const neilsan = users.find(user => user.id === 32);
+const commissioner = users.find(user => user.id === commissionerId);
 
 console.log('👤 COMMISSIONER USER SETUP:');
-if (neilsan) {
-  console.log(`✅ Name: ${neilsan.name}`);
-  console.log(`✅ Title: ${neilsan.title}`);
-  console.log(`✅ Type: ${neilsan.type}`);
-  console.log(`✅ Email: ${neilsan.email}`);
-  console.log(`✅ Avatar: ${neilsan.avatar}`);
-  console.log(`✅ Organization ID: ${neilsan.organizationId}`);
-  
-  if (neilsan.username && neilsan.password) {
-    console.log(`✅ Username: ${neilsan.username}`);
-    console.log(`✅ Password: ${neilsan.password}`);
+if (commissioner) {
+  console.log(`✅ Name: ${commissioner.name}`);
+  console.log(`✅ Title: ${commissioner.title}`);
+  console.log(`✅ Type: ${commissioner.type}`);
+  console.log(`✅ Email: ${commissioner.email}`);
+  console.log(`✅ Avatar: ${commissioner.avatar}`);
+  console.log(`✅ Organization ID: ${commissioner.organizationId}`);
+
+  if (commissioner.username && commissioner.password) {
+    console.log(`✅ Username: ${commissioner.username}`);
+    console.log(`✅ Password: ${commissioner.password}`);
     console.log('✅ Login credentials configured');
   } else {
     console.log('❌ Missing login credentials');
   }
 } else {
-  console.log('❌ Neilsan Mando not found in users.json');
+  console.log(`❌ Commissioner with ID ${commissionerId} not found in users.json`);
 }
 
 console.log('\n📁 FILE STRUCTURE VERIFICATION:');

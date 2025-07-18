@@ -14,12 +14,7 @@ type GigRequest = {
   freelancerId: number;
   gigId: number;
   organizationId: number;
-  commissioner: {
-    id: number;
-    name: string;
-    avatar: string;
-    title: string;
-  };
+  commissionerId: number;
   title: string;
   skills: string[];
   tools: string[];
@@ -74,6 +69,7 @@ export default function GigRequestsPage() {
     rejected: []
   });
   const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [selectedGigRequest, setSelectedGigRequest] = useState<GigRequest | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -81,14 +77,16 @@ export default function GigRequestsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [gigRequestsRes, organizationsRes] = await Promise.all([
+        const [gigRequestsRes, organizationsRes, usersRes] = await Promise.all([
           fetch('/api/gigs/gig-requests/all'), // Fetch all gig requests regardless of freelancer
-          fetch('/api/organizations')
+          fetch('/api/organizations'),
+          fetch('/api/users')
         ]);
 
-        if (gigRequestsRes.ok && organizationsRes.ok) {
+        if (gigRequestsRes.ok && organizationsRes.ok && usersRes.ok) {
           const gigRequestsData = await gigRequestsRes.json();
           const organizationsData = await organizationsRes.json();
+          const usersData = await usersRes.json();
 
           setAllGigRequests({
             available: gigRequestsData.available || [],
@@ -97,6 +95,7 @@ export default function GigRequestsPage() {
             rejected: gigRequestsData.rejected || []
           });
           setOrganizations(organizationsData);
+          setUsers(usersData);
         }
       } catch (error) {
         console.error('Error fetching gig requests data:', error);
@@ -111,6 +110,11 @@ export default function GigRequestsPage() {
   // Helper function to get organization data
   const getOrganization = (organizationId: number) => {
     return organizations.find(org => org.id === organizationId);
+  };
+
+  // Helper function to get commissioner data
+  const getCommissioner = (commissionerId: number) => {
+    return users.find(user => user.id === commissionerId);
   };
 
   // Get filtered gig requests based on status
@@ -152,12 +156,13 @@ export default function GigRequestsPage() {
   // Transform data for table component
   const tableData = filteredRequests.map((request: GigRequest) => {
     const organization = getOrganization(request.organizationId);
+    const commissioner = getCommissioner(request.commissionerId);
     return {
       id: request.id,
       organizationLogo: organization?.logo || '/logos/default-org.png',
       organizationName: organization?.name || 'Unknown Organization',
       organizationVerified: true, // You can add verification logic
-      commissionerName: request.commissioner.name,
+      commissionerName: commissioner?.name || 'Unknown Commissioner',
       skill: request.skills[0] || 'General',
       rate: request.budget && request.budget.min && request.budget.max
         ? `$${request.budget.min.toLocaleString()} - $${request.budget.max.toLocaleString()}`
@@ -250,8 +255,8 @@ export default function GigRequestsPage() {
                   toolIconUrl: "/icons/figma.svg",
                   briefUrl: "https://example.com/brief",
                   notes: selectedGigRequest.notes,
-                  postedByName: selectedGigRequest.commissioner.name,
-                  postedByAvatar: selectedGigRequest.commissioner.avatar,
+                  postedByName: getCommissioner(selectedGigRequest.commissionerId)?.name || 'Unknown Commissioner',
+                  postedByAvatar: getCommissioner(selectedGigRequest.commissionerId)?.avatar || '/default-avatar.png',
                   status: selectedGigRequest.status,
                   estimatedDelivery: "2 weeks",
                   hoursOfWork: "40 hours",

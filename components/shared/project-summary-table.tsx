@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { validateDataIntegrity, logDataIntegrityReport } from '../../src/lib/data-integrity';
 
 export type ProjectSummaryItem = {
@@ -83,6 +84,7 @@ export default function ProjectSummaryTable({
   const [projects, setProjects] = useState<ProjectSummaryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { data: session } = useSession();
 
   // Get ring color and stroke based on completion percentage
   const getRingStyles = (progress: number) => {
@@ -150,15 +152,19 @@ export default function ProjectSummaryTable({
               logDataIntegrityReport(integrityReport);
             }
 
-            // For demo purposes, use commissioner 32 (Lagos Parks Services)
-            const commissionerId = 32;
-            const commissionerOrg = organizations.find((org: any) => org.contactPersonId === commissionerId);
+            // Use current session user as commissioner
+            const commissionerId = session?.user?.id ? parseInt(session.user.id) : null;
+            if (!commissionerId) {
+              setProjects([]);
+              return;
+            }
 
-            if (commissionerOrg) {
-              // Filter projects for this commissioner's organization
-              const commissionerProjects = projectsData.filter((project: any) =>
-                project.organizationId === commissionerOrg.id
-              );
+            // Filter projects directly by commissionerId
+            const commissionerProjects = projectsData.filter((project: any) =>
+              project.commissionerId === commissionerId
+            );
+
+            if (commissionerProjects.length > 0) {
 
               // Transform project data for commissioner view
               const transformedProjects = commissionerProjects.map((project: any) => {
@@ -299,16 +305,19 @@ export default function ProjectSummaryTable({
     };
 
     fetchProjects();
-  }, [viewType, maxItems]);
+  }, [viewType, maxItems, session]);
 
   const handleProjectClick = (projectId: number) => {
-    const basePath = viewType === 'commissioner' ? '/commissioner-dashboard' : '/freelancer-dashboard';
-    router.push(`${basePath}/projects/${projectId}`);
+    if (viewType === 'freelancer') {
+      router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking?id=${projectId}`);
+    } else {
+      router.push(`/commissioner-dashboard/projects-and-invoices/project-tracking?id=${projectId}`);
+    }
   };
 
   const handleViewAllClick = () => {
     if (viewType === 'commissioner') {
-      router.push('/commissioner-dashboard/projects');
+      router.push('/commissioner-dashboard/projects-and-invoices/project-list');
     } else {
       router.push('/freelancer-dashboard/projects-and-invoices/project-list');
     }
@@ -350,7 +359,11 @@ export default function ProjectSummaryTable({
           </thead>
           <tbody>
             {projects.map((project, index) => (
-              <tr key={index} className="border-b last:border-0">
+              <tr
+                key={index}
+                className="border-b last:border-0 hover:bg-gray-50 cursor-pointer transition-colors"
+                onClick={() => handleProjectClick(project.projectId)}
+              >
                 <td className="py-3 pr-6">{project.name}</td>
                 <td className="py-3 pr-6">{project.person}</td>
                 <td className="py-3 pr-6">{project.dueDate}</td>

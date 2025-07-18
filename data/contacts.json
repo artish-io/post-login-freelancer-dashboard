@@ -1,42 +1,100 @@
 [
   {
     "userId": 31,
-    "contacts": [1, 2, 5, 7, 12, 16, 32, 33, 34, 35, 36]
+    "contacts": [
+      1,
+      2,
+      5,
+      7,
+      12,
+      16,
+      32,
+      33,
+      34,
+      35,
+      36
+    ]
   },
   {
     "userId": 1,
-    "contacts": [31, 2, 3]
+    "contacts": [
+      31,
+      2,
+      3,
+      32
+    ]
   },
   {
     "userId": 2,
-    "contacts": [1, 31, 5]
+    "contacts": [
+      1,
+      31,
+      5
+    ]
   },
   {
     "userId": 5,
-    "contacts": [2, 31]
+    "contacts": [
+      2,
+      31,
+      32
+    ]
   },
   {
     "userId": 7,
-    "contacts": [31]
+    "contacts": [
+      31
+    ]
   },
   {
     "userId": 12,
-    "contacts": [31]
+    "contacts": [
+      31
+    ]
   },
   {
     "userId": 16,
-    "contacts": [31]
+    "contacts": [
+      31
+    ]
   },
   {
     "userId": 32,
-    "contacts": [31, 29, 28, 27, 26, 25]
+    "contacts": [
+      31,
+      29,
+      28,
+      27,
+      26,
+      25,
+      1,
+      3,
+      5,
+      8
+    ]
   },
   {
     "userId": 33,
-    "contacts": [31]
+    "contacts": [
+      31
+    ]
   },
   {
     "userId": 34,
-    "contacts": [31]
+    "contacts": [
+      31
+    ]
+  },
+  {
+    "userId": 3,
+    "contacts": [
+      32
+    ]
+  },
+  {
+    "userId": 8,
+    "contacts": [
+      32
+    ]
   }
 ]

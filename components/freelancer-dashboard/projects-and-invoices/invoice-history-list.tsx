@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { FileText } from 'lucide-react';
 
@@ -17,6 +18,7 @@ type Invoice = {
 
 export default function InvoiceHistoryList() {
   const { data: session } = useSession();
+  const router = useRouter();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -61,34 +63,44 @@ export default function InvoiceHistoryList() {
         )}
 
         {!loading &&
-          invoices.map((invoice) => (
-            <div
-              key={invoice.id}
-              className="flex items-center justify-between"
-            >
-              <div className="flex items-center gap-3">
-                <Image
-                  src={invoice.client.avatar}
-                  alt={invoice.client.name}
-                  width={44}
-                  height={44}
-                  className="rounded-full object-cover"
-                />
-                <div className="flex flex-col text-sm">
-                  <span className="text-gray-900 font-medium">
-                    {invoice.client.name}
-                  </span>
-                  <span className="text-gray-500 text-xs">
-                    {invoice.client.title}
-                  </span>
+          invoices.map((invoice) => {
+            // Defensive programming: ensure client object exists
+            const client = invoice.client || {
+              name: 'Unknown Client',
+              title: 'Client',
+              avatar: '/default-avatar.png'
+            };
+
+            return (
+              <div
+                key={invoice.id}
+                className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
+                onClick={() => router.push(`/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${invoice.id}`)}
+              >
+                <div className="flex items-center gap-3">
+                  <Image
+                    src={client.avatar}
+                    alt={client.name}
+                    width={44}
+                    height={44}
+                    className="rounded-full object-cover"
+                  />
+                  <div className="flex flex-col text-sm">
+                    <span className="text-gray-900 font-medium">
+                      {client.name}
+                    </span>
+                    <span className="text-gray-500 text-xs">
+                      {client.title}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="w-9 h-9 bg-pink-100 rounded-full flex items-center justify-center">
+                  <FileText className="w-5 h-5 text-pink-700" />
                 </div>
               </div>
-
-              <div className="w-9 h-9 bg-pink-100 rounded-full flex items-center justify-center">
-                <FileText className="w-5 h-5 text-pink-700" />
-              </div>
-            </div>
-          ))}
+            );
+          })}
       </div>
 
       {/* Caret */}

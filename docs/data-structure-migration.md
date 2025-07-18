@@ -151,9 +151,9 @@ The script provides:
 
 ## Testing
 
-Test the new structure with these profiles:
-- **User 31**: Updated with new structure (Design skills)
-- **User 1**: Updated with new structure (Engineering skills)
-- **User 32**: Commissioner with responsibilities (no skills/tools)
+Test the new structure with these example profiles:
+- **Freelancer with Design skills**: Updated with new structure
+- **Freelancer with Engineering skills**: Updated with new structure
+- **Commissioner**: Has responsibilities (no skills/tools)
 
 Access at: `http://localhost:3001/freelancer-dashboard/profile/[id]`

@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "projectId": 301,
+    "amount": 756.12,
+    "status": 1,
+    "dueDate": "2025-06-20"
+  },
+  {
+    "id": 2,
+    "projectId": 301,
+    "amount": 1345.11,
+    "status": 0,
+    "dueDate": "2025-07-06"
+  },
+  {
+    "id": 3,
+    "projectId": 301,
+    "amount": 2340.01,
+    "status": 0,
+    "dueDate": "2025-06-28"
+  },
+  {
+    "id": 4,
+    "projectId": 302,
+    "amount": 1107.35,
+    "status": 2,
+    "dueDate": "2025-06-21"
+  },
+  {
+    "id": 5,
+    "projectId": 302,
+    "amount": 1500.00,
+    "status": 1,
+    "dueDate": "2025-07-15"
+  },
+  {
+    "id": 6,
+    "projectId": 303,
+    "amount": 800.00,
+    "status": 1,
+    "dueDate": "2025-08-01"
+  },
+  {
+    "id": 7,
+    "projectId": 304,
+    "amount": 950.00,
+    "status": 0,
+    "dueDate": "2025-07-20"
+  },
+  {
+    "id": 8,
+    "projectId": 305,
+    "amount": 1200.00,
+    "status": 1,
+    "dueDate": "2025-08-10"
+  }
+]

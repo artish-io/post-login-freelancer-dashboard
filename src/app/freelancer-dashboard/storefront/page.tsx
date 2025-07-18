@@ -1,16 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import StorefrontSummaryStatsRow from '../../../../components/freelancer-dashboard/storefront/storefront-summary-stats-row';
-import RevenueLineChart from '../../../../components/freelancer-dashboard/storefront/revenue-line-chart';
-import RecentSalesTable from '../../../../components/freelancer-dashboard/storefront/recent-sales-table';
-import TopProductsBarChart from '../../../../components/freelancer-dashboard/storefront/top-products-bar-chart';
-import SalesSourcesPieChart from '../../../../components/freelancer-dashboard/storefront/sales-sources-pie-chart';
+import StorefrontSummaryStatsRow from '../../../../components/shared/storefront/storefront-summary-stats-row';
+import RevenueLineChart from '../../../../components/shared/storefront/revenue-line-chart';
+import RecentSalesTable from '../../../../components/shared/storefront/recent-sales-table';
+import TopProductsBarChart from '../../../../components/shared/storefront/top-products-bar-chart';
+import SalesSourcesPieChart from '../../../../components/shared/storefront/sales-sources-pie-chart';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 import { Popover } from '@headlessui/react';
 import { StorefrontCalendar } from '../../../../components/ui/storefront-calendar';
-import ActionButtons from '../../../../components/freelancer-dashboard/storefront/action-buttons';
+import ActionButtons from '../../../../components/shared/storefront/action-buttons';
 
 export default function StorefrontDashboardPage() {
   const now = new Date();
@@ -86,7 +86,7 @@ export default function StorefrontDashboardPage() {
 
         {/* Mobile: Action buttons before table */}
         <div className="block lg:hidden w-full" style={{ maxWidth: '100%', overflow: 'hidden' }}>
-          <ActionButtons />
+          <ActionButtons dashboardType="freelancer" />
         </div>
 
         {/* Two-column layout: Main content + Sidebar */}
@@ -107,7 +107,7 @@ export default function StorefrontDashboardPage() {
               <TopProductsBarChart />
             </div>
 
-            <ActionButtons />
+            <ActionButtons dashboardType="freelancer" />
 
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h3 className="text-lg font-semibold mb-4">Total Sales</h3>
