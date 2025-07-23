@@ -2,14 +2,60 @@
 
 import { useState } from 'react';
 import ChooseWithdrawalMethodModal from './choose-withdrawal-method-modal';
+import {
+  PhoneVerificationModal,
+  PayPalInfoModal,
+  BankAddressModal,
+  BankInfoModal
+} from '../settings/edit-payment';
+
+interface PaymentMethod {
+  id: string;
+  type: 'bank' | 'paypal';
+  name: string;
+  details: string;
+  isDefault: boolean;
+}
 
 export default function ChangeWithdrawalCard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showPhoneVerificationModal, setShowPhoneVerificationModal] = useState(false);
+  const [showPayPalInfoModal, setShowPayPalInfoModal] = useState(false);
+  const [showBankAddressModal, setShowBankAddressModal] = useState(false);
+  const [showBankInfoModal, setShowBankInfoModal] = useState(false);
+  const [selectedMethod, setSelectedMethod] = useState<'bank_transfer' | 'paypal' | null>(null);
+  const [userCountry] = useState('United States'); // This should come from account settings
+  const [addressData, setAddressData] = useState<any>(null);
 
   const handleMethodSelect = (method: 'bank_transfer' | 'paypal') => {
-    console.log('Selected withdrawal method:', method);
-    // Handle the selected method here - could navigate to specific setup page
-    // or trigger next step in the flow
+    setSelectedMethod(method);
+    setShowPhoneVerificationModal(true);
+  };
+
+  const handlePhoneVerified = () => {
+    setShowPhoneVerificationModal(false);
+
+    if (selectedMethod === 'paypal') {
+      setShowPayPalInfoModal(true);
+    } else if (selectedMethod === 'bank_transfer') {
+      setShowBankAddressModal(true);
+    }
+  };
+
+  const handleAddressSubmitted = (data: any) => {
+    setAddressData(data);
+    setShowBankAddressModal(false);
+    setShowBankInfoModal(true);
+  };
+
+  const handlePaymentMethodAdded = (newMethod: PaymentMethod) => {
+    console.log('Payment method added:', newMethod);
+    // Close all modals
+    setShowPayPalInfoModal(false);
+    setShowBankInfoModal(false);
+    setSelectedMethod(null);
+    setAddressData(null);
+    // You could add logic here to update the UI or navigate somewhere
   };
 
   return (
@@ -34,6 +80,46 @@ export default function ChangeWithdrawalCard() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSelect={handleMethodSelect}
+      />
+
+      <PhoneVerificationModal
+        isOpen={showPhoneVerificationModal}
+        onClose={() => {
+          setShowPhoneVerificationModal(false);
+          setSelectedMethod(null);
+        }}
+        onVerified={handlePhoneVerified}
+        userCountry={userCountry}
+      />
+
+      <PayPalInfoModal
+        isOpen={showPayPalInfoModal}
+        onClose={() => {
+          setShowPayPalInfoModal(false);
+          setSelectedMethod(null);
+        }}
+        onSubmit={handlePaymentMethodAdded}
+      />
+
+      <BankAddressModal
+        isOpen={showBankAddressModal}
+        onClose={() => {
+          setShowBankAddressModal(false);
+          setSelectedMethod(null);
+        }}
+        onSubmit={handleAddressSubmitted}
+      />
+
+      <BankInfoModal
+        isOpen={showBankInfoModal}
+        onClose={() => {
+          setShowBankInfoModal(false);
+          setSelectedMethod(null);
+          setAddressData(null);
+        }}
+        onSubmit={handlePaymentMethodAdded}
+        userCountry={userCountry}
+        addressData={addressData}
       />
     </>
   );

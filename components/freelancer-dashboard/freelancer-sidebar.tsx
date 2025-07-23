@@ -6,14 +6,14 @@ import { usePathname } from 'next/navigation';
 import { useUnreadMessages } from '../../src/hooks/useUnreadMessages';
 
 const sidebarItems = [
-  { label: 'Home', icon: '/home-logo (sidebar).png', href: '/freelancer-dashboard' },
-  { label: 'Explore Gigs', icon: '/explore-gigs-logo (sidebar).png', href: '/freelancer-dashboard/gigs/explore-gigs' },
-  { label: 'Messages', icon: '/messages-logo (sidebar).png', href: '/freelancer-dashboard/messages' },
-  { label: 'Gig Requests', icon: '/gig-requests-logo (sidebar).png', href: '/freelancer-dashboard/gig-requests' },
-  { label: 'Projects & Invoices', icon: '/projects-invoices-logo (sidebar).png', href: '/freelancer-dashboard/projects-and-invoices' },
-  { label: 'Wallet', icon: '/wallet-logo (sidebar).png', href: '/freelancer-dashboard/wallet' },
-  { label: 'Storefront', icon: '/storefront-logo (sidebar).png', href: '/freelancer-dashboard/storefront' },
-  { label: 'Settings', icon: '/account-settings-logo (sidebar).png', href: '#' },
+  { label: 'Home', icon: '/side-bar-logos/freelancers/home-logo (sidebar).png', href: '/freelancer-dashboard' },
+  { label: 'Explore Gigs', icon: '/side-bar-logos/freelancers/explore-gigs.png', href: '/freelancer-dashboard/gigs/explore-gigs' },
+  { label: 'Messages', icon: '/side-bar-logos/freelancers/message.png', href: '/freelancer-dashboard/messages' },
+  { label: 'Gig Requests', icon: '/side-bar-logos/freelancers/gig-requests.png', href: '/freelancer-dashboard/gig-requests' },
+  { label: 'Projects & Invoices', icon: '/side-bar-logos/freelancers/payment and invoices.png', href: '/freelancer-dashboard/projects-and-invoices' },
+  { label: 'Wallet', icon: '/side-bar-logos/freelancers/wallet-logo (sidebar).png', href: '/freelancer-dashboard/wallet' },
+  { label: 'Storefront', icon: '/side-bar-logos/freelancers/storefront-logo (sidebar).png', href: '/freelancer-dashboard/storefront' },
+  { label: 'Settings', icon: '/side-bar-logos/freelancers/account-settings-logo (sidebar).png', href: '/freelancer-dashboard/settings' },
 ];
 
 interface FreelancerSidebarProps {

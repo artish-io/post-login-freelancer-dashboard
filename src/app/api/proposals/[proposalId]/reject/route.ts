@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { eventLogger } from '../../../../../lib/events/event-logger';
 
 const proposalsFilePath = path.join(process.cwd(), 'data', 'proposals', 'proposals.json');
 
@@ -10,6 +11,8 @@ export async function POST(
 ) {
   try {
     const { proposalId } = await params;
+    const body = await request.json();
+    const { commissionerId, reason } = body;
 
     // Read proposals data
     const proposalsData = fs.readFileSync(proposalsFilePath, 'utf-8');
@@ -28,14 +31,41 @@ export async function POST(
       ...proposal,
       status: 'rejected',
       rejectedAt: new Date().toISOString(),
+      rejectionReason: reason || 'No reason provided',
+      rejectedBy: commissionerId
     };
 
     // Save updated data
     fs.writeFileSync(proposalsFilePath, JSON.stringify(proposals, null, 2));
 
+    // Log proposal rejection event
+    try {
+      await eventLogger.logEvent({
+        id: `proposal_rejected_${proposalId}_${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        type: 'proposal_rejected',
+        actorId: commissionerId || proposal.commissionerId,
+        targetId: proposal.freelancerId,
+        entityType: 'proposal',
+        entityId: proposalId,
+        metadata: {
+          proposalTitle: proposal.proposalTitle || proposal.title || 'Untitled Proposal',
+          rejectionReason: reason || 'No reason provided',
+          originalBudget: proposal.budget || 'Not specified'
+        },
+        context: {
+          proposalId: proposalId
+        }
+      });
+    } catch (eventError) {
+      console.error('Failed to log proposal rejection event:', eventError);
+      // Don't fail the main operation if event logging fails
+    }
+
     return NextResponse.json({
       message: 'Proposal rejected successfully',
       proposal: proposals[proposalIndex],
+      eventLogged: true
     });
   } catch (error) {
     console.error('Error rejecting proposal:', error);

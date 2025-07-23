@@ -1,5 +1,7 @@
 // src/app/api/updateAvailability/route.ts
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
 
@@ -12,10 +14,21 @@ interface UpdateRequest {
 
 export async function POST(request: Request) {
   try {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body: UpdateRequest = await request.json();
 
     if (!body.id || !body.status) {
       return NextResponse.json({ error: 'Missing id or status' }, { status: 400 });
+    }
+
+    // Users can only update their own availability
+    if (session.user.id !== body.id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
     if (!['Available', 'Away', 'Busy'].includes(body.status)) {

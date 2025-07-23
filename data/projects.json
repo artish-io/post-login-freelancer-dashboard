@@ -45,7 +45,9 @@
     "status": "Ongoing",
     "dueDate": "2025-08-30",
     "totalTasks": 3,
-    "invoicingMethod": "completion"
+    "invoicingMethod": "completion",
+    "totalBudget": 9000,
+    "upfrontCommitment": 2000
   },
   {
     "projectId": 300,
@@ -138,9 +140,43 @@
     ],
     "commissionerId": 32,
     "freelancerId": 31,
-    "status": "Ongoing",
+    "status": "Completed",
+    "dueDate": "2025-09-15",
+    "totalTasks": 5,
+    "invoicingMethod": "milestone"
+  },
+  {
+    "projectId": 312,
+    "title": "Lagos Parks Mobile App Development",
+    "description": "Development of a mobile application for Lagos Parks Services to allow citizens to book park facilities and report maintenance issues.",
+    "organizationId": 1,
+    "typeTags": [
+      "Mobile Development",
+      "UI/UX Design"
+    ],
+    "commissionerId": 32,
+    "freelancerId": 19,
+    "status": "Completed",
     "dueDate": "2025-09-15",
     "totalTasks": 8,
     "invoicingMethod": "milestone"
+  },
+  {
+    "projectId": 314,
+    "title": "E-commerce Platform UI Redesign",
+    "description": "Complete redesign of the user interface for an e-commerce platform focusing on conversion optimization and mobile responsiveness.",
+    "organizationId": 1,
+    "typeTags": [
+      "UI/UX Design",
+      "E-commerce"
+    ],
+    "commissionerId": 32,
+    "freelancerId": 31,
+    "status": "Ongoing",
+    "dueDate": "2025-09-30",
+    "totalTasks": 2,
+    "invoicingMethod": "completion",
+    "totalBudget": 8000,
+    "upfrontCommitment": 1500
   }
 ]

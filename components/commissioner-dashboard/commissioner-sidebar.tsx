@@ -11,9 +11,9 @@ const sidebarItems = [
   { label: 'Messages', icon: '/side-bar-logos/commisoners/messages.png', href: '/commissioner-dashboard/messages' },
   { label: 'Job Listings', icon: '/side-bar-logos/commisoners/job-listings.png', href: '/commissioner-dashboard/job-listings' },
   { label: 'Projects & Invoices', icon: '/side-bar-logos/commisoners/projects+invoices.png', href: '/commissioner-dashboard/projects-and-invoices' },
-  { label: 'Payments', icon: '/side-bar-logos/commisoners/payments.png', href: '#' },
+  { label: 'Payments', icon: '/side-bar-logos/commisoners/payments.png', href: '/commissioner-dashboard/payments' },
   { label: 'Storefront', icon: '/side-bar-logos/commisoners/storefront.png', href: '/commissioner-dashboard/storefront' },
-  { label: 'Settings', icon: '/side-bar-logos/commisoners/settings.png', href: '#' },
+  { label: 'Settings', icon: '/side-bar-logos/commisoners/settings.png', href: '/commissioner-dashboard/settings' },
 ];
 
 interface CommissionerSidebarProps {
@@ -40,8 +40,12 @@ export default function CommissionerSidebar({
         return pathname === '/commissioner-dashboard/job-listings';
       case 'Projects & Invoices':
         return pathname === '/commissioner-dashboard/projects-and-invoices';
+      case 'Payments':
+        return pathname === '/commissioner-dashboard/payments';
       case 'Storefront':
         return pathname === '/commissioner-dashboard/storefront';
+      case 'Settings':
+        return pathname.startsWith('/commissioner-dashboard/settings');
       default:
         return false;
     }

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { getProgressRingStyles, getProgressRingProps } from '../../../../../src/lib/project-status-sync';
 
 type Project = {
   projectId: number;
@@ -145,8 +146,8 @@ export default function ProjectsRow({ projects, users, filterStatus }: Props) {
               <div className="w-1/10 text-center">
                 <div className="relative flex items-center justify-center">
                   {(() => {
-                    const ringStyles = getRingStyles(project.progress);
-                    const progressRing = getProgressRing(project.progress);
+                    const ringStyles = getProgressRingStyles(project.progress);
+                    const progressRing = getProgressRingProps(project.progress);
 
                     return (
                       <div className="relative w-8 h-8">

@@ -7,9 +7,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 type Invoice = {
   invoiceNumber: string;
   freelancerId: number;
-  projectId: number;
+  projectId: number | null;
   commissionerId: number;
   projectTitle: string;
+  milestoneDescription: string;
+  milestoneNumber: number;
   issueDate: string;
   dueDate: string;
   totalAmount: number;
@@ -18,6 +20,9 @@ type Invoice = {
     description: string;
     rate: number;
   }[];
+  isCustomProject?: boolean;
+  isManualInvoice?: boolean;
+  parentInvoiceNumber: string;
 };
 
 type InvoiceWithFreelancer = Invoice & {
@@ -30,15 +35,23 @@ type InvoiceWithFreelancer = Invoice & {
 };
 
 const statusColors = {
-  draft: 'bg-gray-100 text-gray-800',
+  draft: 'bg-blue-100 text-blue-800',
   sent: 'bg-yellow-100 text-yellow-800',
-  paid: 'bg-green-100 text-green-800'
+  paid: 'bg-green-100 text-green-800',
+  cancelled: 'bg-red-100 text-red-800',
+  failed: 'bg-red-100 text-red-800',
+  pending: 'bg-yellow-100 text-yellow-800',
+  processing: 'bg-blue-100 text-blue-800'
 };
 
 const statusLabels = {
-  draft: 'Draft',
-  sent: 'Sent',
-  paid: 'Paid'
+  draft: 'Processing',
+  sent: 'On Hold',
+  paid: 'Completed',
+  cancelled: 'Cancelled',
+  failed: 'Failed',
+  pending: 'Pending',
+  processing: 'Processing'
 };
 
 // Format timestamp to relative time
@@ -148,9 +161,17 @@ export default function InvoiceHistoryPanel({ commissionerId }: InvoiceHistoryPa
       <div className="px-6 py-4 border-b border-gray-100">
         <div className="flex items-center justify-between">
           <h3 className="text-base font-semibold text-gray-900">Invoice History</h3>
-          <span className="text-sm text-gray-500">
-            {invoices.length} {invoices.length === 1 ? 'invoice' : 'invoices'}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-gray-500">
+              {invoices.length} {invoices.length === 1 ? 'invoice' : 'invoices'}
+            </span>
+            <button
+              onClick={() => window.location.href = `/commissioner-dashboard/projects-and-invoices/invoices/invoice-history?commissionerId=${commissionerId}`}
+              className="text-sm text-pink-600 hover:text-pink-700 font-medium transition-colors"
+            >
+              View All
+            </button>
+          </div>
         </div>
       </div>
 
@@ -182,14 +203,14 @@ export default function InvoiceHistoryPanel({ commissionerId }: InvoiceHistoryPa
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-medium text-gray-900 truncate">
-                      {invoice.freelancer.name}
+                      {invoice.milestoneDescription}
                     </div>
                     <div className="text-sm font-semibold text-gray-900">
                       ${invoice.totalAmount.toLocaleString()}
                     </div>
                   </div>
                   <div className="text-xs text-gray-500 truncate mt-1">
-                    {invoice.freelancer.title}
+                    {invoice.freelancer.name} • Milestone {invoice.milestoneNumber}
                   </div>
                   <div className="flex items-center justify-between mt-2">
                     <div className="text-xs text-gray-500">

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { eventLogger } from '../../../../lib/events/event-logger';
 
 const proposalsFilePath = path.join(process.cwd(), 'data', 'proposals', 'proposals.json');
 const projectsFilePath = path.join(process.cwd(), 'data', 'projects.json');
@@ -88,10 +89,61 @@ export async function POST(
     fs.writeFileSync(proposalsFilePath, JSON.stringify(proposals, null, 2));
     fs.writeFileSync(projectsFilePath, JSON.stringify(projects, null, 2));
 
+    // Log proposal acceptance event
+    try {
+      await eventLogger.logEvent({
+        id: `proposal_accepted_${proposalId}_${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        type: 'proposal_accepted',
+        actorId: proposal.commissionerId,
+        targetId: proposal.freelancerId,
+        entityType: 'proposal',
+        entityId: proposalId,
+        metadata: {
+          proposalTitle: proposal.title || 'Untitled Proposal',
+          budget: proposal.totalBid || 'Not specified',
+          executionMethod: proposal.executionMethod || 'Not specified',
+          projectCreated: true,
+          newProjectId: newProject.id,
+          upfrontAmount: proposal.upfrontAmount || 0
+        },
+        context: {
+          proposalId: proposalId,
+          projectId: newProject.id
+        }
+      });
+
+      // Log project creation event
+      await eventLogger.logEvent({
+        id: `project_created_${newProject.id}_${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        type: 'project_created',
+        actorId: proposal.commissionerId,
+        targetId: proposal.freelancerId,
+        entityType: 'project',
+        entityId: newProject.id,
+        metadata: {
+          projectTitle: newProject.title,
+          budget: newProject.totalBudget,
+          executionMethod: newProject.executionMethod,
+          createdFromProposal: proposalId
+        },
+        context: {
+          projectId: newProject.id,
+          proposalId: proposalId
+        }
+      });
+
+    } catch (eventError) {
+      console.error('Failed to log proposal acceptance events:', eventError);
+      // Don't fail the main operation if event logging fails
+    }
+
     return NextResponse.json({
       message: 'Proposal accepted successfully',
       projectId: newProject.id,
       proposal: proposals[proposalIndex],
+      eventLogged: true
     });
   } catch (error) {
     console.error('Error accepting proposal:', error);

@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
 
@@ -55,7 +57,19 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Check authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { id } = await params;
+
+    // Users can only update their own profile
+    if (session.user.id !== id) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const updates = await request.json();
 
     const data = fs.readFileSync(usersFilePath, 'utf-8');

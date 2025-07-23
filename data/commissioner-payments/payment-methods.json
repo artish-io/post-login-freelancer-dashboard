@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "commissionerId": 32,
+    "type": "credit_card",
+    "provider": "stripe",
+    "brand": "visa",
+    "last4": "4242",
+    "expiryMonth": 12,
+    "expiryYear": 2026,
+    "holderName": "John Smith",
+    "isDefault": true,
+    "createdAt": "2025-01-15T10:30:00Z",
+    "updatedAt": "2025-01-15T10:30:00Z"
+  },
+  {
+    "id": 2,
+    "commissionerId": 32,
+    "type": "credit_card",
+    "provider": "stripe",
+    "brand": "mastercard",
+    "last4": "8888",
+    "expiryMonth": 8,
+    "expiryYear": 2027,
+    "holderName": "John Smith",
+    "isDefault": false,
+    "createdAt": "2025-02-20T14:15:00Z",
+    "updatedAt": "2025-02-20T14:15:00Z"
+  }
+]

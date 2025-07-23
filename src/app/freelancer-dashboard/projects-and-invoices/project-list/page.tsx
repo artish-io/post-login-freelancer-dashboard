@@ -7,23 +7,7 @@ import FreelancerHeader from '../../../../../components/freelancer-dashboard/fre
 import ProjectsRow from '../../../../../components/freelancer-dashboard/projects-and-invoices/projects/project-status-list/projects-row';
 import ProjectStatusNav from '../../../../../components/freelancer-dashboard/projects-and-invoices/projects/project-status-list/project-status-nav';
 import type { Project } from '../../../../lib/projects/tasks/types';
-
-// Helper function to calculate project status based on tasks
-function calculateProjectStatus(project: any): 'ongoing' | 'paused' | 'completed' {
-  const tasks = project.tasks || [];
-  const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
-  const totalTasks = tasks.length;
-
-  if (totalTasks === 0) return 'paused';
-  if (approvedTasks === totalTasks) return 'completed';
-
-  // Check if project has recent activity (tasks in review or recently updated)
-  const hasRecentActivity = tasks.some((task: any) =>
-    task.status === 'In review' || task.status === 'Ongoing'
-  );
-
-  return hasRecentActivity ? 'ongoing' : 'paused';
-}
+import { calculateProjectProgress, calculateProjectStatus, transformProjectData } from '../../../../lib/project-status-sync';
 
 export default function ProjectListPage() {
   const searchParams = useSearchParams();
@@ -75,9 +59,8 @@ export default function ProjectListPage() {
             // Find the corresponding project from projects.json
             const projectInfo = projectsData.find((p: any) => p.projectId === projectTasks.projectId);
             const tasks = projectTasks.tasks || [];
-            const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
             const totalTasks = tasks.length;
-            const progress = totalTasks > 0 ? Math.round((approvedTasks / totalTasks) * 100) : 0;
+            const progress = calculateProjectProgress(tasks);
 
             // Get due date from projects.json if available, otherwise from earliest incomplete task
             let dueDate = projectInfo?.dueDate || null;
@@ -171,9 +154,8 @@ export default function ProjectListPage() {
           // Transform without projects.json data (use calculated status)
           const transformedProjects = projectTasksData.map((projectTasks: any) => {
             const tasks = projectTasks.tasks || [];
-            const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
             const totalTasks = tasks.length;
-            const progress = totalTasks > 0 ? Math.round((approvedTasks / totalTasks) * 100) : 0;
+            const progress = calculateProjectProgress(tasks);
 
             // Get due date from earliest incomplete task
             const incompleteTasks = tasks.filter((task: any) => !task.completed);

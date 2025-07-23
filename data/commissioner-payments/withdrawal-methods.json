@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "commissionerId": 32,
+    "type": "bank_transfer",
+    "bankName": "Chase Bank",
+    "accountType": "checking",
+    "accountLast4": "1234",
+    "routingNumber": "****5678",
+    "holderName": "John Smith",
+    "isDefault": true,
+    "createdAt": "2025-01-15T10:30:00Z",
+    "updatedAt": "2025-01-15T10:30:00Z"
+  },
+  {
+    "id": 2,
+    "commissionerId": 32,
+    "type": "paypal",
+    "email": "j***@example.com",
+    "isDefault": false,
+    "createdAt": "2025-02-10T16:20:00Z",
+    "updatedAt": "2025-02-10T16:20:00Z"
+  }
+]

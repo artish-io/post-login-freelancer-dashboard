@@ -23,8 +23,9 @@ export default function GigCard({ gig }: GigCardProps) {
     avatar = '/avatar.png' // Default fallback avatar
   } = gig;
 
-  // Use only available skills data for display
-  const allSkills = [...skills];
+  // Extract tools from both skills and tools arrays (handle data structure inconsistency)
+  const tools = (gig as any).tools || [];
+  const allSkills = [...skills, ...tools];
 
   // Format location to show country codes for consistency
   const formatLocation = (location: string) => {
@@ -95,7 +96,10 @@ export default function GigCard({ gig }: GigCardProps) {
     'Node.js': '/nodejs-logo.png',
     'After Effects': '/after-effects-logo.png',
     Docker: '/docker-logo.png',
-    MongoDB: '/mongodb-logo.svg'
+    MongoDB: '/mongodb-logo.svg',
+    'VS Code': '/vscode-logo.png',
+    GitHub: '/github-logo.png',
+    Sketch: '/sketch-logo.png'
   };
 
   const toolList = Object.keys(skillIcons);

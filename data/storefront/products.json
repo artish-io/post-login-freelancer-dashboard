@@ -79,5 +79,44 @@
       "Great crash course in Python!",
       "Simple and effective."
     ]
+  },
+  {
+    "id": "#102001",
+    "title": "Project Management Templates",
+    "category": "Business Tools",
+    "status": "Approved",
+    "price": 25,
+    "coverImage": "/images/products/pm-templates.webp",
+    "authorId": 32,
+    "downloadLink": "/downloads/pm-templates.zip",
+    "description": "Professional project management templates for commissioners and team leads.",
+    "productDetails": "5 Excel Templates + 3 PDFs",
+    "assets": [
+      "xlsx",
+      "pdf"
+    ],
+    "reviews": [
+      "Excellent templates for managing projects.",
+      "Very professional and well-organized."
+    ]
+  },
+  {
+    "id": "#102002",
+    "title": "Freelancer Onboarding Guide",
+    "category": "Digital Course",
+    "status": "Approved",
+    "price": 35,
+    "coverImage": "/images/products/onboarding-guide.webp",
+    "authorId": 32,
+    "downloadLink": "/downloads/onboarding-guide.pdf",
+    "description": "Complete guide for commissioners on how to effectively onboard and manage freelancers.",
+    "productDetails": "1 PDF + 2 Checklists",
+    "assets": [
+      "pdf"
+    ],
+    "reviews": [
+      "Must-have for anyone working with freelancers.",
+      "Clear and actionable advice."
+    ]
   }
 ]

@@ -2,9 +2,9 @@
   {
     "category": "Design",
     "tools": [
-      { "name": "Figma", "icon": "/icons/tools/figma.png" },
-      { "name": "Adobe Illustrator", "icon": "/icons/tools/adobe-illustrator.png" },
-      { "name": "Adobe Photoshop", "icon": "/icons/tools/adobe-photoshop.png" },
+      { "name": "Figma", "icon": "/figma-logo.png" },
+      { "name": "Adobe Illustrator", "icon": "/illustrator-logo.png" },
+      { "name": "Adobe Photoshop", "icon": "/photoshop-logo.png" },
       { "name": "Sketch", "icon": "/icons/tools/sketch.png" },
       { "name": "InVision", "icon": "/icons/tools/invision.png" }
     ]
@@ -21,7 +21,7 @@
   {
     "category": "Marketing",
     "tools": [
-      { "name": "Canva", "icon": "/icons/tools/canva.png" },
+      { "name": "Canva", "icon": "/canva-logo.png" },
       { "name": "Hootsuite", "icon": "/icons/tools/hootsuite.png" },
       { "name": "Mailchimp", "icon": "/icons/tools/mailchimp.png" },
       { "name": "Google Analytics", "icon": "/icons/tools/google-analytics.png" },
@@ -40,21 +40,21 @@
       { "name": "Kubernetes", "icon": "/icons/tools/kubernetes.png" },
       { "name": "Postman", "icon": "/icons/tools/postman.png" },
       { "name": "Insomnia", "icon": "/icons/tools/insomnia.png" },
-      { "name": "Node.js", "icon": "/icons/tools/nodejs.png" },
-      { "name": "React", "icon": "/icons/tools/react.png" },
+      { "name": "Node.js", "icon": "/nodejs-logo.png" },
+      { "name": "React", "icon": "/react-native-logo.svg" },
       { "name": "Next.js", "icon": "/icons/tools/nextjs.png" },
       { "name": "Express", "icon": "/icons/tools/express.png" },
       { "name": "Angular", "icon": "/icons/tools/angular.png" },
       { "name": "Vue.js", "icon": "/icons/tools/vuejs.png" },
-      { "name": "TypeScript", "icon": "/icons/tools/typescript.png" },
-      { "name": "JavaScript", "icon": "/icons/tools/javascript.png" },
-      { "name": "Python", "icon": "/icons/tools/python.png" },
+      { "name": "TypeScript", "icon": "/typescript-logo.png" },
+      { "name": "JavaScript", "icon": "/js-log.png" },
+      { "name": "Python", "icon": "/python-logo.png" },
       { "name": "Java", "icon": "/icons/tools/java.png" },
       { "name": "C#", "icon": "/icons/tools/csharp.png" },
       { "name": "C++", "icon": "/icons/tools/cpp.png" },
       { "name": "Go", "icon": "/icons/tools/go.png" },
       { "name": "Rust", "icon": "/icons/tools/rust.png" },
-      { "name": "Ruby", "icon": "/icons/tools/ruby.png" },
+      { "name": "Ruby", "icon": "/ruby-logo.png" },
       { "name": "PHP", "icon": "/icons/tools/php.png" },
       { "name": "SQL", "icon": "/icons/tools/sql.png" },
       { "name": "GraphQL", "icon": "/icons/tools/graphql.png" },
@@ -76,7 +76,7 @@
   {
     "category": "Visual Media",
     "tools": [
-      { "name": "After Effects", "icon": "/icons/tools/after-effects.png" },
+      { "name": "After Effects", "icon": "/after-effects-logo.png" },
       { "name": "Premiere Pro", "icon": "/icons/tools/premiere-pro.png" },
       { "name": "Final Cut Pro", "icon": "/icons/tools/final-cut-pro.png" },
       { "name": "DaVinci Resolve", "icon": "/icons/tools/davinci-resolve.png" },

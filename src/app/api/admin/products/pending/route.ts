@@ -1,0 +1,215 @@
+import { NextResponse } from 'next/server';
+import path from 'path';
+import { promises as fs } from 'fs';
+
+/**
+ * Admin Product Approval API
+ * 
+ * Manages digital product submissions for the ARTISH storefront:
+ * - Fetches products pending approval
+ * - Provides product details for review
+ * - Tracks submission status and seller information
+ */
+
+export async function GET() {
+  try {
+    const productsPath = path.join(process.cwd(), 'data/storefront-products.json');
+    
+    let productsData = [];
+
+    try {
+      const productsFile = await fs.readFile(productsPath, 'utf-8');
+      productsData = JSON.parse(productsFile);
+    } catch (error) {
+      console.log('Products file not found, creating with mock data');
+      
+      // Create mock data for demonstration
+      const mockProducts = [
+        {
+          id: 'PROD001',
+          title: 'Modern Business Card Template Pack',
+          description: 'A collection of 20 modern business card templates in various styles and colors. Perfect for professionals and businesses looking for clean, contemporary designs.',
+          category: 'Templates',
+          price: 29.99,
+          sellerName: 'Sarah Johnson',
+          sellerId: 31,
+          submittedAt: '2025-01-20T10:30:00Z',
+          status: 'pending',
+          files: [
+            { name: 'business-cards-pack.zip', size: '15.2 MB', type: 'application/zip' },
+            { name: 'preview.jpg', size: '2.1 MB', type: 'image/jpeg' },
+            { name: 'readme.txt', size: '1.2 KB', type: 'text/plain' }
+          ],
+          tags: ['business', 'cards', 'templates', 'modern', 'professional', 'corporate'],
+          previewImages: [
+            '/api/placeholder/400/300',
+            '/api/placeholder/400/300',
+            '/api/placeholder/400/300'
+          ],
+          requirements: {
+            software: 'Adobe Illustrator CS6+, Photoshop CC',
+            format: 'AI, EPS, PDF, PSD',
+            license: 'Commercial use allowed',
+            dimensions: '3.5" x 2" (standard business card size)'
+          },
+          downloadCount: 0,
+          rating: null,
+          reviews: []
+        },
+        {
+          id: 'PROD002',
+          title: 'Minimalist Logo Collection',
+          description: 'A curated collection of 50 minimalist logos perfect for startups and modern businesses. Each logo is fully editable and comes in multiple formats.',
+          category: 'Logos',
+          price: 49.99,
+          sellerName: 'Mike Chen',
+          sellerId: 33,
+          submittedAt: '2025-01-19T14:15:00Z',
+          status: 'pending',
+          files: [
+            { name: 'logo-collection.zip', size: '25.8 MB', type: 'application/zip' },
+            { name: 'logo-preview.pdf', size: '5.3 MB', type: 'application/pdf' },
+            { name: 'license-agreement.pdf', size: '245 KB', type: 'application/pdf' }
+          ],
+          tags: ['logos', 'minimalist', 'startup', 'branding', 'vector', 'modern'],
+          previewImages: [
+            '/api/placeholder/400/300',
+            '/api/placeholder/400/300',
+            '/api/placeholder/400/300',
+            '/api/placeholder/400/300'
+          ],
+          requirements: {
+            software: 'Adobe Illustrator, Sketch, Figma',
+            format: 'AI, SVG, PNG, EPS',
+            license: 'Extended commercial license included',
+            colors: 'Full color and monochrome versions'
+          },
+          downloadCount: 0,
+          rating: null,
+          reviews: []
+        },
+        {
+          id: 'PROD003',
+          title: 'Social Media Post Templates',
+          description: 'Instagram and Facebook post templates for businesses and influencers. Includes 30 unique designs optimized for engagement.',
+          category: 'Social Media',
+          price: 19.99,
+          sellerName: 'Alex Rodriguez',
+          sellerId: 34,
+          submittedAt: '2025-01-18T16:45:00Z',
+          status: 'under_review',
+          files: [
+            { name: 'social-templates.zip', size: '12.4 MB', type: 'application/zip' },
+            { name: 'usage-guide.pdf', size: '1.8 MB', type: 'application/pdf' }
+          ],
+          tags: ['social media', 'instagram', 'facebook', 'posts', 'templates', 'marketing'],
+          previewImages: [
+            '/api/placeholder/400/300',
+            '/api/placeholder/400/300'
+          ],
+          requirements: {
+            software: 'Canva, Photoshop, GIMP',
+            format: 'PSD, PNG, JPG, Canva templates',
+            license: 'Personal and commercial use',
+            dimensions: '1080x1080px (Instagram), 1200x630px (Facebook)'
+          },
+          downloadCount: 0,
+          rating: null,
+          reviews: []
+        },
+        {
+          id: 'PROD004',
+          title: 'Website Landing Page Kit',
+          description: 'Complete landing page templates for SaaS, startups, and agencies. Includes HTML, CSS, and design files.',
+          category: 'Web Templates',
+          price: 79.99,
+          sellerName: 'Emma Wilson',
+          sellerId: 35,
+          submittedAt: '2025-01-17T11:20:00Z',
+          status: 'approved',
+          files: [
+            { name: 'landing-page-kit.zip', size: '45.6 MB', type: 'application/zip' },
+            { name: 'documentation.pdf', size: '3.2 MB', type: 'application/pdf' }
+          ],
+          tags: ['web', 'landing page', 'html', 'css', 'responsive', 'saas'],
+          previewImages: [
+            '/api/placeholder/400/300',
+            '/api/placeholder/400/300',
+            '/api/placeholder/400/300'
+          ],
+          requirements: {
+            software: 'Any code editor, modern web browser',
+            format: 'HTML, CSS, JS, PSD, Sketch',
+            license: 'Commercial use with attribution',
+            features: 'Responsive design, cross-browser compatible'
+          },
+          downloadCount: 12,
+          rating: 4.8,
+          reviews: [
+            { rating: 5, comment: 'Excellent quality templates!', date: '2025-01-19' },
+            { rating: 4, comment: 'Good value for money', date: '2025-01-18' }
+          ]
+        },
+        {
+          id: 'PROD005',
+          title: 'Brand Identity Mockup Bundle',
+          description: 'Professional mockups for showcasing brand identity designs. Includes business cards, letterheads, and packaging mockups.',
+          category: 'Mockups',
+          price: 34.99,
+          sellerName: 'David Kim',
+          sellerId: 36,
+          submittedAt: '2025-01-16T09:30:00Z',
+          status: 'rejected',
+          rejectionReason: 'Image quality does not meet our standards. Please provide higher resolution mockups.',
+          rejectedAt: '2025-01-17T14:20:00Z',
+          files: [
+            { name: 'mockup-bundle.zip', size: '28.3 MB', type: 'application/zip' }
+          ],
+          tags: ['mockups', 'branding', 'identity', 'presentation', 'showcase'],
+          previewImages: [
+            '/api/placeholder/400/300',
+            '/api/placeholder/400/300'
+          ],
+          requirements: {
+            software: 'Photoshop CC 2018+',
+            format: 'PSD with smart objects',
+            license: 'Commercial use allowed',
+            resolution: '300 DPI minimum'
+          },
+          downloadCount: 0,
+          rating: null,
+          reviews: []
+        }
+      ];
+
+      // Save mock data to file
+      await fs.writeFile(productsPath, JSON.stringify(mockProducts, null, 2));
+      productsData = mockProducts;
+    }
+
+    // Filter products by status if needed
+    const pendingProducts = productsData.filter((product: any) => 
+      ['pending', 'under_review'].includes(product.status)
+    );
+
+    // Calculate summary statistics
+    const stats = {
+      total: productsData.length,
+      pending: productsData.filter((p: any) => p.status === 'pending').length,
+      underReview: productsData.filter((p: any) => p.status === 'under_review').length,
+      approved: productsData.filter((p: any) => p.status === 'approved').length,
+      rejected: productsData.filter((p: any) => p.status === 'rejected').length
+    };
+
+    return NextResponse.json({
+      products: productsData,
+      pendingProducts,
+      stats,
+      message: 'Products fetched successfully'
+    });
+
+  } catch (error) {
+    console.error('Error fetching pending products:', error);
+    return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
+  }
+}

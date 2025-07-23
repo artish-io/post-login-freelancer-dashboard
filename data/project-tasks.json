@@ -564,7 +564,7 @@
       {
         "id": 102,
         "title": "Park booking interface mockups",
-        "status": "In review",
+        "status": "Approved",
         "completed": true,
         "order": 2,
         "link": "https://figma.com/file/booking-interface",
@@ -579,7 +579,7 @@
       {
         "id": 103,
         "title": "Maintenance reporting feature",
-        "status": "In review",
+        "status": "Approved",
         "completed": true,
         "order": 3,
         "link": "https://figma.com/file/maintenance-reporting",
@@ -594,7 +594,7 @@
       {
         "id": 104,
         "title": "Navigation and menu structure",
-        "status": "In review",
+        "status": "Approved",
         "completed": true,
         "order": 4,
         "link": "https://figma.com/file/navigation-menu",
@@ -609,7 +609,7 @@
       {
         "id": 105,
         "title": "Push notification system design",
-        "status": "In review",
+        "status": "Approved",
         "completed": true,
         "order": 5,
         "link": "https://figma.com/file/notification-system",
@@ -620,6 +620,178 @@
         "pushedBack": false,
         "version": 1,
         "description": "Design the push notification system for booking confirmations and updates."
+      }
+    ]
+  },
+  {
+    "projectId": 312,
+    "title": "Lagos Parks Mobile App Development",
+    "organizationId": 1,
+    "typeTags": [
+      "Mobile Development",
+      "UI/UX Design"
+    ],
+    "tasks": [
+      {
+        "id": 101,
+        "title": "User authentication flow design",
+        "status": "Approved",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/auth-flow-design",
+        "dueDate": "2025-08-15T00:00:00.000Z",
+        "submittedDate": "2025-07-16T10:15:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the complete user authentication and registration flow."
+      },
+      {
+        "id": 102,
+        "title": "Park booking interface mockups",
+        "status": "Approved",
+        "completed": true,
+        "order": 2,
+        "link": "https://figma.com/file/booking-interface",
+        "dueDate": "2025-08-18T00:00:00.000Z",
+        "submittedDate": "2025-07-16T08:45:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create mockups for the park facility booking interface."
+      },
+      {
+        "id": 103,
+        "title": "Maintenance reporting feature",
+        "status": "Approved",
+        "completed": true,
+        "order": 3,
+        "link": "https://figma.com/file/maintenance-reporting",
+        "dueDate": "2025-08-20T00:00:00.000Z",
+        "submittedDate": "2025-07-15T16:30:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the maintenance issue reporting feature with photo upload."
+      },
+      {
+        "id": 104,
+        "title": "Navigation and menu structure",
+        "status": "Approved",
+        "completed": true,
+        "order": 4,
+        "link": "https://figma.com/file/navigation-menu",
+        "dueDate": "2025-08-22T00:00:00.000Z",
+        "submittedDate": "2025-07-15T11:20:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the main navigation and menu structure for the mobile app."
+      },
+      {
+        "id": 105,
+        "title": "Push notification system design",
+        "status": "Approved",
+        "completed": true,
+        "order": 5,
+        "link": "https://figma.com/file/notification-system",
+        "dueDate": "2025-08-25T00:00:00.000Z",
+        "submittedDate": "2025-07-14T13:10:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the push notification system for booking confirmations and updates."
+      },
+      {
+        "id": 106,
+        "title": "User profile and settings screens",
+        "status": "Approved",
+        "completed": true,
+        "order": 6,
+        "link": "https://figma.com/file/user-profile-settings",
+        "dueDate": "2025-08-28T00:00:00.000Z",
+        "submittedDate": "2025-07-18T14:25:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design user profile management and app settings screens."
+      },
+      {
+        "id": 107,
+        "title": "Payment integration interface",
+        "status": "Approved",
+        "completed": true,
+        "order": 7,
+        "link": "https://figma.com/file/payment-integration",
+        "dueDate": "2025-08-30T00:00:00.000Z",
+        "submittedDate": "2025-07-19T09:40:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the payment interface for park facility bookings."
+      },
+      {
+        "id": 108,
+        "title": "Final app prototype and handoff",
+        "status": "Approved",
+        "completed": true,
+        "order": 8,
+        "link": "https://figma.com/file/final-prototype",
+        "dueDate": "2025-09-02T00:00:00.000Z",
+        "submittedDate": "2025-07-20T16:15:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Complete final prototype with all screens and prepare developer handoff documentation."
+      }
+    ]
+  },
+  {
+    "projectId": 314,
+    "title": "E-commerce Platform UI Redesign",
+    "organizationId": 1,
+    "typeTags": [
+      "UI/UX Design",
+      "E-commerce"
+    ],
+    "tasks": [
+      {
+        "id": 201,
+        "title": "User research and wireframing",
+        "status": "Approved",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/ecommerce-wireframes",
+        "dueDate": "2025-08-15T00:00:00.000Z",
+        "submittedDate": "2025-07-20T14:30:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Conduct user research and create wireframes for the new e-commerce interface."
+      },
+      {
+        "id": 202,
+        "title": "High-fidelity UI design and prototyping",
+        "status": "In review",
+        "completed": false,
+        "order": 2,
+        "link": "https://figma.com/file/ecommerce-ui-design",
+        "dueDate": "2025-09-15T00:00:00.000Z",
+        "submittedDate": "2025-07-21T16:45:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create high-fidelity UI designs and interactive prototypes for the e-commerce platform."
       }
     ]
   }

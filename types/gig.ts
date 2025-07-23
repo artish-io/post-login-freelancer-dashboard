@@ -5,6 +5,7 @@ export interface Gig {
   title: string;
   category: string;
   skills: string[];
+  tools?: string[]; // ✅ Add tools field for freelancers with separate tools array
   specializations?: string[]; // ✅ Add this line (optional field)
   rate: string;
   minRate: number;
