@@ -1,6 +1,7 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Suspense } from 'react';
 import CustomSessionProvider from '../../components/providers/session-provider';
 import NavigationProgress from '../../components/ui/navigation-progress';
 import './globals.css';
@@ -23,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={jakarta.variable}>
       <body className="font-jakarta antialiased">
-        <NavigationProgress />
+        <Suspense fallback={null}>
+          <NavigationProgress />
+        </Suspense>
         <CustomSessionProvider>{children}</CustomSessionProvider>
       </body>
     </html>

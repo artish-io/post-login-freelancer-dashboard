@@ -135,6 +135,7 @@ export default function TaskColumn({ columnId, title }: Props) {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Optimized refresh mechanism - less aggressive polling
@@ -144,6 +145,7 @@ export default function TaskColumn({ columnId, title }: Props) {
     }, 10000); // Reduced frequency to 10 seconds
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Enhanced auto-movement trigger - check less frequently
@@ -166,6 +168,7 @@ export default function TaskColumn({ columnId, title }: Props) {
       const movementInterval = setInterval(checkMovement, 15000);
       return () => clearInterval(movementInterval);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columnId]);
 
   useEffect(() => {
@@ -348,6 +351,7 @@ export default function TaskColumn({ columnId, title }: Props) {
       // No limits for 'review' column
       setTasks(collected);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [columnId, projects, organizations]);
 
   return (

@@ -183,7 +183,7 @@ export default function PhoneVerificationModal({
             // Correct Firebase v9+ syntax: RecaptchaVerifier(auth, container, options)
             const verifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
               size: 'invisible',
-              callback: (response) => {
+              callback: (response: string) => {
                 console.log('reCAPTCHA solved:', response);
               },
               'expired-callback': () => {
@@ -212,7 +212,7 @@ export default function PhoneVerificationModal({
           }
         } catch (error) {
           // Ignore cleanup errors - verifier might already be destroyed
-          console.log('reCAPTCHA cleanup (expected):', error.code);
+          console.log('reCAPTCHA cleanup (expected):', (error as any)?.code || error);
         }
       }
     };
@@ -263,7 +263,7 @@ export default function PhoneVerificationModal({
         try {
           const currentVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
             size: 'invisible',
-            callback: (response) => {
+            callback: (response: string) => {
               console.log('reCAPTCHA solved successfully', response);
             },
             'expired-callback': () => {
@@ -343,7 +343,7 @@ export default function PhoneVerificationModal({
           }
         } catch (clearError) {
           // Ignore cleanup errors
-          console.log('reCAPTCHA cleanup (expected):', clearError.code);
+          console.log('reCAPTCHA cleanup (expected):', (clearError as any)?.code || clearError);
         }
         setRecaptchaVerifier(null);
       }
@@ -577,7 +577,9 @@ export default function PhoneVerificationModal({
                       {verificationCode.map((digit, index) => (
                         <input
                           key={index}
-                          ref={(el) => (inputRefs.current[index] = el)}
+                          ref={(el) => {
+                            if (el) inputRefs.current[index] = el;
+                          }}
                           type="text"
                           maxLength={1}
                           value={digit}

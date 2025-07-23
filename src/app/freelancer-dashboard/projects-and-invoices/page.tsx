@@ -26,8 +26,8 @@ export default function ProjectsAndInvoicesPage() {
       <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-3 items-start">
         {/* Left Column */}
         <div className="flex flex-col gap-5">
-          <TasksPanel />
-          <ProjectSummaryTable />
+          <TasksPanel viewType="freelancer" title="Today's Tasks" showNotesTab={true} />
+          <ProjectSummaryTable viewType="freelancer" />
         </div>
 
         {/* Right Column */}

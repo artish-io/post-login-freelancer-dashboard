@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import GigRequestHeader from './gig-request-header';
 import GigRequestBody from './gig-request-body';
 import GigRequestMetaPanel from './gig-request-meta-panel';
@@ -81,9 +82,11 @@ const GigRequestDetails: React.FC<Props> = ({ request }) => {
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div className="flex items-center gap-3">
               {request.organizationLogo && (
-                <img
+                <Image
                   src={request.organizationLogo}
                   alt={request.subtitle}
+                  width={32}
+                  height={32}
                   className="w-8 h-8 rounded object-cover"
                 />
               )}

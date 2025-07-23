@@ -16,9 +16,9 @@ const workSamplesPath = path.join(
 
 export async function POST(
   req: Request,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = context.params;
+  const { id } = await context.params;
 
   try {
     const form = await req.formData();

@@ -10,9 +10,10 @@ const ORGANIZATIONS_PATH = path.join(process.cwd(), 'data/organizations.json');
 
 export async function GET(
   _req: Request,
-  { params }: { params: { freelancerId: string } }
+  { params }: { params: Promise<{ freelancerId: string }> }
 ) {
-  const freelancerId = Number(params.freelancerId);
+  const { freelancerId: freelancerIdStr } = await params;
+  const freelancerId = Number(freelancerIdStr);
 
   try {
     // Read existing gig requests

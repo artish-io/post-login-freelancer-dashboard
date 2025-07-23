@@ -131,7 +131,7 @@ export default function ProjectsAndInvoicesPage() {
               </svg>
             </div>
             <p className="text-[#eb1966] font-medium">
-              Gig posted successfully! It's now live and visible to freelancers.
+              Gig posted successfully! It&apos;s now live and visible to freelancers.
             </p>
           </div>
         </div>

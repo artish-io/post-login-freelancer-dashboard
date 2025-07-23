@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
+import Image from 'next/image';
 import { 
   Home, 
   FolderOpen, 
@@ -75,10 +76,12 @@ export default function CommissionerNavbar() {
           {/* User Profile */}
           <div className="flex-shrink-0 px-4 py-4 border-t border-gray-200">
             <div className="flex items-center">
-              <img
+              <Image
                 className="inline-block h-10 w-10 rounded-full border-2 border-pink-200"
                 src={session?.user?.image || '/avatars/default-avatar.png'}
                 alt={session?.user?.name || 'User'}
+                width={40}
+                height={40}
               />
               <div className="ml-3 flex-1">
                 <p className="text-sm font-medium text-gray-900">
@@ -157,10 +160,12 @@ export default function CommissionerNavbar() {
                 <div className="flex-shrink-0 px-4 py-4 border-t border-gray-200">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <img
+                      <Image
                         className="inline-block h-10 w-10 rounded-full border-2 border-pink-200"
                         src={session?.user?.image || '/avatars/default-avatar.png'}
                         alt={session?.user?.name || 'User'}
+                        width={40}
+                        height={40}
                       />
                       <div className="ml-3">
                         <p className="text-sm font-medium text-gray-900">

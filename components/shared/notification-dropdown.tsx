@@ -50,6 +50,7 @@ export default function NotificationDropdown({ dashboardType }: Props) {
     if (open && session?.user?.id) {
       fetchNotifications();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, session?.user?.id, dashboardType]);
 
   const fetchNotifications = async () => {
@@ -108,7 +109,7 @@ export default function NotificationDropdown({ dashboardType }: Props) {
   };
 
   // Types that should use user avatar instead of icon
-  const useUserAvatar = (type: string): boolean => {
+  const shouldUseUserAvatar = (type: string): boolean => {
     return ['project_accepted', 'invoice_sent'].includes(type);
   };
 
@@ -150,7 +151,7 @@ export default function NotificationDropdown({ dashboardType }: Props) {
     }
 
     // Use user avatar for specific notification types
-    if (notification.user?.avatar && useUserAvatar(notification.type)) {
+    if (notification.user?.avatar && shouldUseUserAvatar(notification.type)) {
       return (
         <Image
           src={notification.user.avatar}

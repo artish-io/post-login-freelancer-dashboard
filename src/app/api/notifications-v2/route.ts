@@ -48,12 +48,12 @@ export async function GET(request: NextRequest) {
       // Apply user-type filtering based on notification rules
       if (userType === 'commissioner') {
         // Commissioners should only see certain notification types
-        if (USER_TYPE_FILTERS.FREELANCER_ONLY.includes(event.type)) {
+        if ((USER_TYPE_FILTERS.FREELANCER_ONLY as readonly string[]).includes(event.type)) {
           return false;
         }
       } else if (userType === 'freelancer') {
         // Freelancers should only see certain notification types
-        if (USER_TYPE_FILTERS.COMMISSIONER_ONLY.includes(event.type)) {
+        if ((USER_TYPE_FILTERS.COMMISSIONER_ONLY as readonly string[]).includes(event.type)) {
           return false;
         }
       }
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
 
       // User is involved in the project (but not for self-initiated actions)
       if (event.context?.projectId && event.actorId !== parseInt(userId)) {
-        const project = projects.find((p: any) => p.projectId === event.context.projectId);
+        const project = projects.find((p: any) => p.projectId === event.context?.projectId);
         if (project && (project.commissionerId === parseInt(userId) || project.freelancerId === parseInt(userId))) {
           return true;
         }
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
     const notifications = groupedEvents.map(event => {
       const actor = users.find((u: any) => u.id === event.actorId);
       const organization = event.context?.organizationId ?
-        organizations.find((o: any) => o.id === event.context.organizationId) : null;
+        organizations.find((o: any) => o.id === event.context?.organizationId) : null;
 
       // Get project and task details for granular notifications
       const project = projects.find((p: any) => p.projectId === event.context?.projectId);
@@ -221,7 +221,12 @@ function getNotificationType(eventType: EventType): string {
     'contact_removed': 'contact_removed',
     'user_login': 'user_login',
     'user_logout': 'user_logout',
-    'profile_updated': 'profile_updated'
+    'profile_updated': 'profile_updated',
+    'task_completed': 'task_completed',
+    'task_rejected_with_comment': 'task_rejected_with_comment',
+    'milestone_payment_received': 'milestone_payment_received',
+    'product_approved': 'product_approved',
+    'product_rejected': 'product_rejected'
   };
   
   return typeMap[eventType] || eventType;
@@ -349,7 +354,7 @@ function generateGranularTitle(event: EventData, actor: any, project?: any, proj
       return `Your invoice for "${event.context?.milestoneTitle || task?.title || 'milestone'}" has been paid by ${actorName}`;
     case 'product_purchased':
       return `You just made a new sale of "${event.metadata.productTitle}"`;
-    case 'invoice_auto_generated':
+    case 'invoice_created':
       return `Auto-invoice generated for "${event.metadata.taskTitle}" - $${event.metadata.amount}`;
     case 'message_sent':
       return `New message from ${actorName}`;
@@ -393,7 +398,7 @@ function generateGranularMessage(event: EventData, actor: any, project?: any, pr
       return `Invoice ${event.metadata.invoiceNumber} for ${event.metadata.projectTitle}`;
     case 'invoice_paid':
       return `Payment received for ${event.metadata.projectTitle || 'project'}`;
-    case 'invoice_auto_generated':
+    case 'invoice_created':
       return `Invoice automatically generated for milestone completion`;
     case 'milestone_payment_received':
       return `Payment of $${event.metadata.amount} for "${event.context?.milestoneTitle}" has been received`;
@@ -419,7 +424,7 @@ function generateNotificationLink(event: EventData, project?: any, task?: any): 
     case 'milestone_payment_received':
       // Navigate to invoices page
       return `/freelancer-dashboard/projects-and-invoices/invoices`;
-    case 'invoice_auto_generated':
+    case 'invoice_created':
       // Navigate to the auto-generated invoice
       return `/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${event.context?.invoiceId}`;
     case 'gig_request_sent':

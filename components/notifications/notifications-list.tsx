@@ -25,6 +25,7 @@ export default function NotificationsList({
 
   useEffect(() => {
     fetchNotifications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, commissionerId]);
 
   const fetchNotifications = async () => {

@@ -103,8 +103,8 @@ export async function checkAndExecuteAutoMovement(): Promise<TaskMovementResult>
         moved: false,
         movedTasks: [],
         message: `No suitable tasks found in upcoming to move to today. Need ${maxToMove} more tasks to reach capacity.`,
-        newTodayCount: countTodayTasks(projects),
-        newUpcomingCount: countUpcomingTasks(projects)
+        newTodayCount: countTodayTasks(projects, projectsInfo),
+        newUpcomingCount: countUpcomingTasks(projects, projectsInfo)
       };
     }
     
@@ -124,8 +124,8 @@ export async function checkAndExecuteAutoMovement(): Promise<TaskMovementResult>
         moved: false,
         movedTasks: [],
         message: `❌ Failed to move tasks: ${moveResult.error}`,
-        newTodayCount: countTodayTasks(projects),
-        newUpcomingCount: countUpcomingTasks(projects)
+        newTodayCount: countTodayTasks(projects, projectsInfo),
+        newUpcomingCount: countUpcomingTasks(projects, projectsInfo)
       };
     }
     

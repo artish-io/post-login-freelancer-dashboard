@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { eventLogger } from '../../../../lib/events/event-logger';
+import { eventLogger } from '../../../../../lib/events/event-logger';
 
 const proposalsFilePath = path.join(process.cwd(), 'data', 'proposals', 'proposals.json');
 const projectsFilePath = path.join(process.cwd(), 'data', 'projects.json');
@@ -95,9 +95,10 @@ export async function POST(
         id: `proposal_accepted_${proposalId}_${Date.now()}`,
         timestamp: new Date().toISOString(),
         type: 'proposal_accepted',
+        notificationType: 81, // NOTIFICATION_TYPES.PROPOSAL_ACCEPTED
         actorId: proposal.commissionerId,
         targetId: proposal.freelancerId,
-        entityType: 'proposal',
+        entityType: 7, // ENTITY_TYPES.PROPOSAL
         entityId: proposalId,
         metadata: {
           proposalTitle: proposal.title || 'Untitled Proposal',
@@ -118,9 +119,10 @@ export async function POST(
         id: `project_created_${newProject.id}_${Date.now()}`,
         timestamp: new Date().toISOString(),
         type: 'project_created',
+        notificationType: 20, // NOTIFICATION_TYPES.PROJECT_CREATED
         actorId: proposal.commissionerId,
         targetId: proposal.freelancerId,
-        entityType: 'project',
+        entityType: 2, // ENTITY_TYPES.PROJECT
         entityId: newProject.id,
         metadata: {
           projectTitle: newProject.title,

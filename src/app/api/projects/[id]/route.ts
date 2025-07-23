@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function GET_ALL_PROJECTS() {
+async function GET_ALL_PROJECTS() {
   try {
     const filePath = path.join(process.cwd(), 'data', 'projects.json');
     const file = await readFile(filePath, 'utf-8');

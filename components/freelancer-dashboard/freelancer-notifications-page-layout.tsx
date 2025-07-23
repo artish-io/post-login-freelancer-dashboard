@@ -14,18 +14,25 @@ export default function FreelancerNotificationsPageLayout({
   freelancerId,
   onNotificationClick
 }: FreelancerNotificationsPageLayoutProps) {
-  const [activeTab, setActiveTab] = useState<'all' | 'network'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'network' | 'projects' | 'gigs'>('all');
   const [notificationCounts, setNotificationCounts] = useState({
     all: 0,
-    network: 0
+    network: 0,
+    projects: 0,
+    gigs: 0
   });
 
-  const handleTabChange = (tab: 'all' | 'network') => {
+  const handleTabChange = (tab: 'all' | 'network' | 'projects' | 'gigs') => {
     setActiveTab(tab);
   };
 
-  const handleCountsUpdate = (counts: { all: number; network: number }) => {
-    setNotificationCounts(counts);
+  const handleCountsUpdate = (counts: { all: number; network?: number; projects?: number; gigs?: number }) => {
+    setNotificationCounts({
+      all: counts.all,
+      network: counts.network || 0,
+      projects: counts.projects || 0,
+      gigs: counts.gigs || 0
+    });
   };
 
   return (
@@ -42,6 +49,9 @@ export default function FreelancerNotificationsPageLayout({
           onTabChange={handleTabChange}
           allCount={notificationCounts.all}
           networkCount={notificationCounts.network}
+          projectsCount={notificationCounts.projects}
+          gigsCount={notificationCounts.gigs}
+          userType="freelancer"
         />
       </div>
 

@@ -106,7 +106,7 @@ export default function BudgetWithUpfront({
             Milestone-based Payment
           </h4>
           <div className="text-xs text-gray-600">
-            💡 Payment will be distributed evenly across project milestones. You'll pay upon milestone completion and approval.
+            💡 Payment will be distributed evenly across project milestones. You&apos;ll pay upon milestone completion and approval.
           </div>
         </div>
       )}

@@ -12,13 +12,14 @@ const REVIEWS_PATH = path.join(process.cwd(), 'data', 'storefront', 'reviews.jso
  */
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const raw = await readFile(REVIEWS_PATH, 'utf-8');
     const reviews = JSON.parse(raw);
 
-    const productId = `#${params.id}`;
+    const productId = `#${id}`;
     const productReviews = reviews.filter((r: any) => r.productId === productId);
 
     return NextResponse.json(productReviews);
@@ -37,8 +38,9 @@ export async function GET(
  */
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
     const body = await req.json();
     const { userId, rating, comment = '' } = body;
@@ -53,7 +55,7 @@ export async function POST(
     const raw = await readFile(REVIEWS_PATH, 'utf-8');
     const reviews = JSON.parse(raw);
 
-    const productId = `#${params.id}`;
+    const productId = `#${id}`;
 
     // overwrite if same user already reviewed
     const existingIndex = reviews.findIndex(

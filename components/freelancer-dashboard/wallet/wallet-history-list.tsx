@@ -94,7 +94,7 @@ export default function WalletHistoryList() {
       }
     };
     fetchHistory();
-  }, []);
+  }, [session?.user?.id]);
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 flex flex-col relative">

@@ -140,6 +140,7 @@ export default function MessageThread({ threadId }: Props) {
     fetchAndMarkRead();
     // Scroll to bottom when thread first loads
     scrollToBottom(500);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [threadId, userId]);
 
   // Listen for message sent events to refresh the thread
@@ -166,7 +167,8 @@ export default function MessageThread({ threadId }: Props) {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [fetchAndMarkRead]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Auto scroll to bottom when messages change
   useEffect(() => {

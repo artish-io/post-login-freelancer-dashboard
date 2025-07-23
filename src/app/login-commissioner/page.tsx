@@ -3,6 +3,7 @@
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function CommissionerLoginPage() {
   const router = useRouter();
@@ -41,9 +42,11 @@ export default function CommissionerLoginPage() {
         
         <div className="bg-gray-50 p-4 rounded-lg mb-6">
           <div className="flex items-center space-x-3">
-            <img 
-              src="/avatars/neilsan.png" 
-              alt="Neilsan Mando" 
+            <Image
+              src="/avatars/neilsan.png"
+              alt="Neilsan Mando"
+              width={48}
+              height={48}
               className="w-12 h-12 rounded-full border-2 border-pink-200"
             />
             <div>

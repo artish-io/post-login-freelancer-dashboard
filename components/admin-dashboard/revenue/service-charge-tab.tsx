@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { 
   DollarSign, 
   TrendingUp, 
@@ -29,13 +29,15 @@ export default function ServiceChargeTab({ data, dateRange }: ServiceChargeTabPr
 
   useEffect(() => {
     fetchServiceChargeTransactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange]);
 
   useEffect(() => {
     filterTransactions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactions, searchTerm, statusFilter]);
 
-  const fetchServiceChargeTransactions = async () => {
+  const fetchServiceChargeTransactions = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(`/api/admin/service-charges?start=${dateRange.start}&end=${dateRange.end}`);
@@ -90,9 +92,9 @@ export default function ServiceChargeTab({ data, dateRange }: ServiceChargeTabPr
     } finally {
       setLoading(false);
     }
-  };
+  }, [dateRange]);
 
-  const filterTransactions = () => {
+  const filterTransactions = useCallback(() => {
     let filtered = transactions;
 
     if (searchTerm) {
@@ -109,7 +111,7 @@ export default function ServiceChargeTab({ data, dateRange }: ServiceChargeTabPr
     }
 
     setFilteredTransactions(filtered);
-  };
+  }, [transactions, searchTerm, statusFilter]);
 
   const totalServiceCharges = filteredTransactions.reduce((sum, t) => sum + t.serviceCharge, 0);
   const totalTransactionValue = filteredTransactions.reduce((sum, t) => sum + t.totalAmount, 0);

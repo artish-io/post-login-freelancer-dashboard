@@ -147,15 +147,15 @@ export default function TalentFiltersModal({
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 max-h-40 overflow-y-auto">
                 {gigCategories.flatMap(cat => cat.subcategories).map((skill) => (
                   <button
-                    key={skill}
-                    onClick={() => toggleSkill(skill)}
+                    key={skill.name}
+                    onClick={() => toggleSkill(skill.name)}
                     className={`px-3 py-2 text-sm rounded-full border transition-colors ${
-                      selectedSkills.includes(skill)
+                      selectedSkills.includes(skill.name)
                         ? 'bg-pink-100 border-pink-300 text-pink-700'
                         : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
                     }`}
                   >
-                    {skill}
+                    {skill.name}
                   </button>
                 ))}
               </div>

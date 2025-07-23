@@ -65,9 +65,10 @@ export async function POST(
         id: `product_approved_${productId}_${Date.now()}`,
         timestamp: new Date().toISOString(),
         type: 'product_approved',
+        notificationType: 102, // NOTIFICATION_TYPES.PRODUCT_APPROVED
         actorId: adminId || 0, // Admin user ID
         targetId: product.sellerId,
-        entityType: 'product',
+        entityType: 6, // ENTITY_TYPES.PRODUCT
         entityId: productId,
         metadata: {
           productTitle: product.title,

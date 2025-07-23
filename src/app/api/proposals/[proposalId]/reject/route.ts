@@ -44,9 +44,10 @@ export async function POST(
         id: `proposal_rejected_${proposalId}_${Date.now()}`,
         timestamp: new Date().toISOString(),
         type: 'proposal_rejected',
+        notificationType: 82, // NOTIFICATION_TYPES.PROPOSAL_REJECTED
         actorId: commissionerId || proposal.commissionerId,
         targetId: proposal.freelancerId,
-        entityType: 'proposal',
+        entityType: 7, // ENTITY_TYPES.PROPOSAL
         entityId: proposalId,
         metadata: {
           proposalTitle: proposal.proposalTitle || proposal.title || 'Untitled Proposal',

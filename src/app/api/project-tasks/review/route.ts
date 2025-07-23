@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         const notesData = JSON.parse(notesFile);
 
         // Find existing task notes entry or create new one
-        let taskNotesEntry = notesData.find((entry: any) =>
+        const taskNotesEntry = notesData.find((entry: any) =>
           entry.projectId === projectId && entry.taskId === taskId
         );
 

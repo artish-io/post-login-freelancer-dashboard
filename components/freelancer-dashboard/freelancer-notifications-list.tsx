@@ -46,6 +46,7 @@ export default function FreelancerNotificationsList({
 
   useEffect(() => {
     fetchNotifications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [freelancerId, activeTab]);
 
   const handleNotificationClick = (notification: NotificationData) => {

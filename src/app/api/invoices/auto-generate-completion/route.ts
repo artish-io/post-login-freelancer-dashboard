@@ -123,9 +123,10 @@ export async function POST(request: Request) {
         id: `invoice_auto_generated_${invoiceNumber}_${Date.now()}`,
         timestamp: new Date().toISOString(),
         type: 'invoice_sent',
+        notificationType: 40, // NOTIFICATION_TYPES.INVOICE_SENT
         actorId: freelancerId,
         targetId: commissionerId,
-        entityType: 'invoice',
+        entityType: 5, // ENTITY_TYPES.INVOICE
         entityId: invoiceNumber,
         metadata: {
           invoiceNumber,

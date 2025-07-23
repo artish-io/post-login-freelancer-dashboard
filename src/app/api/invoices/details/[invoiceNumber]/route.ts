@@ -4,9 +4,9 @@ import { promises as fs } from 'fs';
 
 export async function GET(
   request: Request,
-  { params }: { params: { invoiceNumber: string } }
+  { params }: { params: Promise<{ invoiceNumber: string }> }
 ) {
-  const { invoiceNumber } = params;
+  const { invoiceNumber } = await params;
 
   try {
     const invoicesPath = path.join(process.cwd(), 'data/invoices.json');

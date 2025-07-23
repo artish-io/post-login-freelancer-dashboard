@@ -10,9 +10,10 @@ const USERS_PATH = path.join(process.cwd(), 'data', 'users.json');
 
 export async function GET(
   _req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const gigId = Number(params.id);
+  const { id } = await params;
+  const gigId = Number(id);
 
   try {
     const [gigsRaw, orgsRaw, usersRaw] = await Promise.all([

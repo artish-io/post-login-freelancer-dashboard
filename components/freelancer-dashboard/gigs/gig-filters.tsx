@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { FilterIcon } from 'lucide-react';
+import Image from 'next/image';
 import GigFiltersExpansionModal from './gig-filters-expansion-modal';
 
 const categories = [
@@ -34,7 +35,7 @@ export default function GigFilters() {
             } shadow-sm text-sm font-medium`}
             onClick={() => setActiveCategory(cat.label)}
           >
-            <img src={`/icons/skill-categories/${cat.icon}`} alt={cat.label} className="w-4 h-4" />
+            <Image src={`/icons/skill-categories/${cat.icon}`} alt={cat.label} width={16} height={16} className="w-4 h-4" />
             {cat.label}
           </button>
         ))}

@@ -112,7 +112,7 @@ async function testTaskSubmission(testData?: any) {
     return {
       test: 'task_submission',
       status: 'ERROR',
-      error: error.message
+      error: (error as Error).message
     };
   }
 }
@@ -149,7 +149,7 @@ async function testTaskApproval(testData?: any) {
     return {
       test: 'task_approval',
       status: 'ERROR',
-      error: error.message
+      error: (error as Error).message
     };
   }
 }
@@ -186,7 +186,7 @@ async function testTaskRejection(testData?: any) {
     return {
       test: 'task_rejection',
       status: 'ERROR',
-      error: error.message
+      error: (error as Error).message
     };
   }
 }
@@ -224,7 +224,7 @@ async function testProposalSend(testData?: any) {
     return {
       test: 'proposal_send',
       status: 'ERROR',
-      error: error.message
+      error: (error as Error).message
     };
   }
 }
@@ -276,7 +276,7 @@ async function testInvoiceSend(testData?: any) {
     return {
       test: 'invoice_send',
       status: 'ERROR',
-      error: error.message
+      error: (error as Error).message
     };
   }
 }
@@ -312,7 +312,7 @@ async function testInvoicePay(testData?: any) {
     return {
       test: 'invoice_pay',
       status: 'ERROR',
-      error: error.message
+      error: (error as Error).message
     };
   }
 }

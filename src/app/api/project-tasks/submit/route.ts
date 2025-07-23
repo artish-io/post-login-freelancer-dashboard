@@ -3,7 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
-import { eventLogger } from '../../../lib/events/event-logger';
+import { eventLogger } from '../../../../lib/events/event-logger';
 
 const tasksFilePath = path.join(process.cwd(), 'data', 'project-tasks.json');
 const projectsFilePath = path.join(process.cwd(), 'data/projects.json');
@@ -101,9 +101,10 @@ export async function POST(request: NextRequest) {
           id: `${eventType}_${taskId}_${Date.now()}`,
           timestamp: new Date().toISOString(),
           type: eventType as any,
+          notificationType: eventType === 'task_submitted' ? 10 : eventType === 'task_approved' ? 11 : 12, // NOTIFICATION_TYPES
           actorId: action === 'complete' || action === 'reject' ? actualCommissionerId : actualFreelancerId,
           targetId: targetUserId,
-          entityType: 'task',
+          entityType: 1, // ENTITY_TYPES.TASK
           entityId: taskId,
           metadata: {
             taskTitle: task.title,

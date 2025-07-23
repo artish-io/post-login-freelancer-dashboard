@@ -96,7 +96,7 @@ export default function SidebarFilters({
 
   // Convert gig-categories.json data to the expected format
   const categories: Record<string, string[]> = gigCategories.reduce((acc, category) => {
-    acc[category.label] = category.subcategories;
+    acc[category.label] = category.subcategories.map(sub => sub.name);
     return acc;
   }, {} as Record<string, string[]>);
 

@@ -105,7 +105,7 @@ export default function AboutSection({
             <div className="text-gray-500 italic">
               {isOwnProfile ? (
                 <span>
-                  Click "Edit" to add information about yourself, your experience, and skills.
+                  Click &quot;Edit&quot; to add information about yourself, your experience, and skills.
                 </span>
               ) : (
                 <span>No about information available.</span>

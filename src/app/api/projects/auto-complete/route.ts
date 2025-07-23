@@ -104,7 +104,7 @@ export async function GET() {
     const projects = JSON.parse(projectsFile);
     const projectTasks = JSON.parse(projectTasksFile);
 
-    const inconsistencies = [];
+    const inconsistencies: any[] = [];
 
     projectTasks.forEach((taskProject: any) => {
       const project = projects.find((p: any) => p.projectId === taskProject.projectId);

@@ -68,6 +68,7 @@ export default function AddSkillToolModal({
   const filteredItems = useMemo(() => {
     const items = selectedType === 'skill' ? availableSkills : availableTools;
     return fuzzySearch(items, searchTerm);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedType, searchTerm, availableSkills, availableTools]);
 
   const handleSubmit = (value: string) => {

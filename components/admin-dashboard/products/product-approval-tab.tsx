@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { 
   Package, 
   CheckCircle, 
@@ -33,6 +34,7 @@ export default function ProductApprovalTab() {
 
   useEffect(() => {
     filterProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products, searchTerm, statusFilter, categoryFilter]);
 
   const fetchPendingProducts = async () => {
@@ -126,6 +128,8 @@ export default function ProductApprovalTab() {
       setLoading(false);
     }
   };
+
+
 
   const filterProducts = () => {
     let filtered = products;
@@ -317,10 +321,11 @@ export default function ProductApprovalTab() {
             <div key={product.id} className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
               {/* Product Image */}
               <div className="aspect-video bg-gray-100 relative">
-                <img
+                <Image
                   src={product.previewImages[0]}
                   alt={product.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
                 <div className="absolute top-3 right-3">
                   {getStatusBadge(product.status)}
@@ -436,12 +441,14 @@ export default function ProductApprovalTab() {
                 <h4 className="font-medium mb-2">Preview Images</h4>
                 <div className="grid grid-cols-3 gap-2">
                   {selectedProduct.previewImages.map((image: string, index: number) => (
-                    <img
-                      key={index}
-                      src={image}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full aspect-video object-cover rounded border"
-                    />
+                    <div key={index} className="relative w-full aspect-video">
+                      <Image
+                        src={image}
+                        alt={`Preview ${index + 1}`}
+                        fill
+                        className="object-cover rounded border"
+                      />
+                    </div>
                   ))}
                 </div>
               </div>

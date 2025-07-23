@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { 
   ShoppingCart, 
   Package, 
@@ -30,10 +30,12 @@ export default function StorefrontTab({ data, dateRange }: StorefrontTabProps) {
 
   useEffect(() => {
     fetchStorefrontSales();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange]);
 
   useEffect(() => {
     filterSales();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sales, searchTerm, categoryFilter]);
 
   const fetchStorefrontSales = async () => {

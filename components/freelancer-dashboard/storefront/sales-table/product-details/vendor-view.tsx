@@ -68,6 +68,7 @@ export default function VendorView({ product }: VendorViewProps) {
   // Load sales data on component mount
   useEffect(() => {
     fetchSalesData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.id]);
 
   const handleRemove = () => {
@@ -368,7 +369,7 @@ export default function VendorView({ product }: VendorViewProps) {
               Delete Product
             </h3>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to delete "{product.title}" from storefront?
+              Are you sure you want to delete &quot;{product.title}&quot; from storefront?
             </p>
             <div className="flex gap-3 justify-end">
               <button

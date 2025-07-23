@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     const threadId = `${sortedIds[0]}-${sortedIds[1]}`;
 
     // Check if thread already exists
-    let threadExists = messages.find((t: any) => t.threadId === threadId);
+    const threadExists = messages.find((t: any) => t.threadId === threadId);
     let needsUpdate = false;
 
     // Create thread if it doesn't exist

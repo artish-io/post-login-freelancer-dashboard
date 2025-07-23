@@ -33,14 +33,20 @@ export class MessageEncryption {
     const recipientPubKey = sodium.from_base64(recipientPublicKey);
     const senderPrivKey = sodium.from_base64(senderPrivateKey);
     
-    const encrypted = sodium.crypto_box_easy(
+    const nonce = sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES);
+    const ciphertext = sodium.crypto_box_easy(
       messageBytes,
-      sodium.randombytes_buf(sodium.crypto_box_NONCEBYTES),
+      nonce,
       recipientPubKey,
       senderPrivKey
     );
-    
-    return sodium.to_base64(encrypted);
+
+    // Combine nonce and ciphertext
+    const combined = new Uint8Array(nonce.length + ciphertext.length);
+    combined.set(nonce);
+    combined.set(ciphertext, nonce.length);
+
+    return sodium.to_base64(combined);
   }
 
   // Decrypt a message
@@ -55,8 +61,13 @@ export class MessageEncryption {
     const senderPubKey = sodium.from_base64(senderPublicKey);
     const recipientPrivKey = sodium.from_base64(recipientPrivateKey);
     
+    // Extract nonce (first 24 bytes) and ciphertext (rest)
+    const nonce = encrypted.slice(0, sodium.crypto_box_NONCEBYTES);
+    const ciphertext = encrypted.slice(sodium.crypto_box_NONCEBYTES);
+
     const decrypted = sodium.crypto_box_open_easy(
-      encrypted,
+      ciphertext,
+      nonce,
       senderPubKey,
       recipientPrivKey
     );

@@ -70,9 +70,10 @@ export async function POST(
         id: `product_rejected_${productId}_${Date.now()}`,
         timestamp: new Date().toISOString(),
         type: 'product_rejected',
+        notificationType: 103, // NOTIFICATION_TYPES.PRODUCT_REJECTED
         actorId: adminId || 0, // Admin user ID
         targetId: product.sellerId,
-        entityType: 'product',
+        entityType: 6, // ENTITY_TYPES.PRODUCT
         entityId: productId,
         metadata: {
           productTitle: product.title,

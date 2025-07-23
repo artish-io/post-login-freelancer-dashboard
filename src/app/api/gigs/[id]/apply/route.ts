@@ -8,9 +8,10 @@ const APPLICATIONS_PATH = path.join(process.cwd(), 'data/gigs/gig-applications.j
 
 export async function POST(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const gigId = Number(params.id);
+  const { id } = await params;
+  const gigId = Number(id);
 
   try {
     const body = await req.json();

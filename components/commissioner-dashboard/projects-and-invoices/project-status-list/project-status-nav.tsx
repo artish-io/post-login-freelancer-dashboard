@@ -19,7 +19,6 @@ export default function CommissionerProjectStatusNav() {
 
   useEffect(() => {
     setSelectedStatus(initialStatus);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialStatus]);
 
   const handleClick = (status: string) => {

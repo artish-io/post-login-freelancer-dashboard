@@ -59,10 +59,10 @@ export async function POST() {
     await fs.writeFile(invoicesPath, JSON.stringify(invoices, null, 2));
 
     // Calculate summary statistics
-    const allPaidInvoices = invoices.filter(inv => inv.status === 'paid');
-    const totalInvoiceValue = allPaidInvoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
-    const totalPlatformRevenue = allPaidInvoices.reduce((sum, inv) => sum + (inv.paymentDetails?.platformFee || 0), 0);
-    const totalFreelancerPayouts = allPaidInvoices.reduce((sum, inv) => sum + (inv.paymentDetails?.freelancerAmount || 0), 0);
+    const allPaidInvoices = invoices.filter((inv: any) => inv.status === 'paid');
+    const totalInvoiceValue = allPaidInvoices.reduce((sum: number, inv: any) => sum + inv.totalAmount, 0);
+    const totalPlatformRevenue = allPaidInvoices.reduce((sum: number, inv: any) => sum + (inv.paymentDetails?.platformFee || 0), 0);
+    const totalFreelancerPayouts = allPaidInvoices.reduce((sum: number, inv: any) => sum + (inv.paymentDetails?.freelancerAmount || 0), 0);
 
     return NextResponse.json({
       success: true,
@@ -96,13 +96,13 @@ export async function GET() {
 
     // Analyze current state
     const allInvoices = invoices.length;
-    const paidInvoices = invoices.filter(inv => inv.status === 'paid');
-    const paidWithFees = paidInvoices.filter(inv => inv.paymentDetails);
-    const paidWithoutFees = paidInvoices.filter(inv => !inv.paymentDetails);
+    const paidInvoices = invoices.filter((inv: any) => inv.status === 'paid');
+    const paidWithFees = paidInvoices.filter((inv: any) => inv.paymentDetails);
+    const paidWithoutFees = paidInvoices.filter((inv: any) => !inv.paymentDetails);
 
-    const totalInvoiceValue = paidInvoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
-    const currentPlatformRevenue = paidWithFees.reduce((sum, inv) => sum + (inv.paymentDetails?.platformFee || 0), 0);
-    const missingPlatformRevenue = paidWithoutFees.reduce((sum, inv) => sum + (inv.totalAmount * 0.05), 0);
+    const totalInvoiceValue = paidInvoices.reduce((sum: number, inv: any) => sum + inv.totalAmount, 0);
+    const currentPlatformRevenue = paidWithFees.reduce((sum: number, inv: any) => sum + (inv.paymentDetails?.platformFee || 0), 0);
+    const missingPlatformRevenue = paidWithoutFees.reduce((sum: number, inv: any) => sum + (inv.totalAmount * 0.05), 0);
 
     return NextResponse.json({
       analysis: {
@@ -118,7 +118,7 @@ export async function GET() {
         missingPlatformRevenue: Math.round(missingPlatformRevenue * 100) / 100,
         potentialTotalRevenue: Math.round((currentPlatformRevenue + missingPlatformRevenue) * 100) / 100
       },
-      invoicesNeedingMigration: paidWithoutFees.map(inv => ({
+      invoicesNeedingMigration: paidWithoutFees.map((inv: any) => ({
         invoiceNumber: inv.invoiceNumber,
         projectTitle: inv.projectTitle,
         totalAmount: inv.totalAmount,

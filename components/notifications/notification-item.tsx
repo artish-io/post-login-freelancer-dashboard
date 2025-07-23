@@ -90,6 +90,7 @@ export default function NotificationItem({
   onClick
 }: NotificationItemProps) {
   const timeAgo = formatDistanceToNow(new Date(notification.timestamp), { addSuffix: true });
+  const shouldUseUserAvatar = useUserAvatar(notification.type);
 
   return (
     <div
@@ -100,7 +101,7 @@ export default function NotificationItem({
     >
       {/* User Avatar or Icon */}
       <div className="flex-shrink-0 w-10">
-        {notification.user?.avatar && useUserAvatar(notification.type) ? (
+        {notification.user?.avatar && shouldUseUserAvatar ? (
           <Image
             src={notification.user.avatar}
             alt={notification.user.name}

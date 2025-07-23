@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Upload, X } from 'lucide-react';
+import Image from 'next/image';
 
 interface Organization {
   id?: number;
@@ -64,12 +65,13 @@ function OrganizationMetadataForm({
         </label>
         <div className="flex items-center gap-4">
           {/* Logo Preview */}
-          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-2 border-gray-200">
+          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border-2 border-gray-200 relative">
             {logoPreview ? (
-              <img
+              <Image
                 src={logoPreview}
                 alt="Organization logo"
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
               />
             ) : (
               <Upload size={24} className="text-gray-400" />
@@ -181,7 +183,7 @@ function OrganizationMetadataForm({
           Why this information helps
         </h4>
         <ul className="text-xs text-gray-600 space-y-1">
-          <li>• Your company information helps freelancers understand who they'll be working with</li>
+          <li>• Your company information helps freelancers understand who they&apos;ll be working with</li>
           <li>• A professional logo and description builds trust and credibility</li>
           <li>• Contact details ensure smooth communication throughout the project</li>
         </ul>

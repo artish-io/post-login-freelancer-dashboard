@@ -35,7 +35,7 @@ const Apply: React.FC<ApplyProps> = ({ gig: propGig, organization: propOrganizat
     : null);
 
   const allSubcategories = gigCategories.reduce<string[]>((acc, category) => {
-    return acc.concat(category.subcategories);
+    return acc.concat(category.subcategories.map(sub => sub.name));
   }, []);
 
   useEffect(() => {
@@ -49,6 +49,7 @@ const Apply: React.FC<ApplyProps> = ({ gig: propGig, organization: propOrganizat
         !skills.includes(subcat)
     );
     setSuggestions(filtered);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue, skills]);
 
   // Fetch freelancer ID from session

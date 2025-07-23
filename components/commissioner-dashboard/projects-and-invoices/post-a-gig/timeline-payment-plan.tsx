@@ -169,7 +169,7 @@ export default function TimelinePaymentPlan({
         {/* Project Duration */}
         <div className="flex flex-col gap-2">
           <label className="text-sm font-medium text-gray-700 mb-2">
-            What's the duration for this project?
+            What&apos;s the duration for this project?
           </label>
           <Popover className="relative w-full">
             <Popover.Button

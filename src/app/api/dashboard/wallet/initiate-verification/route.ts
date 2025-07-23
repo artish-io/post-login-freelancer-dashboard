@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       success: true,
-      userId: MOCK_USER_ID,
+      userId: session.user.id,
       method,
       redirectUrl,
       message: `Redirect user to ${method} verification page.`,

@@ -97,7 +97,7 @@ export default function UserPreferences() {
         <div>
           <h3 className="text-lg font-medium text-gray-900 mb-1">Open to work</h3>
           <p className="text-sm text-gray-600">
-            Toggle this setting on to recruiters know you're available for work so they can send you gig requests.
+            Toggle this setting on to recruiters know you&apos;re available for work so they can send you gig requests.
           </p>
         </div>
         <div className="relative">

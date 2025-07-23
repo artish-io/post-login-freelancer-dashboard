@@ -114,7 +114,7 @@ export async function GET(request: Request) {
           description: inv.milestoneDescription
         })),
         latestEligibleInvoice: sentInvoices.length > 0 
-          ? sentInvoices.sort((a, b) => b.milestoneNumber - a.milestoneNumber)[0]
+          ? sentInvoices.sort((a: any, b: any) => b.milestoneNumber - a.milestoneNumber)[0]
           : null
       });
     }

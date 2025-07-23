@@ -104,7 +104,7 @@ export default function ProjectInvoiceOverviewPage() {
         });
 
         // Sort by milestone number
-        enrichedInvoices.sort((a, b) => a.milestoneNumber - b.milestoneNumber);
+        enrichedInvoices.sort((a: any, b: any) => a.milestoneNumber - b.milestoneNumber);
 
         setProjectInvoices(enrichedInvoices);
       } catch (error) {

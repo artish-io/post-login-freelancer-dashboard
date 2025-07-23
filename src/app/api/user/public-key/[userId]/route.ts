@@ -8,7 +8,7 @@ import { promises as fs } from 'fs';
 // Get public key for a user
 export async function GET(
   req: Request,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -16,7 +16,7 @@ export async function GET(
   }
 
   try {
-    const { userId } = params;
+    const { userId } = await params;
     const keysFile = path.join(process.cwd(), 'data/public-keys.json');
     
     const data = await fs.readFile(keysFile, 'utf-8');

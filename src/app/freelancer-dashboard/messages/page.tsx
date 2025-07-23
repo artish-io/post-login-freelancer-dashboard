@@ -5,7 +5,7 @@
 // and renders the full-width messaging view inside the dashboard shell.
 
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import MessagesExpansion from '../../../../components/freelancer-dashboard/messages-expansion';
 
@@ -38,7 +38,9 @@ export default function MessagesPage() {
         transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
         className="w-full"
       >
-        <MessagesExpansion />
+        <Suspense fallback={<div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div></div>}>
+          <MessagesExpansion />
+        </Suspense>
       </motion.div>
     </motion.main>
   );

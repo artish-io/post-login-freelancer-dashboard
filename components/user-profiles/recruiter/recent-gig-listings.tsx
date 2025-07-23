@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Calendar, DollarSign, Users, ExternalLink } from 'lucide-react';
+import { Plus, Calendar, DollarSign, Users, ExternalLink, Building2 } from 'lucide-react';
 import Link from 'next/link';
 
 type GigListing = {

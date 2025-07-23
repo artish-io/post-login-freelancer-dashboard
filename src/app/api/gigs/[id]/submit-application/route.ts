@@ -13,8 +13,9 @@ async function ensureDirectoryExists(dir: string) {
   }
 }
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
-  const gigId = params.id;
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const gigId = id;
   if (!gigId) {
     return NextResponse.json({ error: 'Gig ID is required.' }, { status: 400 });
   }

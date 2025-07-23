@@ -45,6 +45,8 @@ export const NOTIFICATION_TYPES = {
   // Storefront notifications (100-119)
   PRODUCT_PURCHASED: 100,
   STOREFRONT_SALE: 101,
+  PRODUCT_APPROVED: 102,
+  PRODUCT_REJECTED: 103,
 
   // System notifications (120-139)
   SYSTEM_MAINTENANCE: 120,
@@ -55,7 +57,7 @@ export const NOTIFICATION_TYPES = {
 export const USER_TYPE_FILTERS = {
   COMMISSIONER_ONLY: ['task_submitted', 'gig_applied', 'invoice_sent', 'proposal_sent'],
   FREELANCER_ONLY: ['task_approved', 'task_rejected', 'task_rejected_with_comment', 'gig_request_sent', 'invoice_paid', 'milestone_payment_received'],
-  BOTH: ['project_created', 'project_started', 'project_pause_requested', 'project_pause_accepted']
+  BOTH: ['project_created', 'project_started', 'project_pause_requested', 'project_pause_accepted', 'product_approved', 'product_rejected']
 } as const;
 
 export interface EventData {
@@ -77,6 +79,11 @@ export interface EventData {
     productId?: string;
     milestoneTitle?: string;
     rejectionComment?: string;
+    taskId?: number;
+    proposalId?: string;
+    sellerId?: number;
+    requestId?: string;
+    invoiceNumber?: string;
   };
 }
 
@@ -108,7 +115,7 @@ export type EventType =
   // Invoice events - More granular
   | 'invoice_created' | 'invoice_sent' | 'invoice_paid' | 'invoice_overdue' | 'milestone_payment_received'
   // Storefront events
-  | 'product_purchased' | 'product_downloaded' | 'review_posted'
+  | 'product_purchased' | 'product_downloaded' | 'review_posted' | 'product_approved' | 'product_rejected'
   // Proposal events
   | 'proposal_sent' | 'proposal_accepted' | 'proposal_rejected'
   // Network events
@@ -168,6 +175,8 @@ function getNotificationTypeNumber(eventType: EventType): number {
 
     // Storefront events
     'product_purchased': NOTIFICATION_TYPES.PRODUCT_PURCHASED,
+    'product_approved': NOTIFICATION_TYPES.PRODUCT_APPROVED,
+    'product_rejected': NOTIFICATION_TYPES.PRODUCT_REJECTED,
 
     // Default fallback for unmapped types
     'project_paused': NOTIFICATION_TYPES.PROJECT_PAUSE_REQUESTED,
@@ -369,8 +378,8 @@ class EventLogger {
       // Enhance event data with number-based fields
       const enhancedEventData: EventData = {
         ...eventData,
-        notificationType: getNotificationTypeNumber(eventData.type),
-        entityType: getEntityTypeNumber(eventData.entityType as EntityType)
+        notificationType: getNotificationTypeNumber(eventData.type)
+        // entityType is already a number, no conversion needed
       };
 
       // Read existing log
@@ -678,8 +687,9 @@ export const logProjectPauseRequested = (freelancerId: number, projectId: number
     id: `project_pause_${projectId}_${Date.now()}`,
     timestamp: new Date().toISOString(),
     type: 'project_pause_requested',
+    notificationType: NOTIFICATION_TYPES.PROJECT_PAUSE_REQUESTED,
     actorId: freelancerId,
-    entityType: 'project',
+    entityType: ENTITY_TYPES.PROJECT,
     entityId: projectId,
     metadata: {
       projectTitle,
@@ -696,9 +706,10 @@ export const logInvoiceSent = (freelancerId: number, commissionerId: number, inv
     id: `invoice_sent_${invoiceId}_${Date.now()}`,
     timestamp: new Date().toISOString(),
     type: 'invoice_sent',
+    notificationType: NOTIFICATION_TYPES.INVOICE_SENT,
     actorId: freelancerId,
     targetId: commissionerId,
-    entityType: 'invoice',
+    entityType: ENTITY_TYPES.INVOICE,
     entityId: invoiceId,
     metadata: {
       invoiceNumber,
@@ -718,9 +729,10 @@ export const logInvoicePaid = (commissionerId: number, freelancerId: number, inv
     id: `invoice_paid_${invoiceId}_${Date.now()}`,
     timestamp: new Date().toISOString(),
     type: 'invoice_paid',
+    notificationType: NOTIFICATION_TYPES.INVOICE_PAID,
     actorId: commissionerId,
     targetId: freelancerId,
-    entityType: 'invoice',
+    entityType: ENTITY_TYPES.INVOICE,
     entityId: invoiceId,
     metadata: {
       invoiceNumber,
@@ -739,9 +751,10 @@ export const logGigApplication = (freelancerId: number, gigId: number, gigTitle:
     id: `gig_applied_${gigId}_${freelancerId}_${Date.now()}`,
     timestamp: new Date().toISOString(),
     type: 'gig_applied',
+    notificationType: NOTIFICATION_TYPES.GIG_APPLICATION_RECEIVED,
     actorId: freelancerId,
     targetId: gigOwnerId,
-    entityType: 'gig',
+    entityType: ENTITY_TYPES.GIG,
     entityId: gigId,
     metadata: {
       gigTitle
@@ -757,9 +770,10 @@ export const logStorefrontPurchase = (buyerId: number, sellerId: number, product
     id: `product_purchased_${productId}_${buyerId}_${Date.now()}`,
     timestamp: new Date().toISOString(),
     type: 'product_purchased',
+    notificationType: NOTIFICATION_TYPES.PRODUCT_PURCHASED,
     actorId: buyerId,
     targetId: sellerId,
-    entityType: 'product',
+    entityType: ENTITY_TYPES.PRODUCT,
     entityId: productId,
     metadata: {
       productTitle,
@@ -776,9 +790,10 @@ export const logMessageSent = (senderId: number, recipientId: number, messageId:
     id: `message_sent_${messageId}_${Date.now()}`,
     timestamp: new Date().toISOString(),
     type: 'message_sent',
+    notificationType: 0, // Messages excluded from notifications
     actorId: senderId,
     targetId: recipientId,
-    entityType: 'message',
+    entityType: ENTITY_TYPES.MESSAGE,
     entityId: messageId,
     metadata: {
       messagePreview,

@@ -58,10 +58,7 @@ const getNotificationIcon = (type: NotificationType): string => {
   }
 };
 
-// Types that should use user avatar instead of icon
-const useUserAvatar = (type: NotificationType): boolean => {
-  return ['project_pause', 'gig_request', 'project_accepted', 'proposal_sent', 'invoice_sent'].includes(type);
-};
+
 
 // Format timestamp to relative time
 const formatTimeAgo = (timestamp: string): string => {
@@ -156,7 +153,7 @@ export default function CommissionerNotificationsPanel() {
               >
                 {/* Avatar / Icon */}
                 <div className="flex-shrink-0 w-10">
-                  {notification.user?.avatar && useUserAvatar(notification.type) ? (
+                  {notification.user?.avatar ? (
                     <Image
                       src={notification.user.avatar}
                       alt={notification.user.name}
