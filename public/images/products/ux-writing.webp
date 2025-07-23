@@ -2,7 +2,7 @@
 <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#dc2626;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#FCD5E3;stop-opacity:1" />
     </linearGradient>
   </defs>
@@ -11,7 +11,7 @@
   
   <!-- Icon area -->
   <circle cx="200" cy="150" r="40" fill="white" opacity="0.9"/>
-  <text x="200" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#dc2626">🐍</text>
+  <text x="200" y="160" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#059669">✍️</text>
   
   <!-- Title -->
   <foreignObject x="40" y="220" width="320" height="120">
@@ -25,8 +25,8 @@
       padding: 10px;
       text-shadow: 0 1px 3px rgba(0,0,0,0.3);
     ">
-      Python For
-Dummies
+      UX Writing For
+Beginners
     </div>
   </foreignObject>
   

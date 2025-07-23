@@ -14,8 +14,8 @@ export default function Footer() {
             className="object-contain"
           />
           <div>
-            <p className="font-bold">123 Main St.</p>
-            <p>2, Alfred Rewane, Ikoyi</p>
+            <p className="font-bold">333, King Street.</p>
+            <p>2, Waterloo, Ontario</p>
           </div>
           <div>
             <p className="font-bold">Phone:</p>

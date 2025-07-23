@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import StorefrontSummaryStatsRow from '../../../../components/shared/storefront/storefront-summary-stats-row';
 import RevenueLineChart from '../../../../components/shared/storefront/revenue-line-chart';
 import RecentSalesTable from '../../../../components/shared/storefront/recent-sales-table';
@@ -8,7 +9,7 @@ import TopProductsBarChart from '../../../../components/shared/storefront/top-pr
 import SalesSourcesPieChart from '../../../../components/shared/storefront/sales-sources-pie-chart';
 import { format, startOfMonth, endOfMonth } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
-import { Popover } from '@headlessui/react';
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import { StorefrontCalendar } from '../../../../components/ui/storefront-calendar';
 import ActionButtons from '../../../../components/shared/storefront/action-buttons';
 
@@ -39,37 +40,37 @@ export default function CommissionerStorefrontPage() {
           {/* Separate Start and End Date Pickers */}
           <div className="flex items-center gap-3">
             <Popover className="relative">
-              <Popover.Button className="flex items-center gap-2 border border-gray-300 rounded-md px-3 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-50">
+              <PopoverButton className="flex items-center gap-2 border border-gray-300 rounded-md px-3 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-50">
                 <CalendarIcon className="w-4 h-4" />
                 <span className="text-xs md:text-sm">
                   {startDate ? format(startDate, 'dd MMM, yyyy') : 'Start Date'}
                 </span>
-              </Popover.Button>
-              <Popover.Panel className="absolute left-0 md:-left-8 z-10 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
+              </PopoverButton>
+              <PopoverPanel className="absolute left-0 md:-left-8 z-10 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
                 <StorefrontCalendar
                   mode="single"
                   selected={startDate}
                   onSelect={setStartDate}
                 />
-              </Popover.Panel>
+              </PopoverPanel>
             </Popover>
 
             <span className="text-gray-400 text-xs md:text-sm">to</span>
 
             <Popover className="relative">
-              <Popover.Button className="flex items-center gap-2 border border-gray-300 rounded-md px-3 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-50">
+              <PopoverButton className="flex items-center gap-2 border border-gray-300 rounded-md px-3 py-2 text-xs md:text-sm text-gray-700 hover:bg-gray-50">
                 <CalendarIcon className="w-4 h-4" />
                 <span className="text-xs md:text-sm">
                   {endDate ? format(endDate, 'dd MMM, yyyy') : 'End Date'}
                 </span>
-              </Popover.Button>
-              <Popover.Panel className="absolute -right-6 md:-right-8 z-10 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
+              </PopoverButton>
+              <PopoverPanel className="absolute -right-6 md:-right-8 z-10 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
                 <StorefrontCalendar
                   mode="single"
                   selected={endDate}
                   onSelect={setEndDate}
                 />
-              </Popover.Panel>
+              </PopoverPanel>
             </Popover>
           </div>
         </div>
@@ -106,6 +107,14 @@ export default function CommissionerStorefrontPage() {
               <h3 className="text-lg font-semibold mb-4">Most Sold Items</h3>
               <TopProductsBarChart />
             </div>
+
+            {/* Go to Digital Store Button */}
+            <Link
+              href="/artish-storefront"
+              className="block w-full bg-white border-2 border-black text-black text-center py-3 px-4 rounded-2xl font-semibold hover:bg-black hover:text-white transition-colors duration-200"
+            >
+              Go to Digital Store
+            </Link>
 
             <ActionButtons dashboardType="commissioner" />
 

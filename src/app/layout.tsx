@@ -4,6 +4,7 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import { Suspense } from 'react';
 import CustomSessionProvider from '../../components/providers/session-provider';
 import NavigationProgress from '../../components/ui/navigation-progress';
+import { CartProvider } from '../../components/storefront/cart-context';
 import './globals.css';
 
 const jakarta = Plus_Jakarta_Sans({
@@ -27,7 +28,11 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <NavigationProgress />
         </Suspense>
-        <CustomSessionProvider>{children}</CustomSessionProvider>
+        <CustomSessionProvider>
+          <CartProvider>
+            {children}
+          </CartProvider>
+        </CustomSessionProvider>
       </body>
     </html>
   );

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import NotificationDropdown from '../shared/notification-dropdown';
 import MobileMenuToggle from './mobile-menu-toggle';
 import UserProfileDropdown from './user-profile-dropdown';
+import CartIcon from '../storefront/cart-icon';
 
 interface TopNavbarProps {
   isMobileMenuOpen?: boolean;
@@ -66,6 +67,7 @@ export default function TopNavbar({
 
       {/* Icons */}
       <div className="flex items-center gap-5 pr-2">
+        <CartIcon />
         <NotificationDropdown dashboardType="freelancer" />
 
         <div className="relative">

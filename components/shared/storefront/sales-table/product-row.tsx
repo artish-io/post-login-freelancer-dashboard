@@ -3,7 +3,7 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import clsx from 'clsx';
 
 type ProductRowProps = {
@@ -32,6 +32,7 @@ export default function ProductRow({
   releaseDate,
 }: ProductRowProps) {
   const router = useRouter();
+  const pathname = usePathname();
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return '–';
@@ -48,7 +49,13 @@ export default function ProductRow({
   const handleRowClick = () => {
     // Encode the ID to handle special characters like #
     const encodedId = encodeURIComponent(id);
-    router.push(`/freelancer-dashboard/storefront/product-inventory/products/${encodedId}`);
+
+    // Determine the correct dashboard path based on current location
+    if (pathname.includes('/commissioner-dashboard/')) {
+      router.push(`/commissioner-dashboard/storefront/product-inventory/products/${encodedId}`);
+    } else {
+      router.push(`/freelancer-dashboard/storefront/product-inventory/products/${encodedId}`);
+    }
   };
 
   return (

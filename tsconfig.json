@@ -16,7 +16,8 @@
     "incremental": true,
     "baseUrl": ".",                          // ✅ Enables root-relative imports
     "paths": {
-      "@/*": ["src/*"]                       // ✅ Alias `@/` to `src/`
+      "@/*": ["src/*"],                      // ✅ Alias `@/` to `src/`
+      "@/components/*": ["components/*"]     // ✅ Alias for components folder
     },
     "types": ["next-auth"],
     "plugins": [{ "name": "next" }]

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import StorefrontSummaryStatsRow from '../../../../components/shared/storefront/storefront-summary-stats-row';
 import RevenueLineChart from '../../../../components/shared/storefront/revenue-line-chart';
 import RecentSalesTable from '../../../../components/shared/storefront/recent-sales-table';
@@ -106,6 +107,14 @@ export default function StorefrontDashboardPage() {
               <h3 className="text-lg font-semibold mb-4">Most Sold Items</h3>
               <TopProductsBarChart />
             </div>
+
+            {/* Go to Digital Store Button */}
+            <Link
+              href="/artish-storefront"
+              className="block w-full bg-white border-2 border-black text-black text-center py-3 px-4 rounded-2xl font-semibold hover:bg-black hover:text-white transition-colors duration-200"
+            >
+              Go to Digital Store
+            </Link>
 
             <ActionButtons dashboardType="freelancer" />
 
