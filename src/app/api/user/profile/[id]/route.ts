@@ -23,16 +23,22 @@ export async function GET(
     );
     const gigCategoriesPath = path.join(root, 'data', 'gigs', 'gig-categories.json');
     const gigToolsPath = path.join(root, 'data', 'gigs', 'gig-tools.json');
+    const invoicesPath = path.join(root, 'data', 'invoices.json');
+    const projectsPath = path.join(root, 'data', 'projects.json');
+    const projectTasksPath = path.join(root, 'data', 'project-tasks.json');
 
     // ---------- Read all files in parallel ----------
-    const [freelancersRaw, usersRaw, organizationsRaw, gigsRaw, samplesRaw, categoriesRaw, toolsRaw] = await Promise.all([
+    const [freelancersRaw, usersRaw, organizationsRaw, gigsRaw, samplesRaw, categoriesRaw, toolsRaw, invoicesRaw, projectsRaw, projectTasksRaw] = await Promise.all([
       readFile(freelancersPath, 'utf-8'),
       readFile(usersPath, 'utf-8'),
       readFile(organizationsPath, 'utf-8'),
       readFile(gigsPath, 'utf-8'),
       readFile(workSamplesPath, 'utf-8'),
       readFile(gigCategoriesPath, 'utf-8'),
-      readFile(gigToolsPath, 'utf-8')
+      readFile(gigToolsPath, 'utf-8'),
+      readFile(invoicesPath, 'utf-8'),
+      readFile(projectsPath, 'utf-8'),
+      readFile(projectTasksPath, 'utf-8')
     ]);
 
     const freelancers = JSON.parse(freelancersRaw);
@@ -40,8 +46,10 @@ export async function GET(
     const organizations = JSON.parse(organizationsRaw);
     const gigs = JSON.parse(gigsRaw);
     const workSamples = JSON.parse(samplesRaw);
-    const gigCategories = JSON.parse(categoriesRaw);
     const gigTools = JSON.parse(toolsRaw);
+    const invoices = JSON.parse(invoicesRaw);
+    const projects = JSON.parse(projectsRaw);
+    const projectTasks = JSON.parse(projectTasksRaw);
 
     // ---------- Look‑ups ----------
     const user = users.find((u: any) => String(u.id) === id);
@@ -107,9 +115,25 @@ export async function GET(
         ? gigs.filter((gig: any) => gig.organizationId === organization.id)
         : [];
 
-      // Mock data for demonstration - in real app, calculate from actual data
-      const projectsCommissioned = organizationGigs.length;
-      const totalBudget = 122000; // This would be calculated from actual project budgets
+      // Calculate total budget from paid invoices for this commissioner
+      const paidInvoices = invoices.filter((invoice: any) =>
+        invoice.commissionerId === user.id && invoice.status === 'paid'
+      );
+
+      const totalBudget = paidInvoices.reduce((sum: number, invoice: any) => {
+        return sum + (invoice.totalAmount || 0);
+      }, 0);
+
+      // Calculate quarterly change (mock data for now - in real app would compare with previous quarter)
+      const previousQuarterTotal = totalBudget * 0.85; // Mock 15% growth
+      const quarterlyChange = totalBudget > 0 ?
+        ((totalBudget - previousQuarterTotal) / previousQuarterTotal * 100) : 0;
+
+      // Check if commissioner has active unfilled gigs
+      const activeUnfilledGigs = organizationGigs.filter((gig: any) =>
+        gig.status === 'active' && !gig.freelancerId
+      );
+      const isActivelyCommissioning = activeUnfilledGigs.length > 0;
 
       // Format gig listings for display
       const gigListings = organizationGigs.slice(0, 8).map((gig: any) => ({
@@ -122,18 +146,6 @@ export async function GET(
         status: gig.status || 'active'
       }));
 
-      // Sample responsibilities for commissioners
-      const sampleResponsibilities = [
-        "Project Management",
-        "Budget Oversight",
-        "Stakeholder Communication",
-        "Quality Assurance",
-        "Timeline Management",
-        "Resource Allocation",
-        "Risk Assessment",
-        "Team Coordination"
-      ];
-
       return NextResponse.json({
         id: user.id,
         name: user.name,
@@ -141,17 +153,22 @@ export async function GET(
         avatar: user.avatar,
         isOnline,
         type: user.type,
-        about: user.about || '',
+        location: user.address, // Use address from user data as location
+        rating: user.rating,
+        about: user.bio || '',
         organization: organization ? {
           id: organization.id,
           name: organization.name,
           logo: organization.logo,
           address: organization.address
         } : null,
-        projectsCommissioned,
+        projectsCommissioned: organizationGigs.length,
         totalBudget,
+        quarterlyChange,
+        isActivelyCommissioning,
         gigListings,
-        responsibilities: sampleResponsibilities
+        responsibilities: user.responsibilities || [],
+        socialLinks: user.socialLinks || []
       });
     } else {
       return NextResponse.json(

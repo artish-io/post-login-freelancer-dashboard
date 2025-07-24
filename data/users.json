@@ -337,10 +337,28 @@
     "avatar": "/avatars/neilsan.png",
     "type": "commissioner",
     "email": "neilsan.mando@example.com",
-    "address": "32 Remote Lane, Virtual City, Country",
+    "address": "Hidden Leaf, Land of Fire",
     "organizationId": 1,
     "username": "neilsan",
-    "password": "testpass"
+    "password": "testpass",
+    "bio": "Experienced product manager with over 8 years in public sector digital transformation. Passionate about creating user-centered solutions that improve community services and enhance citizen engagement.",
+    "rating": 4.8,
+    "responsibilities": [
+      "Project Management",
+      "Budget Oversight",
+      "Stakeholder Communication",
+      "Quality Assurance",
+      "Timeline Management",
+      "Resource Allocation",
+      "Risk Assessment",
+      "Team Coordination"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/neilsan-mando"
+      }
+    ]
   },
   {
     "id": 33,
@@ -349,8 +367,25 @@
     "avatar": "/avatars/priyaa.png",
     "type": "commissioner",
     "email": "tiruvellly.priya@example.com",
-    "address": "33 Remote Lane, Virtual City, Country",
-    "organizationId": 2
+    "address": "Lagos, Nigeria",
+    "organizationId": 2,
+    "bio": "Creative brand strategist with a focus on authentic storytelling and cultural representation. Leading brand initiatives that connect with diverse audiences across Africa and beyond.",
+    "rating": 4.6,
+    "responsibilities": [
+      "Brand Strategy",
+      "Creative Direction",
+      "Content Oversight",
+      "Campaign Management",
+      "Market Research",
+      "Vendor Relations",
+      "Budget Planning"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/tiruvellly-priya"
+      }
+    ]
   },
   {
     "id": 34,
@@ -359,8 +394,24 @@
     "avatar": "/avatars/matte.png",
     "type": "commissioner",
     "email": "matte.hannery@example.com",
-    "address": "34 Remote Lane, Virtual City, Country",
-    "organizationId": 3
+    "address": "Toronto, Canada",
+    "organizationId": 3,
+    "bio": "Serial entrepreneur focused on wellness technology and mental health solutions. Building products that make wellness accessible and sustainable for everyone.",
+    "rating": 4.9,
+    "responsibilities": [
+      "Product Vision",
+      "Strategic Planning",
+      "Investor Relations",
+      "Team Leadership",
+      "Market Validation",
+      "Partnership Development"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/matte-hannery"
+      }
+    ]
   },
   {
     "id": 35,
@@ -369,8 +420,25 @@
     "avatar": "/avatars/tilly.png",
     "type": "commissioner",
     "email": "tilly.burzinsky@example.com",
-    "address": "35 Remote Lane, Virtual City, Country",
-    "organizationId": 4
+    "address": "Ottawa, Canada",
+    "organizationId": 4,
+    "bio": "Dynamic events professional specializing in large-scale corporate and cultural events. Expert in creating memorable experiences that bring communities together.",
+    "rating": 4.7,
+    "responsibilities": [
+      "Event Planning",
+      "Vendor Coordination",
+      "Budget Management",
+      "Logistics Oversight",
+      "Client Relations",
+      "Risk Management",
+      "Team Supervision"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/tilly-burzinsky"
+      }
+    ]
   },
   {
     "id": 36,
@@ -379,8 +447,25 @@
     "avatar": "/avatars/felix.png",
     "type": "commissioner",
     "email": "felix.damini@example.com",
-    "address": "36 Remote Lane, Virtual City, Country",
-    "organizationId": 5
+    "address": "Nairobi, Kenya",
+    "organizationId": 5,
+    "bio": "User experience researcher passionate about inclusive design and accessibility. Leading research initiatives that ensure digital products work for everyone, regardless of ability.",
+    "rating": 4.8,
+    "responsibilities": [
+      "Research Strategy",
+      "User Testing",
+      "Data Analysis",
+      "Stakeholder Reporting",
+      "Design Collaboration",
+      "Accessibility Audits",
+      "Team Mentoring"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/felix-damini"
+      }
+    ]
   },
   {
     "id": 37,
@@ -389,8 +474,25 @@
     "avatar": "/avatars/sarah.png",
     "type": "commissioner",
     "email": "sarah.c@techshowcase.com",
-    "address": "45 Innovation Drive, San Francisco, CA, USA",
-    "organizationId": 6
+    "address": "San Francisco, USA",
+    "organizationId": 6,
+    "bio": "Marketing leader with expertise in tech product launches and developer community building. Passionate about creating authentic connections between technology and the people who use it.",
+    "rating": 4.5,
+    "responsibilities": [
+      "Marketing Strategy",
+      "Campaign Development",
+      "Community Building",
+      "Content Strategy",
+      "Performance Analytics",
+      "Brand Management",
+      "Partnership Marketing"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/sarah-chen-marketing"
+      }
+    ]
   },
   {
     "id": 38,
@@ -399,7 +501,24 @@
     "avatar": "/avatars/michael.png",
     "type": "commissioner",
     "email": "m.torres@accessfirst.com",
-    "address": "88 Inclusive Way, Austin, TX, USA",
-    "organizationId": 7
+    "address": "Austin, USA",
+    "organizationId": 7,
+    "bio": "Research director with a PhD in Human-Computer Interaction, specializing in accessibility and inclusive design. Committed to making technology work for people with disabilities.",
+    "rating": 4.9,
+    "responsibilities": [
+      "Research Leadership",
+      "Grant Management",
+      "Academic Partnerships",
+      "Publication Oversight",
+      "Team Development",
+      "Policy Advocacy",
+      "Technology Assessment"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/dr-michael-torres"
+      }
+    ]
   }
 ]

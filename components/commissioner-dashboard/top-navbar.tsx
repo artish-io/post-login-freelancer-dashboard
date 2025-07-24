@@ -89,6 +89,7 @@ export default function TopNavbar({
             isOpen={isProfileDropdownOpen}
             onToggle={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
             onClose={() => setIsProfileDropdownOpen(false)}
+            dashboardType="commissioner"
           />
         </div>
       </div>

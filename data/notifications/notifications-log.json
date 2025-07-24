@@ -754,16 +754,16 @@
     "actorId": 31,
     "targetId": 32,
     "entityType": 5,
-    "entityId": "INV-301-001",
+    "entityId": "MGL100000-M1",
     "metadata": {
-      "invoiceNumber": "MGL301001",
+      "invoiceNumber": "MGL100000-M1",
       "projectTitle": "Lagos Parks Services website re-design",
-      "amount": 2500,
+      "amount": 1748,
       "description": "Milestone 1 completion"
     },
     "context": {
       "projectId": 301,
-      "invoiceId": "INV-301-001"
+      "invoiceId": "MGL100000-M1"
     }
   },
   {
@@ -774,16 +774,16 @@
     "actorId": 31,
     "targetId": 33,
     "entityType": 5,
-    "entityId": "INV-302-001",
+    "entityId": "CUSTOM-001-M1",
     "metadata": {
-      "invoiceNumber": "MGL302001",
-      "projectTitle": "Urbana channel brand refresh",
-      "amount": 2500,
-      "description": "Milestone 1 completion"
+      "invoiceNumber": "CUSTOM-001-M1",
+      "projectTitle": "Custom Brand Consultation",
+      "amount": 1200,
+      "description": "Brand strategy consultation"
     },
     "context": {
-      "projectId": 302,
-      "invoiceId": "INV-302-001"
+      "projectId": null,
+      "invoiceId": "CUSTOM-001-M1"
     }
   },
   {
@@ -914,17 +914,17 @@
     "actorId": 32,
     "targetId": 31,
     "entityType": 5,
-    "entityId": "INV-301-001",
+    "entityId": "MGL100000-M1",
     "metadata": {
-      "invoiceNumber": "MGL301001",
+      "invoiceNumber": "MGL100000-M1",
       "projectTitle": "Lagos Parks Services website re-design",
       "taskTitle": "Develop colour palette",
-      "amount": 2500,
+      "amount": 1748,
       "description": "Develop colour palette"
     },
     "context": {
       "projectId": 301,
-      "invoiceId": "INV-301-001"
+      "invoiceId": "MGL100000-M1"
     }
   },
   {
@@ -935,17 +935,17 @@
     "actorId": 33,
     "targetId": 31,
     "entityType": 5,
-    "entityId": "INV-302-001",
+    "entityId": "CUSTOM-001-M1",
     "metadata": {
-      "invoiceNumber": "MGL302001",
-      "projectTitle": "Urbana channel brand refresh",
-      "taskTitle": "Brand concept iteration",
-      "amount": 2500,
-      "description": "Brand concept iteration"
+      "invoiceNumber": "CUSTOM-001-M1",
+      "projectTitle": "Custom Brand Consultation",
+      "taskTitle": "Brand strategy consultation",
+      "amount": 1200,
+      "description": "Brand strategy consultation"
     },
     "context": {
-      "projectId": 302,
-      "invoiceId": "INV-302-001"
+      "projectId": null,
+      "invoiceId": "CUSTOM-001-M1"
     }
   },
   {
@@ -1209,6 +1209,222 @@
       "gigId": 108,
       "organizationId": 2,
       "requestId": 208
+    }
+  },
+  {
+    "id": "evt_1752860539720_100",
+    "timestamp": "2025-07-18T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 1,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102001",
+    "metadata": {
+      "productTitle": "Project Management Templates",
+      "amount": 25,
+      "buyerName": "Isaac Johnson"
+    },
+    "context": {
+      "productId": "#102001"
+    }
+  },
+  {
+    "id": "evt_1752860539720_101",
+    "timestamp": "2025-07-17T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 3,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102002",
+    "metadata": {
+      "productTitle": "Freelancer Onboarding Guide",
+      "amount": 35,
+      "buyerName": "Samantha Lee"
+    },
+    "context": {
+      "productId": "#102002"
+    }
+  },
+  {
+    "id": "evt_1752860539720_102",
+    "timestamp": "2025-07-16T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 5,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102001",
+    "metadata": {
+      "productTitle": "Project Management Templates",
+      "amount": 25,
+      "buyerName": "David Kim"
+    },
+    "context": {
+      "productId": "#102001"
+    }
+  },
+  {
+    "id": "evt_1752860539720_103",
+    "timestamp": "2025-07-15T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 8,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102001",
+    "metadata": {
+      "productTitle": "Project Management Templates",
+      "amount": 25,
+      "buyerName": "Emily Rodriguez"
+    },
+    "context": {
+      "productId": "#102001"
+    }
+  },
+  {
+    "id": "evt_1752860539720_104",
+    "timestamp": "2025-07-14T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 10,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102001",
+    "metadata": {
+      "productTitle": "Project Management Templates",
+      "amount": 25,
+      "buyerName": "Michael Chen"
+    },
+    "context": {
+      "productId": "#102001"
+    }
+  },
+  {
+    "id": "evt_1752860539720_105",
+    "timestamp": "2025-07-13T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 12,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102002",
+    "metadata": {
+      "productTitle": "Freelancer Onboarding Guide",
+      "amount": 35,
+      "buyerName": "Jessica Wang"
+    },
+    "context": {
+      "productId": "#102002"
+    }
+  },
+  {
+    "id": "evt_1752860539720_106",
+    "timestamp": "2025-07-12T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 15,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102001",
+    "metadata": {
+      "productTitle": "Project Management Templates",
+      "amount": 25,
+      "buyerName": "Alex Thompson"
+    },
+    "context": {
+      "productId": "#102001"
+    }
+  },
+  {
+    "id": "evt_1752860539720_107",
+    "timestamp": "2025-07-10T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 18,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102002",
+    "metadata": {
+      "productTitle": "Freelancer Onboarding Guide",
+      "amount": 35,
+      "buyerName": "Rachel Green"
+    },
+    "context": {
+      "productId": "#102002"
+    }
+  },
+  {
+    "id": "evt_1752860539720_108",
+    "timestamp": "2025-07-08T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 20,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102001",
+    "metadata": {
+      "productTitle": "Project Management Templates",
+      "amount": 25,
+      "buyerName": "Mark Davis"
+    },
+    "context": {
+      "productId": "#102001"
+    }
+  },
+  {
+    "id": "evt_1752860539720_109",
+    "timestamp": "2025-07-05T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 22,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102002",
+    "metadata": {
+      "productTitle": "Freelancer Onboarding Guide",
+      "amount": 35,
+      "buyerName": "Lisa Anderson"
+    },
+    "context": {
+      "productId": "#102002"
+    }
+  },
+  {
+    "id": "evt_1752860539720_110",
+    "timestamp": "2025-07-03T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 25,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102001",
+    "metadata": {
+      "productTitle": "Project Management Templates",
+      "amount": 25,
+      "buyerName": "Kevin Wilson"
+    },
+    "context": {
+      "productId": "#102001"
+    }
+  },
+  {
+    "id": "evt_1752860539720_111",
+    "timestamp": "2025-07-01T00:00:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 50,
+    "actorId": 27,
+    "targetId": 32,
+    "entityType": 6,
+    "entityId": "#102002",
+    "metadata": {
+      "productTitle": "Freelancer Onboarding Guide",
+      "amount": 35,
+      "buyerName": "Sarah Martinez"
+    },
+    "context": {
+      "productId": "#102002"
     }
   }
 ]

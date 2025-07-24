@@ -10,12 +10,14 @@ interface UserProfileDropdownProps {
   isOpen: boolean;
   onToggle: () => void;
   onClose: () => void;
+  dashboardType?: 'freelancer' | 'commissioner';
 }
 
 export default function UserProfileDropdown({
   isOpen,
   onToggle,
-  onClose
+  onClose,
+  dashboardType = 'freelancer'
 }: UserProfileDropdownProps) {
   const { data: session } = useSession();
   const router = useRouter();
@@ -40,7 +42,10 @@ export default function UserProfileDropdown({
 
   const handleViewProfile = () => {
     if (session?.user?.id) {
-      router.push(`/freelancer-dashboard/profile/${session.user.id}`);
+      const profilePath = dashboardType === 'commissioner'
+        ? `/commissioner-dashboard/profile/${session.user.id}`
+        : `/freelancer-dashboard/profile/${session.user.id}`;
+      router.push(profilePath);
       onClose();
     }
   };

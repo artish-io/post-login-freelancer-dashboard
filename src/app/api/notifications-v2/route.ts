@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
     const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
     const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
+    const contactsPath = path.join(process.cwd(), 'data', 'contacts.json');
 
     let events: EventData[] = [];
     if (fs.existsSync(eventsLogPath)) {
@@ -37,6 +38,7 @@ export async function GET(request: NextRequest) {
     const projects = JSON.parse(fs.readFileSync(projectsPath, 'utf-8'));
     const organizations = JSON.parse(fs.readFileSync(organizationsPath, 'utf-8'));
     const projectTasks = JSON.parse(fs.readFileSync(projectTasksPath, 'utf-8'));
+    const contacts = JSON.parse(fs.readFileSync(contactsPath, 'utf-8'));
 
     // Filter events relevant to this user with user-type filtering
     const userEvents = events.filter(event => {
@@ -74,6 +76,54 @@ export async function GET(request: NextRequest) {
 
     // Group similar notifications (e.g., multiple gig applications)
     const groupedEvents = groupSimilarEvents(userEvents);
+
+    // Helper function to check if actor is in user's network
+    const isActorInNetwork = (actorId: number, userId: number): boolean => {
+      // Find user's contacts
+      const userContacts = contacts.find((c: any) => c.userId === userId);
+      if (!userContacts) return false;
+
+      // Check if actor is in contacts list
+      return userContacts.contacts.includes(actorId);
+    };
+
+    // Helper function to check if notification is from network
+    const isFromNetwork = (event: any, userId: number): boolean => {
+      // Product purchases should never be considered network notifications
+      // They should always appear in the "All" tab only
+      if (event.type === 'product_purchased') {
+        return false;
+      }
+
+      // Check if actor is in user's contacts
+      const directContact = isActorInNetwork(event.actorId, userId);
+      if (directContact) {
+        return true;
+      }
+
+      // For project-related notifications, check if user has ongoing projects with the actor
+      if (event.context?.projectId) {
+        const project = projects.find((p: any) => p.projectId === event.context.projectId);
+        if (project) {
+          // If it's a commissioner viewing, check if the freelancer is in their network
+          if (userType === 'commissioner' && project.commissionerId === userId) {
+            const freelancerInNetwork = isActorInNetwork(project.freelancerId, userId);
+            if (freelancerInNetwork) {
+              return true;
+            }
+          }
+          // If it's a freelancer viewing, check if the commissioner is in their network
+          if (userType === 'freelancer' && project.freelancerId === userId) {
+            const commissionerInNetwork = isActorInNetwork(project.commissionerId, userId);
+            if (commissionerInNetwork) {
+              return true;
+            }
+          }
+        }
+      }
+
+      return false;
+    };
 
     // Convert events to notifications
     const notifications = groupedEvents.map(event => {
@@ -122,7 +172,9 @@ export async function GET(request: NextRequest) {
           id: event.context.gigId,
           title: event.metadata.gigTitle || 'Unknown Gig'
         } : undefined,
-        isFromNetwork: event.metadata.isFromNetwork || false,
+        context: event.context, // Add the context field for navigation
+        metadata: event.metadata, // Add the metadata field for additional data
+        isFromNetwork: isFromNetwork(event, parseInt(userId)),
         priority: event.metadata.priority || 'medium',
         iconPath: iconPath,
         notificationType: event.notificationType,

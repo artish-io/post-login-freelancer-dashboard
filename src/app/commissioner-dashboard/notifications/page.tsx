@@ -1,7 +1,7 @@
 'use client';
 
-
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import CommissionerHeader from '../../../../components/commissioner-dashboard/commissioner-header';
 import NotificationsPageLayout from '../../../../components/notifications/notifications-page-layout';
 import MessagesPreview from '../../../../components/freelancer-dashboard/messages-preview';
@@ -9,6 +9,7 @@ import { NotificationData } from '../../../../components/notifications/notificat
 
 export default function NotificationsPage() {
   const { data: session } = useSession();
+  const router = useRouter();
 
   if (!session?.user?.id) {
     return (
@@ -22,9 +23,52 @@ export default function NotificationsPage() {
   }
 
   const handleNotificationClick = (notification: NotificationData) => {
-    // You could also navigate to specific pages based on notification type
-    // For example, navigate to project details for task submissions
-    console.log('Notification clicked:', notification);
+    const { type, context } = notification;
+
+    switch (type) {
+      case 'invoice_sent':
+        // Navigate to pay invoice page with specific invoice
+        if (context?.invoiceId) {
+          router.push(`/commissioner-dashboard/projects-and-invoices/invoices/pay-invoice?invoice=${context.invoiceId}`);
+        } else {
+          router.push('/commissioner-dashboard/projects-and-invoices/invoices');
+        }
+        break;
+
+      case 'gig_application':
+        // Navigate to job listings with candidate details
+        if (context?.gigId && context?.applicationId) {
+          router.push(`/commissioner-dashboard/job-listings?gigId=${context.gigId}&applicationId=${context.applicationId}`);
+        } else if (context?.gigId) {
+          // Multiple applications - just go to job listings
+          router.push(`/commissioner-dashboard/job-listings?gigId=${context.gigId}`);
+        } else {
+          router.push('/commissioner-dashboard/job-listings');
+        }
+        break;
+
+      case 'task_submission':
+        // Navigate to tasks to review with specific task
+        if (context?.projectId && context?.taskId) {
+          router.push(`/commissioner-dashboard/projects-and-invoices/tasks-to-review?projectId=${context.projectId}&taskId=${context.taskId}`);
+        } else {
+          router.push('/commissioner-dashboard/projects-and-invoices/tasks-to-review');
+        }
+        break;
+
+      case 'storefront_purchase':
+        // Navigate to storefront product inventory
+        if (context?.productId) {
+          router.push(`/commissioner-dashboard/storefront/product-inventory?productId=${context.productId}`);
+        } else {
+          router.push('/commissioner-dashboard/storefront/product-inventory');
+        }
+        break;
+
+      default:
+        console.log('Unhandled notification type:', type);
+        break;
+    }
   };
 
   return (

@@ -90,7 +90,9 @@ export default function ProfilePage() {
         // Fetch skills from gig-categories API
         const categoriesResponse = await fetch('/api/gigs/gig-categories');
         const categoriesData = await categoriesResponse.json();
-        const allSkills = categoriesData.flatMap((category: any) => category.subcategories);
+        const allSkills = categoriesData.flatMap((category: any) =>
+          category.subcategories.map((sub: any) => sub.name)
+        );
         setAvailableSkills(allSkills);
 
         // Fetch tools from gig-tools API

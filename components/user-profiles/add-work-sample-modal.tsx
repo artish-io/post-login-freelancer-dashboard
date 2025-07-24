@@ -89,15 +89,17 @@ export default function AddWorkSampleModal({
     }));
   };
 
-  const filteredSkills = availableSkills.filter(skill =>
-    skill.toLowerCase().includes(skillSearch.toLowerCase()) &&
-    !formData.skills.includes(skill)
-  );
+  const filteredSkills = availableSkills.filter(skill => {
+    const skillName = typeof skill === 'string' ? skill : (skill as any)?.name || '';
+    return skillName.toLowerCase().includes(skillSearch.toLowerCase()) &&
+      !formData.skills.includes(skillName);
+  });
 
-  const filteredTools = availableTools.filter(tool =>
-    tool.toLowerCase().includes(toolSearch.toLowerCase()) &&
-    !formData.tools.includes(tool)
-  );
+  const filteredTools = availableTools.filter(tool => {
+    const toolName = typeof tool === 'string' ? tool : (tool as any)?.name || '';
+    return toolName.toLowerCase().includes(toolSearch.toLowerCase()) &&
+      !formData.tools.includes(toolName);
+  });
 
   return (
     <AnimatePresence>
@@ -207,16 +209,19 @@ export default function AddWorkSampleModal({
                   {/* Skill Suggestions */}
                   {skillSearch && filteredSkills.length > 0 && (
                     <div className="border border-gray-200 rounded-lg max-h-32 overflow-y-auto">
-                      {filteredSkills.slice(0, 5).map((skill) => (
-                        <button
-                          key={skill}
-                          type="button"
-                          onClick={() => addSkill(skill)}
-                          className="w-full text-left px-3 py-2 hover:bg-gray-50 text-sm"
-                        >
-                          {skill}
-                        </button>
-                      ))}
+                      {filteredSkills.slice(0, 5).map((skill) => {
+                        const skillName = typeof skill === 'string' ? skill : (skill as any)?.name || '';
+                        return (
+                          <button
+                            key={skillName}
+                            type="button"
+                            onClick={() => addSkill(skillName)}
+                            className="w-full text-left px-3 py-2 hover:bg-gray-50 text-sm"
+                          >
+                            {skillName}
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -258,16 +263,19 @@ export default function AddWorkSampleModal({
                   {/* Tool Suggestions */}
                   {toolSearch && filteredTools.length > 0 && (
                     <div className="border border-gray-200 rounded-lg max-h-32 overflow-y-auto">
-                      {filteredTools.slice(0, 5).map((tool) => (
-                        <button
-                          key={tool}
-                          type="button"
-                          onClick={() => addTool(tool)}
-                          className="w-full text-left px-3 py-2 hover:bg-gray-50 text-sm"
-                        >
-                          {tool}
-                        </button>
-                      ))}
+                      {filteredTools.slice(0, 5).map((tool) => {
+                        const toolName = typeof tool === 'string' ? tool : (tool as any)?.name || '';
+                        return (
+                          <button
+                            key={toolName}
+                            type="button"
+                            onClick={() => addTool(toolName)}
+                            className="w-full text-left px-3 py-2 hover:bg-gray-50 text-sm"
+                          >
+                            {toolName}
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>

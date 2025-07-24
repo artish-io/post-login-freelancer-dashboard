@@ -6,14 +6,14 @@
   "milestones": [],
   "paymentCycle": "Hourly Rate",
   "rate": 50,
-  "projectId": "TU-SS431I",
+  "projectId": "TU-GPYYGD",
   "totalBid": 0,
   "customStartDate": null,
   "endDate": null,
   "maxHours": 50000,
   "depositRate": "",
   "expectedDurationDays": 1,
-  "executionMethod": "milestone",
+  "executionMethod": "completion",
   "startType": "Immediately",
   "contact": {
     "id": 34,
@@ -34,6 +34,6 @@
   "milestoneTotal": 0,
   "isAmountValid": true,
   "upfrontValue": 0,
-  "upfrontPercentage": 0,
+  "upfrontPercentage": 12,
   "amountPerMilestone": 0
 }

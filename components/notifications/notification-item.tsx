@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 export interface NotificationData {
   id: string;
-  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'gig_request' | 'gig_request_accepted' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase';
+  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'gig_request' | 'gig_request_accepted' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase' | 'task_submitted' | 'job_application';
   title: string;
   message: string;
   timestamp: string;
@@ -28,6 +28,17 @@ export interface NotificationData {
   gig?: {
     id: number;
     title: string;
+  };
+  context?: {
+    projectId?: number;
+    taskId?: number;
+    gigId?: number;
+    applicationId?: number;
+    invoiceId?: string;
+    productId?: string;
+  };
+  metadata?: {
+    [key: string]: any;
   };
   isFromNetwork?: boolean;
   iconPath?: string; // For specific notification icons
