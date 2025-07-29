@@ -34,7 +34,7 @@ export default function ProjectTrackingPage() {
         title: json.title,
         summary: json.summary,
         logoUrl: json.logoUrl,
-        tags: json.typeTags,
+        tags: json.typeTags || [],
         status: json.status || 'Ongoing',
       });
     }

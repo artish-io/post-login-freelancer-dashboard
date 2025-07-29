@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-3002",
+  "senderId": 32,
+  "timestamp": "2025-07-14T10:30:00Z",
+  "text": "Sure! How about 2pm today? I'm free for about 30 minutes.",
+  "read": {
+    "29": false,
+    "32": true
+  },
+  "isEncrypted": false,
+  "threadId": "29-32"
+}

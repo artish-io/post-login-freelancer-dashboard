@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1025",
+  "senderId": 35,
+  "timestamp": "2025-07-07T17:30:00Z",
+  "text": "Payment processed successfully! Thanks for the quick turnaround on the invoice. Looking forward to the next project.",
+  "read": {
+    "31": false,
+    "35": true
+  },
+  "isEncrypted": false,
+  "threadId": "31-35"
+}

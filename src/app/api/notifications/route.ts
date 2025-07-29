@@ -497,3 +497,62 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function POST(request: NextRequest) {
+  try {
+    const { notificationId, commissionerId } = await request.json();
+
+    if (!notificationId || !commissionerId) {
+      return NextResponse.json(
+        { error: 'Notification ID and Commissioner ID are required' },
+        { status: 400 }
+      );
+    }
+
+    // Read commissioner notifications
+    const commissionerNotificationsPath = path.join(process.cwd(), 'data', 'notifications', 'commissioners.json');
+    const commissionerNotificationsData = JSON.parse(fs.readFileSync(commissionerNotificationsPath, 'utf8'));
+
+    // Find commissioner's notifications
+    const commissionerEntry = commissionerNotificationsData.find((entry: any) =>
+      entry.commissionerId === parseInt(commissionerId)
+    );
+
+    if (!commissionerEntry) {
+      return NextResponse.json(
+        { error: 'Commissioner not found' },
+        { status: 404 }
+      );
+    }
+
+    // Find and mark notification as read
+    const notificationIndex = commissionerEntry.notifications.findIndex((notif: any) =>
+      notif.id === notificationId
+    );
+
+    if (notificationIndex === -1) {
+      return NextResponse.json(
+        { error: 'Notification not found' },
+        { status: 404 }
+      );
+    }
+
+    // Mark as read
+    commissionerEntry.notifications[notificationIndex].isRead = true;
+
+    // Save updated data
+    fs.writeFileSync(commissionerNotificationsPath, JSON.stringify(commissionerNotificationsData, null, 2));
+
+    return NextResponse.json({
+      success: true,
+      message: 'Notification marked as read'
+    });
+
+  } catch (error) {
+    console.error('Error marking notification as read:', error);
+    return NextResponse.json(
+      { error: 'Failed to mark notification as read' },
+      { status: 500 }
+    );
+  }
+}

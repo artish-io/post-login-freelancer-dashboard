@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-3001",
+  "senderId": 29,
+  "timestamp": "2025-07-14T10:15:00Z",
+  "text": "Good morning! I have some questions about the mobile app wireframes. Can we schedule a quick call?",
+  "read": {
+    "29": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "threadId": "29-32"
+}

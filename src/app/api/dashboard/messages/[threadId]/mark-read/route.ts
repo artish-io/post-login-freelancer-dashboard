@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { promises as fs } from 'fs';
+import {
+  readThreadMessages,
+  readThreadMetadata,
+  updateMessageReadStatus
+} from '@/lib/messages-utils';
 
 // PATCH /api/dashboard/messages/[threadId]/mark-read
 // Request body: { userId: number }
@@ -20,34 +23,30 @@ export async function PATCH(
   }
 
   try {
-    const filePath = path.join(process.cwd(), 'data/messages.json');
-    const raw = await fs.readFile(filePath, 'utf-8');
-    const threads = JSON.parse(raw);
+    const threadMetadata = await readThreadMetadata(threadId);
 
-    const threadIndex = threads.findIndex(
-      (t: any) =>
-        t.threadId === threadId && t.participants.includes(Number(userId))
-    );
-
-    if (threadIndex === -1) {
+    if (!threadMetadata || !threadMetadata.participants.includes(Number(userId))) {
       return NextResponse.json(
         { error: 'Thread not found or access denied' },
         { status: 403 }
       );
     }
 
-    // ✅ Mark all messages in the thread as read for this user
-    threads[threadIndex].messages = threads[threadIndex].messages.map(
-      (msg: any) => ({
-        ...msg,
-        read: {
-          ...msg.read,
-          [userId]: true,
-        },
-      })
-    );
+    // Get all messages in the thread
+    const messages = await readThreadMessages(threadId);
 
-    await fs.writeFile(filePath, JSON.stringify(threads, null, 2));
+    // Mark all messages in the thread as read for this user
+    for (const message of messages) {
+      if (message.messageId) {
+        await updateMessageReadStatus(
+          message.timestamp,
+          threadId,
+          message.messageId,
+          userId.toString(),
+          true
+        );
+      }
+    }
 
     console.log(`[mark-read] user ${userId} marked thread ${threadId} as read`);
 

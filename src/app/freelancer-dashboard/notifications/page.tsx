@@ -1,6 +1,7 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import FreelancerHeader from '../../../../components/freelancer-dashboard/freelancer-header';
 import NotificationsPageLayout from '../../../../components/notifications/notifications-page-layout';
 import MessagesPreview from '../../../../components/freelancer-dashboard/messages-preview';
@@ -8,6 +9,7 @@ import { NotificationData } from '../../../../components/notifications/notificat
 
 export default function FreelancerNotificationsPage() {
   const { data: session } = useSession();
+  const router = useRouter();
 
   if (!session?.user?.id) {
     return (
@@ -21,9 +23,60 @@ export default function FreelancerNotificationsPage() {
   }
 
   const handleNotificationClick = (notification: NotificationData) => {
-    // Navigate to specific pages based on notification type
-    // For example, navigate to project details for task comments
-    console.log('Notification clicked:', notification);
+    // Use the link from the notification if available
+    if (notification.link && notification.link !== '#') {
+      router.push(notification.link);
+      return;
+    }
+
+    // Fallback navigation based on notification type
+    const { type, context } = notification;
+
+    switch (type) {
+      case 'invoice_paid':
+      case 'milestone_payment_received':
+        // Navigate to invoices page
+        if (context?.invoiceNumber || context?.invoiceId || notification.metadata?.invoiceNumber) {
+          const invoiceNumber = context?.invoiceNumber || context?.invoiceId || notification.metadata?.invoiceNumber;
+          router.push(`/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${invoiceNumber}`);
+        } else {
+          router.push('/freelancer-dashboard/projects-and-invoices/invoices');
+        }
+        break;
+
+      case 'task_approved':
+      case 'task_rejected':
+      case 'task_rejected_with_comment':
+        // Navigate to project tracking page
+        if (context?.projectId) {
+          router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking?id=${context.projectId}`);
+        } else {
+          router.push('/freelancer-dashboard/projects-and-invoices');
+        }
+        break;
+
+      case 'gig_request':
+        // Navigate to gig requests page
+        if (context?.requestId) {
+          router.push(`/freelancer-dashboard/gig-requests?requestId=${context.requestId}&open=true`);
+        } else {
+          router.push('/freelancer-dashboard/gig-requests');
+        }
+        break;
+
+      case 'storefront_purchase':
+        // Navigate to product inventory
+        if (context?.productId) {
+          router.push(`/freelancer-dashboard/storefront/product-inventory?productId=${context.productId}`);
+        } else {
+          router.push('/freelancer-dashboard/storefront/product-inventory');
+        }
+        break;
+
+      default:
+        console.log('Unhandled notification type:', type);
+        break;
+    }
   };
 
   return (

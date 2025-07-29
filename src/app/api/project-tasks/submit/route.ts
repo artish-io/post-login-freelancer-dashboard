@@ -2,10 +2,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
-import { readFile, writeFile } from 'fs/promises';
+import { readFile } from 'fs/promises';
 import { eventLogger } from '../../../../lib/events/event-logger';
+import { readTask, writeTask, readProjectTasks } from '../../../../lib/project-tasks/hierarchical-storage';
 
-const tasksFilePath = path.join(process.cwd(), 'data', 'project-tasks.json');
 const projectsFilePath = path.join(process.cwd(), 'data/projects.json');
 const usersFilePath = path.join(process.cwd(), 'data/users.json');
 
@@ -17,29 +17,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Load all required data
-    const [projectTasksData, projectsData, usersData] = await Promise.all([
-      readFile(tasksFilePath, 'utf-8'),
+    // Load project and user data
+    const [projectsData, usersData] = await Promise.all([
       readFile(projectsFilePath, 'utf-8'),
       readFile(usersFilePath, 'utf-8')
     ]);
 
-    const projects = JSON.parse(projectTasksData);
     const projectsInfo = JSON.parse(projectsData);
     const users = JSON.parse(usersData);
 
-    const projectIndex = projects.findIndex((p: any) => p.projectId === projectId);
-    if (projectIndex === -1) {
+    // Get project info
+    const projectInfo = projectsInfo.find((p: any) => p.projectId === projectId);
+    if (!projectInfo) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    const taskIndex = projects[projectIndex].tasks.findIndex((t: any) => t.id === taskId);
-    if (taskIndex === -1) {
+    // Read all tasks for this project to find the specific task
+    const projectTasks = await readProjectTasks(projectId);
+    const task = projectTasks.find(t => t.taskId === taskId);
+
+    if (!task) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
-
-    const task = projects[projectIndex].tasks[taskIndex];
-    const projectInfo = projectsInfo.find((p: any) => p.projectId === projectId);
 
     // Get user IDs from project info if not provided
     const actualFreelancerId = freelancerId || projectInfo?.freelancerId;
@@ -48,43 +47,46 @@ export async function POST(request: NextRequest) {
     let eventType: string | null = null;
     let targetUserId: number | null = null;
 
+    // Create updated task object
+    const updatedTask = { ...task };
+
     switch (action) {
       case 'submit':
         // First submission: mark as completed and in review, but don't increment version yet
-        task.completed = true;
-        task.status = 'In review';
-        task.submittedDate = new Date().toISOString();
+        updatedTask.completed = true;
+        updatedTask.status = 'In review';
+        updatedTask.submittedDate = new Date().toISOString();
         // Version stays the same (1) for first submission
-        if (!task.version) task.version = 1;
+        if (!updatedTask.version) updatedTask.version = 1;
         eventType = 'task_submitted';
         targetUserId = actualCommissionerId;
         break;
       case 'resubmit':
         // Resubmission after rejection: increment version and mark as in review
-        task.rejected = false;
-        task.completed = true;
-        task.status = 'In review';
-        task.submittedDate = new Date().toISOString();
-        task.version = (task.version || 1) + 1;
+        updatedTask.rejected = false;
+        updatedTask.completed = true;
+        updatedTask.status = 'In review';
+        updatedTask.submittedDate = new Date().toISOString();
+        updatedTask.version = (updatedTask.version || 1) + 1;
         eventType = 'task_submitted';
         targetUserId = actualCommissionerId;
         break;
       case 'complete':
         // Commissioner approves the task
-        task.completed = true;
-        task.status = 'Approved';
-        task.rejected = false;
-        task.approvedDate = new Date().toISOString();
+        updatedTask.completed = true;
+        updatedTask.status = 'Approved';
+        updatedTask.rejected = false;
+        updatedTask.approvedDate = new Date().toISOString();
         eventType = 'task_approved';
         targetUserId = actualFreelancerId;
         break;
       case 'reject':
         // Commissioner rejects the task - freelancer needs to work on it again
-        task.rejected = true;
-        task.completed = false;
-        task.status = 'Ongoing'; // Back to ongoing so freelancer can work on it
-        task.rejectedDate = new Date().toISOString();
-        task.feedbackCount = (task.feedbackCount || 0) + 1;
+        updatedTask.rejected = true;
+        updatedTask.completed = false;
+        updatedTask.status = 'Ongoing'; // Back to ongoing so freelancer can work on it
+        updatedTask.rejectedDate = new Date().toISOString();
+        updatedTask.feedbackCount = (updatedTask.feedbackCount || 0) + 1;
         eventType = 'task_rejected';
         targetUserId = actualFreelancerId;
         break;
@@ -92,7 +94,8 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
     }
 
-    await writeFile(tasksFilePath, JSON.stringify(projects, null, 2));
+    // Write the updated task back to hierarchical storage
+    await writeTask(updatedTask);
 
     // Log event for notification system
     if (eventType && targetUserId) {

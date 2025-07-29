@@ -1,0 +1,20 @@
+{
+  "invoiceNumber": "MGL100005-M2",
+  "freelancerId": 31,
+  "projectId": 299,
+  "commissionerId": 34,
+  "projectTitle": "Corlax iOS App Launch Deck",
+  "milestoneDescription": "Milestone 2 for Corlax iOS App Launch Deck",
+  "milestoneNumber": 2,
+  "issueDate": "2025-05-05",
+  "dueDate": "2025-05-13",
+  "totalAmount": 960,
+  "status": "paid",
+  "milestones": [
+    {
+      "description": "Milestone 2 for Corlax iOS App Launch Deck",
+      "rate": 960
+    }
+  ],
+  "parentInvoiceNumber": "MGL100005"
+}

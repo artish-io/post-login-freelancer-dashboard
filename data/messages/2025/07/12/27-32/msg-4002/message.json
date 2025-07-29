@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-4002",
+  "senderId": 32,
+  "timestamp": "2025-07-12T17:15:00Z",
+  "text": "Hi Nancy! Thanks for reaching out. Let's set up a time to chat about your background and what you're looking for.",
+  "read": {
+    "27": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "threadId": "27-32"
+}

@@ -1,0 +1,20 @@
+{
+  "invoiceNumber": "MGL100003-M3",
+  "freelancerId": 31,
+  "projectId": 302,
+  "commissionerId": 36,
+  "projectTitle": "Podcast series logo design",
+  "milestoneDescription": "Milestone 3 for Podcast series logo design",
+  "milestoneNumber": 3,
+  "issueDate": "2025-03-18",
+  "dueDate": "2025-03-28",
+  "totalAmount": 793.33,
+  "status": "sent",
+  "milestones": [
+    {
+      "description": "Milestone 3 for Podcast series logo design",
+      "rate": 793.33
+    }
+  ],
+  "parentInvoiceNumber": "MGL100003"
+}

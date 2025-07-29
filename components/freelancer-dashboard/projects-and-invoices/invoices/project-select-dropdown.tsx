@@ -8,6 +8,8 @@ import ProjectSelectDropdownItem from './project-select-dropdown-item';
 interface ProjectOption {
   projectId: number;
   title: string;
+  hasAvailableMilestones?: boolean;
+  availableTasksCount?: number;
 }
 
 interface Props {
@@ -42,8 +44,14 @@ export default function ProjectSelectDropdown({ freelancerId, commissionerId, se
   }, [freelancerId, commissionerId]);
 
   const options = [
-    ...projects.map((p) => ({ id: p.projectId, label: `#${p.projectId} — ${p.title}` })),
-    { id: null, label: 'Create custom project' },
+    ...projects.map((p) => ({
+      id: p.projectId,
+      label: `#${p.projectId} — ${p.title}`,
+      hasAvailableMilestones: p.hasAvailableMilestones,
+      availableTasksCount: p.availableTasksCount,
+      disabled: !p.hasAvailableMilestones
+    })),
+    { id: null, label: 'Create custom project', hasAvailableMilestones: true, availableTasksCount: 0, disabled: false },
   ];
 
   const selectedLabel = selected.projectId !== null
@@ -78,13 +86,16 @@ export default function ProjectSelectDropdown({ freelancerId, commissionerId, se
         <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-md max-h-64 overflow-y-auto">
           <RadioGroup value={selected.projectId} onChange={handleSelect}>
             <div className="flex flex-col divide-y">
-              {options.map(({ id, label }) => (
-                <RadioGroup.Option key={id ?? 'custom'} value={id}>
+              {options.map(({ id, label, disabled, hasAvailableMilestones, availableTasksCount }) => (
+                <RadioGroup.Option key={id ?? 'custom'} value={id} disabled={disabled}>
                   {({ checked }) => (
                     <ProjectSelectDropdownItem
                       label={label}
                       checked={checked}
                       isCustom={id === null}
+                      disabled={disabled}
+                      hasAvailableMilestones={hasAvailableMilestones}
+                      availableTasksCount={availableTasksCount}
                     />
                   )}
                 </RadioGroup.Option>

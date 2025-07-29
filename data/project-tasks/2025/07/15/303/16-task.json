@@ -1,0 +1,23 @@
+{
+  "taskId": 16,
+  "projectId": 303,
+  "projectTitle": "Corlax iOS app UX",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Mobile Design",
+    "UX Research"
+  ],
+  "title": "Scroll gestures & microinteractions",
+  "status": "Rejected",
+  "completed": false,
+  "order": 3,
+  "link": "https://figma.com/file/scroll-gestures",
+  "dueDate": "2025-07-16T00:00:00.000Z",
+  "rejected": true,
+  "feedbackCount": 1,
+  "pushedBack": true,
+  "version": 3,
+  "description": "Prototype scroll interactions and subtle animations for mobile UI.",
+  "createdDate": "2025-07-29T13:32:42.038Z",
+  "lastModified": "2025-07-29T13:32:42.039Z"
+}

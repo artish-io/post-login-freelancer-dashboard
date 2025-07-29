@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1015",
+  "senderId": 31,
+  "timestamp": "2025-06-13T10:10:00Z",
+  "text": "Got it. Processing now.",
+  "read": {
+    "31": true,
+    "35": false
+  },
+  "isEncrypted": false,
+  "threadId": "31-35"
+}

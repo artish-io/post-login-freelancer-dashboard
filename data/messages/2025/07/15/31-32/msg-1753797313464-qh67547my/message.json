@@ -1,0 +1,12 @@
+{
+  "senderId": 31,
+  "timestamp": "2025-07-15T19:04:36.062Z",
+  "text": "my oga",
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "messageId": "msg-1753797313464-qh67547my",
+  "threadId": "31-32"
+}

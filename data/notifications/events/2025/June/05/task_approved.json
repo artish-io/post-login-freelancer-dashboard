@@ -1,0 +1,20 @@
+[
+  {
+    "id": "evt_1752860539720_19",
+    "timestamp": "2025-06-06T00:00:00.000Z",
+    "type": "task_approved",
+    "notificationType": 2,
+    "actorId": 35,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 8,
+    "metadata": {
+      "taskTitle": "Print-ready social media assets",
+      "projectTitle": "Zynate events brand toolkit"
+    },
+    "context": {
+      "projectId": 304,
+      "taskId": 8
+    }
+  }
+]

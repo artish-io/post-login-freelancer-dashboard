@@ -1,0 +1,40 @@
+[
+  {
+    "id": "evt_1752860539720_product_2",
+    "timestamp": "2025-07-01T14:15:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 100,
+    "actorId": 998,
+    "targetId": 31,
+    "entityType": 6,
+    "entityId": "#101002",
+    "metadata": {
+      "productTitle": "Content Design 101",
+      "amount": 25,
+      "category": "Digital Course"
+    },
+    "context": {
+      "productId": "#101002",
+      "purchaseId": "purchase_002"
+    }
+  },
+  {
+    "id": "evt_1752860539720_product_1",
+    "timestamp": "2025-07-01T10:30:00.000Z",
+    "type": "product_purchased",
+    "notificationType": 100,
+    "actorId": 999,
+    "targetId": 31,
+    "entityType": 6,
+    "entityId": "#101001",
+    "metadata": {
+      "productTitle": "Digital Marketing Playbook",
+      "amount": 15,
+      "category": "Digital Course"
+    },
+    "context": {
+      "productId": "#101001",
+      "purchaseId": "purchase_001"
+    }
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "taskId": 30,
+  "projectId": 306,
+  "projectTitle": "Nebula CMS landing redesign",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Web Design",
+    "UX Strategy"
+  ],
+  "title": "Blog layout template",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 13,
+  "link": "https://figma.com/file/blog-template",
+  "dueDate": "2025-07-18T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Create reusable blog post layout template.",
+  "createdDate": "2025-07-29T13:32:42.040Z",
+  "lastModified": "2025-07-29T13:32:42.042Z"
+}

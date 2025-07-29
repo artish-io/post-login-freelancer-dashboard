@@ -1,0 +1,23 @@
+{
+  "taskId": 10,
+  "projectId": 305,
+  "projectTitle": "HERO research launch collateral",
+  "organizationId": 5,
+  "projectTypeTags": [
+    "Content Strategy",
+    "Editorial Design"
+  ],
+  "title": "Internal training slides",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 2,
+  "link": "https://figma.com/file/training-slides",
+  "dueDate": "2025-07-18T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Create internal slides for onboarding and training sessions.",
+  "createdDate": "2025-07-29T13:32:42.039Z",
+  "lastModified": "2025-07-29T13:32:42.039Z"
+}

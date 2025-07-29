@@ -11,6 +11,7 @@ type Props = {
   maxRate: string;
   minRate: string;
   onAccept?: () => void;
+  onReject?: () => void;
 };
 
 export default function GigRequestMetaPanel({
@@ -20,6 +21,7 @@ export default function GigRequestMetaPanel({
   maxRate,
   minRate,
   onAccept,
+  onReject,
 }: Props) {
   const statusDotColor = status === 'Available' ? 'bg-emerald-400' : 'bg-gray-400';
 
@@ -68,14 +70,22 @@ export default function GigRequestMetaPanel({
         </div>
       </div>
 
-      {/* Conditionally render Accept Offer button only for Available gigs */}
+      {/* Conditionally render Accept/Reject buttons only for Available gigs */}
       {status === 'Available' && (
-        <button
-          onClick={onAccept}
-          className="w-full rounded-md bg-black text-white font-semibold py-2 text-sm mt-4 hover:bg-gray-900 transition"
-        >
-          Accept Offer
-        </button>
+        <div className="space-y-2 mt-4">
+          <button
+            onClick={onAccept}
+            className="w-full rounded-md bg-green-600 text-white font-semibold py-2 text-sm hover:bg-green-700 transition"
+          >
+            Accept Offer
+          </button>
+          <button
+            onClick={onReject}
+            className="w-full rounded-md bg-red-600 text-white font-semibold py-2 text-sm hover:bg-red-700 transition"
+          >
+            Reject Offer
+          </button>
+        </div>
       )}
 
       {/* Show status message for non-available gigs */}

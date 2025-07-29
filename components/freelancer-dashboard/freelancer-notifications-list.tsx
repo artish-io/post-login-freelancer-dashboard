@@ -9,13 +9,15 @@ interface FreelancerNotificationsListProps {
   freelancerId: number;
   onNotificationClick?: (notification: NotificationData) => void;
   onCountsUpdate?: (counts: { all: number; projects: number; gigs: number }) => void;
+  onNotificationRead?: (notification: NotificationData) => void;
 }
 
 export default function FreelancerNotificationsList({
   activeTab,
   freelancerId,
   onNotificationClick,
-  onCountsUpdate
+  onCountsUpdate,
+  onNotificationRead
 }: FreelancerNotificationsListProps) {
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +25,7 @@ export default function FreelancerNotificationsList({
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`/api/freelancer-notifications?freelancerId=${freelancerId}&tab=${activeTab}`);
+      const response = await fetch(`/api/notifications-v2?userId=${freelancerId}&userType=freelancer&tab=${activeTab}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch notifications');
@@ -44,14 +46,48 @@ export default function FreelancerNotificationsList({
     }
   };
 
+  const handleNotificationClick = async (notification: NotificationData) => {
+    // Mark as read locally
+    const wasUnread = !notification.isRead;
+    setNotifications(prev =>
+      prev.map(n =>
+        n.id === notification.id ? { ...n, isRead: true } : n
+      )
+    );
+
+    // Mark as read on server
+    if (wasUnread) {
+      try {
+        await fetch('/api/notifications-v2', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            notificationId: notification.id,
+            userId: freelancerId,
+            userType: 'freelancer'
+          })
+        });
+      } catch (error) {
+        console.error('Failed to mark notification as read:', error);
+      }
+
+      // Notify parent that notification was read (for count updates)
+      onNotificationRead?.(notification);
+
+      // Dispatch custom event to notify other components (like top navbar)
+      window.dispatchEvent(new CustomEvent('notificationRead', {
+        detail: { notification, userType: 'freelancer' }
+      }));
+    }
+
+    // Call parent click handler for navigation
+    onNotificationClick?.(notification);
+  };
+
   useEffect(() => {
     fetchNotifications();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [freelancerId, activeTab]);
-
-  const handleNotificationClick = (notification: NotificationData) => {
-    onNotificationClick?.(notification);
-  };
 
   if (loading) {
     return (

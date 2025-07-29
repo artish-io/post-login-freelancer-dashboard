@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 export type Props = {
   projectId: number;
-  tags: string[];
+  tags?: string[];
   logoUrl: string;
   title: string;
   summary: string;
@@ -13,7 +13,7 @@ export type Props = {
 
 export default function ProjectPageHeader({
   projectId,
-  tags,
+  tags = [],
   logoUrl,
   title,
   summary,
@@ -35,7 +35,7 @@ export default function ProjectPageHeader({
 
         {/* Type Tags */}
         <div className="mt-2 flex flex-wrap gap-2">
-          {tags.map((tag) => (
+          {tags && tags.length > 0 && tags.map((tag) => (
             <span
               key={tag}
               className="text-xs font-medium bg-[#f0f0f0] text-gray-800 rounded px-2 py-[2px]"

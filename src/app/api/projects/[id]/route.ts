@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readFile } from 'fs/promises';
-import path from 'path';
+import { readProject } from '@/lib/projects-utils';
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const id = request.nextUrl.pathname.split('/')[4]; // Adjust if route depth changes
+    const { id } = await params;
 
-    const filePath = path.join(process.cwd(), 'data', 'projects.json');
-    const file = await readFile(filePath, 'utf-8');
-    const projects = JSON.parse(file);
+    const projectId = parseInt(id);
+    if (isNaN(projectId)) {
+      return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 });
+    }
 
-    const project = projects.find((p: any) => String(p.projectId) === id);
+    const project = await readProject(projectId);
 
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });

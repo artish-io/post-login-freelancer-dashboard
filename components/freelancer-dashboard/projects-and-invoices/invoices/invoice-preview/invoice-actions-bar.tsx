@@ -8,9 +8,10 @@ type Props = {
   invoiceData: any;
   onSend: () => void;
   onDownload: () => void;
+  sending?: boolean;
 };
 
-export default function InvoiceActionsBar({ invoiceData, onSend, onDownload }: Props) {
+export default function InvoiceActionsBar({ invoiceData, onSend, onDownload, sending = false }: Props) {
   const router = useRouter();
 
   const handleBack = () => {
@@ -31,10 +32,20 @@ export default function InvoiceActionsBar({ invoiceData, onSend, onDownload }: P
         <Button
           onClick={onSend}
           variant="primary"
+          disabled={sending}
           className="w-full px-5 py-3 text-sm font-medium flex items-center justify-center gap-2"
         >
-          <Send className="w-4 h-4" />
-          Send Invoice
+          {sending ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Sending...
+            </>
+          ) : (
+            <>
+              <Send className="w-4 h-4" />
+              Send Invoice
+            </>
+          )}
         </Button>
       </div>
 

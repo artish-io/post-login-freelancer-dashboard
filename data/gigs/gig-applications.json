@@ -8,8 +8,18 @@
       "https://portfolio.example.com/interactive-maps",
       "https://github.com/damini/react-gis-app"
     ],
-    "skills": ["React", "GIS", "Frontend Development", "Mobile-First Design"],
-    "tools": ["React", "Mapbox", "Tailwind CSS", "JavaScript"],
+    "skills": [
+      "React",
+      "GIS",
+      "Frontend Development",
+      "Mobile-First Design"
+    ],
+    "tools": [
+      "React",
+      "Mapbox",
+      "Tailwind CSS",
+      "JavaScript"
+    ],
     "submittedAt": "2025-07-13T10:30:00Z"
   },
   {
@@ -21,8 +31,18 @@
       "https://portfolio.example.com/react-projects",
       "https://demo.mapapp.example.com"
     ],
-    "skills": ["React", "TypeScript", "Web Development", "API Integration"],
-    "tools": ["React", "TypeScript", "Mapbox", "Tailwind CSS"],
+    "skills": [
+      "React",
+      "TypeScript",
+      "Web Development",
+      "API Integration"
+    ],
+    "tools": [
+      "React",
+      "TypeScript",
+      "Mapbox",
+      "Tailwind CSS"
+    ],
     "submittedAt": "2025-07-12T14:15:00Z"
   },
   {
@@ -34,9 +54,20 @@
       "https://portfolio.example.com/gis-projects",
       "https://interactive-maps.example.com"
     ],
-    "skills": ["UI/UX Design", "Frontend Development", "Data Visualization", "GIS"],
-    "tools": ["React", "D3.js", "Mapbox", "Figma"],
-    "submittedAt": "2025-07-11T16:45:00Z"
+    "skills": [
+      "UI/UX Design",
+      "Frontend Development",
+      "Data Visualization",
+      "GIS"
+    ],
+    "tools": [
+      "React",
+      "D3.js",
+      "Mapbox",
+      "Figma"
+    ],
+    "submittedAt": "2025-07-11T16:45:00Z",
+    "status": "accepted"
   },
   {
     "id": 4,
@@ -47,8 +78,18 @@
       "https://portfolio.example.com/mobile-apps",
       "https://github.com/riya/park-finder-app"
     ],
-    "skills": ["React Native", "Mobile Development", "Firebase", "Maps Integration"],
-    "tools": ["React Native", "Firebase", "Google Maps API", "Expo"],
+    "skills": [
+      "React Native",
+      "Mobile Development",
+      "Firebase",
+      "Maps Integration"
+    ],
+    "tools": [
+      "React Native",
+      "Firebase",
+      "Google Maps API",
+      "Expo"
+    ],
     "submittedAt": "2025-07-12T09:15:00Z"
   },
   {
@@ -60,8 +101,19 @@
       "https://portfolio.example.com/digital-signage",
       "https://behance.net/jenny/signage-projects"
     ],
-    "skills": ["Digital Design", "Content Management", "UI Design", "Accessibility"],
-    "tools": ["Figma", "Adobe Creative Suite", "Sketch", "InVision"],
-    "submittedAt": "2025-07-13T14:30:00Z"
+    "skills": [
+      "Digital Design",
+      "Content Management",
+      "UI Design",
+      "Accessibility"
+    ],
+    "tools": [
+      "Figma",
+      "Adobe Creative Suite",
+      "Sketch",
+      "InVision"
+    ],
+    "submittedAt": "2025-07-13T14:30:00Z",
+    "status": "accepted"
   }
 ]

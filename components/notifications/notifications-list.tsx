@@ -11,6 +11,7 @@ interface NotificationsListProps {
   userType?: 'commissioner' | 'freelancer';
   onNotificationClick?: (notification: NotificationData) => void;
   onCountsUpdate?: (counts: { all: number; network?: number; projects?: number; gigs?: number }) => void;
+  onNotificationRead?: (notification: NotificationData) => void;
 }
 
 export default function NotificationsList({
@@ -18,7 +19,8 @@ export default function NotificationsList({
   commissionerId,
   userType = 'commissioner',
   onNotificationClick,
-  onCountsUpdate
+  onCountsUpdate,
+  onNotificationRead
 }: NotificationsListProps) {
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,8 +34,13 @@ export default function NotificationsList({
     try {
       setLoading(true);
 
-      // Use the new event-driven API
-      const endpoint = `/api/notifications-v2?userId=${commissionerId}&userType=${userType}&tab=${activeTab}`;
+      // Use the correct API based on user type
+      let endpoint: string;
+      if (userType === 'commissioner') {
+        endpoint = `/api/notifications?commissionerId=${commissionerId}&tab=${activeTab}`;
+      } else {
+        endpoint = `/api/notifications-v2?userId=${commissionerId}&userType=${userType}&tab=${activeTab}`;
+      }
 
       const response = await fetch(endpoint);
 
@@ -56,15 +63,55 @@ export default function NotificationsList({
     }
   };
 
-  const handleNotificationClick = (notification: NotificationData) => {
-    // Mark as read
+  const handleNotificationClick = async (notification: NotificationData) => {
+    // Mark as read locally
+    const wasUnread = !notification.isRead;
     setNotifications(prev =>
       prev.map(n =>
         n.id === notification.id ? { ...n, isRead: true } : n
       )
     );
 
-    // Call parent handler
+    // Mark as read on server
+    if (wasUnread) {
+      try {
+        if (userType === 'commissioner') {
+          await fetch('/api/notifications', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              notificationId: notification.id,
+              commissionerId: commissionerId
+            })
+          });
+        } else {
+          // For freelancers, use the notifications-v2 endpoint
+          await fetch('/api/notifications-v2', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              notificationId: notification.id,
+              userId: commissionerId,
+              userType: userType
+            })
+          });
+        }
+      } catch (error) {
+        console.error('Failed to mark notification as read:', error);
+      }
+    }
+
+    // Notify parent that notification was read (for count updates)
+    if (wasUnread) {
+      onNotificationRead?.(notification);
+
+      // Dispatch custom event to notify other components (like top navbar)
+      window.dispatchEvent(new CustomEvent('notificationRead', {
+        detail: { notification, userType }
+      }));
+    }
+
+    // Call parent click handler for navigation
     onNotificationClick?.(notification);
   };
 

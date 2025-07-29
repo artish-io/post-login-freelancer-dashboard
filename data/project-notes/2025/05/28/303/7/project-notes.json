@@ -1,0 +1,11 @@
+{
+  "projectId": 303,
+  "taskId": 7,
+  "taskTitle": "iOS testing & deployment",
+  "notes": [
+    {
+      "date": "2025-05-28",
+      "feedback": "There was an issue with the crash analytics not syncing. Resolved by build 92A. No further action needed."
+    }
+  ]
+}

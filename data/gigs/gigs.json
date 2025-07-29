@@ -19,6 +19,7 @@
       "Figma"
     ],
     "executionMethod": "completion",
+    "invoicingMethod": "completion",
     "milestones": [
       {
         "id": "55042261-03da-430c-bb93-f28a45036acc",
@@ -79,6 +80,7 @@
       "Adobe After Effects",
       "Illustrator"
     ],
+    "invoicingMethod": "milestone",
     "notes": "Maintain a calm, clean visual aesthetic aligned with healthtech branding.",
     "postedDate": "2025-07-05"
   },
@@ -144,7 +146,7 @@
     "description": "Build an interactive web app for visualizing Lagos park layouts with routes, amenities, and accessibility features.",
     "deliveryTimeWeeks": 5,
     "estimatedHours": 45,
-    "status": "Available",
+    "status": "Unavailable",
     "toolsRequired": [
       "React",
       "Mapbox",
@@ -195,7 +197,7 @@
     "description": "Create a content management system for digital signage across Lagos parks.",
     "deliveryTimeWeeks": 6,
     "estimatedHours": 40,
-    "status": "Available",
+    "status": "Unavailable",
     "toolsRequired": [
       "Figma",
       "Adobe Creative Suite",

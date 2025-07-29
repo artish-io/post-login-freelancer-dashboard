@@ -47,12 +47,14 @@ export function useUnreadMessages() {
 
   // Initial fetch and polling
   useEffect(() => {
+    if (!session?.user?.id) return;
+
     fetchUnreadCount();
 
     // More frequent polling (every 3 seconds for real-time feel)
     const interval = setInterval(fetchUnreadCount, 3000);
     return () => clearInterval(interval);
-  }, [fetchUnreadCount]);
+  }, [session?.user?.id]); // Remove fetchUnreadCount from dependencies
 
   // Listen for manual refresh events
   useEffect(() => {
@@ -85,7 +87,7 @@ export function useUnreadMessages() {
       window.removeEventListener('popstate', handleRouteChange);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
-  }, [fetchUnreadCount]);
+  }, []); // Remove fetchUnreadCount dependency to prevent infinite re-renders
 
   // Manual refresh function for components to call
   const refreshCount = useCallback(() => {

@@ -4,13 +4,12 @@ import { readFile, writeFile } from 'fs/promises';
 
 const filePath = path.join(process.cwd(), 'data', 'invoices.json');
 
-function extractFreelancerId(request: NextRequest): string {
-  return request.nextUrl.pathname.split('/')[4]; // Adjust if route depth changes
-}
-
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ freelancerId: string }> }
+) {
   try {
-    const freelancerId = extractFreelancerId(request);
+    const { freelancerId } = await params;
     const data = await readFile(filePath, 'utf-8');
     const invoices = JSON.parse(data);
 

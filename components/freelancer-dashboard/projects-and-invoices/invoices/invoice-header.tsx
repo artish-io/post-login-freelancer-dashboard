@@ -9,6 +9,10 @@ type InvoiceHeaderProps = {
   onSaveDraft: () => void;
   onPreview?: () => void;
   billTo: string;
+  sending?: boolean;
+  sendSuccess?: boolean;
+  savingDraft?: boolean;
+  draftSaved?: boolean;
 };
 
 export default function InvoiceHeader({
@@ -16,6 +20,10 @@ export default function InvoiceHeader({
   onSaveDraft,
   onPreview,
   billTo,
+  sending = false,
+  sendSuccess = false,
+  savingDraft = false,
+  draftSaved = false,
 }: InvoiceHeaderProps) {
   const { data: session } = useSession();
   const [name, setName] = useState('...');
@@ -72,15 +80,31 @@ export default function InvoiceHeader({
 
         <button
           onClick={onSaveDraft}
-          disabled={!billTo.trim()}
-          className={`border px-4 py-2 rounded-full text-sm transition ${
-            billTo.trim()
-              ? 'text-gray-800 hover:bg-gray-100'
+          disabled={!billTo.trim() || savingDraft}
+          className={`border px-4 py-2 rounded-full text-sm transition flex items-center gap-2 ${
+            billTo.trim() && !savingDraft
+              ? draftSaved
+                ? 'text-green-700 border-green-300 bg-green-50'
+                : 'text-gray-800 hover:bg-gray-100'
               : 'text-gray-400 cursor-not-allowed bg-gray-100'
           }`}
           title={!billTo.trim() ? 'Enter a billing contact to enable saving' : ''}
         >
-          Save Draft
+          {savingDraft ? (
+            <>
+              <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+              Saving...
+            </>
+          ) : draftSaved ? (
+            <>
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+              </svg>
+              Draft Saved
+            </>
+          ) : (
+            'Save Draft'
+          )}
         </button>
 
         {onPreview && (
@@ -104,10 +128,24 @@ export default function InvoiceHeader({
         )}
 
         <button
-          className="bg-black text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-gray-900 transition"
+          className={`px-5 py-2 rounded-full text-sm font-medium transition ${
+            sending || sendSuccess
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-black text-white hover:bg-gray-900'
+          }`}
           onClick={onSend}
+          disabled={sending || sendSuccess}
         >
-          Send Now
+          {sending ? (
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Sending...
+            </div>
+          ) : sendSuccess ? (
+            '✓ Sent!'
+          ) : (
+            'Send Now'
+          )}
         </button>
       </div>
     </div>

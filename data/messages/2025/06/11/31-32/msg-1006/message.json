@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1006",
+  "senderId": 31,
+  "timestamp": "2025-06-11T09:40:30Z",
+  "text": "Okay but I need a better timeline this time. Last sprint was too chaotic.",
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "threadId": "31-32"
+}

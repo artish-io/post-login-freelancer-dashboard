@@ -28,8 +28,20 @@ export default function NotificationsPage() {
     switch (type) {
       case 'invoice_sent':
         // Navigate to pay invoice page with specific invoice
-        if (context?.invoiceId) {
+        if (notification.invoice?.number) {
+          router.push(`/commissioner-dashboard/projects-and-invoices/invoices/pay-invoice?invoice=${notification.invoice.number}`);
+        } else if (context?.invoiceId) {
           router.push(`/commissioner-dashboard/projects-and-invoices/invoices/pay-invoice?invoice=${context.invoiceId}`);
+        } else {
+          router.push('/commissioner-dashboard/projects-and-invoices/invoices');
+        }
+        break;
+
+      case 'invoice_reminder':
+      case 'invoice_overdue_reminder':
+        // Navigate to pay invoice page for reminder notifications
+        if (notification.invoice?.number) {
+          router.push(`/commissioner-dashboard/projects-and-invoices/invoices/pay-invoice?invoice=${notification.invoice.number}`);
         } else {
           router.push('/commissioner-dashboard/projects-and-invoices/invoices');
         }

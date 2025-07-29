@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1008",
+  "senderId": 33,
+  "timestamp": "2025-06-10T14:45:00Z",
+  "text": "Mockups are ready. Let me know if we can align before EOD.",
+  "read": {
+    "31": true,
+    "33": true
+  },
+  "isEncrypted": false,
+  "threadId": "31-33"
+}

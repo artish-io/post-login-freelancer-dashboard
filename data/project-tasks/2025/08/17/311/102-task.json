@@ -1,0 +1,24 @@
+{
+  "taskId": 102,
+  "projectId": 311,
+  "projectTitle": "Lagos Parks Mobile App Development",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Mobile Development",
+    "UI/UX Design"
+  ],
+  "title": "Park booking interface mockups",
+  "status": "Approved",
+  "completed": true,
+  "order": 2,
+  "link": "https://figma.com/file/booking-interface",
+  "dueDate": "2025-08-18T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Create mockups for the park facility booking interface.",
+  "submittedDate": "2025-07-16T08:45:00.000Z",
+  "createdDate": "2025-07-29T13:32:42.043Z",
+  "lastModified": "2025-07-29T13:32:42.043Z"
+}

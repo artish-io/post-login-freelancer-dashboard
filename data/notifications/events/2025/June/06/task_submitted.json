@@ -1,0 +1,62 @@
+[
+  {
+    "id": "evt_1752860539720_10",
+    "timestamp": "2025-06-07T00:00:00.000Z",
+    "type": "task_submitted",
+    "notificationType": 1,
+    "actorId": 31,
+    "targetId": 33,
+    "entityType": 1,
+    "entityId": 15,
+    "metadata": {
+      "taskTitle": "Finalize brand icons",
+      "projectTitle": "Urbana channel brand refresh",
+      "link": "https://figma.com/file/brand-icons",
+      "version": 2
+    },
+    "context": {
+      "projectId": 302,
+      "taskId": 15
+    }
+  },
+  {
+    "id": "evt_1752860539720_24",
+    "timestamp": "2025-06-07T00:00:00.000Z",
+    "type": "task_submitted",
+    "notificationType": 1,
+    "actorId": 31,
+    "targetId": 34,
+    "entityType": 1,
+    "entityId": 24,
+    "metadata": {
+      "taskTitle": "Carousel animation mock",
+      "projectTitle": "Nebula CMS landing redesign",
+      "link": "https://figma.com/file/carousel-animation",
+      "version": 2
+    },
+    "context": {
+      "projectId": 306,
+      "taskId": 24
+    }
+  },
+  {
+    "id": "evt_1752860539720_33",
+    "timestamp": "2025-06-07T00:00:00.000Z",
+    "type": "task_submitted",
+    "notificationType": 1,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 1,
+    "entityId": 104,
+    "metadata": {
+      "taskTitle": "Navigation and menu structure",
+      "projectTitle": "Lagos Parks Mobile App Development",
+      "link": "https://figma.com/file/navigation-menu",
+      "version": 1
+    },
+    "context": {
+      "projectId": 311,
+      "taskId": 104
+    }
+  }
+]

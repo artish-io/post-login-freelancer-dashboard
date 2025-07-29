@@ -1,0 +1,17 @@
+{
+  "projectId": 300,
+  "title": "Event Production",
+  "description": "Logistics, talent coordination, and branding for a large-scale tech showcase.",
+  "organizationId": 6,
+  "typeTags": [
+    "Event Management",
+    "Brand Design"
+  ],
+  "commissionerId": 37,
+  "freelancerId": 31,
+  "status": "Paused",
+  "dueDate": "2025-08-25",
+  "totalTasks": 53,
+  "invoicingMethod": "milestone",
+  "createdAt": "2025-07-29T14:26:40.167Z"
+}

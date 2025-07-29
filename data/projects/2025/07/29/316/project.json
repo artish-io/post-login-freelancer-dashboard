@@ -1,0 +1,22 @@
+{
+  "projectId": 316,
+  "title": "Digital Signage Content Management",
+  "description": "Create a content management system for digital signage across Lagos parks.",
+  "organizationId": 1,
+  "typeTags": [
+    "Digital Signage",
+    "Content Management",
+    "UI Design"
+  ],
+  "manager": {
+    "name": "Neilsan Mando",
+    "title": "Product Manager",
+    "avatar": "/avatars/neilsan.png",
+    "email": "neilsan.mando@example.com"
+  },
+  "freelancerId": 2,
+  "status": "Active",
+  "dueDate": "2025-09-08",
+  "totalTasks": 1,
+  "createdAt": "2025-07-29T14:26:40.168Z"
+}

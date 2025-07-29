@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
+import { readProject, updateProject, readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 
 /**
  * API endpoint to automatically update project status when all tasks are approved
@@ -9,29 +11,24 @@ import { readFile, writeFile } from 'fs/promises';
 export async function POST(request: Request) {
   try {
     const { projectId } = await request.json();
-    
+
     if (!projectId) {
       return NextResponse.json({ error: 'Missing projectId' }, { status: 400 });
     }
 
-    // Read data files
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-
-    const [projectsFile, projectTasksFile] = await Promise.all([
-      readFile(projectsPath, 'utf-8'),
-      readFile(projectTasksPath, 'utf-8')
-    ]);
-
-    const projects = JSON.parse(projectsFile);
-    const projectTasks = JSON.parse(projectTasksFile);
-
-    // Find the project and its tasks
-    const project = projects.find((p: any) => p.projectId === projectId);
-    const taskProject = projectTasks.find((pt: any) => pt.projectId === projectId);
-
-    if (!project || !taskProject) {
+    // Read project from hierarchical structure
+    const project = await readProject(projectId);
+    if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    // Read project tasks from hierarchical structure
+    const hierarchicalTasks = await readAllTasks();
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
+
+    const taskProject = projectTasks.find((pt: any) => pt.projectId === projectId);
+    if (!taskProject) {
+      return NextResponse.json({ error: 'Project tasks not found' }, { status: 404 });
     }
 
     // Check if all tasks are approved
@@ -50,13 +47,8 @@ export async function POST(request: Request) {
     }
 
     if (statusChanged) {
-      // Update project status
-      const updatedProjects = projects.map((p: any) => 
-        p.projectId === projectId ? { ...p, status: newStatus } : p
-      );
-
-      // Write updated projects back to file
-      await writeFile(projectsPath, JSON.stringify(updatedProjects, null, 2));
+      // Update project status in hierarchical structure
+      await updateProject(projectId, { status: newStatus });
 
       console.log(`✅ Auto-completed: Project ${projectId} status updated from "${project.status}" to "${newStatus}"`);
 
@@ -92,17 +84,12 @@ export async function POST(request: Request) {
  */
 export async function GET() {
   try {
-    // Read data files
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
+    // Read data from hierarchical structures
+    const hierarchicalTasks = await readAllTasks();
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
 
-    const [projectsFile, projectTasksFile] = await Promise.all([
-      readFile(projectsPath, 'utf-8'),
-      readFile(projectTasksPath, 'utf-8')
-    ]);
-
-    const projects = JSON.parse(projectsFile);
-    const projectTasks = JSON.parse(projectTasksFile);
+    // Read all projects from hierarchical structure
+    const projects = await readAllProjects();
 
     const inconsistencies: any[] = [];
 

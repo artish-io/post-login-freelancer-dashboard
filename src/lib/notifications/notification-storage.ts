@@ -1,0 +1,382 @@
+import fs from 'fs';
+import path from 'path';
+
+export interface NotificationEvent {
+  id: string;
+  timestamp: string;
+  type: string;
+  notificationType: number;
+  actorId: number;
+  targetId: number;
+  entityType: number;
+  entityId: string;
+  metadata: Record<string, any>;
+  context: Record<string, any>;
+}
+
+/**
+ * Notification Storage Manager
+ *
+ * Manages notifications across granular partitioned files for maximum scalability:
+ * - data/notifications/events/2025/July/01/invoice_paid.json
+ * - data/notifications/events/2025/July/01/task_submitted.json
+ * - data/notifications/events/2025/July/02/product_purchased.json
+ * - etc.
+ *
+ * This granular structure prevents any single file from becoming too large,
+ * improves performance, and allows for efficient querying by date and event type.
+ */
+export class NotificationStorage {
+  private static readonly EVENTS_DIR = path.join(process.cwd(), 'data/notifications/events');
+  private static readonly LEGACY_FILE = path.join(process.cwd(), 'data/notifications/notifications-log.json');
+  private static readonly LEGACY_MONTHLY_DIR = path.join(process.cwd(), 'data/notifications/events');
+  private static readonly READ_STATES_FILE = path.join(process.cwd(), 'data/notifications/read-states.json');
+
+  /**
+   * Ensure the events directory exists
+   */
+  private static ensureEventsDirectory(): void {
+    if (!fs.existsSync(this.EVENTS_DIR)) {
+      fs.mkdirSync(this.EVENTS_DIR, { recursive: true });
+    }
+  }
+
+  /**
+   * Get the granular path for an event
+   * Format: data/notifications/events/2025/July/01/invoice_paid.json
+   */
+  private static getGranularEventPath(date: Date, eventType: string): string {
+    const year = date.getFullYear().toString();
+    const month = date.toLocaleDateString('en-US', { month: 'long' });
+    const day = date.getDate().toString().padStart(2, '0');
+
+    const dirPath = path.join(this.EVENTS_DIR, year, month, day);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+
+    return path.join(dirPath, `${eventType}.json`);
+  }
+
+  /**
+   * Load events from a granular event file
+   */
+  private static loadGranularEvents(filePath: string): NotificationEvent[] {
+    if (!fs.existsSync(filePath)) {
+      return [];
+    }
+
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      return content.trim() ? JSON.parse(content) : [];
+    } catch (error) {
+      console.error(`Error loading granular events from ${filePath}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Save events to a granular event file
+   */
+  private static saveGranularEvents(filePath: string, events: NotificationEvent[]): void {
+    try {
+      // Sort events by timestamp (newest first)
+      events.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+      fs.writeFileSync(filePath, JSON.stringify(events, null, 2));
+    } catch (error) {
+      console.error(`Error saving granular events to ${filePath}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get the filename for a given date
+   */
+  private static getPartitionFilename(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    return `${year}-${month}.json`;
+  }
+
+  /**
+   * Get the full path for a partition file
+   */
+  private static getPartitionPath(date: Date): string {
+    return path.join(this.EVENTS_DIR, this.getPartitionFilename(date));
+  }
+
+  /**
+   * Load events from a specific partition file
+   */
+  private static loadPartition(filePath: string): NotificationEvent[] {
+    try {
+      if (!fs.existsSync(filePath)) {
+        return [];
+      }
+      const content = fs.readFileSync(filePath, 'utf-8');
+      return content.trim() ? JSON.parse(content) : [];
+    } catch (error) {
+      console.error(`Error loading partition ${filePath}:`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Save events to a specific partition file
+   */
+  private static savePartition(filePath: string, events: NotificationEvent[]): void {
+    try {
+      fs.writeFileSync(filePath, JSON.stringify(events, null, 2));
+    } catch (error) {
+      console.error(`Error saving partition ${filePath}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Add a new notification event using granular storage
+   */
+  static addEvent(event: NotificationEvent): void {
+    this.ensureEventsDirectory();
+
+    const eventDate = new Date(event.timestamp);
+    const granularPath = this.getGranularEventPath(eventDate, event.type);
+
+    // Load existing events from the granular file
+    const events = this.loadGranularEvents(granularPath);
+
+    // Add new event at the beginning (most recent first)
+    events.unshift(event);
+
+    // Keep only the most recent 100 events per granular file to prevent files from growing too large
+    if (events.length > 100) {
+      events.splice(100);
+    }
+
+    // Save updated events
+    this.saveGranularEvents(granularPath, events);
+
+    const year = eventDate.getFullYear();
+    const month = eventDate.toLocaleDateString('en-US', { month: 'long' });
+    const day = eventDate.getDate().toString().padStart(2, '0');
+    console.log(`📝 Added ${event.type} event to granular storage: ${year}/${month}/${day}/${event.type}.json`);
+  }
+
+  /**
+   * Get events for a specific user within a date range
+   */
+  static getEventsForUser(
+    userId: number, 
+    userType: 'freelancer' | 'commissioner',
+    startDate?: Date,
+    endDate?: Date,
+    limit: number = 100
+  ): NotificationEvent[] {
+    this.ensureEventsDirectory();
+    
+    const now = new Date();
+    const start = startDate || new Date(now.getFullYear(), now.getMonth() - 3, 1); // Default: 3 months ago
+    const end = endDate || now;
+    
+    const allEvents: NotificationEvent[] = [];
+    
+    // Generate list of dates to check using granular structure
+    const currentDate = new Date(start);
+
+    while (currentDate <= end) {
+      const year = currentDate.getFullYear().toString();
+      const month = currentDate.toLocaleDateString('en-US', { month: 'long' });
+      const day = currentDate.getDate().toString().padStart(2, '0');
+
+      const dayDir = path.join(this.EVENTS_DIR, year, month, day);
+
+      if (fs.existsSync(dayDir)) {
+        // Get all event type files for this day
+        const eventFiles = fs.readdirSync(dayDir).filter(file => file.endsWith('.json'));
+
+        for (const eventFile of eventFiles) {
+          const eventFilePath = path.join(dayDir, eventFile);
+          const dayEvents = this.loadGranularEvents(eventFilePath);
+          allEvents.push(...dayEvents);
+        }
+      }
+
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    
+    // Filter events for the specific user
+    const userEvents = allEvents.filter(event => {
+      // Check if this event is relevant to the user
+      if (userType === 'freelancer') {
+        return event.targetId === userId;
+      } else {
+        // For commissioners, they could be either actor or target depending on the event
+        return event.actorId === userId || event.targetId === userId;
+      }
+    });
+    
+    // Sort by timestamp (newest first) and limit results
+    return userEvents
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, limit);
+  }
+
+  /**
+   * Migrate legacy notifications-log.json to partitioned structure
+   * This should be run once to migrate existing data
+   */
+  static migrateLegacyFile(): void {
+    if (!fs.existsSync(this.LEGACY_FILE)) {
+      console.log('No legacy notifications file found, skipping migration');
+      return;
+    }
+
+    try {
+      const legacyContent = fs.readFileSync(this.LEGACY_FILE, 'utf-8');
+      const legacyEvents: NotificationEvent[] = JSON.parse(legacyContent);
+      
+      console.log(`🔄 Migrating ${legacyEvents.length} events from legacy file...`);
+      
+      // Group events by month/year
+      const eventsByPartition = new Map<string, NotificationEvent[]>();
+      
+      for (const event of legacyEvents) {
+        const eventDate = new Date(event.timestamp);
+        const partitionKey = this.getPartitionFilename(eventDate);
+        
+        if (!eventsByPartition.has(partitionKey)) {
+          eventsByPartition.set(partitionKey, []);
+        }
+        eventsByPartition.get(partitionKey)!.push(event);
+      }
+      
+      // Save each partition
+      this.ensureEventsDirectory();
+      for (const [partitionKey, events] of eventsByPartition) {
+        const partitionPath = path.join(this.EVENTS_DIR, partitionKey);
+        
+        // Sort events by timestamp (newest first)
+        events.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+        
+        this.savePartition(partitionPath, events);
+        console.log(`✅ Migrated ${events.length} events to ${partitionKey}`);
+      }
+      
+      // Backup and remove legacy file
+      const backupPath = this.LEGACY_FILE + '.backup';
+      fs.copyFileSync(this.LEGACY_FILE, backupPath);
+      fs.unlinkSync(this.LEGACY_FILE);
+      
+      console.log(`🎉 Migration complete! Legacy file backed up to ${backupPath}`);
+      
+    } catch (error) {
+      console.error('Error migrating legacy notifications:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Load read states from storage
+   */
+  private static loadReadStates(): Record<string, Set<number>> {
+    try {
+      if (!fs.existsSync(this.READ_STATES_FILE)) {
+        return {};
+      }
+      const content = fs.readFileSync(this.READ_STATES_FILE, 'utf-8');
+      const data = JSON.parse(content);
+
+      // Convert arrays back to Sets
+      const readStates: Record<string, Set<number>> = {};
+      for (const [notificationId, userIds] of Object.entries(data)) {
+        readStates[notificationId] = new Set(userIds as number[]);
+      }
+      return readStates;
+    } catch (error) {
+      console.error('Error loading read states:', error);
+      return {};
+    }
+  }
+
+  /**
+   * Save read states to storage
+   */
+  private static saveReadStates(readStates: Record<string, Set<number>>): void {
+    try {
+      // Convert Sets to arrays for JSON serialization
+      const data: Record<string, number[]> = {};
+      for (const [notificationId, userIds] of Object.entries(readStates)) {
+        data[notificationId] = Array.from(userIds);
+      }
+
+      // Ensure directory exists
+      const dir = path.dirname(this.READ_STATES_FILE);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+
+      fs.writeFileSync(this.READ_STATES_FILE, JSON.stringify(data, null, 2));
+    } catch (error) {
+      console.error('Error saving read states:', error);
+    }
+  }
+
+  /**
+   * Mark a notification as read for a specific user
+   */
+  static markAsRead(notificationId: string, userId: number): void {
+    const readStates = this.loadReadStates();
+
+    if (!readStates[notificationId]) {
+      readStates[notificationId] = new Set();
+    }
+
+    readStates[notificationId].add(userId);
+    this.saveReadStates(readStates);
+  }
+
+  /**
+   * Check if a notification is read by a specific user
+   */
+  static isRead(notificationId: string, userId: number): boolean {
+    const readStates = this.loadReadStates();
+    return readStates[notificationId]?.has(userId) || false;
+  }
+
+  /**
+   * Get statistics about the notification storage
+   */
+  static getStorageStats(): {
+    totalPartitions: number;
+    totalEvents: number;
+    partitions: Array<{ filename: string; eventCount: number; sizeKB: number }>;
+  } {
+    this.ensureEventsDirectory();
+
+    const partitionFiles = fs.readdirSync(this.EVENTS_DIR)
+      .filter(file => file.endsWith('.json'))
+      .sort();
+
+    let totalEvents = 0;
+    const partitions = partitionFiles.map(filename => {
+      const filePath = path.join(this.EVENTS_DIR, filename);
+      const events = this.loadPartition(filePath);
+      const stats = fs.statSync(filePath);
+
+      totalEvents += events.length;
+
+      return {
+        filename,
+        eventCount: events.length,
+        sizeKB: Math.round(stats.size / 1024)
+      };
+    });
+
+    return {
+      totalPartitions: partitionFiles.length,
+      totalEvents,
+      partitions
+    };
+  }
+}

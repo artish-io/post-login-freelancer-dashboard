@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1012",
+  "senderId": 31,
+  "timestamp": "2025-06-09T12:04:00Z",
+  "text": "Yes! I’ve made updates and pushed them live. Let me know what you think.",
+  "read": {
+    "31": true,
+    "34": false
+  },
+  "isEncrypted": false,
+  "threadId": "31-34"
+}

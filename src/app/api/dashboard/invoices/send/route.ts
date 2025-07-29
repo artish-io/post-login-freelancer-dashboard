@@ -1,11 +1,8 @@
 // src/app/api/invoices/send/route.ts
 
 import { NextResponse } from 'next/server';
-import { readFile, writeFile } from 'fs/promises';
-import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
-
-const INVOICE_FILE = path.join(process.cwd(), 'data', 'invoices.json');
+import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
 
 export async function POST(request: Request) {
   try {
@@ -25,10 +22,11 @@ export async function POST(request: Request) {
       isCustomProject = false,
     } = body;
 
-    const data = await readFile(INVOICE_FILE, 'utf-8');
-    const invoices = JSON.parse(data);
+    const allInvoices = await getAllInvoices();
+    const maxId = allInvoices.reduce((max, inv) => Math.max(max, inv.id || 0), 0);
 
     const newInvoice = {
+      id: maxId + 1,
       invoiceNumber: invoiceNumber || `INV-${Date.now()}`,
       freelancerId,
       projectId: isCustomProject ? null : projectId,
@@ -42,10 +40,10 @@ export async function POST(request: Request) {
       isCustomProject,
       notes,
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
-    invoices.push(newInvoice);
-    await writeFile(INVOICE_FILE, JSON.stringify(invoices, null, 2));
+    await saveInvoice(newInvoice);
 
     return NextResponse.json({ success: true, invoice: newInvoice });
   } catch (error) {

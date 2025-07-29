@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
+import { getAllInvoices } from '../../../../lib/invoice-storage';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -14,19 +15,57 @@ export async function GET(request: Request) {
   }
 
   try {
-    const filePath = path.join(process.cwd(), 'data', 'earnings.json');
-    const file = await readFile(filePath, 'utf-8');
-    const earnings = JSON.parse(file);
+    // Get all invoices from the new storage system
+    const invoices = await getAllInvoices();
 
-    console.log('📦 Loaded earnings:', earnings);
+    console.log('📦 Loaded invoices for earnings calculation');
 
-    const userEarnings = earnings.find((entry: any) => entry.userId === userId);
+    // Find freelancer ID from user ID
+    const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
+    const freelancersFile = await readFile(freelancersPath, 'utf-8');
+    const freelancers = JSON.parse(freelancersFile);
 
-    console.log('✅ Matched earnings for user:', userEarnings);
+    const freelancer = freelancers.find((f: any) => f.userId === parseInt(userId));
+    const freelancerId = freelancer?.id;
 
-    return NextResponse.json(
-      userEarnings || { amount: 0, currency: 'USD', lastUpdated: null }
+    if (!freelancerId) {
+      console.log('❌ No freelancer found for userId:', userId);
+      return NextResponse.json({ amount: 0, currency: 'USD', lastUpdated: null });
+    }
+
+    console.log('🎯 Found freelancerId:', freelancerId);
+
+    // Calculate total earnings from paid invoices
+    const paidInvoices = invoices.filter((invoice: any) =>
+      invoice.freelancerId === freelancerId && invoice.status === 'paid'
     );
+
+    console.log('💰 Found paid invoices:', paidInvoices.length);
+
+    const totalAmount = paidInvoices.reduce((sum: number, invoice: any) => {
+      // Use freelancerAmount if available (after platform fees), otherwise use totalAmount
+      const amount = invoice.paymentDetails?.freelancerAmount || invoice.totalAmount;
+      return sum + amount;
+    }, 0);
+
+    // Get the most recent payment date
+    const lastUpdated = paidInvoices.length > 0
+      ? paidInvoices
+          .map((inv: any) => inv.paidDate || inv.paymentDetails?.processedAt)
+          .filter(Boolean)
+          .sort()
+          .pop()
+      : null;
+
+    const userEarnings = {
+      amount: totalAmount,
+      currency: 'USD',
+      lastUpdated
+    };
+
+    console.log('✅ Calculated earnings for freelancer:', userEarnings);
+
+    return NextResponse.json(userEarnings);
   } catch (err) {
     console.error('🔥 Earnings fetch error:', err);
     return NextResponse.json({ error: 'Failed to load earnings' }, { status: 500 });

@@ -3,6 +3,9 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
+import { readProjectTasks, convertHierarchicalToLegacy } from '../../../../lib/project-tasks/hierarchical-storage';
+import { readAllProjects } from '@/lib/projects-utils';
+import { readProjectNotes } from '@/lib/project-notes-utils';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -14,21 +17,16 @@ export async function GET(request: Request) {
   }
 
   try {
-    const tasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-    const notesPath = path.join(process.cwd(), 'data', 'project-notes.json');
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
+    const organizationsFile = await readFile(organizationsPath, 'utf-8');
 
-    const [tasksFile, notesFile, projectsFile, organizationsFile] = await Promise.all([
-      readFile(tasksPath, 'utf-8'),
-      readFile(notesPath, 'utf-8'),
-      readFile(projectsPath, 'utf-8'),
-      readFile(organizationsPath, 'utf-8')
-    ]);
+    // Read project tasks from hierarchical storage
+    const hierarchicalTasks = await readProjectTasks(projectId);
+    const allTasks = convertHierarchicalToLegacy(hierarchicalTasks);
 
-    const allTasks = JSON.parse(tasksFile);
-    const allNotes = JSON.parse(notesFile);
-    const allProjects = JSON.parse(projectsFile);
+    // Read data from hierarchical structures
+    const allNotes = await readProjectNotes(projectId);
+    const allProjects = await readAllProjects();
     const allOrganizations = JSON.parse(organizationsFile);
 
     const taskGroup = allTasks.find((t: any) => t.projectId === projectId);
@@ -45,7 +43,8 @@ export async function GET(request: Request) {
     // Find the organization for logo and additional info
     const organization = allOrganizations.find((org: any) => org.id === projectInfo.organizationId);
 
-    const matchingNotes = allNotes.filter((note: any) => note.projectId === projectId);
+    // Notes are already filtered by project ID from readProjectNotes
+    const matchingNotes = allNotes;
 
     // Transform notes to include taskId for proper read state tracking
     const transformedNotes = matchingNotes.map((noteGroup: any) => ({

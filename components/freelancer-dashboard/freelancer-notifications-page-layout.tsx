@@ -35,6 +35,15 @@ export default function FreelancerNotificationsPageLayout({
     });
   };
 
+  const handleNotificationRead = (notification: NotificationData) => {
+    // Decrease the count for the current tab and all tab
+    setNotificationCounts(prev => ({
+      ...prev,
+      all: Math.max(0, prev.all - 1),
+      [activeTab]: activeTab !== 'all' ? Math.max(0, prev[activeTab] - 1) : prev[activeTab]
+    }));
+  };
+
   return (
     <div>
       {/* Header */}
@@ -60,8 +69,10 @@ export default function FreelancerNotificationsPageLayout({
         <NotificationsList
           activeTab={activeTab}
           commissionerId={freelancerId}
+          userType="freelancer"
           onNotificationClick={onNotificationClick}
           onCountsUpdate={handleCountsUpdate}
+          onNotificationRead={handleNotificationRead}
         />
       </div>
     </div>

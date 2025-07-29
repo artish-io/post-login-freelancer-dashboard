@@ -1,0 +1,20 @@
+{
+  "invoiceNumber": "MGL100008-M1",
+  "freelancerId": 19,
+  "projectId": 312,
+  "commissionerId": 32,
+  "projectTitle": "Lagos Parks Mobile App Development",
+  "milestoneDescription": "User authentication flow design",
+  "milestoneNumber": 1,
+  "issueDate": "2024-07-16",
+  "dueDate": "2024-07-26",
+  "totalAmount": 1200,
+  "status": "paid",
+  "milestones": [
+    {
+      "description": "User authentication flow design",
+      "rate": 1200
+    }
+  ],
+  "parentInvoiceNumber": "MGL100008"
+}

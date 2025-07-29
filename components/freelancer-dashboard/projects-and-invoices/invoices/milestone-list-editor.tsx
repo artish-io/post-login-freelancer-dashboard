@@ -7,6 +7,7 @@ type Milestone = {
   title: string;
   description?: string;
   rate: number;
+  taskId?: number; // Optional task ID for tracking invoiced tasks
 };
 
 type Props = {

@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
+import { readAllTasks, convertHierarchicalToLegacy } from '../../../../lib/project-tasks/hierarchical-storage';
+import { readAllProjects, saveProject } from '@/lib/projects-utils';
 
 const GIGS_PATH = path.join(process.cwd(), 'data/gigs/gigs.json');
 const APPLICATIONS_PATH = path.join(process.cwd(), 'data/gigs/gig-applications.json');
-const PROJECTS_PATH = path.join(process.cwd(), 'data/projects.json');
 const PROJECT_TASKS_PATH = path.join(process.cwd(), 'data/project-tasks.json');
 const ORGANIZATIONS_PATH = path.join(process.cwd(), 'data/organizations.json');
 const USERS_PATH = path.join(process.cwd(), 'data/users.json');
@@ -21,14 +22,19 @@ export async function POST(req: Request) {
     }
 
     // Read all necessary data files
-    const [gigsData, applicationsData, projectsData, projectTasksData, organizationsData, usersData] = await Promise.all([
+    const [gigsData, applicationsData, organizationsData, usersData] = await Promise.all([
       readFile(GIGS_PATH, 'utf-8').then(data => JSON.parse(data)),
       readFile(APPLICATIONS_PATH, 'utf-8').then(data => JSON.parse(data)),
-      readFile(PROJECTS_PATH, 'utf-8').then(data => JSON.parse(data)),
-      readFile(PROJECT_TASKS_PATH, 'utf-8').then(data => JSON.parse(data)),
       readFile(ORGANIZATIONS_PATH, 'utf-8').then(data => JSON.parse(data)),
       readFile(USERS_PATH, 'utf-8').then(data => JSON.parse(data))
     ]);
+
+    // Read projects from hierarchical structure
+    const projectsData = await readAllProjects();
+
+    // Read project tasks from hierarchical storage
+    const hierarchicalTasks = await readAllTasks();
+    const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
 
     // Find the gig and application
     const gig = gigsData.find((g: any) => g.id === gigId);
@@ -116,14 +122,15 @@ export async function POST(req: Request) {
       ]
     };
 
-    // Update all data files
-    const updatedProjects = [...projectsData, newProject];
+    // Save new project to hierarchical structure
+    await saveProject(newProject);
+
+    // Update other data files
     const updatedProjectTasks = [...projectTasksData, newProjectTasks];
 
     await Promise.all([
       writeFile(GIGS_PATH, JSON.stringify(updatedGigs, null, 2)),
       writeFile(APPLICATIONS_PATH, JSON.stringify(updatedApplications, null, 2)),
-      writeFile(PROJECTS_PATH, JSON.stringify(updatedProjects, null, 2)),
       writeFile(PROJECT_TASKS_PATH, JSON.stringify(updatedProjectTasks, null, 2))
     ]);
 

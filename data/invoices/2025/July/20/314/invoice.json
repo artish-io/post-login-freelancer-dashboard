@@ -1,0 +1,30 @@
+{
+  "invoiceNumber": "MGL000314-M1",
+  "freelancerId": 31,
+  "projectId": 314,
+  "commissionerId": 32,
+  "projectTitle": "E-commerce Platform UI Redesign",
+  "milestoneDescription": "User research and wireframing",
+  "milestoneNumber": 1,
+  "issueDate": "2025-07-21",
+  "dueDate": "2025-08-04",
+  "totalAmount": 3250,
+  "status": "paid",
+  "paidDate": "2025-07-21",
+  "paymentDetails": {
+    "paymentId": "pay_3250_314",
+    "paymentMethod": "stripe",
+    "platformFee": 162.5,
+    "freelancerAmount": 3087.5,
+    "currency": "USD",
+    "processedAt": "2025-07-21T16:45:00Z"
+  },
+  "milestones": [
+    {
+      "description": "User research and wireframing",
+      "rate": 3250
+    }
+  ],
+  "isManualInvoice": true,
+  "parentInvoiceNumber": "MGL000314"
+}

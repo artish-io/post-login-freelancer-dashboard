@@ -3,9 +3,11 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-
-import fs from 'fs';
-import path from 'path';
+import {
+  readThreadMessages,
+  readThreadMetadata,
+  updateMessageReadStatus
+} from '@/lib/messages-utils';
 
 export async function POST(request: Request) {
   const session = await getServerSession(authOptions);
@@ -17,30 +19,32 @@ export async function POST(request: Request) {
   const userId = Number(session.user.id);
   const { threadId } = await request.json();
 
-  const filePath = path.join(process.cwd(), 'data/messages.json');
-  const fileData = fs.readFileSync(filePath, 'utf-8');
-  const messages = JSON.parse(fileData);
+  try {
+    const threadMetadata = await readThreadMetadata(threadId);
 
-  const thread = messages.find(
-    (t: any) => t.threadId === threadId && t.participants.includes(userId)
-  );
-
-  if (!thread) {
-    return NextResponse.json({ error: 'Thread not found or access denied' }, { status: 403 });
-  }
-
-  thread.messages = thread.messages.map((msg: any) => {
-    const alreadyRead = msg.readBy || [];
-    if (!alreadyRead.includes(userId)) {
-      return {
-        ...msg,
-        readBy: [...alreadyRead, userId],
-      };
+    if (!threadMetadata || !threadMetadata.participants.includes(userId)) {
+      return NextResponse.json({ error: 'Thread not found or access denied' }, { status: 403 });
     }
-    return msg;
-  });
 
-  fs.writeFileSync(filePath, JSON.stringify(messages, null, 2));
+    // Get all messages in the thread
+    const messages = await readThreadMessages(threadId);
 
-  return NextResponse.json({ success: true });
+    // Mark all messages as read for this user
+    for (const message of messages) {
+      if (message.messageId && (!message.read || !message.read[userId.toString()])) {
+        await updateMessageReadStatus(
+          message.timestamp,
+          threadId,
+          message.messageId,
+          userId.toString(),
+          true
+        );
+      }
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('[messages-read] Error:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
 }

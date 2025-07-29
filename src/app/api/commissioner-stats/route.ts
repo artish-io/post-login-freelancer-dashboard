@@ -71,25 +71,42 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    // Calculate monthly change in commissioned projects
-    // For demo purposes, we'll simulate this calculation based on organization ID
-    // In a real app, you'd compare current month vs previous month data
+    // Calculate monthly change in commissioned projects based on actual data
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
 
-    // Simulate different scenarios based on organization ID for demo
-    let monthlyChangePercentage: number;
-    let changeDirection: 'up' | 'down';
+    // Get previous month
+    const previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const previousYear = currentMonth === 0 ? currentYear - 1 : currentYear;
 
-    if (organization.id === 1) {
-      // Neilsan's organization shows a decrease for demo
-      monthlyChangePercentage = -1.48;
-      changeDirection = 'down';
-    } else {
-      // Other organizations show increases
-      monthlyChangePercentage = Math.random() * 10 + 2; // Random increase between 2-12%
+    // Count active projects from current month
+    const currentMonthProjects = activeProjects.filter(project => {
+      const createdDate = new Date(project.createdAt);
+      return createdDate.getMonth() === currentMonth && createdDate.getFullYear() === currentYear;
+    }).length;
+
+    // Count active projects from previous month
+    const previousMonthProjects = activeProjects.filter(project => {
+      const createdDate = new Date(project.createdAt);
+      return createdDate.getMonth() === previousMonth && createdDate.getFullYear() === previousYear;
+    }).length;
+
+    // Calculate percentage change
+    let monthlyChangePercentage = 0;
+    let changeDirection: 'up' | 'down' = 'up';
+
+    if (previousMonthProjects > 0) {
+      monthlyChangePercentage = ((currentMonthProjects - previousMonthProjects) / previousMonthProjects) * 100;
+      changeDirection = monthlyChangePercentage >= 0 ? 'up' : 'down';
+    } else if (currentMonthProjects > 0) {
+      // If no previous month data but current month has projects, show 100% increase
+      monthlyChangePercentage = 100;
       changeDirection = 'up';
     }
 
-    const changeValue = `${changeDirection === 'up' ? '+' : ''}${monthlyChangePercentage.toFixed(2)}%`;
+    const changeValue = monthlyChangePercentage === 0 ? '0%' :
+      `${changeDirection === 'up' ? '+' : ''}${Math.abs(monthlyChangePercentage).toFixed(1)}%`;
 
     return NextResponse.json({
       activeProjects: activeProjects.length,
@@ -102,6 +119,12 @@ export async function GET(request: NextRequest) {
       },
       organizationId: organization.id,
       organizationName: organization.name
+    }, {
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0'
+      }
     });
 
   } catch (error) {

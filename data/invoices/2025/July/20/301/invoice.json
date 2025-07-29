@@ -1,0 +1,21 @@
+{
+  "invoiceNumber": "MGL000301-M3",
+  "freelancerId": 31,
+  "projectId": 301,
+  "commissionerId": 32,
+  "projectTitle": "Lagos Parks Services website re-design",
+  "milestoneDescription": "10 year anniversary graphic assets",
+  "milestoneNumber": 3,
+  "issueDate": "2025-07-21",
+  "dueDate": "2025-08-04",
+  "totalAmount": 1500,
+  "status": "sent",
+  "milestones": [
+    {
+      "description": "10 year anniversary graphic assets",
+      "rate": 1500
+    }
+  ],
+  "isManualInvoice": true,
+  "parentInvoiceNumber": "MGL000301"
+}

@@ -1,0 +1,70 @@
+[
+  {
+    "id": "proposal_sent_proposal-1753647229862_1753647229865",
+    "timestamp": "2025-07-27T20:13:49.865Z",
+    "type": "proposal_sent",
+    "notificationType": 80,
+    "entityType": 7,
+    "entityId": "proposal-1753647229862",
+    "metadata": {
+      "proposalTitle": "Lagos Landing Page Rework",
+      "budget": 4000,
+      "timeline": "Not specified",
+      "description": "ibuuhlgnvhdlsogheiro i iownchmlonecelt oinwuclowtulnwotoi ncuwteotuenmtoertuent"
+    },
+    "context": {
+      "proposalId": "proposal-1753647229862"
+    }
+  },
+  {
+    "id": "proposal_sent_proposal-1753646037613_1753646037617",
+    "timestamp": "2025-07-27T19:53:57.617Z",
+    "type": "proposal_sent",
+    "notificationType": 80,
+    "entityType": 7,
+    "entityId": "proposal-1753646037613",
+    "metadata": {
+      "proposalTitle": "Toye is good",
+      "budget": 4000,
+      "timeline": "Not specified",
+      "description": "ibuuhlgnvhdlsogheiro i iownchmlonecelt oinwuclowtulnwotoi ncuwteotuenmtoertuent"
+    },
+    "context": {
+      "proposalId": "proposal-1753646037613"
+    }
+  },
+  {
+    "id": "proposal_sent_proposal-1753640473853_1753640473854",
+    "timestamp": "2025-07-27T18:21:13.854Z",
+    "type": "proposal_sent",
+    "notificationType": 80,
+    "entityType": 7,
+    "entityId": "proposal-1753640473853",
+    "metadata": {
+      "proposalTitle": "Love In Lagos",
+      "budget": 4000,
+      "timeline": "Not specified",
+      "description": "biiehnlofvjkofbtljgldbojzvotnibsrooi. oiwunrvoaetonsecugmj9wu vetujwvnmjsceonieutjbnawr0evsihe0 anwo"
+    },
+    "context": {
+      "proposalId": "proposal-1753640473853"
+    }
+  },
+  {
+    "id": "proposal_sent_proposal-1753640464349_1753640464355",
+    "timestamp": "2025-07-27T18:21:04.355Z",
+    "type": "proposal_sent",
+    "notificationType": 80,
+    "entityType": 7,
+    "entityId": "proposal-1753640464349",
+    "metadata": {
+      "proposalTitle": "Love In Lagos",
+      "budget": 4000,
+      "timeline": "Not specified",
+      "description": "biiehnlofvjkofbtljgldbojzvotnibsrooi. oiwunrvoaetonsecugmj9wu vetujwvnmjsceonieutjbnawr0evsihe0 anwo"
+    },
+    "context": {
+      "proposalId": "proposal-1753640464349"
+    }
+  }
+]

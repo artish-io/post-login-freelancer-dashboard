@@ -1,0 +1,24 @@
+{
+  "taskId": 105,
+  "projectId": 312,
+  "projectTitle": "Lagos Parks Mobile App Development",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Mobile Development",
+    "UI/UX Design"
+  ],
+  "title": "Push notification system design",
+  "status": "Approved",
+  "completed": true,
+  "order": 5,
+  "link": "https://figma.com/file/notification-system",
+  "dueDate": "2025-08-25T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Design the push notification system for booking confirmations and updates.",
+  "submittedDate": "2025-07-14T13:10:00.000Z",
+  "createdDate": "2025-07-29T13:32:42.044Z",
+  "lastModified": "2025-07-29T13:32:42.045Z"
+}

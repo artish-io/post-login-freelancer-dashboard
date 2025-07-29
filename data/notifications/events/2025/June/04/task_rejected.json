@@ -1,0 +1,59 @@
+[
+  {
+    "id": "evt_1752860539720_8",
+    "timestamp": "2025-06-05T00:00:00.000Z",
+    "type": "task_rejected",
+    "notificationType": 3,
+    "actorId": 33,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 4,
+    "metadata": {
+      "taskTitle": "Brand concept iteration",
+      "projectTitle": "Urbana channel brand refresh",
+      "feedback": "Please revise the design to better align with brand guidelines"
+    },
+    "context": {
+      "projectId": 302,
+      "taskId": 4
+    }
+  },
+  {
+    "id": "evt_1752860539720_17",
+    "timestamp": "2025-06-05T00:00:00.000Z",
+    "type": "task_rejected",
+    "notificationType": 3,
+    "actorId": 35,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 7,
+    "metadata": {
+      "taskTitle": "Design event templates",
+      "projectTitle": "Zynate events brand toolkit",
+      "feedback": "Please revise the design to better align with brand guidelines"
+    },
+    "context": {
+      "projectId": 304,
+      "taskId": 7
+    }
+  },
+  {
+    "id": "evt_1752860539720_21",
+    "timestamp": "2025-06-05T00:00:00.000Z",
+    "type": "task_rejected",
+    "notificationType": 3,
+    "actorId": 36,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 9,
+    "metadata": {
+      "taskTitle": "Write product documentation",
+      "projectTitle": "HERO research launch collateral",
+      "feedback": "Please revise the design to better align with brand guidelines"
+    },
+    "context": {
+      "projectId": 305,
+      "taskId": 9
+    }
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "taskId": 104,
+  "projectId": 312,
+  "projectTitle": "Lagos Parks Mobile App Development",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Mobile Development",
+    "UI/UX Design"
+  ],
+  "title": "Navigation and menu structure",
+  "status": "Approved",
+  "completed": true,
+  "order": 4,
+  "link": "https://figma.com/file/navigation-menu",
+  "dueDate": "2025-08-22T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Design the main navigation and menu structure for the mobile app.",
+  "submittedDate": "2025-07-15T11:20:00.000Z",
+  "createdDate": "2025-07-29T13:32:42.044Z",
+  "lastModified": "2025-07-29T13:32:42.045Z"
+}

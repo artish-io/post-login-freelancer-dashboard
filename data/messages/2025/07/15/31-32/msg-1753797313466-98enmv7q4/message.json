@@ -1,0 +1,12 @@
+{
+  "senderId": 32,
+  "timestamp": "2025-07-15T19:28:01.121Z",
+  "text": "tell me something wey i no fit do",
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "messageId": "msg-1753797313466-98enmv7q4",
+  "threadId": "31-32"
+}

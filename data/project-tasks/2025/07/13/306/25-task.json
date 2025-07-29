@@ -1,0 +1,23 @@
+{
+  "taskId": 25,
+  "projectId": 306,
+  "projectTitle": "Nebula CMS landing redesign",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Web Design",
+    "UX Strategy"
+  ],
+  "title": "404 error page concept",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 8,
+  "link": "https://figma.com/file/404-concept",
+  "dueDate": "2025-07-14T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 2,
+  "description": "Create a playful and branded 404 error page.",
+  "createdDate": "2025-07-29T13:32:42.040Z",
+  "lastModified": "2025-07-29T13:32:42.041Z"
+}

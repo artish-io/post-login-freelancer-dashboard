@@ -1,0 +1,23 @@
+{
+  "taskId": 7,
+  "projectId": 303,
+  "projectTitle": "Corlax iOS app UX",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Mobile Design",
+    "UX Research"
+  ],
+  "title": "iOS testing & deployment",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 2,
+  "link": "https://testflight.apple.com/app-build",
+  "dueDate": "2025-07-15T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 2,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Test app functionality and deploy to App Store for review.",
+  "createdDate": "2025-07-29T13:32:42.038Z",
+  "lastModified": "2025-07-29T13:32:42.038Z"
+}

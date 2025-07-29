@@ -9,11 +9,13 @@ import { NotificationData } from './notification-item';
 interface NotificationsPageLayoutProps {
   commissionerId: number;
   onNotificationClick?: (notification: NotificationData) => void;
+  onNotificationRead?: (notification: NotificationData) => void;
 }
 
 export default function NotificationsPageLayout({
   commissionerId,
-  onNotificationClick
+  onNotificationClick,
+  onNotificationRead
 }: NotificationsPageLayoutProps) {
   const pathname = usePathname();
 
@@ -39,6 +41,23 @@ export default function NotificationsPageLayout({
       projects: counts.projects || 0,
       gigs: counts.gigs || 0
     });
+  };
+
+  const handleNotificationRead = (notification: NotificationData) => {
+    // Decrease the count for the current tab and all tab
+    setNotificationCounts(prev => ({
+      ...prev,
+      all: Math.max(0, prev.all - 1),
+      [activeTab]: activeTab !== 'all' ? Math.max(0, prev[activeTab] - 1) : prev[activeTab]
+    }));
+
+    // Dispatch custom event to notify other components (like top navbar)
+    window.dispatchEvent(new CustomEvent('notificationRead', {
+      detail: { notification, userType }
+    }));
+
+    // Call parent handler if provided
+    onNotificationRead?.(notification);
   };
 
   return (
@@ -69,6 +88,7 @@ export default function NotificationsPageLayout({
           userType={userType}
           onNotificationClick={onNotificationClick}
           onCountsUpdate={handleCountsUpdate}
+          onNotificationRead={handleNotificationRead}
         />
       </div>
     </div>

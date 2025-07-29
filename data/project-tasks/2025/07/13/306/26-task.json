@@ -1,0 +1,23 @@
+{
+  "taskId": 26,
+  "projectId": 306,
+  "projectTitle": "Nebula CMS landing redesign",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Web Design",
+    "UX Strategy"
+  ],
+  "title": "Global search UI wireframe",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 9,
+  "link": "https://figma.com/file/global-search",
+  "dueDate": "2025-07-14T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 2,
+  "pushedBack": false,
+  "version": 2,
+  "description": "Wireframe layout for global site-wide search feature.",
+  "createdDate": "2025-07-29T13:32:42.040Z",
+  "lastModified": "2025-07-29T13:32:42.041Z"
+}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { MoreVertical } from 'lucide-react';
 import TaskCard from './task-card';
 import { getTaskCounts } from '@/lib/task-submission-rules';
@@ -47,6 +47,7 @@ export default function TaskColumn({ columnId, title }: Props) {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [projectsInfo, setProjectsInfo] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const fetchingRef = useRef(false);
   const [taskCounts, setTaskCounts] = useState({
     todayUrgent: 0,
     todayTotal: 0,
@@ -71,15 +72,20 @@ export default function TaskColumn({ columnId, title }: Props) {
       return currentTasks;
     });
 
-    // Trigger a delayed refresh to sync with server state
-    setTimeout(() => {
-      fetchData();
-    }, 500);
+    // Note: Removed delayed refresh to prevent potential infinite loops
+    // The scheduled refresh will sync with server state
   };
 
   // Fetch data dynamically
   const fetchData = async () => {
+    // Prevent concurrent fetches
+    if (fetchingRef.current) {
+      console.log(`⏳ Fetch already in progress for column: ${columnId}`);
+      return;
+    }
+
     try {
+      fetchingRef.current = true;
       const [projectsRes, orgsRes, projectInfoRes] = await Promise.all([
         fetch('/api/project-tasks'),
         fetch('/api/organizations'),
@@ -114,10 +120,8 @@ export default function TaskColumn({ columnId, title }: Props) {
           const result = await checkAndExecuteAutoMovement();
           if (result.moved) {
             console.log('🔄 Auto-movement after refresh:', result.message);
-            // Refetch data to show the moved tasks
-            setTimeout(() => {
-              fetchData();
-            }, 1000);
+            // Note: Removed recursive fetchData call to prevent infinite loops
+            // The next scheduled refresh will pick up the changes
           }
         } catch (error) {
           console.error('Error in auto-movement during refresh:', error);
@@ -125,11 +129,10 @@ export default function TaskColumn({ columnId, title }: Props) {
       }
     } catch (error) {
       console.error('Error fetching data:', error);
-      // Fallback to static imports if API fails
-      import('../../../../data/project-tasks.json').then(data => setProjects(data.default));
-      import('../../../../data/organizations.json').then(data => setOrganizations(data.default));
+      // Note: Fallback removed due to migration to hierarchical storage
     } finally {
       setLoading(false);
+      fetchingRef.current = false;
     }
   };
 

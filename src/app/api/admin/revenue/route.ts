@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { getAllInvoices } from '../../../../lib/invoice-storage';
 
 /**
  * Admin Revenue API Endpoint
@@ -19,17 +20,15 @@ export async function GET(request: Request) {
     const endDate = searchParams.get('end') || new Date().toISOString().split('T')[0];
 
     // Load data files
-    const invoicesPath = path.join(process.cwd(), 'data/invoices.json');
     const storefrontSalesPath = path.join(process.cwd(), 'data/storefront-sales.json'); // TODO: Create this file
-    
+
     let invoicesData = [];
     let storefrontData = [];
 
     try {
-      const invoicesFile = await fs.readFile(invoicesPath, 'utf-8');
-      invoicesData = JSON.parse(invoicesFile);
+      invoicesData = await getAllInvoices();
     } catch (error) {
-      console.log('Invoices file not found, using empty array');
+      console.log('Error loading invoices, using empty array:', error);
     }
 
     try {

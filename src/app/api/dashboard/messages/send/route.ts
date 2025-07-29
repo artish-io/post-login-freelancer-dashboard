@@ -1,8 +1,11 @@
 // src/app/api/dashboard/messages/send/route.ts
 
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { promises as fs } from 'fs';
+import {
+  saveMessage,
+  readThreadMetadata,
+  generateMessageId
+} from '@/lib/messages-utils';
 
 // NOTE TO DEV TEAM:
 // This endpoint expects a `userId` field in the request body passed from the client
@@ -18,18 +21,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const filePath = path.join(process.cwd(), 'data/messages.json');
-    const fileData = await fs.readFile(filePath, 'utf-8');
-    const messages = JSON.parse(fileData);
+    const threadMetadata = await readThreadMetadata(threadId);
 
-    const thread = messages.find((t: any) => t.threadId === threadId);
-
-    if (!thread || !thread.participants.includes(userId)) {
+    if (!threadMetadata || !threadMetadata.participants.includes(userId)) {
       return NextResponse.json({ error: 'Thread not found or access denied' }, { status: 403 });
     }
 
     // Anti-spam protection: Check if user can send messages
-    const canSendMessage = checkAntiSpamRules(thread, userId);
+    const canSendMessage = checkAntiSpamRules(threadMetadata, userId);
     if (!canSendMessage.allowed) {
       return NextResponse.json({
         error: canSendMessage.reason,
@@ -37,7 +36,9 @@ export async function POST(request: Request) {
       }, { status: 429 });
     }
 
+    const messageId = generateMessageId();
     const newMessage = {
+      messageId,
       senderId: userId,
       timestamp: new Date().toISOString(),
       text,
@@ -45,12 +46,11 @@ export async function POST(request: Request) {
       read: { [userId]: true }, // sender already "read" it
     };
 
-    thread.messages.push(newMessage);
+    // Save the message to hierarchical structure
+    await saveMessage(newMessage, threadId);
 
     // Update thread status based on anti-spam rules
-    updateThreadStatus(thread, userId);
-
-    await fs.writeFile(filePath, JSON.stringify(messages, null, 2));
+    updateThreadStatus(threadMetadata, userId);
 
     console.log(`[messages-send] Message sent in thread ${threadId} by user ${userId}`);
     return NextResponse.json({ success: true, message: newMessage });

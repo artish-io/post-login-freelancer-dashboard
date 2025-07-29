@@ -1,0 +1,12 @@
+{
+  "senderId": 32,
+  "timestamp": "2025-07-15T19:06:07.812Z",
+  "text": "ewewe",
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "messageId": "msg-1753797313464-2fdc7d850",
+  "threadId": "31-32"
+}

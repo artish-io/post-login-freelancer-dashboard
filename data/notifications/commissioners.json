@@ -36,7 +36,7 @@
         "title": "Margsate Flether submitted a task",
         "message": "\"Park booking interface mockups\" is awaiting your review",
         "timestamp": "2025-07-08T18:12:23.463Z",
-        "isRead": false,
+        "isRead": true,
         "project": {
           "id": 311,
           "title": "Lagos Parks Mobile App Development"
@@ -134,7 +134,7 @@
         "title": "Nadia Petrov accepted your project",
         "message": "UI component library project has been accepted and will start soon",
         "timestamp": "2025-07-13T21:06:35.376Z",
-        "isRead": false,
+        "isRead": true,
         "project": {
           "id": 302,
           "title": "UI Component Library"
@@ -156,11 +156,11 @@
         "id": "invoice-1",
         "type": "invoice_sent",
         "title": "Margsate Flether sent you a new invoice",
-        "message": "Invoice MGL100000 for Lagos Parks Services website re-design",
+        "message": "Invoice MF-24BGJ for Lagos Parks Services website re-design",
         "timestamp": "2025-07-14T18:06:35.376Z",
-        "isRead": false,
+        "isRead": true,
         "invoice": {
-          "number": "MGL100000",
+          "number": "MF-24BGJ",
           "amount": 5244,
           "projectTitle": "Lagos Parks Services website re-design"
         },
@@ -173,7 +173,7 @@
         "title": "Riya Desai applied for Park Visitor Mobile App",
         "message": "New application for \"Park Visitor Mobile App\"",
         "timestamp": "2025-07-12T09:15:00Z",
-        "isRead": false,
+        "isRead": true,
         "gig": {
           "id": 6,
           "title": "Park Visitor Mobile App"
@@ -187,7 +187,7 @@
         "title": "Jenny San applied for Digital Signage Content Management",
         "message": "New application for \"Digital Signage Content Management\"",
         "timestamp": "2025-07-13T14:30:00Z",
-        "isRead": false,
+        "isRead": true,
         "gig": {
           "id": 7,
           "title": "Digital Signage Content Management"
@@ -201,7 +201,7 @@
         "title": "Invoice payment processed",
         "message": "Payment for milestone 2 has been processed successfully",
         "timestamp": "2025-07-18T14:12:50.466Z",
-        "isRead": false,
+        "isRead": true,
         "project": {
           "id": 1,
           "title": "Interactive Park Map Web App"
@@ -214,7 +214,7 @@
         "title": "Project pause request approved",
         "message": "Your request to pause the Interactive Park Map project has been approved",
         "timestamp": "2025-07-18T12:12:50.466Z",
-        "isRead": false,
+        "isRead": true,
         "project": {
           "id": 1,
           "title": "Interactive Park Map Web App"
@@ -227,7 +227,7 @@
         "title": "Marsgate Fletcher just purchased Poetry Slam Live tickets",
         "message": "New sale on your storefront",
         "timestamp": "2025-07-18T15:12:50.466Z",
-        "isRead": false,
+        "isRead": true,
         "isFromNetwork": false
       },
       {

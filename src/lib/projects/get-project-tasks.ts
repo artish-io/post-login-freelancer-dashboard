@@ -1,18 +1,17 @@
 
-
-import path from 'path';
-import { readFile } from 'fs/promises';
-
-const TASKS_PATH = path.join(process.cwd(), 'data', 'project-tasks.json');
+import { readProjectTasks, convertHierarchicalToLegacy } from '../project-tasks/hierarchical-storage';
 
 export async function getProjectTasks(projectId: number) {
   try {
-    const data = await readFile(TASKS_PATH, 'utf-8');
-    const allTasks = JSON.parse(data);
-    const tasksForProject = allTasks.filter((task: any) => task.projectId === projectId);
-    return tasksForProject;
+    // Read tasks from hierarchical storage
+    const hierarchicalTasks = await readProjectTasks(projectId);
+
+    // Convert to legacy format for backward compatibility
+    const legacyProjects = convertHierarchicalToLegacy(hierarchicalTasks);
+
+    return legacyProjects;
   } catch (error) {
-    console.error('Error reading project tasks:', error);
+    console.error('Error reading project tasks from hierarchical storage:', error);
     return [];
   }
 }

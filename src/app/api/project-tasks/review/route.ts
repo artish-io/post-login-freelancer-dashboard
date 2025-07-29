@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
+import { readProjectTasks, writeTask } from '../../../../lib/project-tasks/hierarchical-storage';
+import { saveNote } from '@/lib/project-notes-utils';
 
-const tasksFilePath = path.join(process.cwd(), 'data', 'project-tasks.json');
-const notesFilePath = path.join(process.cwd(), 'data', 'project-notes.json');
 const notificationsFilePath = path.join(process.cwd(), 'data', 'notifications', 'freelancers.json');
 
 export async function POST(request: NextRequest) {
@@ -14,79 +14,51 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Read project tasks
-    const tasksFile = await readFile(tasksFilePath, 'utf-8');
-    const projects = JSON.parse(tasksFile);
+    // Read project tasks from hierarchical storage
+    const projectTasks = await readProjectTasks(projectId);
+    const task = projectTasks.find(t => t.taskId === taskId);
 
-    const projectIndex = projects.findIndex((p: any) => p.projectId === projectId);
-    if (projectIndex === -1) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
-    }
-
-    const taskIndex = projects[projectIndex].tasks.findIndex((t: any) => t.id === taskId);
-    if (taskIndex === -1) {
+    if (!task) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
 
-    const task = projects[projectIndex].tasks[taskIndex];
+    // Create updated task object
+    const updatedTask = { ...task };
 
     // Update task based on action
     switch (action) {
       case 'complete':
         // Commissioner approves the task
-        task.completed = true;
-        task.status = 'Approved';
-        task.rejected = false;
+        updatedTask.completed = true;
+        updatedTask.status = 'Approved';
+        updatedTask.rejected = false;
+        updatedTask.approvedDate = new Date().toISOString();
         break;
       case 'reject':
         // Commissioner rejects the task - freelancer needs to work on it again
-        task.rejected = true;
-        task.completed = false;
-        task.status = 'Ongoing'; // Back to ongoing so freelancer can work on it
-        task.feedbackCount = (task.feedbackCount || 0) + 1;
+        updatedTask.rejected = true;
+        updatedTask.completed = false;
+        updatedTask.status = 'Ongoing'; // Back to ongoing so freelancer can work on it
+        updatedTask.feedbackCount = (updatedTask.feedbackCount || 0) + 1;
+        updatedTask.rejectedDate = new Date().toISOString();
         break;
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
     }
 
-    // Save updated tasks
-    await writeFile(tasksFilePath, JSON.stringify(projects, null, 2));
+    // Save updated task to hierarchical storage
+    await writeTask(updatedTask);
 
     // Add comment to project notes if provided
     if (comment && comment.trim()) {
       try {
-        const notesFile = await readFile(notesFilePath, 'utf-8');
-        const notesData = JSON.parse(notesFile);
+        // Save note to hierarchical structure
+        const note = {
+          date: new Date().toISOString().split('T')[0], // Format as YYYY-MM-DD
+          feedback: comment.trim()
+        };
 
-        // Find existing task notes entry or create new one
-        const taskNotesEntry = notesData.find((entry: any) =>
-          entry.projectId === projectId && entry.taskId === taskId
-        );
-
-        if (taskNotesEntry) {
-          // Add to existing notes array
-          taskNotesEntry.notes.push({
-            date: new Date().toISOString().split('T')[0], // Format as YYYY-MM-DD
-            feedback: comment.trim()
-          });
-        } else {
-          // Create new task notes entry
-          const newTaskNotesEntry = {
-            projectId,
-            taskId,
-            taskTitle: taskTitle || task.title,
-            notes: [
-              {
-                date: new Date().toISOString().split('T')[0], // Format as YYYY-MM-DD
-                feedback: comment.trim()
-              }
-            ]
-          };
-          notesData.push(newTaskNotesEntry);
-        }
-
-        // Save updated notes
-        await writeFile(notesFilePath, JSON.stringify(notesData, null, 2));
+        await saveNote(projectId, taskId, taskTitle || updatedTask.title, note);
       } catch (notesError) {
         console.error('Error updating project notes:', notesError);
         // Don't fail the main operation if notes update fails

@@ -1,0 +1,20 @@
+{
+  "invoiceNumber": "MGL100008-M7",
+  "freelancerId": 19,
+  "projectId": 312,
+  "commissionerId": 32,
+  "projectTitle": "Lagos Parks Mobile App Development",
+  "milestoneDescription": "Payment integration interface",
+  "milestoneNumber": 7,
+  "issueDate": "2024-08-27",
+  "dueDate": "2024-09-06",
+  "totalAmount": 1400,
+  "status": "paid",
+  "milestones": [
+    {
+      "description": "Payment integration interface",
+      "rate": 1400
+    }
+  ],
+  "parentInvoiceNumber": "MGL100008"
+}

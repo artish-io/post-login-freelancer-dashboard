@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-2001",
+  "senderId": 28,
+  "timestamp": "2025-07-13T14:20:00Z",
+  "text": "Hi Neilsan! Just finished the motion graphics for the Lagos Parks project. Ready for review!",
+  "read": {
+    "28": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "threadId": "28-32"
+}

@@ -4,9 +4,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 
-export async function PUT(request: NextRequest) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ milestoneId: string }> }
+) {
   try {
-    const milestoneId = request.nextUrl.pathname.split('/')[5]; // Extract milestoneId from URL
+    const { milestoneId } = await params;
     const { taskId, newStatus } = await request.json();
 
     if (!milestoneId || !taskId || !['submitted', 'completed', 'approved'].includes(newStatus)) {

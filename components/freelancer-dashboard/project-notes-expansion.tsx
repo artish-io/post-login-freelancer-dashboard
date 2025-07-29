@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import clsx from "clsx";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useReadNotes } from "../../src/hooks/useReadNotes";
 
 type Note = {
@@ -28,7 +29,26 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
   const [logoUrl, setLogoUrl] = useState("/icons/lagos-parks-logo.png");
   const [typeTags, setTypeTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
   const { markMultipleAsRead } = useReadNotes();
+
+  // Ensure component is mounted before rendering portal
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  // Handle escape key to close modal
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [onClose]);
 
   useEffect(() => {
     async function fetchProjectDetails() {
@@ -72,9 +92,12 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
     }
   }, [loading, tasks, markMultipleAsRead, projectId]);
 
-  return (
+  // Don't render until mounted to avoid hydration issues
+  if (!mounted) return null;
+
+  const modalContent = (
     <motion.div
-      className="fixed inset-0 z-50 flex items-end md:items-center justify-center pointer-events-none"
+      className="fixed inset-0 z-[60] flex items-end md:items-center justify-center pointer-events-none"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -82,7 +105,7 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
     >
       {/* Backdrop */}
       <motion.div
-        className="absolute inset-0 bg-black/50"
+        className="absolute inset-0 bg-black/50 pointer-events-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -91,8 +114,12 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
 
       {/* Modal */}
       <motion.div
-        className="relative bg-white rounded-t-2xl md:rounded-2xl w-full max-w-3xl mx-auto pointer-events-auto shadow-xl"
-        style={{ maxHeight: "90vh", overflowY: "auto" }}
+        className="relative bg-white rounded-t-2xl md:rounded-2xl w-full max-w-3xl mx-4 md:mx-auto pointer-events-auto shadow-xl"
+        style={{
+          maxHeight: "90vh",
+          overflowY: "auto",
+          minHeight: "50vh"
+        }}
         initial={{
           y: "100%",
           opacity: 0,
@@ -110,16 +137,16 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
         }}
         transition={{
           type: "spring",
-          damping: 25,
-          stiffness: 300,
-          duration: 0.4
+          damping: 30,
+          stiffness: 400,
+          mass: 0.8
         }}
       >
         {/* Sticky Header */}
-        <div className="sticky top-0 z-10 bg-white pt-8 pb-4 pl-8 pr-4 shadow-[rgba(0,0,0,0.05)_-2px_2px_10px]">
+        <div className="sticky top-0 z-10 bg-white pt-6 pb-4 px-6 md:px-8 shadow-[rgba(0,0,0,0.05)_0px_2px_10px]">
           {/* Close Button */}
           <button
-            className="absolute top-4 left-4 flex items-center gap-2 text-gray-500 hover:text-pink-500 text-sm"
+            className="absolute top-4 left-4 flex items-center gap-2 text-gray-500 hover:text-pink-500 text-sm transition-colors duration-200"
             onClick={onClose}
           >
             <svg
@@ -173,8 +200,8 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
         </div>
 
         {/* Timeline */}
-        <div className="relative px-8 pt-6 pb-10">
-          <ul className="space-y-10 relative">
+        <div className="relative px-6 md:px-8 pt-6 pb-10 flex-1">
+          <ul className="space-y-8 relative min-h-[200px]">
             {/* vertical line behind bullets */}
             <div className="absolute top-3 left-4 w-[2px] bg-gray-300 h-full z-0" />
 
@@ -218,4 +245,7 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
       </motion.div>
     </motion.div>
   );
+
+  // Render modal in a portal to avoid layout constraints
+  return createPortal(modalContent, document.body);
 }

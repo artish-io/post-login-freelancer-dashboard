@@ -1,0 +1,20 @@
+{
+  "invoiceNumber": "MGL100004-M3",
+  "freelancerId": 31,
+  "projectId": 303,
+  "commissionerId": 35,
+  "projectTitle": "Event Production Branding",
+  "milestoneDescription": "Milestone 3 for Event Production Branding",
+  "milestoneNumber": 3,
+  "issueDate": "2025-06-12",
+  "dueDate": "2025-06-21",
+  "totalAmount": 2150,
+  "status": "draft",
+  "milestones": [
+    {
+      "description": "Milestone 3 for Event Production Branding",
+      "rate": 2150
+    }
+  ],
+  "parentInvoiceNumber": "MGL100004"
+}

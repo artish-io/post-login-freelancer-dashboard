@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1753798210817-tmhb6sbfw",
+  "senderId": 31,
+  "timestamp": "2025-07-29T14:10:10.817Z",
+  "text": "Test message from new hierarchical structure!",
+  "isEncrypted": false,
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "threadId": "31-32"
+}

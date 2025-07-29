@@ -1,36 +1,27 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { readProject, updateProject, readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 
 export async function POST(request: Request) {
   try {
     const { projectId } = await request.json();
 
-    // Load data files
-    const projectsPath = path.join(process.cwd(), 'data/projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data/project-tasks.json');
-
-    const [projectsData, projectTasksData] = await Promise.all([
-      fs.readFile(projectsPath, 'utf-8'),
-      fs.readFile(projectTasksPath, 'utf-8')
-    ]);
-
-    const projects = JSON.parse(projectsData);
-    const projectTasks = JSON.parse(projectTasksData);
-
-    // Find the project and its tasks
-    const projectIndex = projects.findIndex((p: any) => p.projectId === projectId);
-    const projectTaskData = projectTasks.find((pt: any) => pt.projectId === projectId);
-
-    if (projectIndex === -1) {
-      return NextResponse.json({ error: 'Project not found in projects.json' }, { status: 404 });
+    // Load project from hierarchical structure
+    const project = await readProject(projectId);
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
+    // Load project tasks from hierarchical structure
+    const hierarchicalTasks = await readAllTasks();
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
+
+    const projectTaskData = projectTasks.find((pt: any) => pt.projectId === projectId);
     if (!projectTaskData) {
       return NextResponse.json({ error: 'Project tasks not found' }, { status: 404 });
     }
-
-    const project = projects[projectIndex];
     const tasks = projectTaskData.tasks || [];
 
     // Calculate task statistics
@@ -63,12 +54,11 @@ export async function POST(request: Request) {
     const taskCountNeedsUpdate = project.totalTasks !== actualTotalTasks;
 
     if (shouldUpdate || taskCountNeedsUpdate) {
-      // Update the project
-      projects[projectIndex].status = newStatus;
-      projects[projectIndex].totalTasks = actualTotalTasks;
-
-      // Save updated projects
-      await fs.writeFile(projectsPath, JSON.stringify(projects, null, 2));
+      // Update the project in hierarchical structure
+      await updateProject(projectId, {
+        status: newStatus,
+        totalTasks: actualTotalTasks
+      });
 
       return NextResponse.json({
         success: true,
@@ -115,17 +105,12 @@ export async function POST(request: Request) {
 // GET endpoint to sync all projects
 export async function GET() {
   try {
-    // Load data files
-    const projectsPath = path.join(process.cwd(), 'data/projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data/project-tasks.json');
+    // Load data from hierarchical structures
+    const hierarchicalTasks = await readAllTasks();
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
 
-    const [projectsData, projectTasksData] = await Promise.all([
-      fs.readFile(projectsPath, 'utf-8'),
-      fs.readFile(projectTasksPath, 'utf-8')
-    ]);
-
-    const projects = JSON.parse(projectsData);
-    const projectTasks = JSON.parse(projectTasksData);
+    // Load all projects from hierarchical structure
+    const projects = await readAllProjects();
 
     const updates: any[] = [];
 
@@ -159,26 +144,27 @@ export async function GET() {
       const taskCountNeedsUpdate = project.totalTasks !== totalTasks;
 
       if (shouldUpdate || taskCountNeedsUpdate) {
-        project.status = newStatus;
-        project.totalTasks = totalTasks;
+        const oldStatus = project.status;
+        const oldTotalTasks = project.totalTasks;
+
+        // Update project in hierarchical structure
+        await updateProject(project.projectId, {
+          status: newStatus,
+          totalTasks: totalTasks
+        });
 
         updates.push({
           projectId: project.projectId,
           title: project.title,
           statusChanged: shouldUpdate,
-          oldStatus: shouldUpdate ? projects.find((p: any) => p.projectId === project.projectId)?.status : project.status,
+          oldStatus: shouldUpdate ? oldStatus : project.status,
           newStatus,
           taskCountChanged: taskCountNeedsUpdate,
-          oldTotalTasks: taskCountNeedsUpdate ? projects.find((p: any) => p.projectId === project.projectId)?.totalTasks : project.totalTasks,
+          oldTotalTasks: taskCountNeedsUpdate ? oldTotalTasks : project.totalTasks,
           newTotalTasks: totalTasks,
           progress: totalTasks > 0 ? Math.round((approvedTasks / totalTasks) * 100) : 0
         });
       }
-    }
-
-    if (updates.length > 0) {
-      // Save updated projects
-      await fs.writeFile(projectsPath, JSON.stringify(projects, null, 2));
     }
 
     return NextResponse.json({

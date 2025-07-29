@@ -1,0 +1,20 @@
+{
+  "invoiceNumber": "MGL100008-M8",
+  "freelancerId": 19,
+  "projectId": 312,
+  "commissionerId": 32,
+  "projectTitle": "Lagos Parks Mobile App Development",
+  "milestoneDescription": "Final app prototype and handoff",
+  "milestoneNumber": 8,
+  "issueDate": "2024-09-03",
+  "dueDate": "2024-09-13",
+  "totalAmount": 1500,
+  "status": "paid",
+  "milestones": [
+    {
+      "description": "Final app prototype and handoff",
+      "rate": 1500
+    }
+  ],
+  "parentInvoiceNumber": "MGL100008"
+}

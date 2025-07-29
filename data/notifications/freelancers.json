@@ -3,6 +3,30 @@
     "freelancerId": 31,
     "notifications": [
       {
+        "id": "task-reject-202-1753537725627",
+        "type": "task_rejected",
+        "title": "Task needs revision",
+        "message": "\"High-fidelity UI design and prototyping\" was rejected and needs to be revised",
+        "timestamp": "2025-07-26T13:48:45.627Z",
+        "isRead": false,
+        "project": {
+          "id": 314,
+          "title": "E-commerce Platform UI Redesign"
+        }
+      },
+      {
+        "id": "comment-202-1753537725627",
+        "type": "task_comment",
+        "title": "New comment on task",
+        "message": "Commissioner left a comment on \"High-fidelity UI design and prototyping\" - click to view",
+        "timestamp": "2025-07-26T13:48:45.627Z",
+        "isRead": false,
+        "project": {
+          "id": 314,
+          "title": "E-commerce Platform UI Redesign"
+        }
+      },
+      {
         "id": "task-complete-101-1752782154937",
         "type": "task_completed",
         "title": "Task marked as completed",

@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { EventData, EventType, NOTIFICATION_TYPES, USER_TYPE_FILTERS } from '../../../lib/events/event-logger';
+import { NotificationStorage } from '../../../lib/notifications/notification-storage';
 
 export async function GET(request: NextRequest) {
   try {
@@ -18,21 +19,21 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Read the events log
-    const eventsLogPath = path.join(process.cwd(), 'data', 'notifications', 'notifications-log.json');
+    // Load data files
     const usersPath = path.join(process.cwd(), 'data', 'users.json');
     const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
     const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
     const contactsPath = path.join(process.cwd(), 'data', 'contacts.json');
 
-    let events: EventData[] = [];
-    if (fs.existsSync(eventsLogPath)) {
-      const eventsContent = fs.readFileSync(eventsLogPath, 'utf-8');
-      if (eventsContent.trim()) {
-        events = JSON.parse(eventsContent);
-      }
-    }
+    // Get events using the new partitioned storage system
+    const events: EventData[] = NotificationStorage.getEventsForUser(
+      parseInt(userId),
+      userType as 'freelancer' | 'commissioner',
+      undefined, // startDate - defaults to 3 months ago
+      undefined, // endDate - defaults to now
+      200 // limit - get up to 200 recent events
+    );
 
     const users = JSON.parse(fs.readFileSync(usersPath, 'utf-8'));
     const projects = JSON.parse(fs.readFileSync(projectsPath, 'utf-8'));
@@ -61,10 +62,10 @@ export async function GET(request: NextRequest) {
       }
 
       // User is the target of the event AND not the actor (no self-notifications)
-      if (event.targetId === parseInt(userId) && event.actorId !== parseInt(userId)) return true;
+      if (event.targetId === parseInt(userId) && parseInt(event.actorId) !== parseInt(userId)) return true;
 
       // User is involved in the project (but not for self-initiated actions)
-      if (event.context?.projectId && event.actorId !== parseInt(userId)) {
+      if (event.context?.projectId && parseInt(event.actorId) !== parseInt(userId)) {
         const project = projects.find((p: any) => p.projectId === event.context?.projectId);
         if (project && (project.commissionerId === parseInt(userId) || project.freelancerId === parseInt(userId))) {
           return true;
@@ -96,7 +97,7 @@ export async function GET(request: NextRequest) {
       }
 
       // Check if actor is in user's contacts
-      const directContact = isActorInNetwork(event.actorId, userId);
+      const directContact = isActorInNetwork(parseInt(event.actorId), userId);
       if (directContact) {
         return true;
       }
@@ -127,7 +128,7 @@ export async function GET(request: NextRequest) {
 
     // Convert events to notifications
     const notifications = groupedEvents.map(event => {
-      const actor = users.find((u: any) => u.id === event.actorId);
+      const actor = users.find((u: any) => u.id === parseInt(event.actorId));
       const organization = event.context?.organizationId ?
         organizations.find((o: any) => o.id === event.context?.organizationId) : null;
 
@@ -150,13 +151,14 @@ export async function GET(request: NextRequest) {
         iconPath = '/icons/task-rejected.png';
       }
 
+      const notificationId = `${event.id}-${userId}`;
       return {
-        id: `${event.id}-${userId}`,
+        id: notificationId,
         type: getNotificationType(event.type),
         title: generateGranularTitle(event, actor, project, projectTaskData, task),
         message: generateGranularMessage(event, actor, project, projectTaskData, task),
         timestamp: event.timestamp,
-        isRead: Math.random() > 0.6, // Random read status for demo
+        isRead: NotificationStorage.isRead(notificationId, parseInt(userId)),
         user: shouldUseAvatar(event.type) ? {
           id: actor?.id,
           name: actor?.name,
@@ -206,13 +208,14 @@ export async function GET(request: NextRequest) {
       new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
 
-    // Calculate counts
-    const allCount = notifications.length;
-    const networkCount = notifications.filter(n => n.isFromNetwork).length;
-    const projectsCount = notifications.filter(n =>
+    // Calculate counts (only unread notifications)
+    const unreadNotifications = notifications.filter(n => !n.isRead);
+    const allCount = unreadNotifications.length;
+    const networkCount = unreadNotifications.filter(n => n.isFromNetwork).length;
+    const projectsCount = unreadNotifications.filter(n =>
       ['task_submission', 'task_approved', 'task_rejected', 'project_pause_requested', 'project_pause_accepted'].includes(n.type)
     ).length;
-    const gigsCount = notifications.filter(n => 
+    const gigsCount = unreadNotifications.filter(n =>
       ['gig_request', 'gig_application', 'proposal_sent'].includes(n.type)
     ).length;
 
@@ -232,6 +235,34 @@ export async function GET(request: NextRequest) {
     console.error('Error fetching notifications v2:', error);
     return NextResponse.json(
       { error: 'Failed to fetch notifications' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: NextRequest) {
+  try {
+    const { notificationId, userId, userType } = await request.json();
+
+    if (!notificationId || !userId || !userType) {
+      return NextResponse.json(
+        { error: 'Notification ID, User ID, and User Type are required' },
+        { status: 400 }
+      );
+    }
+
+    // Mark notification as read in the read states storage
+    NotificationStorage.markAsRead(notificationId, parseInt(userId));
+
+    return NextResponse.json({
+      success: true,
+      message: 'Notification marked as read'
+    });
+
+  } catch (error) {
+    console.error('Error marking notification as read:', error);
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
       { status: 500 }
     );
   }
@@ -401,7 +432,7 @@ function generateGranularTitle(event: EventData, actor: any, project?: any, proj
     case 'invoice_sent':
       return `${actorName} sent you a new invoice`;
     case 'invoice_paid':
-      return `Your invoice for "${event.metadata.taskTitle || task?.title || 'project work'}" has been paid by ${actorName}`;
+      return `Your invoice for "${event.metadata.projectTitle || event.metadata.taskTitle || task?.title || 'project work'}" has been paid by ${actorName}`;
     case 'milestone_payment_received':
       return `Your invoice for "${event.context?.milestoneTitle || task?.title || 'milestone'}" has been paid by ${actorName}`;
     case 'product_purchased':
@@ -474,7 +505,11 @@ function generateNotificationLink(event: EventData, project?: any, task?: any): 
       return `/freelancer-dashboard/projects-and-invoices/project-tracking?projectId=${event.context?.projectId}`;
     case 'invoice_paid':
     case 'milestone_payment_received':
-      // Navigate to invoices page
+      // Navigate to specific invoice if available, otherwise invoices page
+      if (event.context?.invoiceNumber || event.metadata?.invoiceNumber) {
+        const invoiceNumber = event.context?.invoiceNumber || event.metadata?.invoiceNumber;
+        return `/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${invoiceNumber}`;
+      }
       return `/freelancer-dashboard/projects-and-invoices/invoices`;
     case 'invoice_created':
       // Navigate to the auto-generated invoice

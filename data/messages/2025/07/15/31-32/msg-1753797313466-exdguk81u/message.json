@@ -1,0 +1,12 @@
+{
+  "senderId": 31,
+  "timestamp": "2025-07-15T19:26:57.384Z",
+  "text": "dude",
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "messageId": "msg-1753797313466-exdguk81u",
+  "threadId": "31-32"
+}

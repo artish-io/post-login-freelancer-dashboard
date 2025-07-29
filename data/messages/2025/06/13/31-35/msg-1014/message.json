@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1014",
+  "senderId": 35,
+  "timestamp": "2025-06-13T10:00:00Z",
+  "text": "Invoice sent. Let me know if payment clears today.",
+  "read": {
+    "31": true,
+    "35": true
+  },
+  "isEncrypted": false,
+  "threadId": "31-35"
+}

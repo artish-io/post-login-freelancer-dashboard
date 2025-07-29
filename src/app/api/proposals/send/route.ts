@@ -24,22 +24,48 @@ const usersPath = path.join(process.cwd(), 'data', 'users.json');
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    console.log('📨 Received proposal data:', body);
+
+    // Handle both old and new data structures
     const {
       freelancerId,
       commissionerId,
       proposalTitle,
+      title,
+      summary,
+      contact,
+      totalBid,
       description,
       budget,
       timeline
     } = body;
 
-    if (!freelancerId || !commissionerId || !proposalTitle) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    // Extract data from the new structure
+    const actualTitle = proposalTitle || title;
+    const actualDescription = description || summary;
+    const actualBudget = budget || totalBid;
+
+    // Extract commissioner ID from contact if available
+    let actualCommissionerId = commissionerId;
+    if (!actualCommissionerId && contact) {
+      actualCommissionerId = contact.id;
+    }
+
+    if (!actualTitle) {
+      return NextResponse.json({ error: 'Missing required fields: title is required' }, { status: 400 });
+    }
+
+    if (!actualCommissionerId) {
+      return NextResponse.json({ error: 'Missing required fields: commissioner/contact is required' }, { status: 400 });
     }
 
     const newProposal = {
       ...body,
       id: `proposal-${Date.now()}`,
+      proposalTitle: actualTitle,
+      description: actualDescription,
+      budget: actualBudget,
+      commissionerId: actualCommissionerId,
       createdAt: new Date().toISOString(),
       status: 'sent',
       hiddenFor: [], // no one has hidden it yet
@@ -75,10 +101,10 @@ export async function POST(request: Request) {
         entityType: 7, // ENTITY_TYPES.PROPOSAL
         entityId: newProposal.id,
         metadata: {
-          proposalTitle: proposalTitle,
-          budget: budget || 'Not specified',
+          proposalTitle: actualTitle,
+          budget: actualBudget || 'Not specified',
           timeline: timeline || 'Not specified',
-          description: description?.substring(0, 100) || 'No description'
+          description: actualDescription?.substring(0, 100) || 'No description'
         },
         context: {
           proposalId: newProposal.id

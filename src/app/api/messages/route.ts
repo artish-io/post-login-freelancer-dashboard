@@ -1,14 +1,10 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { readAllThreads } from '@/lib/messages-utils';
 
 export async function GET() {
   try {
-    const messagesPath = path.join(process.cwd(), 'data', 'messages.json');
-    const messagesData = fs.readFileSync(messagesPath, 'utf8');
-    const messages = JSON.parse(messagesData);
-
-    return NextResponse.json(messages);
+    const threads = await readAllThreads();
+    return NextResponse.json(threads);
   } catch (error) {
     console.error('Error fetching messages:', error);
     return NextResponse.json(

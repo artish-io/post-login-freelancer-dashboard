@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { getInvoiceByNumber, saveInvoice } from '../../../lib/invoice-storage';
 
 /**
  * Send Invoice API Endpoint
@@ -36,27 +37,22 @@ export async function POST(request: Request) {
     }
 
     // Load data files
-    const invoicesPath = path.join(process.cwd(), 'data/invoices.json');
     const notificationsPath = path.join(process.cwd(), 'data/notifications/notifications-log.json');
     const usersPath = path.join(process.cwd(), 'data/users.json');
 
-    const [invoicesData, notificationsData, usersData] = await Promise.all([
-      fs.readFile(invoicesPath, 'utf-8'),
+    const [notificationsData, usersData] = await Promise.all([
       fs.readFile(notificationsPath, 'utf-8'),
       fs.readFile(usersPath, 'utf-8')
     ]);
 
-    const invoices = JSON.parse(invoicesData);
     const notifications = JSON.parse(notificationsData);
     const users = JSON.parse(usersData);
 
     // Find the invoice
-    const invoiceIndex = invoices.findIndex((inv: any) => inv.invoiceNumber === invoiceNumber);
-    if (invoiceIndex === -1) {
+    const invoice = await getInvoiceByNumber(invoiceNumber);
+    if (!invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
     }
-
-    const invoice = invoices[invoiceIndex];
 
     // Validate invoice can be sent
     if (invoice.status === 'sent') {
@@ -69,9 +65,13 @@ export async function POST(request: Request) {
 
     // SIMULATION: Update invoice status to 'sent'
     // TODO: When integrating payment gateway, create payment intent here
-    invoices[invoiceIndex].status = 'sent';
-    invoices[invoiceIndex].sentDate = new Date().toISOString().split('T')[0];
-    invoices[invoiceIndex].sentAt = new Date().toISOString();
+    const updatedInvoice = {
+      ...invoice,
+      status: 'sent' as const,
+      sentDate: new Date().toISOString().split('T')[0],
+      sentAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
     
     // TODO: Add payment gateway metadata
     // invoices[invoiceIndex].paymentGateway = {
@@ -115,7 +115,7 @@ export async function POST(request: Request) {
     // SIMULATION: Save updated data
     // TODO: In production, also update payment gateway records
     await Promise.all([
-      fs.writeFile(invoicesPath, JSON.stringify(invoices, null, 2)),
+      saveInvoice(updatedInvoice),
       fs.writeFile(notificationsPath, JSON.stringify(notifications, null, 2))
     ]);
 

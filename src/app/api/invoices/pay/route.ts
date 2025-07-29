@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { NotificationStorage } from '../../../lib/notifications/notification-storage';
+import { getInvoiceByNumber, saveInvoice } from '../../../lib/invoice-storage';
 
 /**
  * Pay Invoice API Endpoint
@@ -41,27 +43,15 @@ export async function POST(request: Request) {
     }
 
     // Load data files
-    const invoicesPath = path.join(process.cwd(), 'data/invoices.json');
-    const notificationsPath = path.join(process.cwd(), 'data/notifications/notifications-log.json');
     const usersPath = path.join(process.cwd(), 'data/users.json');
-
-    const [invoicesData, notificationsData, usersData] = await Promise.all([
-      fs.readFile(invoicesPath, 'utf-8'),
-      fs.readFile(notificationsPath, 'utf-8'),
-      fs.readFile(usersPath, 'utf-8')
-    ]);
-
-    const invoices = JSON.parse(invoicesData);
-    const notifications = JSON.parse(notificationsData);
+    const usersData = await fs.readFile(usersPath, 'utf-8');
     const users = JSON.parse(usersData);
 
     // Find the invoice
-    const invoiceIndex = invoices.findIndex((inv: any) => inv.invoiceNumber === invoiceNumber);
-    if (invoiceIndex === -1) {
+    const invoice = await getInvoiceByNumber(invoiceNumber);
+    if (!invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
     }
-
-    const invoice = invoices[invoiceIndex];
 
     // Check if invoice is already paid
     if (invoice.status === 'paid') {
@@ -103,21 +93,33 @@ export async function POST(request: Request) {
     const freelancerAmount = Math.round((invoice.totalAmount - platformFee) * 100) / 100;
 
     // Update invoice status to 'paid'
-    invoices[invoiceIndex].status = 'paid';
-    invoices[invoiceIndex].paidDate = new Date().toISOString().split('T')[0];
-    invoices[invoiceIndex].paidAmount = amount;
-    invoices[invoiceIndex].paymentDetails = {
-      paymentId: simulatedPaymentId,
-      paymentMethod: 'simulation', // TODO: actual payment method
-      platformFee: platformFee,
-      freelancerAmount: freelancerAmount,
-      currency: currency,
-      processedAt: new Date().toISOString()
+    const updatedInvoice = {
+      ...invoice,
+      status: 'paid' as const,
+      paidDate: new Date().toISOString().split('T')[0],
+      paidAmount: amount,
+      paymentDetails: {
+        paymentId: simulatedPaymentId,
+        paymentMethod: 'simulation', // TODO: actual payment method
+        platformFee: platformFee,
+        freelancerAmount: freelancerAmount,
+        currency: currency,
+        processedAt: new Date().toISOString()
+      },
+      updatedAt: new Date().toISOString()
     };
 
     // Get commissioner info for notification
-    const commissioner = users.find((user: any) => user.id === commissionerId);
+    const commissionerIdNum = parseInt(commissionerId);
+    const commissioner = users.find((user: any) => user.id === commissionerIdNum);
     const commissionerName = commissioner?.name || 'A commissioner';
+
+    console.log('🔍 Payment notification debug:', {
+      commissionerId,
+      commissionerIdNum,
+      commissioner: commissioner ? { id: commissioner.id, name: commissioner.name } : null,
+      commissionerName
+    });
 
     // Create notification for freelancer
     const notificationId = `evt_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
@@ -126,8 +128,8 @@ export async function POST(request: Request) {
       timestamp: new Date().toISOString(),
       type: "invoice_paid",
       notificationType: 41, // INVOICE_PAID from the notification types
-      actorId: commissionerId,
-      targetId: invoice.freelancerId,
+      actorId: commissionerIdNum,
+      targetId: parseInt(invoice.freelancerId),
       entityType: 3, // Invoice entity type
       entityId: invoiceNumber,
       metadata: {
@@ -143,14 +145,11 @@ export async function POST(request: Request) {
       }
     };
 
-    // Add notification to the log
-    notifications.unshift(newNotification);
+    // Add notification using the new partitioned storage system
+    NotificationStorage.addEvent(newNotification);
 
-    // Save updated data
-    await Promise.all([
-      fs.writeFile(invoicesPath, JSON.stringify(invoices, null, 2)),
-      fs.writeFile(notificationsPath, JSON.stringify(notifications, null, 2))
-    ]);
+    // Save updated invoice data
+    await saveInvoice(updatedInvoice);
 
     return NextResponse.json({
       success: true,

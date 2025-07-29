@@ -1,0 +1,22 @@
+{
+  "invoiceNumber": "CUSTOM-001-M1",
+  "freelancerId": 31,
+  "projectId": null,
+  "commissionerId": 33,
+  "projectTitle": "Custom Brand Consultation",
+  "milestoneDescription": "Brand strategy consultation",
+  "milestoneNumber": 1,
+  "issueDate": "2025-07-15",
+  "dueDate": "2025-07-25",
+  "totalAmount": 1500,
+  "status": "paid",
+  "milestones": [
+    {
+      "description": "Brand strategy consultation",
+      "rate": 1500
+    }
+  ],
+  "isCustomProject": true,
+  "isManualInvoice": true,
+  "parentInvoiceNumber": "CUSTOM-001"
+}

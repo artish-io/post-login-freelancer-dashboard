@@ -1,0 +1,20 @@
+{
+  "invoiceNumber": "MGL100006-M1",
+  "freelancerId": 31,
+  "projectId": 300,
+  "commissionerId": 36,
+  "projectTitle": "Micro-content for Launch Campaign",
+  "milestoneDescription": "Milestone 1 for Micro-content for Launch Campaign",
+  "milestoneNumber": 1,
+  "issueDate": "2025-04-08",
+  "dueDate": "2025-04-20",
+  "totalAmount": 458.33,
+  "status": "paid",
+  "milestones": [
+    {
+      "description": "Milestone 1 for Micro-content for Launch Campaign",
+      "rate": 458.33
+    }
+  ],
+  "parentInvoiceNumber": "MGL100006"
+}

@@ -1,0 +1,21 @@
+{
+  "invoiceNumber": "MGL000303-M1",
+  "freelancerId": 31,
+  "projectId": 303,
+  "commissionerId": 34,
+  "projectTitle": "Corlax iOS app UX",
+  "milestoneDescription": "Milestone 1 for Corlax iOS app UX",
+  "milestoneNumber": 1,
+  "issueDate": "2025-07-21",
+  "dueDate": "2025-08-04",
+  "totalAmount": 2333.33,
+  "status": "sent",
+  "milestones": [
+    {
+      "description": "Login & onboarding flow design",
+      "rate": 2333.33
+    }
+  ],
+  "isManualInvoice": true,
+  "parentInvoiceNumber": "MGL000303"
+}

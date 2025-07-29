@@ -1,31 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readFile, writeFile } from 'fs/promises';
-import path from 'path';
-
-const filePath = path.join(process.cwd(), 'data', 'invoices.json');
-
-type Invoice = {
-  invoiceNumber: string;
-  [key: string]: any;
-};
-
-async function readInvoices(): Promise<Invoice[]> {
-  const data = await readFile(filePath, 'utf-8');
-  return JSON.parse(data);
-}
-
-async function writeInvoices(invoices: Invoice[]) {
-  await writeFile(filePath, JSON.stringify(invoices, null, 2));
-}
+import { getInvoiceByNumber, updateInvoice, deleteInvoice, type Invoice } from '../../../../lib/invoice-storage';
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: Promise<{ invoiceId: string }> }
+  { params }: { params: Promise<{ invoiceID: string }> }
 ) {
   try {
-    const { invoiceId } = await params;
-    const invoices = await readInvoices();
-    const invoice = invoices.find(inv => inv.invoiceNumber === invoiceId);
+    const { invoiceID } = await params;
+    const invoice = await getInvoiceByNumber(invoiceID);
 
     if (!invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
@@ -40,21 +22,17 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ invoiceId: string }> }
+  { params }: { params: Promise<{ invoiceID: string }> }
 ) {
   try {
-    const { invoiceId } = await params;
-    const updatedInvoice = await request.json();
+    const { invoiceID } = await params;
+    const updatedInvoiceData = await request.json();
 
-    const invoices = await readInvoices();
-    const index = invoices.findIndex(inv => inv.invoiceNumber === invoiceId);
+    const success = await updateInvoice(invoiceID, updatedInvoiceData);
 
-    if (index === -1) {
+    if (!success) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
     }
-
-    invoices[index] = { ...invoices[index], ...updatedInvoice };
-    await writeInvoices(invoices);
 
     return NextResponse.json({ message: 'Invoice updated successfully' });
   } catch (error) {
@@ -65,20 +43,16 @@ export async function PUT(
 
 export async function DELETE(
   _request: NextRequest,
-  { params }: { params: Promise<{ invoiceId: string }> }
+  { params }: { params: Promise<{ invoiceID: string }> }
 ) {
   try {
-    const { invoiceId } = await params;
+    const { invoiceID } = await params;
 
-    const invoices = await readInvoices();
-    const index = invoices.findIndex(inv => inv.invoiceNumber === invoiceId);
+    const success = await deleteInvoice(invoiceID);
 
-    if (index === -1) {
+    if (!success) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
     }
-
-    invoices.splice(index, 1);
-    await writeInvoices(invoices);
 
     return NextResponse.json({ message: 'Invoice deleted successfully' });
   } catch (error) {

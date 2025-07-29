@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-4001",
+  "senderId": 27,
+  "timestamp": "2025-07-12T16:30:00Z",
+  "text": "Hi! I saw your post about the new project opportunities. I'd love to discuss potential collaboration.",
+  "read": {
+    "27": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "threadId": "27-32"
+}

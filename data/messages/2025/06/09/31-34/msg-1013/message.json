@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1013",
+  "senderId": 34,
+  "timestamp": "2025-06-09T12:06:00Z",
+  "text": "Typography still feels heavy. Try using the medium weight for headlines.",
+  "read": {
+    "31": true,
+    "34": true
+  },
+  "isEncrypted": false,
+  "threadId": "31-34"
+}

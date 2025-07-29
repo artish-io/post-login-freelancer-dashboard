@@ -1,0 +1,23 @@
+{
+  "taskId": 27,
+  "projectId": 306,
+  "projectTitle": "Nebula CMS landing redesign",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Web Design",
+    "UX Strategy"
+  ],
+  "title": "Accessibility audit pass",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 10,
+  "link": "https://figma.com/file/a11y-check",
+  "dueDate": "2025-07-17T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": true,
+  "version": 2,
+  "description": "Run final accessibility audit and implement fixes.",
+  "createdDate": "2025-07-29T13:32:42.040Z",
+  "lastModified": "2025-07-29T13:32:42.041Z"
+}

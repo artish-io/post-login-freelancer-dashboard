@@ -1,0 +1,168 @@
+[
+  {
+    "id": "evt_1752860539720_40",
+    "timestamp": "2025-07-10T00:00:00.000Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 5,
+    "entityId": "MGL100000-M1",
+    "metadata": {
+      "invoiceNumber": "MGL100000-M1",
+      "projectTitle": "Lagos Parks Services website re-design",
+      "amount": 1748,
+      "description": "Milestone 1 completion"
+    },
+    "context": {
+      "projectId": 301,
+      "invoiceId": "MGL100000-M1"
+    }
+  },
+  {
+    "id": "evt_1752860539720_42",
+    "timestamp": "2025-07-10T00:00:00.000Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 33,
+    "entityType": 5,
+    "entityId": "CUSTOM-001-M1",
+    "metadata": {
+      "invoiceNumber": "CUSTOM-001-M1",
+      "projectTitle": "Custom Brand Consultation",
+      "amount": 1200,
+      "description": "Brand strategy consultation"
+    },
+    "context": {
+      "projectId": null,
+      "invoiceId": "CUSTOM-001-M1"
+    }
+  },
+  {
+    "id": "evt_1752860539720_44",
+    "timestamp": "2025-07-10T00:00:00.000Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "INV-303-001",
+    "metadata": {
+      "invoiceNumber": "MGL000303-M1",
+      "projectTitle": "Corlax iOS app UX",
+      "amount": 2500,
+      "description": "Milestone 1 completion"
+    },
+    "context": {
+      "projectId": 303,
+      "invoiceId": "INV-303-001",
+      "invoiceNumber": "MGL000303-M1"
+    }
+  },
+  {
+    "id": "evt_1752860539720_46",
+    "timestamp": "2025-07-10T00:00:00.000Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 38,
+    "entityType": 5,
+    "entityId": "INV-299-001",
+    "metadata": {
+      "invoiceNumber": "MGL100005-M1",
+      "projectTitle": "UX Writing",
+      "amount": 2500,
+      "description": "Milestone 1 completion"
+    },
+    "context": {
+      "projectId": 299,
+      "invoiceId": "INV-299-001",
+      "invoiceNumber": "MGL100005-M1"
+    }
+  },
+  {
+    "id": "evt_1752860539720_48",
+    "timestamp": "2025-07-10T00:00:00.000Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "INV-304-001",
+    "metadata": {
+      "invoiceNumber": "MGL100004-M1",
+      "projectTitle": "Zynate events brand toolkit",
+      "amount": 2500,
+      "description": "Milestone 1 completion"
+    },
+    "context": {
+      "projectId": 304,
+      "invoiceId": "INV-304-001",
+      "invoiceNumber": "MGL100004-M1"
+    }
+  },
+  {
+    "id": "evt_1752860539720_50",
+    "timestamp": "2025-07-10T00:00:00.000Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 36,
+    "entityType": 5,
+    "entityId": "INV-305-001",
+    "metadata": {
+      "invoiceNumber": "MGL100006-M1",
+      "projectTitle": "HERO research launch collateral",
+      "amount": 2500,
+      "description": "Milestone 1 completion"
+    },
+    "context": {
+      "projectId": 305,
+      "invoiceId": "INV-305-001",
+      "invoiceNumber": "MGL100006-M1"
+    }
+  },
+  {
+    "id": "evt_1752860539720_52",
+    "timestamp": "2025-07-10T00:00:00.000Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "INV-306-001",
+    "metadata": {
+      "invoiceNumber": "MGL100006-M1",
+      "projectTitle": "Nebula CMS landing redesign",
+      "amount": 2500,
+      "description": "Milestone 1 completion"
+    },
+    "context": {
+      "projectId": 306,
+      "invoiceId": "INV-306-001",
+      "invoiceNumber": "MGL100006-M1"
+    }
+  },
+  {
+    "id": "evt_1752860539720_54",
+    "timestamp": "2025-07-10T00:00:00.000Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 5,
+    "entityId": "INV-311-001",
+    "metadata": {
+      "invoiceNumber": "MGL100008-M1",
+      "projectTitle": "Lagos Parks Mobile App Development",
+      "amount": 2500,
+      "description": "Milestone 1 completion"
+    },
+    "context": {
+      "projectId": 311,
+      "invoiceId": "INV-311-001",
+      "invoiceNumber": "MGL100008-M1"
+    }
+  }
+]

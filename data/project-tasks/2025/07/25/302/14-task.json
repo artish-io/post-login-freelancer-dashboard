@@ -1,0 +1,23 @@
+{
+  "taskId": 14,
+  "projectId": 302,
+  "projectTitle": "Urbana channel brand refresh",
+  "organizationId": 2,
+  "projectTypeTags": [
+    "Motion Design",
+    "Brand Strategy"
+  ],
+  "title": "Visual identity lockup",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 3,
+  "link": "https://figma.com/file/visual-id",
+  "dueDate": "2025-07-26T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Consolidate logo and visual identity assets into a consistent lockup.",
+  "createdDate": "2025-07-29T13:32:42.036Z",
+  "lastModified": "2025-07-29T13:32:42.037Z"
+}

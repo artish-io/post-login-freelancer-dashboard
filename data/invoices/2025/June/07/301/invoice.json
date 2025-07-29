@@ -1,0 +1,21 @@
+{
+  "invoiceNumber": "MGL100000-M3",
+  "freelancerId": 31,
+  "projectId": 301,
+  "commissionerId": 32,
+  "projectTitle": "Lagos Parks Services website re-design",
+  "milestoneDescription": "Milestone 3 for Lagos Parks Services website re-design",
+  "milestoneNumber": 3,
+  "issueDate": "2025-06-08",
+  "dueDate": "2025-06-17",
+  "totalAmount": 1748,
+  "status": "draft",
+  "milestones": [
+    {
+      "description": "Milestone 3 for Lagos Parks Services website re-design",
+      "rate": 1748
+    }
+  ],
+  "isManualInvoice": true,
+  "parentInvoiceNumber": "MGL100000"
+}

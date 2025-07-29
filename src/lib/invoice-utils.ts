@@ -1,8 +1,8 @@
 // src/lib/invoice-utils.ts
-import { readFile, writeFile } from 'fs/promises';
+import { readFile } from 'fs/promises';
 import path from 'path';
+import { getAllInvoices, getInvoiceByNumber, saveInvoice, type Invoice } from './invoice-storage';
 
-const invoicesPath = path.join(process.cwd(), 'data', 'invoices.json');
 const usersPath = path.join(process.cwd(), 'data', 'users.json');
 const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
 const tasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
@@ -42,27 +42,22 @@ export async function getTasksByProjectId(projectId: number) {
 }
 
 // ✅ Get invoice by ID
-export async function getInvoiceById(invoiceId: number) {
-  const data = await readFile(invoicesPath, 'utf-8');
-  const invoices = JSON.parse(data);
-  return invoices.find((inv: any) => inv.id === invoiceId) || null;
+export async function getInvoiceById(invoiceId: number): Promise<Invoice | null> {
+  const invoices = await getAllInvoices();
+  return invoices.find((inv: Invoice) => inv.id === invoiceId) || null;
 }
 
 // ✅ Save invoice with optional version history (for audit trail)
-export async function saveInvoice(newInvoice: any) {
-  const data = await readFile(invoicesPath, 'utf-8');
-  const invoices = JSON.parse(data);
+export async function saveInvoiceWithHistory(newInvoice: Invoice): Promise<void> {
+  const existingInvoice = newInvoice.id ? await getInvoiceById(newInvoice.id) : null;
 
-  const existingIndex = invoices.findIndex((inv: any) => inv.id === newInvoice.id);
-  if (existingIndex !== -1) {
-    const existing = invoices[existingIndex];
-    const history = existing.versions || [];
-    history.push({ ...existing, updatedAt: new Date().toISOString() });
-
-    invoices[existingIndex] = { ...newInvoice, versions: history };
+  if (existingInvoice) {
+    const history = existingInvoice.versions || [];
+    history.push({ ...existingInvoice, updatedAt: new Date().toISOString() });
+    newInvoice.versions = history;
   } else {
-    invoices.push({ ...newInvoice, versions: [] });
+    newInvoice.versions = [];
   }
 
-  await writeFile(invoicesPath, JSON.stringify(invoices, null, 2));
+  await saveInvoice(newInvoice);
 }

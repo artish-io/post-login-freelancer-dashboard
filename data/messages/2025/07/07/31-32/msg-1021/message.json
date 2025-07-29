@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1021",
+  "senderId": 32,
+  "timestamp": "2025-07-07T14:45:00Z",
+  "text": "One more thing - they've updated the brand guidelines. I'll send you the new color palette shortly.",
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "threadId": "31-32"
+}

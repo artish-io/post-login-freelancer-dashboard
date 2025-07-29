@@ -1,0 +1,24 @@
+{
+  "taskId": 5,
+  "projectId": 302,
+  "projectTitle": "Urbana channel brand refresh",
+  "organizationId": 2,
+  "projectTypeTags": [
+    "Motion Design",
+    "Brand Strategy"
+  ],
+  "title": "Motion intro animation",
+  "status": "In review",
+  "completed": true,
+  "order": 2,
+  "link": "https://figma.com/file/motion-intro",
+  "dueDate": "2025-08-24T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 1,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Animate a branded motion intro for Urbana’s digital presence.",
+  "submittedDate": "2025-07-14T09:30:00.000Z",
+  "createdDate": "2025-07-29T13:32:42.036Z",
+  "lastModified": "2025-07-29T13:32:42.037Z"
+}

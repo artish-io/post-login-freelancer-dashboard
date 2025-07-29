@@ -145,6 +145,54 @@ export default function CreateProposalPage() {
     projectName.trim() !== '' &&
     !mismatchError;
 
+  const handleSend = async () => {
+    if (!isValid) return;
+
+    const sanitizedMilestones = milestones.map((m) => ({
+      ...m,
+      amount: Number(m.amount ?? 0),
+    }));
+
+    const draft = generateDraftProposal({
+      title: projectName,
+      summary: projectScope,
+      logoUrl:
+        selectedContact && 'organization' in selectedContact
+          ? selectedContact.organization?.logo ?? ''
+          : '',
+      contact: selectedContact ?? undefined,
+      typeTags,
+      milestones: sanitizedMilestones,
+      totalBid: Number(totalAmount) || 0,
+      customStartDate,
+      endDate,
+      executionMethod,
+      startType,
+    });
+
+    try {
+      const res = await fetch('/api/proposals/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(draft),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to send proposal');
+      }
+
+      await res.json(); // Consume the response
+
+      // Show success message and redirect to main page
+      alert('Proposal sent successfully!');
+      router.push('/freelancer-dashboard/projects-and-invoices?tab=proposals&success=proposal-sent');
+    } catch (err) {
+      console.error('Send failed:', err);
+      alert(`Failed to send proposal: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    }
+  };
+
   const handlePreview = async () => {
     if (!isValid) return;
 
@@ -205,8 +253,8 @@ export default function CreateProposalPage() {
           projectName={projectName}
           isValid={isValid}
           onSaveDraft={() => console.log('Saving draft...')}
-          onCancel={() => console.log('Cancelled.')}
-          onSend={() => console.log('Sending proposal...')}
+          onCancel={() => router.back()}
+          onSend={handleSend}
           onPreview={handlePreview}
         />
       </motion.div>

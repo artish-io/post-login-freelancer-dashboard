@@ -13,20 +13,37 @@ export default function EarningsCard() {
   const { data: session } = useSession();
   const [earnings, setEarnings] = useState<number | null>(null);
   const [lastPaymentDate, setLastPaymentDate] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!session?.user?.id) return;
+    if (!session?.user?.id) {
+      setLoading(false);
+      return;
+    }
 
     const fetchEarnings = async () => {
       try {
+        setLoading(true);
+        setError(null);
+
         const res = await fetch(`/api/dashboard/earnings?id=${session.user.id}`);
         const data = await res.json();
-        console.log('🎯 Fetched earnings response:', data);
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to fetch earnings');
+        }
+
+        console.log('🎯 Fetched user-specific earnings:', data);
 
         setEarnings(data.amount || 0);
         setLastPaymentDate(data.lastUpdated || '');
       } catch (error) {
-        console.error('❌ Error fetching earnings:', error);
+        console.error('❌ Error fetching user earnings:', error);
+        setError(error instanceof Error ? error.message : 'Failed to load earnings');
+        setEarnings(0);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -35,17 +52,30 @@ export default function EarningsCard() {
 
   return (
     <div className="rounded-2xl shadow-sm p-6 w-full max-w-[340px] bg-pink-100 flex flex-col items-center text-center">
-      <p className="text-base font-medium text-gray-600">Your earnings this month</p>
+      <p className="text-base font-medium text-gray-600">Your total earnings</p>
       <h2 className="text-[48px] leading-none font-extrabold text-gray-900 mt-3">
-        {earnings !== null ? `$${earnings.toFixed(2)}` : '...'}
+        {loading ? (
+          <div className="flex items-center justify-center">
+            <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+          </div>
+        ) : error ? (
+          <span className="text-red-500 text-lg">Error</span>
+        ) : (
+          `$${earnings?.toFixed(2) || '0.00'}`
+        )}
       </h2>
       <p className="text-sm text-gray-500 mt-1">
-        {lastPaymentDate
-          ? new Date(lastPaymentDate).toLocaleString(undefined, {
-              dateStyle: 'long',
-              timeStyle: 'short',
-            })
-          : 'Loading date...'}
+        {loading ? (
+          'Loading...'
+        ) : error ? (
+          error
+        ) : lastPaymentDate ? (
+          `Last payment: ${new Date(lastPaymentDate).toLocaleDateString()}`
+        ) : earnings && earnings > 0 ? (
+          'From paid invoices'
+        ) : (
+          'No payments received yet'
+        )}
       </p>
 
       <button className="mt-6 w-full bg-black text-white rounded-xl py-3 text-sm font-medium transition-all hover:opacity-90">

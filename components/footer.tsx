@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-white text-black font-sans text-xs border-t border-gray-200">
+    <footer className="bg-white text-black font-jakarta text-xs border-t border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col md:flex-row justify-between items-start gap-4">
         {/* Logo and Contact Info */}
         <div className="space-y-4 text-left w-full md:w-1/3">

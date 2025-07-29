@@ -1,9 +1,6 @@
 // src/app/api/dashboard/invoices/create/route.ts
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile, writeFile } from 'fs/promises';
-
-const invoicesFilePath = path.join(process.cwd(), 'data', 'invoices.json');
+import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
 const ALLOWED_STATUSES = ['draft', 'sent', 'paid'];
 const ALLOWED_EXECUTION_MODES = ['milestone', 'completion'];
 
@@ -46,16 +43,15 @@ export async function POST(request: Request) {
       }
     }
 
-    const file = await readFile(invoicesFilePath, 'utf-8');
-    const invoices = JSON.parse(file);
-
+    const allInvoices = await getAllInvoices();
     const newInvoiceId = Math.floor(100000 + Math.random() * 900000);
 
     const newInvoice = {
       id: newInvoiceId,
+      invoiceNumber: `INV-${newInvoiceId}`,
       freelancerId,
       projectId,
-      client,
+      commissionerId: client,
       projectTitle,
       issueDate,
       dueDate,
@@ -63,10 +59,11 @@ export async function POST(request: Request) {
       milestones,
       totalAmount,
       status: status || 'draft',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
 
-    invoices.push(newInvoice);
-    await writeFile(invoicesFilePath, JSON.stringify(invoices, null, 2));
+    await saveInvoice(newInvoice);
 
     return NextResponse.json(
       { message: 'Invoice created successfully', invoiceId: newInvoiceId },

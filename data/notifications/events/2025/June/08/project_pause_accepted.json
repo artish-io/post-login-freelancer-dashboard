@@ -1,0 +1,18 @@
+[
+  {
+    "id": "evt_1752860539719_2",
+    "timestamp": "2025-06-09T02:00:00.000Z",
+    "type": "project_pause_accepted",
+    "notificationType": 23,
+    "actorId": 37,
+    "targetId": 31,
+    "entityType": 2,
+    "entityId": 300,
+    "metadata": {
+      "projectTitle": "Event Production"
+    },
+    "context": {
+      "projectId": 300
+    }
+  }
+]

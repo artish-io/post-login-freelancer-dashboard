@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import notesData from '../../../../../data/project-notes.json';
+import { readMultipleProjectNotes } from '@/lib/project-notes-utils';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -21,11 +21,14 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'No valid project IDs provided' }, { status: 400 });
   }
 
-  const filteredNotes = notesData.filter(
-    (entry: { projectId: number }) => projectIds.includes(entry.projectId)
-  );
+  try {
+    const filteredNotes = await readMultipleProjectNotes(projectIds);
 
-  console.log('🟡 [API] Filtered notes length:', filteredNotes.length);
+    console.log('🟡 [API] Filtered notes length:', filteredNotes.length);
 
-  return NextResponse.json(filteredNotes);
+    return NextResponse.json(filteredNotes);
+  } catch (error) {
+    console.error('Error reading project notes:', error);
+    return NextResponse.json({ error: 'Failed to read project notes' }, { status: 500 });
+  }
 }

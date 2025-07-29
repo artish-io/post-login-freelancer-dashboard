@@ -1,0 +1,19 @@
+{
+  "projectId": 314,
+  "title": "E-commerce Platform UI Redesign",
+  "description": "Complete redesign of the user interface for an e-commerce platform focusing on conversion optimization and mobile responsiveness.",
+  "organizationId": 1,
+  "typeTags": [
+    "UI/UX Design",
+    "E-commerce"
+  ],
+  "commissionerId": 32,
+  "freelancerId": 31,
+  "status": "Ongoing",
+  "dueDate": "2025-09-30",
+  "totalTasks": 2,
+  "invoicingMethod": "completion",
+  "totalBudget": 8000,
+  "upfrontCommitment": 1500,
+  "createdAt": "2025-07-29T14:26:40.168Z"
+}

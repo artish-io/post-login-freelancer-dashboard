@@ -1,0 +1,19 @@
+[
+  {
+    "id": "evt_1752860539719_1",
+    "timestamp": "2025-06-09T00:00:00.000Z",
+    "type": "project_pause_requested",
+    "notificationType": 22,
+    "actorId": 31,
+    "targetId": 37,
+    "entityType": 2,
+    "entityId": 300,
+    "metadata": {
+      "projectTitle": "Event Production",
+      "pauseReason": "Need to address some technical challenges before proceeding"
+    },
+    "context": {
+      "projectId": 300
+    }
+  }
+]

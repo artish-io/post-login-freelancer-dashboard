@@ -12,19 +12,31 @@ export default function PreviewActionButtons({ data }: { data: any }) {
   const handleSend = async () => {
     setSending(true);
     try {
+      console.log('🚀 Sending proposal with data:', data);
+
       const res = await fetch('/api/proposals/send', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
-      if (!res.ok) throw new Error('Send failed');
-      const { id } = await res.json();
+      const responseData = await res.json();
+      console.log('📡 API Response:', responseData);
+
+      if (!res.ok) {
+        throw new Error(responseData.error || `Server error: ${res.status}`);
+      }
+
+      const { id } = responseData;
+
+      if (!id) {
+        throw new Error('No proposal ID returned from server');
+      }
 
       router.push(`/freelancer-dashboard/projects-and-invoices/view-proposal/${id}`);
     } catch (err) {
-      console.error(err);
-      alert('Failed to send proposal.');
+      console.error('Proposal send error:', err);
+      alert(`Failed to send proposal: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setSending(false);
     }

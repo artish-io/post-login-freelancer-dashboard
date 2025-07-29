@@ -1,0 +1,23 @@
+{
+  "taskId": 4,
+  "projectId": 302,
+  "projectTitle": "Urbana channel brand refresh",
+  "organizationId": 2,
+  "projectTypeTags": [
+    "Motion Design",
+    "Brand Strategy"
+  ],
+  "title": "Brand concept iteration",
+  "status": "Rejected",
+  "completed": false,
+  "order": 1,
+  "link": "https://figma.com/file/brand-concept",
+  "dueDate": "2025-07-16T00:00:00.000Z",
+  "rejected": true,
+  "feedbackCount": 2,
+  "pushedBack": true,
+  "version": 3,
+  "description": "Iterate on brand concept direction based on client feedback.",
+  "createdDate": "2025-07-29T13:32:42.036Z",
+  "lastModified": "2025-07-29T13:32:42.036Z"
+}

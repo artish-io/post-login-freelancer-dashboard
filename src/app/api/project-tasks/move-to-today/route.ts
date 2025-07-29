@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { readAllTasks, moveTaskToNewDate } from '../../../../lib/project-tasks/hierarchical-storage';
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,43 +19,49 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Read the current project tasks
-    const filePath = path.join(process.cwd(), 'data', 'project-tasks.json');
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    const projects = JSON.parse(fileContents);
+    // Read all tasks to find the ones we need to move
+    const allTasks = await readAllTasks();
+    const tasksToMove = allTasks.filter(task => taskIds.includes(task.taskId));
+
+    if (tasksToMove.length === 0) {
+      return NextResponse.json(
+        { error: 'No matching tasks found' },
+        { status: 404 }
+      );
+    }
 
     let updatedCount = 0;
+    const movePromises = [];
+
+    // Move each task to the new due date
+    for (const task of tasksToMove) {
+      console.log(`Moving task ${task.taskId} (${task.title}) from ${task.dueDate} to ${newDueDate}`);
+
+      const movePromise = moveTaskToNewDate(task.dueDate, newDueDate, task.projectId, task.taskId);
+      movePromises.push(movePromise);
+    }
+
+    // Wait for all moves to complete
+    const moveResults = await Promise.all(movePromises);
+    updatedCount = moveResults.filter(result => result).length;
+
+    // Count tasks after update by reading all tasks again
+    const updatedAllTasks = await readAllTasks();
+    const today = new Date().toISOString().split('T')[0];
+
     let newTodayCount = 0;
     let newUpcomingCount = 0;
 
-    // Update the due dates for specified tasks
-    projects.forEach((project: any) => {
-      project.tasks.forEach((task: any) => {
-        if (taskIds.includes(task.id)) {
-          console.log(`Moving task ${task.id} (${task.title}) from ${task.dueDate} to ${newDueDate}`);
-          task.dueDate = newDueDate;
-          updatedCount++;
-        }
-      });
-    });
+    updatedAllTasks.forEach((task) => {
+      if (task.completed || task.status === 'In review') return;
 
-    // Count tasks after update
-    const today = new Date().toISOString().split('T')[0];
-    projects.forEach((project: any) => {
-      project.tasks.forEach((task: any) => {
-        if (task.completed || task.status === 'In review') return;
-        
-        const taskDate = task.dueDate.split('T')[0];
-        if (taskDate === today) {
-          newTodayCount++;
-        } else if (taskDate > today) {
-          newUpcomingCount++;
-        }
-      });
+      const taskDate = task.dueDate.split('T')[0];
+      if (taskDate === today) {
+        newTodayCount++;
+      } else if (taskDate > today) {
+        newUpcomingCount++;
+      }
     });
-
-    // Write the updated data back to the file
-    fs.writeFileSync(filePath, JSON.stringify(projects, null, 2));
 
     console.log(`✅ Successfully moved ${updatedCount} tasks to today`);
     console.log(`📊 New counts - Today: ${newTodayCount}, Upcoming: ${newUpcomingCount}`);

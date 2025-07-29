@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1009",
+  "senderId": 31,
+  "timestamp": "2025-06-10T15:00:00Z",
+  "text": "Thanks. I'll check and revert shortly.",
+  "read": {
+    "31": true,
+    "33": false
+  },
+  "isEncrypted": false,
+  "threadId": "31-33"
+}

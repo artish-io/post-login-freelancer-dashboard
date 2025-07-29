@@ -55,13 +55,15 @@ export default function TopNavbar({
 
         {/* Logo */}
         <div className="pl-2">
-          <Image
-            src="/artish-logo.png"
-            alt="Artish Logo"
-            width={42}
-            height={42}
-            className="rounded-full shadow-sm hover:shadow-md transition"
-          />
+          <a href="/app" className="block">
+            <Image
+              src="/artish-logo.png"
+              alt="Artish Logo"
+              width={42}
+              height={42}
+              className="rounded-full shadow-sm hover:shadow-md transition cursor-pointer"
+            />
+          </a>
         </div>
       </div>
 

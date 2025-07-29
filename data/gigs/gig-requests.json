@@ -6,17 +6,30 @@
     "organizationId": 1,
     "commissionerId": 32,
     "title": "Park Services Website Rebrand",
-    "skills": ["Web Design", "UI/UX Design"],
-    "tools": ["Figma", "Adobe Photoshop"],
+    "skills": [
+      "Web Design",
+      "UI/UX Design"
+    ],
+    "tools": [
+      "Figma",
+      "Adobe Photoshop"
+    ],
     "notes": "Help us redesign our digital presence for better accessibility.",
     "budget": {
       "min": 3500,
       "max": 5000,
       "currency": "USD"
     },
-    "status": "Available",
+    "status": "Accepted",
     "createdAt": "2025-07-05T10:12:00Z",
-    "responses": []
+    "responses": [
+      {
+        "type": "accepted",
+        "timestamp": "2025-07-27T18:21:33.003Z",
+        "message": "Offer accepted"
+      }
+    ],
+    "acceptedAt": "2025-07-27T18:21:33.003Z"
   },
   {
     "id": 202,
@@ -25,8 +38,15 @@
     "organizationId": 2,
     "commissionerId": 33,
     "title": "Channel Identity Toolkit",
-    "skills": ["Branding", "Brand Design", "Motion Graphics"],
-    "tools": ["Adobe Illustrator", "After Effects"],
+    "skills": [
+      "Branding",
+      "Brand Design",
+      "Motion Graphics"
+    ],
+    "tools": [
+      "Adobe Illustrator",
+      "After Effects"
+    ],
     "notes": "Create identity assets for Urbana's new documentary stream.",
     "budget": {
       "min": 2800,
@@ -44,8 +64,14 @@
     "organizationId": 3,
     "commissionerId": 34,
     "title": "App Promo Video",
-    "skills": ["Video Editing", "Motion Graphics"],
-    "tools": ["Premiere Pro", "After Effects"],
+    "skills": [
+      "Video Editing",
+      "Motion Graphics"
+    ],
+    "tools": [
+      "Premiere Pro",
+      "After Effects"
+    ],
     "notes": "Edit a 60s vertical promo for Corlax's new wellness app.",
     "budget": {
       "min": 1500,
@@ -63,8 +89,16 @@
     "organizationId": 5,
     "commissionerId": 36,
     "title": "Concept Testing Deck",
-    "skills": ["Design Research", "User Research", "Content Design"],
-    "tools": ["PowerPoint", "Figma", "Miro"],
+    "skills": [
+      "Design Research",
+      "User Research",
+      "Content Design"
+    ],
+    "tools": [
+      "PowerPoint",
+      "Figma",
+      "Miro"
+    ],
     "notes": "Build out visual layouts for an insights deck to present to board.",
     "budget": {
       "min": 2200,
@@ -82,17 +116,30 @@
     "organizationId": 6,
     "commissionerId": 37,
     "title": "Tech Showcase Speaker Reel",
-    "skills": ["Video Editing", "Motion Graphics"],
-    "tools": ["After Effects", "Premiere Pro"],
+    "skills": [
+      "Video Editing",
+      "Motion Graphics"
+    ],
+    "tools": [
+      "After Effects",
+      "Premiere Pro"
+    ],
     "notes": "Edit highlight reel of our keynote speakers and testimonials.",
     "budget": {
       "min": 3200,
       "max": 4800,
       "currency": "USD"
     },
-    "status": "Available",
+    "status": "Accepted",
     "createdAt": "2025-07-07T12:00:00Z",
-    "responses": []
+    "responses": [
+      {
+        "type": "accepted",
+        "timestamp": "2025-07-28T19:30:39.175Z",
+        "message": "Offer accepted"
+      }
+    ],
+    "acceptedAt": "2025-07-28T19:30:39.175Z"
   },
   {
     "id": 206,
@@ -101,8 +148,16 @@
     "organizationId": 7,
     "commissionerId": 38,
     "title": "UX Audit Walkthrough",
-    "skills": ["UX Research", "Heuristic Review", "User Testing"],
-    "tools": ["Notion", "Figma", "Hotjar"],
+    "skills": [
+      "UX Research",
+      "Heuristic Review",
+      "User Testing"
+    ],
+    "tools": [
+      "Notion",
+      "Figma",
+      "Hotjar"
+    ],
     "notes": "Record a UX walkthrough audit of our app based on given heuristics.",
     "budget": {
       "min": 2500,
@@ -120,8 +175,14 @@
     "organizationId": 1,
     "commissionerId": 32,
     "title": "Content Strategy for Parks Website",
-    "skills": ["Content Strategy", "UX Writing"],
-    "tools": ["Figma", "Google Docs"],
+    "skills": [
+      "Content Strategy",
+      "UX Writing"
+    ],
+    "tools": [
+      "Figma",
+      "Google Docs"
+    ],
     "notes": "We need help developing a comprehensive content strategy for our new parks website.",
     "budget": {
       "min": 2000,
@@ -139,8 +200,14 @@
     "organizationId": 2,
     "commissionerId": 33,
     "title": "Brand Voice Guidelines",
-    "skills": ["Brand Strategy", "Content Design"],
-    "tools": ["Adobe InDesign", "Figma"],
+    "skills": [
+      "Brand Strategy",
+      "Content Design"
+    ],
+    "tools": [
+      "Adobe InDesign",
+      "Figma"
+    ],
     "notes": "Create comprehensive brand voice guidelines for our documentary channel.",
     "budget": {
       "min": 1500,

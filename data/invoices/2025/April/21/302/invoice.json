@@ -1,0 +1,20 @@
+{
+  "invoiceNumber": "MGL100002-M2",
+  "freelancerId": 31,
+  "projectId": 302,
+  "commissionerId": 37,
+  "projectTitle": "Media channel branding",
+  "milestoneDescription": "Milestone 2 for Media channel branding",
+  "milestoneNumber": 2,
+  "issueDate": "2025-04-22",
+  "dueDate": "2025-04-29",
+  "totalAmount": 1373.33,
+  "status": "sent",
+  "milestones": [
+    {
+      "description": "Milestone 2 for Media channel branding",
+      "rate": 1373.33
+    }
+  ],
+  "parentInvoiceNumber": "MGL100002"
+}

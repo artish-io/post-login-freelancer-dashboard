@@ -1,0 +1,23 @@
+{
+  "taskId": 7,
+  "projectId": 304,
+  "projectTitle": "Zynate events brand toolkit",
+  "organizationId": 4,
+  "projectTypeTags": [
+    "Print Design",
+    "Events"
+  ],
+  "title": "Design event templates",
+  "status": "Rejected",
+  "completed": false,
+  "order": 1,
+  "link": "https://figma.com/file/event-templates",
+  "dueDate": "2025-07-15T00:00:00.000Z",
+  "rejected": true,
+  "feedbackCount": 1,
+  "pushedBack": false,
+  "version": 2,
+  "description": "Design reusable templates for event promotional materials.",
+  "createdDate": "2025-07-29T13:32:42.039Z",
+  "lastModified": "2025-07-29T13:32:42.039Z"
+}

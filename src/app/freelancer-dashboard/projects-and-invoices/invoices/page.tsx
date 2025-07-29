@@ -10,6 +10,7 @@ import ClientDetailsBox from '../../../../../components/freelancer-dashboard/pro
 import InvoiceMetaBlock from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-preview/invoice-meta-block';
 import InvoiceTaskList from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-preview/invoice-task-list';
 import InvoiceDatesDisplay from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-preview/invoice-dates-display';
+import InvoiceReminderActions from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-reminder-actions';
 
 export default function InvoicesPage() {
   const { data: session } = useSession();
@@ -19,8 +20,7 @@ export default function InvoicesPage() {
   const [billToDetails, setBillToDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchInvoice = async () => {
+  const fetchInvoice = async () => {
       if (!invoiceNumber) {
         setLoading(false);
         return;
@@ -58,8 +58,9 @@ export default function InvoicesPage() {
       } finally {
         setLoading(false);
       }
-    };
+  };
 
+  useEffect(() => {
     fetchInvoice();
   }, [invoiceNumber]);
 
@@ -141,7 +142,11 @@ export default function InvoicesPage() {
 
         <div className="space-y-8">
           <InvoiceDatesDisplay invoiceDate={issueDate} dueDate={dueDate} />
-          {/* No actions bar - this is just for viewing */}
+          <InvoiceReminderActions
+            invoiceData={invoiceData}
+            onReminderSent={fetchInvoice}
+            onUserReported={fetchInvoice}
+          />
         </div>
       </div>
     </div>

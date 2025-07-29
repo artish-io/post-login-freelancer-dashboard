@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1001",
+  "senderId": 32,
+  "timestamp": "2025-06-11T09:32:00Z",
+  "text": "Hi, next week we’ll start a new project. I’ll tell you all the details later",
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "threadId": "31-32"
+}

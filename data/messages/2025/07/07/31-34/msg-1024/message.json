@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1024",
+  "senderId": 34,
+  "timestamp": "2025-07-07T16:00:00Z",
+  "text": "Hi! The client loved the latest designs. They want to move forward with implementation. Can we schedule a kickoff call?",
+  "read": {
+    "31": true,
+    "34": true
+  },
+  "isEncrypted": false,
+  "threadId": "31-34"
+}

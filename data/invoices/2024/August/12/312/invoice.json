@@ -1,0 +1,20 @@
+{
+  "invoiceNumber": "MGL100008-M5",
+  "freelancerId": 19,
+  "projectId": 312,
+  "commissionerId": 32,
+  "projectTitle": "Lagos Parks Mobile App Development",
+  "milestoneDescription": "Push notification system design",
+  "milestoneNumber": 5,
+  "issueDate": "2024-08-13",
+  "dueDate": "2024-08-23",
+  "totalAmount": 1000,
+  "status": "paid",
+  "milestones": [
+    {
+      "description": "Push notification system design",
+      "rate": 1000
+    }
+  ],
+  "parentInvoiceNumber": "MGL100008"
+}

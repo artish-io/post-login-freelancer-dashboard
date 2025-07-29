@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1007",
+  "senderId": 32,
+  "timestamp": "2025-06-11T09:41:40Z",
+  "text": "Fair, but you submitted the wireframes 2 days late which bottlenecked dev. Let’s both plan tighter.",
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "threadId": "31-32"
+}

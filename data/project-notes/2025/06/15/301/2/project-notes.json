@@ -1,0 +1,11 @@
+{
+  "projectId": 301,
+  "taskId": 2,
+  "taskTitle": "Hero section design",
+  "notes": [
+    {
+      "date": "2025-06-15",
+      "feedback": "The hero section is oversized and pushes key content too far down the page. The image contrast is too harsh, drawing attention away from the rest of the layout. Visually, it centers too much on people when the focus should be on showcasing the parks. This is not what we’re looking for."
+    }
+  ]
+}

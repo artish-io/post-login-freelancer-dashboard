@@ -1,0 +1,23 @@
+{
+  "taskId": 23,
+  "projectId": 306,
+  "projectTitle": "Nebula CMS landing redesign",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Web Design",
+    "UX Strategy"
+  ],
+  "title": "Mobile nav menu prototype",
+  "status": "In review",
+  "completed": true,
+  "order": 6,
+  "link": "https://figma.com/file/mobile-nav",
+  "dueDate": "2025-08-23T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": true,
+  "version": 3,
+  "description": "Build interactive prototype of mobile navigation.",
+  "createdDate": "2025-07-29T13:32:42.040Z",
+  "lastModified": "2025-07-29T13:32:42.040Z"
+}

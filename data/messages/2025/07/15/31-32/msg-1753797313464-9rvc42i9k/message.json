@@ -1,0 +1,12 @@
+{
+  "senderId": 31,
+  "timestamp": "2025-07-15T19:04:50.194Z",
+  "text": "pasa",
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "isEncrypted": false,
+  "messageId": "msg-1753797313464-9rvc42i9k",
+  "threadId": "31-32"
+}

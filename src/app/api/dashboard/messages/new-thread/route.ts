@@ -1,8 +1,12 @@
 // src/app/api/dashboard/messages/new-thread/route.ts
 
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { promises as fs } from 'fs';
+import {
+  saveMessage,
+  saveThreadMetadata,
+  readThreadMetadata,
+  generateMessageId
+} from '@/lib/messages-utils';
 
 // NOTE TO DEV TEAM:
 // This endpoint expects a `userId` query param passed from the client
@@ -26,35 +30,42 @@ export async function POST(request: Request) {
   }
 
   try {
-    const filePath = path.join(process.cwd(), 'data/messages.json');
-    const fileData = await fs.readFile(filePath, 'utf-8');
-    const messages = JSON.parse(fileData);
-
     const sortedIds = [senderId, recipientId].sort((a, b) => a - b);
     const newThreadId = `${sortedIds[0]}-${sortedIds[1]}`;
 
     // Check if thread already exists
-    const existingThread = messages.find((t: any) => t.threadId === newThreadId);
+    const existingThread = await readThreadMetadata(newThreadId);
 
     if (existingThread) {
       return NextResponse.json({ error: 'Thread already exists' }, { status: 409 });
     }
 
+    // Create thread metadata
     const newThread = {
       threadId: newThreadId,
       participants: [senderId, recipientId],
-      messages: [
-        {
-          senderId,
-          timestamp: new Date().toISOString(),
-          text: initialText,
-          readBy: [senderId],
-        },
-      ],
+      messages: [], // Messages are stored separately
+      metadata: {
+        createdAt: new Date().toISOString(),
+        initiatedBy: senderId,
+        status: 'active'
+      }
     };
 
-    messages.push(newThread);
-    await fs.writeFile(filePath, JSON.stringify(messages, null, 2));
+    await saveThreadMetadata(newThread);
+
+    // Create initial message
+    const messageId = generateMessageId();
+    const initialMessage = {
+      messageId,
+      senderId,
+      timestamp: new Date().toISOString(),
+      text: initialText,
+      read: { [senderId]: true },
+      isEncrypted: false
+    };
+
+    await saveMessage(initialMessage, newThreadId);
 
     return NextResponse.json({ success: true, threadId: newThreadId });
   } catch (err) {

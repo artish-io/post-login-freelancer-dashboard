@@ -1,36 +1,67 @@
 {
-  "title": "",
-  "summary": "",
-  "logoUrl": "/logos/corlax-ios-logo.png",
-  "typeTags": [],
-  "milestones": [],
+  "title": "Lagos Landing Page Rework",
+  "summary": "ibuuhlgnvhdlsogheiro i iownchmlonecelt oinwuclowtulnwotoi ncuwteotuenmtoertuent",
+  "logoUrl": "/logos/lagos-parks-logo.png",
+  "typeTags": [
+    "Market Research"
+  ],
+  "milestones": [
+    {
+      "id": "f30bfa60-73af-44d1-91bb-b54e8c9315e5",
+      "title": "ieovnmecortoulnt",
+      "description": "wercwertxt",
+      "startDate": "2025-07-27T04:00:00.000Z",
+      "endDate": "2025-08-02T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
   "paymentCycle": "Hourly Rate",
   "rate": 50,
-  "projectId": "TU-GPYYGD",
-  "totalBid": 0,
+  "projectId": "TU-M47KTH",
+  "totalBid": 4000,
   "customStartDate": null,
-  "endDate": null,
+  "endDate": "2025-08-02T04:00:00.000Z",
   "maxHours": 50000,
   "depositRate": "",
-  "expectedDurationDays": 1,
+  "expectedDurationDays": 6,
   "executionMethod": "completion",
   "startType": "Immediately",
   "contact": {
-    "id": 34,
-    "name": "Matte Hannery",
-    "title": "Startup Founder",
-    "avatar": "/avatars/matte.png",
+    "id": 32,
+    "name": "Neilsan Mando",
+    "title": "Product Manager",
+    "avatar": "/avatars/neilsan.png",
     "type": "commissioner",
-    "email": "matte.hannery@example.com",
-    "address": "34 Remote Lane, Virtual City, Country",
-    "organizationId": 3,
+    "email": "neilsan.mando@example.com",
+    "address": "Hidden Leaf, Land of Fire",
+    "organizationId": 1,
+    "username": "neilsan",
+    "password": "testpass",
+    "bio": "Experienced product manager with over 8 years in public sector digital transformation. Passionate about creating user-centered solutions that improve community services and enhance citizen engagement.",
+    "rating": 4.8,
+    "responsibilities": [
+      "Project Management",
+      "Budget Oversight",
+      "Stakeholder Communication",
+      "Quality Assurance",
+      "Timeline Management",
+      "Resource Allocation",
+      "Risk Assessment",
+      "Team Coordination"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/neilsan-mando"
+      }
+    ],
     "organization": {
-      "name": "Corlax Wellness",
-      "logo": "/logos/corlax-ios-logo.png",
-      "address": "100 Mindful Road, Toronto, ON, Canada"
+      "name": "Lagos State Parks Services",
+      "logo": "/logos/lagos-parks-logo.png",
+      "address": "3471 Hirurzen Avenue, Hidden Leaf, Land of Fire"
     }
   },
-  "upfrontAmount": 0,
+  "upfrontAmount": 480,
   "milestoneTotal": 0,
   "isAmountValid": true,
   "upfrontValue": 0,

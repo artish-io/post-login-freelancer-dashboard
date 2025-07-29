@@ -1,275 +1,328 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import gigCategories from '../../../data/gigs/gig-categories.json';
-import gigs from '../../../data/gigs/gigs.json';
-import organizations from '../../../data/organizations.json';
-import { useParams } from 'next/navigation';
-import { Paperclip } from 'lucide-react';
 
-interface ApplyProps {
-  gig?: any;
-  organization?: any;
+interface ApplyModalProps {
+  gigId: number;
+  gigTitle: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess?: () => void;
 }
 
-const Apply: React.FC<ApplyProps> = ({ gig: propGig, organization: propOrganization }) => {
+type Gig = {
+  id: number;
+  title: string;
+  toolsRequired?: string[];
+  tags?: string[];
+  category?: string;
+};
+
+export default function ApplyModal({ gigId, gigTitle, isOpen, onClose, onSuccess }: ApplyModalProps) {
   const { data: session } = useSession();
-  const [skills, setSkills] = useState<string[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [gigData, setGigData] = useState<Gig | null>(null);
+
+  // Form fields
   const [pitch, setPitch] = useState('');
-  const [links, setLinks] = useState<string[]>([]);
-  const [currentLink, setCurrentLink] = useState('');
-  const [toolFamiliarity, setToolFamiliarity] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState('');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [freelancerId, setFreelancerId] = useState<number | null>(null);
+  const [sampleLinks, setSampleLinks] = useState<string[]>(['']);
+  const [skills, setSkills] = useState<string[]>([]);
+  const [selectedTools, setSelectedTools] = useState<string[]>([]);
+  const [newSkill, setNewSkill] = useState('');
 
-  const params = useParams();
-  const gigId = params?.id;
-
-  // Use props if provided (modal context), otherwise use URL params (standalone page)
-  const selectedGig = propGig || gigs.find((gig) => gig.id === Number(gigId));
-  const organization = propOrganization || (selectedGig
-    ? organizations.find((org) => org.id === selectedGig.organizationId)
-    : null);
-
-  const allSubcategories = gigCategories.reduce<string[]>((acc, category) => {
-    return acc.concat(category.subcategories.map(sub => sub.name));
-  }, []);
-
+  // Fetch gig data when modal opens
   useEffect(() => {
-    if (inputValue.trim() === '') {
-      setSuggestions([]);
-      return;
-    }
-    const filtered = allSubcategories.filter(
-      (subcat) =>
-        subcat.toLowerCase().includes(inputValue.toLowerCase()) &&
-        !skills.includes(subcat)
-    );
-    setSuggestions(filtered);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputValue, skills]);
+    if (isOpen && gigId) {
+      const fetchGigData = async () => {
+        try {
+          const res = await fetch(`/api/gigs/${gigId}`);
+          if (res.ok) {
+            const data = await res.json();
+            setGigData(data);
 
-  // Fetch freelancer ID from session
-  useEffect(() => {
-    const fetchFreelancerId = async () => {
-      if (!session?.user?.id) return;
-
-      try {
-        const response = await fetch(`/api/user/profile/${session.user.id}`);
-        const userData = await response.json();
-
-        // Get freelancer data to find freelancer ID
-        const freelancersResponse = await fetch('/api/freelancers');
-        const freelancers = await freelancersResponse.json();
-
-        const freelancer = freelancers.find((f: any) => f.userId === userData.id);
-        if (freelancer) {
-          setFreelancerId(freelancer.id);
+            // Pre-select required tools
+            if (data.toolsRequired) {
+              setSelectedTools(data.toolsRequired);
+            }
+          }
+        } catch (error) {
+          console.error('Failed to fetch gig data:', error);
         }
-      } catch (error) {
-        console.error('Failed to fetch freelancer ID:', error);
-      }
-    };
+      };
 
-    fetchFreelancerId();
-  }, [session?.user?.id]);
-
-  const handleSubmit = async () => {
-    if (!freelancerId) {
-      alert('Please log in to submit an application');
-      return;
+      fetchGigData();
     }
+  }, [isOpen, gigId]);
 
-    const payload = {
-      freelancerId,
-      pitch,
-      sampleLinks: links,
-      skills,
-      tools: toolFamiliarity,
-    };
 
-    try {
-      const res = await fetch(`/api/gigs/gig-applications`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          gigId: Number(gigId),
-          ...payload
-        }),
-      });
 
-      if (!res.ok) {
-        throw new Error('Failed to submit application');
-      }
+  const addSampleLink = () => {
+    setSampleLinks([...sampleLinks, '']);
+  };
 
-      alert('Application submitted successfully!');
+  const updateSampleLink = (index: number, value: string) => {
+    const updated = [...sampleLinks];
+    updated[index] = value;
+    setSampleLinks(updated);
+  };
 
-      // Reset form
-      setPitch('');
-      setLinks([]);
-      setSkills([]);
-      setToolFamiliarity([]);
-      setCurrentLink('');
-      setInputValue('');
-    } catch (error) {
-      console.error(error);
-      alert('Error submitting application');
+  const removeSampleLink = (index: number) => {
+    setSampleLinks(sampleLinks.filter((_, i) => i !== index));
+  };
+
+  const addSkill = () => {
+    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
+      setSkills([...skills, newSkill.trim()]);
+      setNewSkill('');
     }
   };
 
-  const tools = selectedGig?.toolsRequired || [];
+  const removeSkill = (skill: string) => {
+    setSkills(skills.filter(s => s !== skill));
+  };
 
-  console.log('🔧 Debug Apply component:');
-  console.log('📋 gigId:', gigId);
-  console.log('🎯 selectedGig:', selectedGig);
-  console.log('🏢 organization:', organization);
-  console.log('🛠️ tools:', tools);
+  const toggleTool = (tool: string) => {
+    if (selectedTools.includes(tool)) {
+      setSelectedTools(selectedTools.filter(t => t !== tool));
+    } else {
+      setSelectedTools([...selectedTools, tool]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!session?.user?.id) {
+      setError('Please log in to submit an application');
+      return;
+    }
+
+    if (!pitch.trim()) {
+      setError('Please provide a pitch for your application');
+      return;
+    }
+
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const applicationData = {
+        gigId,
+        freelancerId: Number(session.user.id),
+        pitch: pitch.trim(),
+        sampleLinks: sampleLinks.filter(link => link.trim()),
+        skills,
+        tools: selectedTools,
+      };
+
+      console.log('🚀 Submitting application:', applicationData);
+
+      const res = await fetch('/api/gigs/gig-applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(applicationData),
+      });
+
+      const result = await res.json();
+      console.log('📡 API Response:', result);
+
+      if (!res.ok) {
+        throw new Error(result.error || `Server error: ${res.status}`);
+      }
+
+      // Success
+      alert('Application submitted successfully!');
+      onSuccess?.();
+      onClose();
+      
+      // Reset form
+      setPitch('');
+      setSampleLinks(['']);
+      setSkills([]);
+      setSelectedTools([]);
+      setNewSkill('');
+    } catch (err) {
+      console.error('Application submission error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to submit application');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (!isOpen) return null;
 
   return (
-    <motion.div
-      className="flex flex-col gap-4 text-sm text-gray-900 w-full"
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-    >
-      <motion.textarea
-        placeholder="Short quick pitch about why you’d be perfect for this project"
-        value={pitch}
-        onChange={(e) => setPitch(e.target.value)}
-        maxLength={600}
-        rows={4}
-        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black resize-none"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
-      />
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Links to similar / sample projects (3 max)"
-          value={currentLink}
-          onChange={(e) => setCurrentLink(e.target.value)}
-          className="w-full border border-gray-300 rounded-xl px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-black"
-        />
-        <button
-          type="button"
-          onClick={() => {
-            if (currentLink && !links.includes(currentLink) && links.length < 3) {
-              setLinks([...links, currentLink]);
-              setCurrentLink('');
-            }
-          }}
-          className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 hover:text-black"
-        >
-          <Paperclip size={18} />
-        </button>
-      </div>
-      {links.length > 0 && (
-        <ul className="list-disc list-inside text-sm text-gray-700 pl-1">
-          {links.map((link, idx) => (
-            <li key={idx}>{link}</li>
-          ))}
-        </ul>
-      )}
-      <input
-        type="text"
-        placeholder="Tag your skills that are relevant to this project"
-        value={inputValue}
-        onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' && inputValue.trim() !== '') {
-            e.preventDefault();
-            if (!skills.includes(inputValue.trim())) {
-              setSkills([...skills, inputValue.trim()]);
-              setInputValue('');
-            }
-          }
-        }}
-        className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-black"
-      />
-      {suggestions.length > 0 && (
-        <ul className="border border-gray-300 rounded-lg mt-1 text-sm bg-white shadow-sm">
-          {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => {
-                if (!skills.includes(suggestion)) {
-                  setSkills([...skills, suggestion]);
-                  setInputValue('');
-                }
-              }}
-            >
-              {suggestion}
-            </li>
-          ))}
-        </ul>
-      )}
-      <div className="flex flex-wrap gap-2">
-        {skills.map((skill) => (
-          <span
-            key={skill}
-            className="bg-black text-white px-3 py-1 rounded-full text-xs flex items-center gap-1"
-          >
-            {skill}
-            <button onClick={() => setSkills(skills.filter((s) => s !== skill))}>×</button>
-          </span>
-        ))}
-      </div>
-      <motion.p
-        className="mt-4 text-sm font-medium"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.3, ease: "easeOut" }}
-      >
-        Which of these tools are you familiar with?
-      </motion.p>
-      <motion.div
-        className="flex flex-wrap gap-3"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: 0.4, ease: "easeOut" }}
-      >
-        {tools.length > 0 ? (
-          tools.map((tool: string) => (
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-center items-center p-4">
+      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b border-gray-200 p-4 rounded-t-2xl">
+          <div className="flex justify-between items-center">
+            <h2 className="text-lg font-semibold text-gray-900">Apply for {gigTitle}</h2>
             <button
-              key={tool}
-              onClick={() =>
-                setToolFamiliarity((prev) =>
-                  prev.includes(tool) ? prev.filter((t) => t !== tool) : [...prev, tool]
-                )
-              }
-              className={`border px-4 py-2 rounded-full text-sm flex items-center gap-2 transition-colors ${
-                toolFamiliarity.includes(tool)
-                  ? 'bg-black text-white border-black'
-                  : 'border-gray-300 hover:border-gray-400'
-              }`}
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <span className={`w-3 h-3 border rounded-sm flex items-center justify-center ${
-                toolFamiliarity.includes(tool) ? 'bg-white border-white' : 'border-gray-400'
-              }`}>
-                {toolFamiliarity.includes(tool) && <span className="text-black text-xs">✓</span>}
-              </span>
-              {tool}
+              <span className="sr-only">Close</span>
+              ✕
             </button>
-          ))
-        ) : (
-          <p className="text-gray-500 text-sm">No specific tools required for this gig.</p>
-        )}
-      </motion.div>
-      <button
-        onClick={handleSubmit}
-        className="mt-6 bg-white border border-black text-black px-6 py-3 rounded-xl hover:bg-black hover:text-white transition-all text-sm self-center"
-      >
-        Submit Application
-      </button>
-    </motion.div>
-  );
-};
+          </div>
+        </div>
 
-export default Apply;
+        <div className="p-4">
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-3 py-2 rounded-lg mb-4 text-sm">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Pitch */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Your Pitch *
+              </label>
+              <textarea
+                value={pitch}
+                onChange={(e) => setPitch(e.target.value)}
+                placeholder="Explain why you're the perfect fit for this gig..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
+                rows={4}
+                required
+              />
+            </div>
+
+            {/* Sample Links */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Portfolio/Sample Links
+              </label>
+              {sampleLinks.map((link, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <input
+                    type="url"
+                    value={link}
+                    onChange={(e) => updateSampleLink(index, e.target.value)}
+                    placeholder="https://example.com"
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  />
+                  {sampleLinks.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeSampleLink(index)}
+                      className="px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addSampleLink}
+                className="text-pink-600 hover:text-pink-700 text-sm"
+              >
+                + Add another link
+              </button>
+            </div>
+
+            {/* Skills */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Relevant Skills
+              </label>
+              <div className="flex gap-2 mb-2">
+                <input
+                  type="text"
+                  value={newSkill}
+                  onChange={(e) => setNewSkill(e.target.value)}
+                  placeholder="Add a skill"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                  onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
+                />
+                <button
+                  type="button"
+                  onClick={addSkill}
+                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg"
+                >
+                  Add
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                  >
+                    {skill}
+                    <button
+                      type="button"
+                      onClick={() => removeSkill(skill)}
+                      className="text-pink-600 hover:text-pink-800"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Tools */}
+            {gigData?.toolsRequired && gigData.toolsRequired.length > 0 && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Required Tools & Technologies
+                </label>
+                <div className="space-y-2">
+                  {gigData.toolsRequired.map((tool) => (
+                    <label key={tool} className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedTools.includes(tool)}
+                        onChange={() => toggleTool(tool)}
+                        className="w-4 h-4 text-pink-600 border-gray-300 rounded focus:ring-pink-500"
+                      />
+                      <span className="text-sm text-gray-700">{tool}</span>
+                    </label>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Select the tools you're proficient with for this project
+                </p>
+              </div>
+            )}
+
+            {/* Submit Button */}
+            <div className="flex gap-4 pt-4">
+              <button
+                type="submit"
+                disabled={submitting || !pitch.trim()}
+                className={`flex-1 py-3 rounded-lg font-medium transition-colors ${
+                  submitting || !pitch.trim()
+                    ? 'bg-gray-300 cursor-not-allowed'
+                    : 'bg-black text-white hover:bg-gray-800'
+                }`}
+              >
+                {submitting ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Submitting...
+                  </div>
+                ) : (
+                  'Submit Application'
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-6 py-3 border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,20 @@
+{
+  "invoiceNumber": "MGL100008-M3",
+  "freelancerId": 19,
+  "projectId": 312,
+  "commissionerId": 32,
+  "projectTitle": "Lagos Parks Mobile App Development",
+  "milestoneDescription": "Maintenance reporting feature",
+  "milestoneNumber": 3,
+  "issueDate": "2024-07-30",
+  "dueDate": "2024-08-09",
+  "totalAmount": 1100,
+  "status": "paid",
+  "milestones": [
+    {
+      "description": "Maintenance reporting feature",
+      "rate": 1100
+    }
+  ],
+  "parentInvoiceNumber": "MGL100008"
+}

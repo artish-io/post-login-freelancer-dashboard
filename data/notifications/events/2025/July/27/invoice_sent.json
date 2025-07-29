@@ -1,0 +1,22 @@
+[
+  {
+    "id": "evt_1753647019762_691",
+    "timestamp": "2025-07-27T20:10:19.762Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 3,
+    "entityId": "MF-24BGJ",
+    "metadata": {
+      "invoiceNumber": "MF-24BGJ",
+      "projectTitle": "Lagos Parks Services website re-design",
+      "amount": 5000,
+      "freelancerName": "Margsate Flether"
+    },
+    "context": {
+      "projectId": 301,
+      "invoiceNumber": "MF-24BGJ"
+    }
+  }
+]

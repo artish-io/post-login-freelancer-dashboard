@@ -3,13 +3,14 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useSession } from 'next-auth/react';
 import FreelancerHeader from '../../../../../components/freelancer-dashboard/freelancer-header';
 import ProjectsRow from '../../../../../components/freelancer-dashboard/projects-and-invoices/projects/project-status-list/projects-row';
 import ProjectStatusNav from '../../../../../components/freelancer-dashboard/projects-and-invoices/projects/project-status-list/project-status-nav';
-import type { Project } from '../../../../lib/projects/tasks/types';
-import { calculateProjectProgress, calculateProjectStatus, transformProjectData } from '../../../../lib/project-status-sync';
+import { calculateProjectProgress, calculateProjectStatus } from '../../../../lib/project-status-sync';
 
 export default function ProjectListPage() {
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
   const currentStatus = searchParams.get('status') || 'ongoing';
   const [projects, setProjects] = useState<any[]>([]);
@@ -95,12 +96,12 @@ export default function ProjectListPage() {
                 console.log(`✅ Using completed status from projects.json`);
               } else {
                 // Fallback to calculated status if status is not recognized
-                projectStatus = calculateProjectStatus(projectTasks);
+                projectStatus = calculateProjectStatus(tasks);
                 console.log(`⚠️ Unrecognized status "${normalizedStatus}", calculated: ${projectStatus}`);
               }
             } else {
               // Fallback to calculated status if no status in projects.json
-              projectStatus = calculateProjectStatus(projectTasks);
+              projectStatus = calculateProjectStatus(tasks);
               console.log(`📊 No status in projects.json for project ${projectTasks.projectId}, calculated: ${projectStatus}`);
             }
             let completionDate = null;
@@ -167,7 +168,7 @@ export default function ProjectListPage() {
             const managerId = organization?.contactPersonId || null;
 
             // Use calculated status since projects.json is not available
-            const projectStatus = calculateProjectStatus(projectTasks);
+            const projectStatus = calculateProjectStatus(tasks);
             console.log(`📊 Fallback: Project ${projectTasks.projectId} calculated status: ${projectStatus}`);
 
             let completionDate = null;
@@ -195,7 +196,15 @@ export default function ProjectListPage() {
             };
           });
 
-          setProjects(transformedProjects);
+          // Filter projects to only show those where the logged-in user is the freelancer
+          const freelancerId = Number(session?.user?.id);
+          const filteredProjects = transformedProjects.filter((project: any) => {
+            return project.freelancerId === freelancerId;
+          });
+
+          console.log(`🔍 Filtered projects for freelancer ${freelancerId}:`, filteredProjects);
+
+          setProjects(filteredProjects);
           setUsers(users);
           setOrganizations(organizations);
         } else {

@@ -5,6 +5,7 @@
 
 import fs from 'fs';
 import path from 'path';
+import { NotificationStorage } from '../notifications/notification-storage';
 
 // Notification Type Mapping - Number-based for efficiency
 export const NOTIFICATION_TYPES = {
@@ -56,8 +57,8 @@ export const NOTIFICATION_TYPES = {
 // User type targeting for notifications
 export const USER_TYPE_FILTERS = {
   COMMISSIONER_ONLY: ['task_submitted', 'gig_applied', 'invoice_sent', 'proposal_sent'],
-  FREELANCER_ONLY: ['task_approved', 'task_rejected', 'task_rejected_with_comment', 'gig_request_sent', 'invoice_paid', 'milestone_payment_received'],
-  BOTH: ['project_created', 'project_started', 'project_pause_requested', 'project_pause_accepted', 'product_approved', 'product_rejected']
+  FREELANCER_ONLY: ['task_approved', 'task_rejected', 'task_rejected_with_comment', 'gig_request_sent', 'invoice_paid', 'milestone_payment_received', 'project_pause_accepted'],
+  BOTH: ['project_created', 'project_started', 'project_pause_requested', 'product_approved', 'product_rejected']
 } as const;
 
 export interface EventData {
@@ -382,20 +383,8 @@ class EventLogger {
         // entityType is already a number, no conversion needed
       };
 
-      // Read existing log
-      let events: EventData[] = [];
-      if (fs.existsSync(this.logPath)) {
-        const logContent = fs.readFileSync(this.logPath, 'utf-8');
-        if (logContent.trim()) {
-          events = JSON.parse(logContent);
-        }
-      }
-
-      // Add new event
-      events.push(enhancedEventData);
-
-      // Write back to log
-      fs.writeFileSync(this.logPath, JSON.stringify(events, null, 2));
+      // Use the new granular storage system
+      NotificationStorage.addEvent(enhancedEventData);
 
       // Generate notifications based on rules
       await this.generateNotifications(enhancedEventData);

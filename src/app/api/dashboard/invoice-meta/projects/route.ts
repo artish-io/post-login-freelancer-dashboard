@@ -14,9 +14,15 @@ export async function GET(request: Request) {
   }
 
   try {
-    const filePath = path.join(process.cwd(), 'data', 'projects.json');
-    const fileData = await readFile(filePath, 'utf-8');
-    const allProjects = JSON.parse(fileData);
+    const [projectsData, tasksData, invoicesData] = await Promise.all([
+      readFile(path.join(process.cwd(), 'data', 'projects.json'), 'utf-8'),
+      readFile(path.join(process.cwd(), 'data', 'project-tasks.json'), 'utf-8'),
+      readFile(path.join(process.cwd(), 'data', 'invoices.json'), 'utf-8')
+    ]);
+
+    const allProjects = JSON.parse(projectsData);
+    const allTasks = JSON.parse(tasksData);
+    const allInvoices = JSON.parse(invoicesData);
 
     let filtered = allProjects.filter((p: any) => p.freelancerId === freelancerId);
 
@@ -25,10 +31,74 @@ export async function GET(request: Request) {
       filtered = filtered.filter((p: any) => p.commissionerId === commissionerId);
     }
 
-    const result = filtered.map((p: any) => ({
-      projectId: p.projectId,
-      title: p.title
-    }));
+    const result = filtered.map((p: any) => {
+      // Find project tasks
+      const projectTasks = allTasks.find((pt: any) => pt.projectId === p.projectId);
+      const tasks = projectTasks?.tasks || [];
+
+      // Check if project is completed (all tasks approved AND completed, and all invoices paid)
+      const approvedAndCompletedTasks = tasks.filter((task: any) =>
+        task.status === 'Approved' && task.completed === true
+      );
+      const isCompleted = tasks.length > 0 && approvedAndCompletedTasks.length === tasks.length;
+
+      // Get all task IDs and titles that have been invoiced (ANY status: draft, sent, paid, cancelled, overdue)
+      const invoicedTaskIds = new Set();
+      const invoicedTaskTitles = new Set();
+      const validInvoiceStatuses = ['draft', 'sent', 'paid', 'cancelled', 'overdue'];
+
+      allInvoices
+        .filter((invoice: any) =>
+          invoice.projectId === p.projectId &&
+          validInvoiceStatuses.includes(invoice.status)
+        )
+        .forEach((invoice: any) => {
+          // Check new invoice format with milestones array
+          if (invoice.milestones) {
+            invoice.milestones.forEach((milestone: any) => {
+              if (milestone.taskId) {
+                invoicedTaskIds.add(milestone.taskId);
+              }
+              if (milestone.title || milestone.description) {
+                invoicedTaskTitles.add(milestone.title || milestone.description);
+              }
+            });
+          }
+          // Check old invoice format with milestoneDescription
+          if (invoice.milestoneDescription) {
+            invoicedTaskTitles.add(invoice.milestoneDescription);
+          }
+        });
+
+      // Count available tasks for invoicing (must be approved AND completed AND not invoiced)
+      const availableTasks = tasks.filter((task: any) => {
+        const isTaskEligible = task.status === 'Approved' && task.completed === true;
+        const hasNoInvoice = !invoicedTaskIds.has(task.id) &&
+                            !invoicedTaskTitles.has(task.title) &&
+                            !task.invoicePaid;
+
+        return isTaskEligible && hasNoInvoice;
+      });
+
+      // Additional check: if project is completed, ensure all invoices are paid
+      let projectFullyCompleted = isCompleted;
+      if (isCompleted) {
+        const projectInvoices = allInvoices.filter((invoice: any) => invoice.projectId === p.projectId);
+        const hasUnpaidInvoices = projectInvoices.some((invoice: any) =>
+          invoice.status !== 'paid'
+        );
+        projectFullyCompleted = !hasUnpaidInvoices;
+      }
+
+      return {
+        projectId: p.projectId,
+        title: p.title,
+        hasAvailableMilestones: availableTasks.length > 0,
+        availableTasksCount: availableTasks.length,
+        isCompleted: projectFullyCompleted,
+        reason: availableTasks.length === 0 ? 'All eligible tasks have been invoiced' : null
+      };
+    }).filter((p: any) => !p.isCompleted && p.hasAvailableMilestones); // Exclude completed projects and projects with no available tasks
 
     return NextResponse.json(result);
   } catch (error) {

@@ -1,0 +1,24 @@
+{
+  "taskId": 204,
+  "projectId": 316,
+  "projectTitle": "Digital Signage Content Management",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Digital Signage",
+    "Content Management",
+    "UI Design"
+  ],
+  "title": "Initial setup for Digital Signage Content Management",
+  "status": "Upcoming",
+  "completed": false,
+  "order": 1,
+  "link": "",
+  "dueDate": "2025-08-04T20:24:23.925Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Begin work on Digital Signage Content Management project",
+  "createdDate": "2025-07-29T13:32:42.046Z",
+  "lastModified": "2025-07-29T13:32:42.046Z"
+}

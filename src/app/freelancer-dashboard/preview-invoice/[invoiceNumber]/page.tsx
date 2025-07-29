@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 import FreelancerHeader from '../../../../../components/freelancer-dashboard/freelancer-header';
 import FreelancerInfoBox from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-preview/freelancer-info-box';
@@ -14,10 +14,12 @@ import InvoiceDatesDisplay from '../../../../../components/freelancer-dashboard/
 
 export default function PreviewInvoicePage() {
   const { data: session } = useSession();
+  const router = useRouter();
   const { invoiceNumber } = useParams();
   const [invoiceData, setInvoiceData] = useState<any>(null);
   const [billToDetails, setBillToDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
 
   useEffect(() => {
     const fetchInvoice = async () => {
@@ -62,6 +64,69 @@ export default function PreviewInvoicePage() {
 
     if (invoiceNumber) fetchInvoice();
   }, [invoiceNumber]);
+
+  const handleSendInvoice = async () => {
+    if (!invoiceData || !session?.user?.id) {
+      alert('Missing invoice data or user session');
+      return;
+    }
+
+    setSending(true);
+    try {
+      // First, create the invoice in the database
+      const createInvoiceData = {
+        invoiceNumber: invoiceData.invoiceNumber,
+        freelancerId: Number(session.user.id),
+        commissionerId: billToDetails?.id || invoiceData.commissionerId,
+        projectId: invoiceData.project?.projectId || null,
+        projectTitle: invoiceData.project?.title || 'Custom Project',
+        issueDate: invoiceData.issueDate,
+        dueDate: invoiceData.dueDate,
+        totalAmount: invoiceData.total,
+        status: 'draft',
+        milestones: invoiceData.milestones || [],
+        isCustomProject: !invoiceData.project?.projectId
+      };
+
+      const createRes = await fetch('/api/invoices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(createInvoiceData),
+      });
+
+      if (!createRes.ok) {
+        const createResult = await createRes.json();
+        throw new Error(createResult.error || 'Failed to create invoice');
+      }
+
+      // Then send the invoice
+      const sendData = {
+        invoiceNumber: invoiceData.invoiceNumber,
+        freelancerId: Number(session.user.id),
+        commissionerId: billToDetails?.id || invoiceData.commissionerId
+      };
+
+      const sendRes = await fetch('/api/invoices/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sendData),
+      });
+
+      const sendResult = await sendRes.json();
+
+      if (sendRes.ok) {
+        alert('Invoice sent successfully!');
+        router.push('/freelancer-dashboard/projects-and-invoices/invoices');
+      } else {
+        throw new Error(sendResult.error || 'Failed to send invoice');
+      }
+    } catch (error) {
+      console.error('Error sending invoice:', error);
+      alert(`Failed to send invoice: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setSending(false);
+    }
+  };
 
   if (loading) return <div className="p-10 text-gray-500">Loading invoice preview...</div>;
   if (!invoiceData) return <div className="p-10 text-red-500">Failed to load invoice preview.</div>;
@@ -124,10 +189,11 @@ export default function PreviewInvoicePage() {
         <div className="space-y-8">
           <InvoiceDatesDisplay invoiceDate={issueDate} dueDate={dueDate} />
           <InvoiceActionsBar
-  invoiceData={invoiceData}
-  onSend={() => console.log('Send Invoice')}
-  onDownload={() => console.log('Download PDF')}
-/>
+            invoiceData={invoiceData}
+            onSend={handleSendInvoice}
+            onDownload={() => console.log('Download PDF')}
+            sending={sending}
+          />
         </div>
       </div>
     </div>

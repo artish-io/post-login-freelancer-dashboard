@@ -43,7 +43,19 @@ export default function NotificationDropdown({ dashboardType }: Props) {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  // Fetch unread count on component mount and periodically
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchUnreadCount();
+
+      // Set up polling for unread count every 30 seconds
+      const interval = setInterval(fetchUnreadCount, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [session?.user?.id, dashboardType]);
 
   // Fetch notifications when dropdown opens
   useEffect(() => {
@@ -53,20 +65,53 @@ export default function NotificationDropdown({ dashboardType }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, session?.user?.id, dashboardType]);
 
-  const fetchNotifications = async () => {
+  const fetchUnreadCount = async () => {
     if (!session?.user?.id) return;
-    
-    setLoading(true);
+
     try {
-      const userType = dashboardType === 'commissioner' ? 'commissioner' : 'freelancer';
-      const endpoint = `/api/notifications-v2?userId=${session.user.id}&userType=${userType}&tab=all`;
-      
+      let endpoint: string;
+
+      if (dashboardType === 'commissioner') {
+        endpoint = `/api/notifications?commissionerId=${session.user.id}&tab=all`;
+      } else {
+        endpoint = `/api/notifications-v2?userId=${session.user.id}&userType=freelancer&tab=all`;
+      }
+
       const res = await fetch(endpoint);
       const data = await res.json();
-      
+
+      if (data.notifications) {
+        // Count unread notifications
+        const unreadNotifications = data.notifications.filter((n: NotificationItem) => !n.isRead);
+        setUnreadCount(unreadNotifications.length);
+      }
+    } catch (error) {
+      console.error('Failed to fetch unread count:', error);
+    }
+  };
+
+  const fetchNotifications = async () => {
+    if (!session?.user?.id) return;
+
+    setLoading(true);
+    try {
+      let endpoint: string;
+
+      if (dashboardType === 'commissioner') {
+        endpoint = `/api/notifications?commissionerId=${session.user.id}&tab=all`;
+      } else {
+        endpoint = `/api/notifications-v2?userId=${session.user.id}&userType=freelancer&tab=all`;
+      }
+
+      const res = await fetch(endpoint);
+      const data = await res.json();
+
       if (data.notifications) {
         // Take first 5 notifications for dropdown
         setNotifications(data.notifications.slice(0, 5));
+        // Update unread count based on fetched notifications
+        const unreadNotifications = data.notifications.filter((n: NotificationItem) => !n.isRead);
+        setUnreadCount(unreadNotifications.length);
       }
     } catch (error) {
       console.error('Failed to fetch notifications:', error);
@@ -81,9 +126,23 @@ export default function NotificationDropdown({ dashboardType }: Props) {
         setOpen(false);
       }
     };
+
+    // Listen for notification read events from other components
+    const handleNotificationRead = (event: CustomEvent) => {
+      const { userType: eventUserType } = event.detail;
+      // Only update count if the event is for the same dashboard type
+      if (eventUserType === dashboardType) {
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      }
+    };
     document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
+    window.addEventListener('notificationRead', handleNotificationRead as EventListener);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      window.removeEventListener('notificationRead', handleNotificationRead as EventListener);
+    };
+  }, [dashboardType]);
 
   const formatTimeAgo = (timestamp: string) => {
     const now = new Date();
@@ -98,9 +157,44 @@ export default function NotificationDropdown({ dashboardType }: Props) {
     return time.toLocaleDateString();
   };
 
-  const handleNotificationClick = (notification: NotificationItem) => {
+  const handleNotificationClick = async (notification: NotificationItem) => {
     // Close dropdown
     setOpen(false);
+
+    // Mark notification as read locally and on server
+    if (!notification.isRead) {
+      setNotifications(prev =>
+        prev.map(n => n.id === notification.id ? { ...n, isRead: true } : n)
+      );
+      setUnreadCount(prev => Math.max(0, prev - 1));
+
+      // Mark as read on server
+      try {
+        if (dashboardType === 'commissioner') {
+          await fetch('/api/notifications', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              notificationId: notification.id,
+              commissionerId: session?.user?.id
+            })
+          });
+        } else {
+          // For freelancers, use the notifications-v2 endpoint
+          await fetch('/api/notifications-v2', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              notificationId: notification.id,
+              userId: session?.user?.id,
+              userType: dashboardType
+            })
+          });
+        }
+      } catch (error) {
+        console.error('Failed to mark notification as read:', error);
+      }
+    }
 
     // Navigate to the notification link if it exists
     if (notification.link && notification.link !== '#') {
@@ -186,9 +280,14 @@ export default function NotificationDropdown({ dashboardType }: Props) {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition"
+        className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition relative"
       >
         <Image src="/bell-icon.png" alt="Notifications" width={20} height={20} />
+        {unreadCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium">
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
+        )}
       </button>
 
       {open && (

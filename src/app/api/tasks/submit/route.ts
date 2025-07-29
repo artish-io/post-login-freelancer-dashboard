@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { logTaskSubmitted } from '../../../../lib/events/event-logger';
-import fs from 'fs';
-import path from 'path';
+import { readProjectTasks, writeTask } from '../../../../lib/project-tasks/hierarchical-storage';
 
 /**
  * Example API endpoint showing how to integrate event logging
@@ -21,20 +20,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update task status in project-tasks.json
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-    const projectTasks = JSON.parse(fs.readFileSync(projectTasksPath, 'utf-8'));
-    
-    const projectTaskIndex = projectTasks.findIndex((pt: any) => pt.projectId === projectId);
-    if (projectTaskIndex === -1) {
-      return NextResponse.json(
-        { error: 'Project not found' },
-        { status: 404 }
-      );
-    }
+    // Read project tasks from hierarchical storage
+    const projectTasks = await readProjectTasks(projectId);
+    const task = projectTasks.find(t => t.taskId === taskId);
 
-    const taskIndex = projectTasks[projectTaskIndex].tasks.findIndex((t: any) => t.id === taskId);
-    if (taskIndex === -1) {
+    if (!task) {
       return NextResponse.json(
         { error: 'Task not found' },
         { status: 404 }
@@ -42,16 +32,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Update task status
-    projectTasks[projectTaskIndex].tasks[taskIndex] = {
-      ...projectTasks[projectTaskIndex].tasks[taskIndex],
+    const updatedTask = {
+      ...task,
       status: 'Submitted',
-      link: link || projectTasks[projectTaskIndex].tasks[taskIndex].link,
-      version: version || (projectTasks[projectTaskIndex].tasks[taskIndex].version + 1),
-      submittedAt: new Date().toISOString()
+      link: link || task.link,
+      version: version || (task.version + 1),
+      submittedDate: new Date().toISOString()
     };
 
-    // Save updated project tasks
-    fs.writeFileSync(projectTasksPath, JSON.stringify(projectTasks, null, 2));
+    // Save updated task to hierarchical storage
+    await writeTask(updatedTask);
 
     // 🎯 LOG THE EVENT - This is the key integration point!
     await logTaskSubmitted(
@@ -59,13 +49,13 @@ export async function POST(request: NextRequest) {
       taskId,
       projectId,
       taskTitle,
-      projectTitle || projectTasks[projectTaskIndex].title
+      projectTitle || task.projectTitle
     );
 
     return NextResponse.json({
       success: true,
       message: 'Task submitted successfully',
-      task: projectTasks[projectTaskIndex].tasks[taskIndex]
+      task: updatedTask
     });
 
   } catch (error) {

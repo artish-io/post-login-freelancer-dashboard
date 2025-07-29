@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1016",
+  "senderId": 36,
+  "timestamp": "2025-06-13T11:00:00Z",
+  "text": "Can we move our meeting to 4PM?",
+  "read": {
+    "31": true,
+    "36": true
+  },
+  "isEncrypted": false,
+  "threadId": "31-36"
+}
