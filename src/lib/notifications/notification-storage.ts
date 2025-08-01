@@ -31,6 +31,7 @@ export class NotificationStorage {
   private static readonly LEGACY_FILE = path.join(process.cwd(), 'data/notifications/notifications-log.json');
   private static readonly LEGACY_MONTHLY_DIR = path.join(process.cwd(), 'data/notifications/events');
   private static readonly READ_STATES_FILE = path.join(process.cwd(), 'data/notifications/read-states.json');
+  private static readonly ACTIONED_STATES_FILE = path.join(process.cwd(), 'data/notifications/actioned-states.json');
 
   /**
    * Ensure the events directory exists
@@ -342,6 +343,111 @@ export class NotificationStorage {
   static isRead(notificationId: string, userId: number): boolean {
     const readStates = this.loadReadStates();
     return readStates[notificationId]?.has(userId) || false;
+  }
+
+  /**
+   * Load actioned states from storage
+   */
+  private static loadActionedStates(): Record<string, Record<number, string>> {
+    try {
+      if (fs.existsSync(this.ACTIONED_STATES_FILE)) {
+        const data = JSON.parse(fs.readFileSync(this.ACTIONED_STATES_FILE, 'utf-8'));
+        return data || {};
+      }
+      return {};
+    } catch (error) {
+      console.error('Error loading actioned states:', error);
+      return {};
+    }
+  }
+
+  /**
+   * Save actioned states to storage
+   */
+  private static saveActionedStates(actionedStates: Record<string, Record<number, string>>): void {
+    try {
+      // Ensure directory exists
+      const dir = path.dirname(this.ACTIONED_STATES_FILE);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+
+      fs.writeFileSync(this.ACTIONED_STATES_FILE, JSON.stringify(actionedStates, null, 2));
+    } catch (error) {
+      console.error('Error saving actioned states:', error);
+    }
+  }
+
+  /**
+   * Mark a notification as actioned for a specific user
+   */
+  static markAsActioned(notificationId: string, userId: number, action: string): void {
+    const actionedStates = this.loadActionedStates();
+
+    if (!actionedStates[notificationId]) {
+      actionedStates[notificationId] = {};
+    }
+
+    actionedStates[notificationId][userId] = action;
+    this.saveActionedStates(actionedStates);
+  }
+
+  /**
+   * Check if a notification is actioned by a specific user
+   */
+  static isActioned(notificationId: string, userId: number): string | null {
+    const actionedStates = this.loadActionedStates();
+    return actionedStates[notificationId]?.[userId] || null;
+  }
+
+  /**
+   * Get all events from all granular files (for searching)
+   */
+  static getAllEvents(): NotificationEvent[] {
+    this.ensureEventsDirectory();
+
+    const allEvents: NotificationEvent[] = [];
+
+    // Get all years
+    const eventsDir = this.EVENTS_DIR;
+    if (!fs.existsSync(eventsDir)) return allEvents;
+
+    const years = fs.readdirSync(eventsDir).filter(item =>
+      fs.statSync(path.join(eventsDir, item)).isDirectory()
+    );
+
+    for (const year of years) {
+      const yearDir = path.join(eventsDir, year);
+      const months = fs.readdirSync(yearDir).filter(item =>
+        fs.statSync(path.join(yearDir, item)).isDirectory()
+      );
+
+      for (const month of months) {
+        const monthDir = path.join(yearDir, month);
+        const days = fs.readdirSync(monthDir).filter(item =>
+          fs.statSync(path.join(monthDir, item)).isDirectory()
+        );
+
+        for (const day of days) {
+          const dayDir = path.join(monthDir, day);
+          const eventFiles = fs.readdirSync(dayDir).filter(file => file.endsWith('.json'));
+
+          for (const eventFile of eventFiles) {
+            const eventPath = path.join(dayDir, eventFile);
+            try {
+              const events = JSON.parse(fs.readFileSync(eventPath, 'utf-8'));
+              if (Array.isArray(events)) {
+                allEvents.push(...events);
+              }
+            } catch (error) {
+              console.error(`Error reading event file ${eventPath}:`, error);
+            }
+          }
+        }
+      }
+    }
+
+    return allEvents;
   }
 
   /**

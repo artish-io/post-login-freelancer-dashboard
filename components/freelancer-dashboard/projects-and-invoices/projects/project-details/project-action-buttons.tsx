@@ -20,6 +20,10 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
   const [generating, setGenerating] = useState(false);
   const [hasEligibleTasks, setHasEligibleTasks] = useState<boolean | null>(null);
   const [eligibleTasksCount, setEligibleTasksCount] = useState(0);
+  const [pauseRequestState, setPauseRequestState] = useState<'none' | 'requesting' | 'pending' | 'sent'>('none');
+  const [projectTitle, setProjectTitle] = useState<string>('');
+  const [remainingTasks, setRemainingTasks] = useState(0);
+  const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
 
   // Check for eligible tasks when component mounts or projectId changes
   useEffect(() => {
@@ -48,6 +52,44 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
 
     checkEligibleTasks();
   }, [session?.user?.id, projectId]);
+
+  // Fetch project details and check pause request status
+  useEffect(() => {
+    const fetchProjectDetails = async () => {
+      if (!projectId) return;
+
+      try {
+        // Fetch project details
+        const projectRes = await fetch(`/api/projects`);
+        if (projectRes.ok) {
+          const projects = await projectRes.json();
+          const project = projects.find((p: any) => p.projectId === projectId);
+          if (project) {
+            setProjectTitle(project.title || 'Project');
+          }
+        }
+
+        // Fetch project tasks to get remaining count
+        const tasksRes = await fetch(`/api/project-tasks`);
+        if (tasksRes.ok) {
+          const projectTasksData = await tasksRes.json();
+          const projectTasks = projectTasksData.find((pt: any) => pt.projectId === projectId);
+          if (projectTasks) {
+            const remaining = projectTasks.tasks?.filter((task: any) => !task.completed).length || 0;
+            setRemainingTasks(remaining);
+          }
+        }
+
+        // TODO: Check for existing pause requests in notifications
+        // This would require checking the notifications API for pending pause requests
+
+      } catch (error) {
+        console.error('Error fetching project details:', error);
+      }
+    };
+
+    fetchProjectDetails();
+  }, [projectId]);
 
   const handleGenerateInvoice = async () => {
     if (!session?.user?.id) {
@@ -79,6 +121,102 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
       alert(`Failed to generate invoice: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setGenerating(false);
+    }
+  };
+
+  const handlePauseRequest = async () => {
+    if (!session?.user?.id || !projectTitle) {
+      alert('Unable to send pause request. Please try again.');
+      return;
+    }
+
+    setPauseRequestState('requesting');
+    try {
+      const response = await fetch('/api/projects/pause', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectId,
+          freelancerId: Number(session.user.id),
+          projectTitle,
+          reason: 'Freelancer requested project pause'
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setPauseRequestState('sent');
+        setCurrentRequestId(result.requestId);
+        alert('Pause request sent successfully. The commissioner will be notified.');
+      } else {
+        throw new Error(result.error || 'Failed to send pause request');
+      }
+    } catch (error) {
+      console.error('Error sending pause request:', error);
+      alert(`Failed to send pause request: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      setPauseRequestState('none');
+    }
+  };
+
+  const handleSendReminder = async () => {
+    if (!session?.user?.id || !currentRequestId) {
+      alert('Unable to send reminder. Please try again.');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/projects/pause/reminder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectId,
+          freelancerId: Number(session.user.id),
+          projectTitle,
+          requestId: currentRequestId
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        if (result.autoPaused) {
+          alert('Project has been automatically paused after 3 reminders.');
+          // Refresh the page to update the project status
+          window.location.reload();
+        } else {
+          alert(`Reminder sent successfully. You have ${result.remainingReminders} reminder(s) left.`);
+        }
+      } else {
+        throw new Error(result.error || 'Failed to send reminder');
+      }
+    } catch (error) {
+      console.error('Error sending reminder:', error);
+      alert(`Failed to send reminder: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  };
+
+  const handleWithdrawRequest = async () => {
+    if (!currentRequestId) return;
+
+    const confirmed = confirm('Are you sure you want to withdraw your pause request?');
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`/api/projects/pause/reminder?projectId=${projectId}&requestId=${currentRequestId}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        setPauseRequestState('none');
+        setCurrentRequestId(null);
+        alert('Pause request withdrawn successfully.');
+      } else {
+        throw new Error('Failed to withdraw request');
+      }
+    } catch (error) {
+      console.error('Error withdrawing request:', error);
+      alert('Failed to withdraw request. Please try again.');
     }
   };
 
@@ -120,10 +258,43 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
           <Play size={16} />
           Request Project Re-Activation
         </button>
+      ) : pauseRequestState === 'sent' ? (
+        <div className="flex flex-col gap-2">
+          <div className="text-sm text-gray-600 text-center">
+            Pause request sent. This project has {remainingTasks} milestone-task{remainingTasks !== 1 ? 's' : ''} left.
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleSendReminder}
+              className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium px-4 py-2 rounded-xl shadow transition"
+            >
+              Send Reminder
+            </button>
+            <button
+              onClick={handleWithdrawRequest}
+              className="flex-1 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium px-4 py-2 rounded-xl shadow transition"
+            >
+              Withdraw Request
+            </button>
+          </div>
+        </div>
       ) : (
-        <button className="w-full bg-gray-800 text-white text-sm font-medium px-6 py-3 rounded-2xl shadow flex items-center justify-center gap-2 hover:opacity-90 transition">
-          <PauseCircle size={16} />
-          Request Project Pause
+        <button
+          onClick={handlePauseRequest}
+          disabled={pauseRequestState === 'requesting'}
+          className="w-full bg-gray-800 text-white text-sm font-medium px-6 py-3 rounded-2xl shadow flex items-center justify-center gap-2 hover:opacity-90 transition disabled:opacity-50"
+        >
+          {pauseRequestState === 'requesting' ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Sending Request...
+            </>
+          ) : (
+            <>
+              <PauseCircle size={16} />
+              Request Project Pause
+            </>
+          )}
         </button>
       )}
 

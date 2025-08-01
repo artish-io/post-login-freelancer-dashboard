@@ -27,7 +27,11 @@ export default function FreelancerDashboardLayout({
   if (!mounted) return null;
 
   return (
-    <AuthGuard redirectTo="/login" requiredUserType="freelancer">
+    <AuthGuard
+      redirectTo="/login"
+      requiredUserType="freelancer"
+      allowCrossUserTypeProfiles={true}
+    >
       <main className="min-h-screen flex flex-col bg-white">
         {/* DayPicker Custom Overrides (safe to keep for specific class tweaks) */}
         <style jsx global>{`

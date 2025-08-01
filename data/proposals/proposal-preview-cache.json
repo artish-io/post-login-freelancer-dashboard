@@ -1,29 +1,18 @@
 {
-  "title": "Lagos Landing Page Rework",
-  "summary": "ibuuhlgnvhdlsogheiro i iownchmlonecelt oinwuclowtulnwotoi ncuwteotuenmtoertuent",
+  "title": "",
+  "summary": "",
   "logoUrl": "/logos/lagos-parks-logo.png",
-  "typeTags": [
-    "Market Research"
-  ],
-  "milestones": [
-    {
-      "id": "f30bfa60-73af-44d1-91bb-b54e8c9315e5",
-      "title": "ieovnmecortoulnt",
-      "description": "wercwertxt",
-      "startDate": "2025-07-27T04:00:00.000Z",
-      "endDate": "2025-08-02T04:00:00.000Z",
-      "amount": 0
-    }
-  ],
+  "typeTags": [],
+  "milestones": [],
   "paymentCycle": "Hourly Rate",
   "rate": 50,
-  "projectId": "TU-M47KTH",
-  "totalBid": 4000,
+  "projectId": "TU-J8VMEV",
+  "totalBid": 0,
   "customStartDate": null,
-  "endDate": "2025-08-02T04:00:00.000Z",
+  "endDate": null,
   "maxHours": 50000,
   "depositRate": "",
-  "expectedDurationDays": 6,
+  "expectedDurationDays": 1,
   "executionMethod": "completion",
   "startType": "Immediately",
   "contact": {
@@ -61,7 +50,7 @@
       "address": "3471 Hirurzen Avenue, Hidden Leaf, Land of Fire"
     }
   },
-  "upfrontAmount": 480,
+  "upfrontAmount": 0,
   "milestoneTotal": 0,
   "isAmountValid": true,
   "upfrontValue": 0,

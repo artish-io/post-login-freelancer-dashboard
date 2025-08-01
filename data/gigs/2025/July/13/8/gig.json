@@ -1,0 +1,26 @@
+{
+  "id": 8,
+  "title": "Park Analytics Dashboard",
+  "organizationId": 1,
+  "commissionerId": 32,
+  "category": "Data Analytics",
+  "tags": [
+    "Analytics",
+    "Dashboard",
+    "Data Visualization"
+  ],
+  "hourlyRateMin": 90,
+  "hourlyRateMax": 140,
+  "description": "Build an analytics dashboard to track park usage, visitor patterns, and facility utilization.",
+  "deliveryTimeWeeks": 7,
+  "estimatedHours": 50,
+  "status": "Available",
+  "toolsRequired": [
+    "React",
+    "D3.js",
+    "Python",
+    "SQL"
+  ],
+  "notes": "Real-time data processing capabilities required. Integration with IoT sensors.",
+  "postedDate": "2025-07-14"
+}

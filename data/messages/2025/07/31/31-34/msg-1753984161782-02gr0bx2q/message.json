@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1753984161782-02gr0bx2q",
+  "senderId": 31,
+  "timestamp": "2025-07-31T17:49:21.782Z",
+  "text": "boss",
+  "isEncrypted": false,
+  "read": {
+    "31": true,
+    "34": false
+  },
+  "threadId": "31-34"
+}

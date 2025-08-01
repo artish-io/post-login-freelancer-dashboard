@@ -21,7 +21,12 @@ export async function GET(
       return NextResponse.json({ error: 'Organization not found' }, { status: 404 });
     }
 
-    return NextResponse.json(organization);
+    const enrichedOrganization = {
+      ...organization,
+      bio: organization.bio || 'No bio provided for this organization.',
+    };
+
+    return NextResponse.json(enrichedOrganization);
   } catch (error) {
     console.error('Failed to read organizations:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

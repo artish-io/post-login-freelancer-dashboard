@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { MapPin, Star, MessageCircle } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface Profile {
   id: string;
@@ -19,6 +19,9 @@ interface Profile {
 
 interface ProfileHeaderProps {
   profile: Profile;
+  isOwnProfile?: boolean;
+  viewerUserType?: string;
+  profileType?: string;
 }
 
 const getSocialIcon = (platform: string) => {
@@ -54,13 +57,25 @@ const getSocialIcon = (platform: string) => {
   }
 };
 
-export default function ProfileHeader({ profile }: ProfileHeaderProps) {
-  const router = useRouter();
-
-  const handleDirectMessage = () => {
-    // Navigate to messages with this user
-    // In a real app, this would create a new thread or navigate to existing one
-    router.push(`/commissioner-dashboard/messages?userId=${profile.id}`);
+export default function ProfileHeader({
+  profile,
+  isOwnProfile = false,
+  viewerUserType,
+  profileType
+}: ProfileHeaderProps) {
+  const getMessageHref = () => {
+    // For freelancers viewing commissioner profiles
+    if (viewerUserType === 'freelancer' && profileType === 'commissioner') {
+      return `/freelancer-dashboard/messages?page=new&receiverId=${profile.id}`;
+    }
+    // For commissioners viewing freelancer profiles
+    else if (viewerUserType === 'commissioner' && profileType === 'freelancer') {
+      return `/commissioner-dashboard/messages?page=new&receiverId=${profile.id}`;
+    }
+    // Default behavior for other cases
+    else {
+      return `/commissioner-dashboard/messages?userId=${profile.id}`;
+    }
   };
 
   return (
@@ -87,17 +102,20 @@ export default function ProfileHeader({ profile }: ProfileHeaderProps) {
             <span>{profile.location}</span>
           </div>
 
-          {/* Direct Message Button */}
-          <button
-            onClick={handleDirectMessage}
-            className="inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-colors text-gray-700 hover:bg-opacity-40"
-            style={{
-              backgroundColor: 'rgba(252, 213, 227, 0.3)'
-            }}
-          >
-            <MessageCircle className="w-4 h-4" />
-            <span>Message</span>
-          </button>
+          {/* Direct Message Button - Only show if not own profile */}
+          {!isOwnProfile && (
+            <Link href={getMessageHref()}>
+              <button
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-colors text-gray-700 hover:bg-opacity-40"
+                style={{
+                  backgroundColor: 'rgba(252, 213, 227, 0.3)'
+                }}
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span>Message</span>
+              </button>
+            </Link>
+          )}
         </div>
 
         {/* Rate pill - wider and centered below location */}

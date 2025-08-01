@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1753984049651-cdnl3921u",
+  "senderId": 32,
+  "timestamp": "2025-07-31T17:47:29.651Z",
+  "text": "great to talk, let's circle back once im in lagos",
+  "isEncrypted": false,
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "threadId": "31-32"
+}

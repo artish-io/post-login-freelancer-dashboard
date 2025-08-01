@@ -5,8 +5,8 @@ import path from 'path';
 import { readFile } from 'fs/promises';
 import { eventLogger } from '../../../../lib/events/event-logger';
 import { readTask, writeTask, readProjectTasks } from '../../../../lib/project-tasks/hierarchical-storage';
+import { readProject } from '../../../../lib/projects-utils';
 
-const projectsFilePath = path.join(process.cwd(), 'data/projects.json');
 const usersFilePath = path.join(process.cwd(), 'data/users.json');
 
 export async function POST(request: NextRequest) {
@@ -18,16 +18,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Load project and user data
-    const [projectsData, usersData] = await Promise.all([
-      readFile(projectsFilePath, 'utf-8'),
+    const [projectInfo, usersData] = await Promise.all([
+      readProject(projectId), // Use hierarchical storage for projects
       readFile(usersFilePath, 'utf-8')
     ]);
 
-    const projectsInfo = JSON.parse(projectsData);
     const users = JSON.parse(usersData);
 
-    // Get project info
-    const projectInfo = projectsInfo.find((p: any) => p.projectId === projectId);
+    // Check if project exists
     if (!projectInfo) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }

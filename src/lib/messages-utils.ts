@@ -149,6 +149,11 @@ export async function readThreadMessages(threadId: string): Promise<Message[]> {
               if (fs.existsSync(messagePath)) {
                 try {
                   const messageData = await fsPromises.readFile(messagePath, 'utf-8');
+                  // Skip empty files
+                  if (!messageData.trim()) {
+                    console.warn(`Skipping empty message file: ${messagePath}`);
+                    continue;
+                  }
                   const message = JSON.parse(messageData);
                   messages.push(message);
                 } catch (error) {
@@ -296,7 +301,13 @@ export async function countUnreadMessages(userId: string): Promise<number> {
       const messages = await readThreadMessages(threadId);
 
       for (const message of messages) {
-        if (!message.read || !message.read[userId]) {
+        // Only count as unread if:
+        // 1. message.read[currentUserId] === false
+        // 2. The message recipientId === currentUserId (user is the recipient, not sender)
+        const isUnreadForUser = message.read?.[userId] === false;
+        const isRecipient = message.senderId !== Number(userId); // If user didn't send it, they're the recipient
+
+        if (isUnreadForUser && isRecipient) {
           unreadCount++;
         }
       }
@@ -320,9 +331,16 @@ export async function getMessagesPreview(userId: number): Promise<any[]> {
     if (metadata && metadata.participants.includes(userId)) {
       const messages = await readThreadMessages(threadId);
 
+      // Only include threads with messages to prevent ghost threads
       if (messages.length > 0) {
         const lastMessage = messages[messages.length - 1];
-        const unreadCount = messages.filter(msg => !msg.read || !msg.read[userId.toString()]).length;
+
+        // Fix unread count calculation: only count messages where user is recipient and read status is false
+        const unreadCount = messages.filter(msg => {
+          const isUnreadForUser = msg.read?.[userId.toString()] === false;
+          const isRecipient = msg.senderId !== userId; // If user didn't send it, they're the recipient
+          return isUnreadForUser && isRecipient;
+        }).length;
 
         previews.push({
           threadId,

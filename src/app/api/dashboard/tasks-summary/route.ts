@@ -3,6 +3,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
+import { readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -13,19 +15,17 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Read universal source files only - no more milestones.json dependency
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
+    // Read data from hierarchical storage and flat files
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
 
-    const [projectsFile, projectTasksFile, organizationsFile] = await Promise.all([
-      readFile(projectsPath, 'utf-8'),
-      readFile(projectTasksPath, 'utf-8'),
+    const [projects, hierarchicalTasks, organizationsFile] = await Promise.all([
+      readAllProjects(), // Use hierarchical storage for projects
+      readAllTasks(), // Use hierarchical storage for project tasks
       readFile(organizationsPath, 'utf-8')
     ]);
 
-    const projects = JSON.parse(projectsFile);
-    const projectTasks = JSON.parse(projectTasksFile);
+    // Convert hierarchical tasks to legacy format for compatibility
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
     const organizations = JSON.parse(organizationsFile);
 
     const freelancerId = parseInt(userId);

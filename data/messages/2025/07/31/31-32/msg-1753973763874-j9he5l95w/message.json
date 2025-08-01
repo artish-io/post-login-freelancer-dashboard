@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1753973763874-j9he5l95w",
+  "senderId": 31,
+  "timestamp": "2025-07-31T14:56:03.874Z",
+  "text": "okay please send meeting link",
+  "isEncrypted": false,
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "threadId": "31-32"
+}

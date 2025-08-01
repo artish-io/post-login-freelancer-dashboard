@@ -3,8 +3,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
+import { readGig } from '../../../../../lib/gigs/hierarchical-storage';
 
-const GIGS_PATH = path.join(process.cwd(), 'data', 'gigs.json');
 const ORGS_PATH = path.join(process.cwd(), 'data', 'organizations.json');
 const USERS_PATH = path.join(process.cwd(), 'data', 'users.json');
 
@@ -16,17 +16,15 @@ export async function GET(
   const gigId = Number(id);
 
   try {
-    const [gigsRaw, orgsRaw, usersRaw] = await Promise.all([
-      readFile(GIGS_PATH, 'utf-8'),
+    const [orgsRaw, usersRaw] = await Promise.all([
       readFile(ORGS_PATH, 'utf-8'),
       readFile(USERS_PATH, 'utf-8'),
     ]);
 
-    const gigs = JSON.parse(gigsRaw);
     const orgs = JSON.parse(orgsRaw);
     const users = JSON.parse(usersRaw);
 
-    const gig = gigs.find((g: any) => g.id === gigId);
+    const gig = await readGig(gigId);
     if (!gig) {
       return NextResponse.json({ error: 'Gig not found' }, { status: 404 });
     }

@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,8 +19,6 @@ export async function GET(request: NextRequest) {
     }
 
     // Read data files
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
     const gigsPath = path.join(process.cwd(), 'data', 'gigs', 'gigs.json');
     const gigApplicationsPath = path.join(process.cwd(), 'data', 'gigs', 'gig-applications.json');
     const usersPath = path.join(process.cwd(), 'data', 'users.json');
@@ -28,16 +28,22 @@ export async function GET(request: NextRequest) {
     const commissionerNotificationsPath = path.join(process.cwd(), 'data', 'notifications', 'commissioners.json');
     const invoicesPath = path.join(process.cwd(), 'data', 'invoices.json');
 
-    const projectsData = JSON.parse(fs.readFileSync(projectsPath, 'utf8'));
-    const projectTasksData = JSON.parse(fs.readFileSync(projectTasksPath, 'utf8'));
-    const gigsData = JSON.parse(fs.readFileSync(gigsPath, 'utf8'));
-    const gigApplicationsData = JSON.parse(fs.readFileSync(gigApplicationsPath, 'utf8'));
-    const usersData = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
-    const freelancersData = JSON.parse(fs.readFileSync(freelancersPath, 'utf8'));
-    const contactsData = JSON.parse(fs.readFileSync(contactsPath, 'utf8'));
-    const organizationsData = JSON.parse(fs.readFileSync(organizationsPath, 'utf8'));
-    const commissionerNotificationsData = JSON.parse(fs.readFileSync(commissionerNotificationsPath, 'utf8'));
-    const invoicesData = JSON.parse(fs.readFileSync(invoicesPath, 'utf8'));
+    // Load data from hierarchical storage and flat files
+    const [projectsData, hierarchicalTasks, gigsData, gigApplicationsData, usersData, freelancersData, contactsData, organizationsData, commissionerNotificationsData, invoicesData] = await Promise.all([
+      readAllProjects(), // Use hierarchical storage for projects
+      readAllTasks(), // Use hierarchical storage for project tasks
+      fs.promises.readFile(gigsPath, 'utf8').then(data => JSON.parse(data)),
+      fs.promises.readFile(gigApplicationsPath, 'utf8').then(data => JSON.parse(data)),
+      fs.promises.readFile(usersPath, 'utf8').then(data => JSON.parse(data)),
+      fs.promises.readFile(freelancersPath, 'utf8').then(data => JSON.parse(data)),
+      fs.promises.readFile(contactsPath, 'utf8').then(data => JSON.parse(data)),
+      fs.promises.readFile(organizationsPath, 'utf8').then(data => JSON.parse(data)),
+      fs.promises.readFile(commissionerNotificationsPath, 'utf8').then(data => JSON.parse(data)),
+      fs.promises.readFile(invoicesPath, 'utf8').then(data => JSON.parse(data))
+    ]);
+
+    // Convert hierarchical tasks to legacy format for compatibility
+    const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
 
     // Find commissioner's organization
     const organization = organizationsData.find((org: any) => 
@@ -69,15 +75,15 @@ export async function GET(request: NextRequest) {
     organizationProjectIds.forEach((projectId: number) => {
       const projectTasks = projectTasksData.find((pt: any) => pt.projectId === projectId);
       const project = organizationProjects.find((p: any) => p.projectId === projectId);
-      
-      if (projectTasks?.tasks) {
+
+      if (projectTasks?.tasks && project) {
         projectTasks.tasks
           .filter((task: any) => task.status === 'In review')
           .forEach((task: any) => {
             const freelancer = freelancersData.find((f: any) => f.id === project.freelancerId);
             const user = usersData.find((u: any) => u.id === freelancer?.userId);
             const isFromNetwork = networkFreelancerIds.includes(project.freelancerId);
-            
+
             notifications.push({
               id: `task-${task.id}-${projectId}`,
               type: 'task_submission',

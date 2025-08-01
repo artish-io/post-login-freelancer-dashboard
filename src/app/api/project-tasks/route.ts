@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readAllTasks, convertHierarchicalToLegacy } from '../../../lib/project-tasks/hierarchical-storage';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 
 export async function GET() {
   try {

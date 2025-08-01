@@ -48,6 +48,25 @@ export default function SmartIntakePrompt({ mode, onModeChange }: SmartIntakePro
   const showToggle = !session?.user;
 
   const handleSubmit = async (confirmed?: boolean, editedData?: any, budgetInfo?: any) => {
+    // For initial prompt submission, redirect to worksheet instead of API call
+    if (step === 'initial' && !confirmed && !editedData && !budgetInfo) {
+      if (!input.trim()) return;
+
+      const encodedPrompt = encodeURIComponent(input);
+
+      // Check if user is logged in
+      if (!session?.user) {
+        // Redirect to login with worksheet redirect
+        window.location.href = `/auth/login?redirect=/app/worksheet&prompt=${encodedPrompt}`;
+        return;
+      } else {
+        // User is logged in, redirect directly to worksheet
+        window.location.href = `/app/worksheet?prompt=${encodedPrompt}`;
+        return;
+      }
+    }
+
+    // For subsequent steps (budget, confirmation, etc.), continue with existing API logic
     setLoading(true);
     setShowResults(true);
 

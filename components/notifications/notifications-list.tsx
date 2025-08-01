@@ -34,13 +34,8 @@ export default function NotificationsList({
     try {
       setLoading(true);
 
-      // Use the correct API based on user type
-      let endpoint: string;
-      if (userType === 'commissioner') {
-        endpoint = `/api/notifications?commissionerId=${commissionerId}&tab=${activeTab}`;
-      } else {
-        endpoint = `/api/notifications-v2?userId=${commissionerId}&userType=${userType}&tab=${activeTab}`;
-      }
+      // Use the v2 API for both user types for consistent filtering
+      const endpoint = `/api/notifications-v2?userId=${commissionerId}&userType=${userType}&tab=${activeTab}`;
 
       const response = await fetch(endpoint);
 

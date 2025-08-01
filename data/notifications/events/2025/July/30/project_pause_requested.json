@@ -1,0 +1,23 @@
+[
+  {
+    "id": "project_pause_request_314_1753907348913",
+    "timestamp": "2025-07-30T20:29:08.913Z",
+    "type": "project_pause_requested",
+    "notificationType": 22,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 2,
+    "entityId": "314",
+    "metadata": {
+      "projectTitle": "E-commerce Platform UI Redesign",
+      "pauseReason": "Freelancer requested project pause",
+      "remainingTasks": 1,
+      "requestStatus": "pending"
+    },
+    "context": {
+      "projectId": 314,
+      "freelancerId": 31,
+      "requestId": "pause_req_314_1753907348913"
+    }
+  }
+]

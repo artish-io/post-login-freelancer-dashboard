@@ -4,7 +4,7 @@
   "timestamp": "2025-07-07T18:45:00Z",
   "text": "Hey! Just confirming our meeting is still on for tomorrow at 4PM. I have some exciting updates to share about the project scope.",
   "read": {
-    "31": false,
+    "31": true,
     "36": true
   },
   "isEncrypted": false,

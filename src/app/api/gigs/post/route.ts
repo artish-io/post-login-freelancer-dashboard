@@ -3,17 +3,16 @@ import path from 'path';
 import fs from 'fs';
 import { differenceInWeeks } from 'date-fns';
 import { logGigRequestSent } from '../../../../lib/events/event-logger';
+import { saveGig, getNextGigId, type Gig } from '../../../../lib/gigs/hierarchical-storage';
 
-const GIGS_PATH = path.join(process.cwd(), 'data', 'gigs', 'gigs.json');
 const ORGANIZATIONS_PATH = path.join(process.cwd(), 'data', 'organizations.json');
 
 export async function POST(req: Request) {
   try {
     const gigData = await req.json();
 
-    // Read existing gigs
-    const gigsRaw = fs.readFileSync(GIGS_PATH, 'utf-8');
-    const gigs = JSON.parse(gigsRaw);
+    // Get next available gig ID
+    const newGigId = await getNextGigId();
 
     // Read existing organizations
     const organizationsRaw = fs.readFileSync(ORGANIZATIONS_PATH, 'utf-8');
@@ -60,8 +59,7 @@ export async function POST(req: Request) {
     const hourlyRateMax = Math.round(gigData.upperBudget / estimatedHours);
 
     // Create new gig
-    const newGigId = Math.max(...gigs.map((gig: any) => gig.id), 0) + 1;
-    const newGig = {
+    const newGig: Gig = {
       id: newGigId,
       title: `${gigData.subcategory} - ${gigData.organizationData.name}`,
       organizationId,
@@ -91,11 +89,8 @@ export async function POST(req: Request) {
       isTargetedRequest: gigData.isTargetedRequest || false,
     };
 
-    // Add new gig to the beginning of the array (most recent first)
-    gigs.unshift(newGig);
-
-    // Write updated gigs back to file
-    fs.writeFileSync(GIGS_PATH, JSON.stringify(gigs, null, 2));
+    // Save the gig using hierarchical storage
+    await saveGig(newGig);
 
     // Log event for targeted gig requests
     if (gigData.isTargetedRequest && gigData.targetFreelancerId) {

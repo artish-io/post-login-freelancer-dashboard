@@ -9,9 +9,9 @@
   ],
   "commissionerId": 32,
   "freelancerId": 31,
-  "status": "Ongoing",
+  "status": "paused",
   "dueDate": "2025-08-12",
-  "totalTasks": 5,
+  "totalTasks": 4,
   "invoicingMethod": "milestone",
   "createdAt": "2025-07-29T14:26:40.165Z"
 }

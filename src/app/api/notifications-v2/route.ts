@@ -4,6 +4,8 @@ import fs from 'fs';
 import path from 'path';
 import { EventData, EventType, NOTIFICATION_TYPES, USER_TYPE_FILTERS } from '../../../lib/events/event-logger';
 import { NotificationStorage } from '../../../lib/notifications/notification-storage';
+import { readAllProjects } from '../../../lib/projects-utils';
+import { readAllTasks, convertHierarchicalToLegacy } from '../../../lib/project-tasks/hierarchical-storage';
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,9 +23,7 @@ export async function GET(request: NextRequest) {
 
     // Load data files
     const usersPath = path.join(process.cwd(), 'data', 'users.json');
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
     const contactsPath = path.join(process.cwd(), 'data', 'contacts.json');
 
     // Get events using the new partitioned storage system
@@ -35,11 +35,17 @@ export async function GET(request: NextRequest) {
       200 // limit - get up to 200 recent events
     );
 
-    const users = JSON.parse(fs.readFileSync(usersPath, 'utf-8'));
-    const projects = JSON.parse(fs.readFileSync(projectsPath, 'utf-8'));
-    const organizations = JSON.parse(fs.readFileSync(organizationsPath, 'utf-8'));
-    const projectTasks = JSON.parse(fs.readFileSync(projectTasksPath, 'utf-8'));
-    const contacts = JSON.parse(fs.readFileSync(contactsPath, 'utf-8'));
+    // Load data from hierarchical storage and flat files
+    const [users, projects, organizations, contacts, hierarchicalTasks] = await Promise.all([
+      fs.promises.readFile(usersPath, 'utf-8').then(data => JSON.parse(data)),
+      readAllProjects(), // Use hierarchical storage for projects
+      fs.promises.readFile(organizationsPath, 'utf-8').then(data => JSON.parse(data)),
+      fs.promises.readFile(contactsPath, 'utf-8').then(data => JSON.parse(data)),
+      readAllTasks() // Use hierarchical storage for project tasks
+    ]);
+
+    // Convert hierarchical tasks to legacy format for compatibility
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
 
     // Filter events relevant to this user with user-type filtering
     const userEvents = events.filter(event => {
@@ -63,6 +69,20 @@ export async function GET(request: NextRequest) {
 
       // User is the target of the event AND not the actor (no self-notifications)
       if (event.targetId === parseInt(userId) && parseInt(event.actorId) !== parseInt(userId)) return true;
+
+      // For certain notification types, only show to the specific target user
+      const targetOnlyNotifications = [
+        'project_pause_accepted',
+        'project_pause_refused',
+        'project_paused',
+        'invoice_paid',
+        'milestone_payment_received'
+      ];
+
+      if (targetOnlyNotifications.includes(event.type)) {
+        // Only show to the target user, not to other project participants
+        return false;
+      }
 
       // User is involved in the project (but not for self-initiated actions)
       if (event.context?.projectId && parseInt(event.actorId) !== parseInt(userId)) {
@@ -181,7 +201,8 @@ export async function GET(request: NextRequest) {
         iconPath: iconPath,
         notificationType: event.notificationType,
         groupCount: event.metadata.groupCount || 1,
-        link: generateNotificationLink(event, project, task)
+        link: generateNotificationLink(event, project, task),
+        actionTaken: NotificationStorage.isActioned(event.id, parseInt(userId))
       };
     });
 
@@ -233,6 +254,14 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Error fetching notifications v2:', error);
+
+    // If it's a file not found error, provide more specific guidance
+    if (error instanceof Error && error.message.includes('ENOENT')) {
+      console.error('⚠️  CRITICAL: Missing data files detected. This suggests the application is trying to read from deprecated flat file structure instead of hierarchical storage.');
+      console.error('📁 Expected hierarchical structure: data/projects/[year]/[month]/[day]/[projectId]/project.json');
+      console.error('🔧 This API has been updated to use hierarchical storage, but the error suggests a fallback or cache issue.');
+    }
+
     return NextResponse.json(
       { error: 'Failed to fetch notifications' },
       { status: 500 }
@@ -417,9 +446,13 @@ function generateGranularTitle(event: EventData, actor: any, project?: any, proj
     case 'task_completed':
       return 'Task marked as completed';
     case 'project_pause_requested':
-      return `${actorName} requested a pause for your ${event.metadata.projectTitle} project`;
+      return `${actorName} has requested a pause for ${event.metadata.projectTitle}. Click to view the project tracker and respond.`;
     case 'project_pause_accepted':
       return 'Project pause request approved';
+    case 'project_paused':
+      return `${actorName} has paused ${event.metadata.projectTitle}`;
+    case 'project_reactivated':
+      return `${actorName} has re-activated ${event.metadata.projectTitle}. Work can now resume!`;
     case 'gig_applied':
       if (groupCount && groupCount > 1) {
         return `${actorName} and ${groupCount - 1} others applied to "${event.metadata.gigTitle}"`;
@@ -502,7 +535,13 @@ function generateNotificationLink(event: EventData, project?: any, task?: any): 
     case 'task_rejected':
     case 'task_rejected_with_comment':
       // Navigate to project tracking page
-      return `/freelancer-dashboard/projects-and-invoices/project-tracking?projectId=${event.context?.projectId}`;
+      return `/freelancer-dashboard/projects-and-invoices/project-tracking?id=${event.context?.projectId}`;
+    case 'project_paused':
+    case 'project_pause_accepted':
+    case 'project_pause_refused':
+    case 'project_reactivated':
+      // Navigate to project tracking page
+      return `/freelancer-dashboard/projects-and-invoices/project-tracking?id=${event.context?.projectId}`;
     case 'invoice_paid':
     case 'milestone_payment_received':
       // Navigate to specific invoice if available, otherwise invoices page

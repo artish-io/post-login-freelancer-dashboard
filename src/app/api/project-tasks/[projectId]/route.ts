@@ -1,7 +1,7 @@
 // File: src/app/api/project-tasks/[projectId]/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import { readProjectTasks } from '../../../../lib/project-tasks/hierarchical-storage';
+import { readProjectTasks } from '@/lib/project-tasks/hierarchical-storage';
 
 export async function GET(
   request: NextRequest,

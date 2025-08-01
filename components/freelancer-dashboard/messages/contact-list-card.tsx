@@ -18,6 +18,7 @@ type Props = {
   avatar: string;
   isUnread: boolean;
   isActive: boolean;
+  viewerUserType?: 'freelancer' | 'commissioner';
   onClick: () => void;
 };
 
@@ -28,6 +29,7 @@ export default function ContactListCard({
   avatar,
   isUnread,
   isActive,
+  viewerUserType = 'freelancer',
   onClick,
 }: Props) {
   const router = useRouter();
@@ -38,7 +40,14 @@ export default function ContactListCard({
 
   const handleAvatarClick = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent triggering the card's onClick
-    router.push(`/freelancer-dashboard/profile/${id}`);
+
+    // Route to appropriate dashboard based on viewer type
+    if (viewerUserType === 'commissioner') {
+      // For commissioners, use the dedicated freelancer profile route
+      router.push(`/commissioner-dashboard/profile/freelancers/${id}`);
+    } else {
+      router.push(`/freelancer-dashboard/profile/${id}`);
+    }
   };
 
   return (
@@ -48,7 +57,7 @@ export default function ContactListCard({
         isActive
           ? 'bg-pink-100'
           : isUnread
-          ? 'bg-[#FFF5F8] hover:bg-[#FCEAF0]'
+          ? 'bg-[#FCD5E3] hover:bg-[#F8C2D4] border-l-4 border-[#eb1966]'
           : 'hover:bg-gray-50'
       }`}
       whileHover={{ scale: 1.02, x: 4 }}
@@ -72,7 +81,7 @@ export default function ContactListCard({
         <div className="flex flex-col overflow-hidden">
           <span
             className={`text-sm truncate ${
-              isUnread ? 'font-semibold text-gray-900' : 'text-gray-800'
+              isUnread ? 'font-bold text-gray-900' : 'text-gray-800'
             }`}
           >
             {name}
@@ -81,18 +90,25 @@ export default function ContactListCard({
         </div>
       </div>
 
-      <div
-        className={`rounded-full p-2 transition ${
-          isUnread ? 'bg-[#FCD5E3]' : ''
-        }`}
-      >
-        <Image
-          src="/icons/mail-icon.svg"
-          alt="Chat"
-          width={16}
-          height={16}
-          className={`${isUnread ? 'opacity-100' : 'opacity-50'}`}
-        />
+      <div className="flex items-center gap-2">
+        {/* Unread indicator dot */}
+        {isUnread && (
+          <div className="w-3 h-3 bg-[#eb1966] rounded-full animate-pulse" />
+        )}
+
+        <div
+          className={`rounded-full p-2 transition ${
+            isUnread ? 'bg-[#FCD5E3]' : ''
+          }`}
+        >
+          <Image
+            src="/icons/mail-icon.svg"
+            alt="Chat"
+            width={16}
+            height={16}
+            className={`${isUnread ? 'opacity-100' : 'opacity-50'}`}
+          />
+        </div>
       </div>
     </motion.div>
   );

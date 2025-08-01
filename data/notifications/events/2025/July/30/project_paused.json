@@ -1,0 +1,19 @@
+[
+  {
+    "id": "project_pause_301_1753906601085",
+    "timestamp": "2025-07-30T20:16:41.085Z",
+    "type": "project_paused",
+    "notificationType": 25,
+    "actorId": 32,
+    "targetId": 31,
+    "entityType": 2,
+    "entityId": "301",
+    "metadata": {
+      "projectTitle": "Lagos Parks Services website re-design",
+      "message": "Commissioner has paused Lagos Parks Services website re-design. But not to worry, you will receive an update when they unpause it for work to continue!"
+    },
+    "context": {
+      "projectId": 301
+    }
+  }
+]

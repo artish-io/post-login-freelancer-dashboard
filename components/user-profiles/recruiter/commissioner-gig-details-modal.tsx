@@ -5,7 +5,8 @@ import Image from 'next/image';
 import { format } from 'date-fns';
 import { CalendarDays, FileText, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Apply from '../../freelancer-dashboard/gigs/apply';
+import ApplyForm from '../../freelancer-dashboard/gigs/apply-form';
+import ApplyToGigButton from '../../freelancer-dashboard/gigs/apply-to-gig-button';
 
 interface GigListing {
   id: number;
@@ -22,13 +23,15 @@ interface CommissionerGigDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   showApplyButton: boolean;
+  viewerUserType?: string;
 }
 
-export default function CommissionerGigDetailsModal({ 
-  gig, 
-  isOpen, 
-  onClose, 
-  showApplyButton 
+export default function CommissionerGigDetailsModal({
+  gig,
+  isOpen,
+  onClose,
+  showApplyButton,
+  viewerUserType
 }: CommissionerGigDetailsModalProps) {
   const [org, setOrg] = useState<any>(null);
   const [contact, setContact] = useState<any>(null);
@@ -128,13 +131,8 @@ export default function CommissionerGigDetailsModal({
           <div className="flex justify-between items-center p-6 pb-0">
             <div className="flex flex-col">
               <div className="flex items-center gap-3 mb-2">
-                {showApplyButton && (
-                  <button
-                    onClick={() => setShowApply(true)}
-                    className="bg-black text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors"
-                  >
-                    Apply
-                  </button>
+                {viewerUserType === 'freelancer' && gig.status === 'active' && (
+                  <ApplyToGigButton gigId={gig.id} />
                 )}
                 <button
                   onClick={() => navigator.clipboard.writeText(window.location.href)}
@@ -300,7 +298,12 @@ export default function CommissionerGigDetailsModal({
               </button>
             </div>
             <div className="p-6">
-              <Apply gig={fullGigData} organization={org} />
+              <ApplyForm
+                gig={fullGigData}
+                organization={org}
+                onSuccess={() => setShowApply(false)}
+                onCancel={() => setShowApply(false)}
+              />
             </div>
           </div>
         </div>

@@ -1,0 +1,187 @@
+import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { updateProject, readProject } from '@/lib/projects-utils';
+import { NotificationStorage } from '@/lib/notifications/notification-storage';
+import { NOTIFICATION_TYPES, ENTITY_TYPES } from '@/lib/events/event-logger';
+import fs from 'fs';
+import path from 'path';
+
+// Store reminder tracking data
+const reminderTrackingPath = path.join(process.cwd(), 'data', 'pause-reminders.json');
+
+function getReminderData() {
+  try {
+    if (fs.existsSync(reminderTrackingPath)) {
+      return JSON.parse(fs.readFileSync(reminderTrackingPath, 'utf-8'));
+    }
+    return {};
+  } catch (error) {
+    console.error('Error reading reminder data:', error);
+    return {};
+  }
+}
+
+function saveReminderData(data: any) {
+  try {
+    fs.writeFileSync(reminderTrackingPath, JSON.stringify(data, null, 2));
+  } catch (error) {
+    console.error('Error saving reminder data:', error);
+  }
+}
+
+// Send pause reminder
+export async function POST(request: NextRequest) {
+  try {
+    const { projectId, freelancerId, projectTitle, requestId } = await request.json();
+
+    if (!projectId || !freelancerId || !projectTitle || !requestId) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Get project details
+    const project = await readProject(projectId);
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    // Get reminder tracking data
+    const reminderData = getReminderData();
+    const key = `${projectId}_${requestId}`;
+    
+    if (!reminderData[key]) {
+      reminderData[key] = {
+        projectId,
+        requestId,
+        reminders: [],
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    const projectReminders = reminderData[key];
+    const now = new Date();
+    const fortyEightHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+
+    // Count reminders in the last 48 hours
+    const recentReminders = projectReminders.reminders.filter((reminder: any) => 
+      new Date(reminder.timestamp) > fortyEightHoursAgo
+    );
+
+    if (recentReminders.length >= 3) {
+      // Auto-pause the project after 3rd reminder
+      await updateProject(projectId, { status: 'paused' });
+
+      // Create auto-pause notification for freelancer
+      const autoPauseEvent = {
+        id: `project_auto_pause_${projectId}_${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        type: 'project_paused',
+        notificationType: NOTIFICATION_TYPES.PROJECT_PAUSED,
+        actorId: project.commissionerId, // System acts as commissioner
+        targetId: freelancerId,
+        entityType: ENTITY_TYPES.PROJECT,
+        entityId: projectId.toString(),
+        metadata: {
+          projectTitle,
+          message: `${project.commissionerName || 'Commissioner'} has paused ${projectTitle}. But not to worry, you will receive an update when they unpause it for work to continue!`,
+          autoPaused: true
+        },
+        context: {
+          projectId,
+          requestId
+        }
+      };
+
+      NotificationStorage.addEvent(autoPauseEvent);
+
+      // Mark reminders as completed
+      projectReminders.status = 'auto_paused';
+      saveReminderData(reminderData);
+
+      return NextResponse.json({
+        success: true,
+        message: 'Project auto-paused after 3 reminders',
+        projectId,
+        status: 'paused',
+        autoPaused: true
+      });
+    }
+
+    // Add new reminder
+    projectReminders.reminders.push({
+      timestamp: now.toISOString(),
+      count: recentReminders.length + 1
+    });
+
+    saveReminderData(reminderData);
+
+    // Create reminder notification for commissioner
+    const reminderEvent = {
+      id: `project_pause_reminder_${projectId}_${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      type: 'project_pause_reminder',
+      notificationType: NOTIFICATION_TYPES.PROJECT_PAUSE_REMINDER,
+      actorId: freelancerId,
+      targetId: project.commissionerId,
+      entityType: ENTITY_TYPES.PROJECT,
+      entityId: projectId.toString(),
+      metadata: {
+        projectTitle,
+        requestId,
+        reminderCount: recentReminders.length + 1,
+        message: `Reminder: ${project.freelancerName || 'Freelancer'} is still waiting for a response to their pause request for ${projectTitle}`
+      },
+      context: {
+        projectId,
+        requestId,
+        freelancerId
+      }
+    };
+
+    NotificationStorage.addEvent(reminderEvent);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Reminder sent successfully',
+      projectId,
+      reminderCount: recentReminders.length + 1,
+      remainingReminders: 3 - (recentReminders.length + 1)
+    });
+
+  } catch (error) {
+    console.error('Error sending pause reminder:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+// Withdraw pause request
+export async function DELETE(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const projectId = searchParams.get('projectId');
+    const requestId = searchParams.get('requestId');
+
+    if (!projectId || !requestId) {
+      return NextResponse.json({ error: 'Missing projectId or requestId' }, { status: 400 });
+    }
+
+    // Remove from reminder tracking
+    const reminderData = getReminderData();
+    const key = `${projectId}_${requestId}`;
+    
+    if (reminderData[key]) {
+      reminderData[key].status = 'withdrawn';
+      saveReminderData(reminderData);
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Pause request withdrawn successfully',
+      projectId,
+      requestId
+    });
+
+  } catch (error) {
+    console.error('Error withdrawing pause request:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

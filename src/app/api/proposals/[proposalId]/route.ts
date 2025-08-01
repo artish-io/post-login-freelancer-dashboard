@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-const proposalsFilePath = path.join(process.cwd(), 'data', 'proposals', 'proposals.json');
+import { readProposal } from '../../../../lib/proposals/hierarchical-storage';
 
 export async function GET(
   request: Request,
@@ -11,12 +8,8 @@ export async function GET(
   try {
     const { proposalId } = await params;
 
-    // Read proposals data
-    const proposalsData = fs.readFileSync(proposalsFilePath, 'utf-8');
-    const proposals = JSON.parse(proposalsData);
-
-    // Find the proposal
-    const proposal = proposals.find((p: any) => p.id === proposalId);
+    // Read proposal using hierarchical storage
+    const proposal = await readProposal(proposalId);
     if (!proposal) {
       return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
     }

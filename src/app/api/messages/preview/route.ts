@@ -36,9 +36,7 @@ export async function GET(req: Request) {
       };
     })
     .sort((a: any, b: any) => {
-      // Sort by unread first, then by last message timestamp
-      if (a.isUnread && !b.isUnread) return -1;
-      if (!a.isUnread && b.isUnread) return 1;
+      // Sort by last message timestamp DESC (most recent first)
       return new Date(b.lastTimestamp).getTime() - new Date(a.lastTimestamp).getTime();
     });
 

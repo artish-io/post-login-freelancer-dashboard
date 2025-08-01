@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 export interface NotificationData {
   id: string;
-  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'gig_request' | 'gig_request_accepted' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase' | 'task_submitted' | 'job_application' | 'invoice_reminder' | 'invoice_overdue_reminder' | 'milestone_payment_received' | 'task_rejected_with_comment';
+  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'project_pause_requested' | 'project_pause_refused' | 'project_paused' | 'project_pause_reminder' | 'gig_request' | 'gig_request_accepted' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase' | 'task_submitted' | 'job_application' | 'invoice_reminder' | 'invoice_overdue_reminder' | 'milestone_payment_received' | 'task_rejected_with_comment';
   title: string;
   message: string;
   timestamp: string;
@@ -51,6 +51,7 @@ export interface NotificationData {
   iconPath?: string; // For specific notification icons
   priority?: string;
   link?: string; // Navigation link for the notification
+  actionTaken?: string | null; // Track if action was taken on this notification
 }
 
 interface NotificationItemProps {

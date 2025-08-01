@@ -63,6 +63,11 @@ export function useUnreadMessages() {
       fetchUnreadCount();
     };
 
+    const handleMessageSent = () => {
+      console.log('📧 Message sent, refreshing unread count');
+      fetchUnreadCount();
+    };
+
     const handleVisibilityChange = () => {
       // Refresh when user comes back to the tab
       if (!document.hidden) {
@@ -79,11 +84,13 @@ export function useUnreadMessages() {
 
     // Listen for custom events from other components
     window.addEventListener('refreshUnreadCount', handleRefresh);
+    window.addEventListener('messageSent', handleMessageSent);
     window.addEventListener('popstate', handleRouteChange); // Browser back/forward
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
       window.removeEventListener('refreshUnreadCount', handleRefresh);
+      window.removeEventListener('messageSent', handleMessageSent);
       window.removeEventListener('popstate', handleRouteChange);
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };

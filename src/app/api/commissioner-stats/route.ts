@@ -41,11 +41,22 @@ export async function GET(request: NextRequest) {
       project.organizationId === organization.id
     );
 
-    // Calculate active projects (status: "Active", "Ongoing", "At risk", "Delayed")
-    const activeStatuses = ["Active", "Ongoing", "At risk", "Delayed"];
-    const activeProjects = organizationProjects.filter((project: any) => 
-      activeStatuses.includes(project.status)
-    );
+    // Calculate active projects (exclude paused, completed, cancelled, archived statuses)
+    const activeProjects = organizationProjects.filter((project: any) => {
+      const status = project.status.toLowerCase();
+      const inactiveStatuses = ['paused', 'completed', 'cancelled', 'archived', 'on hold', 'suspended'];
+      return !inactiveStatuses.some(inactive => status.includes(inactive));
+    });
+
+    // Console warning for debugging inconsistencies
+    const totalProjectsCount = organizationProjects.length;
+    const pausedProjects = organizationProjects.filter((project: any) =>
+      project.status.toLowerCase().includes('paused')
+    ).length;
+
+    if (pausedProjects > 0) {
+      console.warn(`[Commissioner Stats] Organization ${organization.id}: ${pausedProjects} paused projects excluded from active count. Total: ${totalProjectsCount}, Active: ${activeProjects.length}`);
+    }
 
     // Calculate total projects
     const totalProjects = organizationProjects.length;

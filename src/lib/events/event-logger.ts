@@ -23,8 +23,11 @@ export const NOTIFICATION_TYPES = {
   PROJECT_STARTED: 21,
   PROJECT_PAUSE_REQUESTED: 22,
   PROJECT_PAUSE_ACCEPTED: 23,
-  PROJECT_COMPLETED: 24,
-  PROJECT_MILESTONE_REACHED: 25,
+  PROJECT_PAUSE_REFUSED: 24,
+  PROJECT_PAUSED: 25,
+  PROJECT_PAUSE_REMINDER: 26,
+  PROJECT_COMPLETED: 27,
+  PROJECT_MILESTONE_REACHED: 28,
 
   // Invoice notifications (40-59) - Granular payment actions
   INVOICE_SENT: 40,
@@ -156,6 +159,9 @@ function getNotificationTypeNumber(eventType: EventType): number {
     'project_started': NOTIFICATION_TYPES.PROJECT_STARTED,
     'project_pause_requested': NOTIFICATION_TYPES.PROJECT_PAUSE_REQUESTED,
     'project_pause_accepted': NOTIFICATION_TYPES.PROJECT_PAUSE_ACCEPTED,
+    'project_pause_refused': NOTIFICATION_TYPES.PROJECT_PAUSE_REFUSED,
+    'project_paused': NOTIFICATION_TYPES.PROJECT_PAUSED,
+    'project_pause_reminder': NOTIFICATION_TYPES.PROJECT_PAUSE_REMINDER,
     'project_completed': NOTIFICATION_TYPES.PROJECT_COMPLETED,
 
     // Invoice events
@@ -180,9 +186,8 @@ function getNotificationTypeNumber(eventType: EventType): number {
     'product_rejected': NOTIFICATION_TYPES.PRODUCT_REJECTED,
 
     // Default fallback for unmapped types
-    'project_paused': NOTIFICATION_TYPES.PROJECT_PAUSE_REQUESTED,
     'project_resumed': NOTIFICATION_TYPES.PROJECT_STARTED,
-    'project_pause_denied': NOTIFICATION_TYPES.PROJECT_PAUSE_REQUESTED,
+    'project_pause_denied': NOTIFICATION_TYPES.PROJECT_PAUSE_REFUSED,
     'gig_posted': NOTIFICATION_TYPES.GIG_APPLICATION_RECEIVED,
     'gig_request_declined': NOTIFICATION_TYPES.GIG_REQUEST_SENT,
     'message_sent': 0, // Messages excluded from notifications

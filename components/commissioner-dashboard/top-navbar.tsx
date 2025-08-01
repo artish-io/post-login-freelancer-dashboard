@@ -7,6 +7,7 @@ import NotificationDropdown from '../shared/notification-dropdown';
 import MobileMenuToggle from '../freelancer-dashboard/mobile-menu-toggle';
 import UserProfileDropdown from '../freelancer-dashboard/user-profile-dropdown';
 import CartIcon from '../storefront/cart-icon';
+import ChatHistoryButton from '../new-landing/worksheet/chat-history-button';
 
 interface TopNavbarProps {
   isMobileMenuOpen?: boolean;
@@ -71,6 +72,11 @@ export default function TopNavbar({
       <div className="flex items-center gap-5 pr-2">
         <CartIcon />
         <NotificationDropdown dashboardType="commissioner" />
+
+        {/* Chat History Button - moved to right side */}
+        <div className="flex items-center">
+          <ChatHistoryButton />
+        </div>
 
         <div className="relative">
           <button

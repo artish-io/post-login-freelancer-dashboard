@@ -7,18 +7,23 @@ interface CommissionerProfileInfoProps {
   bio: string;
   responsibilities: string[];
   isOwnProfile: boolean;
+  viewerUserType?: 'commissioner' | 'freelancer';
 }
 
-export default function CommissionerProfileInfo({ 
-  bio, 
-  responsibilities, 
-  isOwnProfile 
+export default function CommissionerProfileInfo({
+  bio,
+  responsibilities,
+  isOwnProfile,
+  viewerUserType = 'commissioner'
 }: CommissionerProfileInfoProps) {
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [editedBio, setEditedBio] = useState(bio);
   const [localResponsibilities, setLocalResponsibilities] = useState(responsibilities);
   const [newResponsibility, setNewResponsibility] = useState('');
   const [showAddResponsibility, setShowAddResponsibility] = useState(false);
+
+  // Only allow editing if it's own profile and viewer is a commissioner
+  const canEdit = isOwnProfile && viewerUserType === 'commissioner';
 
   const handleSaveBio = () => {
     // TODO: Implement API call to save bio
@@ -45,7 +50,7 @@ export default function CommissionerProfileInfo({
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold text-gray-900">About</h3>
-          {isOwnProfile && !isEditingBio && (
+          {canEdit && !isEditingBio && (
             <button
               onClick={() => setIsEditingBio(true)}
               className="text-sm text-blue-600 hover:text-blue-700 font-medium"
@@ -93,7 +98,7 @@ export default function CommissionerProfileInfo({
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-xl font-semibold text-gray-900">Responsibilities</h3>
-          {isOwnProfile && !showAddResponsibility && (
+          {canEdit && !showAddResponsibility && (
             <button
               onClick={() => setShowAddResponsibility(true)}
               className="inline-flex items-center gap-2 px-3 py-2 border-2 border-dashed border-gray-300 text-gray-500 rounded-full text-sm hover:border-gray-400 hover:text-gray-700 transition-colors"
@@ -115,7 +120,7 @@ export default function CommissionerProfileInfo({
               <span className="text-sm font-medium text-gray-800">
                 {responsibility}
               </span>
-              {isOwnProfile && (
+              {canEdit && (
                 <button
                   onClick={() => handleRemoveResponsibility(responsibility)}
                   className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"

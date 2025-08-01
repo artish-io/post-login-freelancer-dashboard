@@ -4,9 +4,10 @@ import path from 'path';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { generateCustomProjectId } from '@/lib/project-id-utils';
+import { readAllProposals } from '@/lib/proposals/hierarchical-storage';
 
 const CACHE_PATH = path.join(process.cwd(), 'data', 'proposals', 'proposal-preview-cache.json');
-const PROPOSALS_PATH = path.join(process.cwd(), 'data', 'proposals', 'proposals.json');
+// Note: We'll use the hierarchical storage for proposals, but keep projects.json for now
 const PROJECTS_PATH = path.join(process.cwd(), 'data', 'projects.json');
 
 type Milestone = {
@@ -114,10 +115,10 @@ async function generateUniqueProjectId(userName: string): Promise<string> {
 
   try {
     const projectsRaw = await readFile(PROJECTS_PATH, 'utf-8');
-    const proposalsRaw = await readFile(PROPOSALS_PATH, 'utf-8');
+    const proposals = await readAllProposals();
 
     JSON.parse(projectsRaw).forEach((p: any) => existingIds.add(p.projectId));
-    JSON.parse(proposalsRaw).forEach((p: any) => existingIds.add(p.projectId));
+    proposals.forEach((p: any) => existingIds.add(p.projectId));
   } catch (err) {
     console.warn('⚠️ Could not fully load existing IDs:', err);
   }

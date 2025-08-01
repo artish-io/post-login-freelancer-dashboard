@@ -3,7 +3,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
-import { readProjectTasks, convertHierarchicalToLegacy } from '../../../../lib/project-tasks/hierarchical-storage';
+import { readProjectTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 import { readAllProjects } from '@/lib/projects-utils';
 import { readProjectNotes } from '@/lib/project-notes-utils';
 

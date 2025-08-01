@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import fs from 'fs';
 import path from 'path';
+import { saveGig, getNextGigId, type Gig } from '../../../../lib/gigs/hierarchical-storage';
 
 export async function POST(req: Request) {
   try {
@@ -19,10 +20,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing gig data' }, { status: 400 });
     }
 
-    // Read existing gigs
-    const gigsPath = path.join(process.cwd(), 'data', 'gigs', 'gigs.json');
-    const gigsFile = await fs.promises.readFile(gigsPath, 'utf-8');
-    const gigs = JSON.parse(gigsFile);
+    // Get next available gig ID
+    const nextGigId = await getNextGigId();
 
     // Add commissioner ID from session
     const userId = parseInt(session.user.id);
@@ -38,15 +37,12 @@ export async function POST(req: Request) {
       gigData.organizationId = user.organizationId;
     }
 
-    // Generate unique ID
-    const maxId = Math.max(...gigs.map((g: any) => g.id), 0);
-    gigData.id = maxId + 1;
+    // Set the gig ID and posted date
+    gigData.id = nextGigId;
+    gigData.postedDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
 
-    // Add the new gig
-    gigs.unshift(gigData); // Add to beginning of array
-
-    // Write back to file
-    await fs.promises.writeFile(gigsPath, JSON.stringify(gigs, null, 2));
+    // Save the gig using hierarchical storage
+    await saveGig(gigData as Gig);
 
     return NextResponse.json({ 
       success: true, 

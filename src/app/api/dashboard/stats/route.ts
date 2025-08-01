@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
+import { readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -11,17 +13,14 @@ export async function GET(req: Request) {
   }
 
   try {
-    // Read data directly from universal source files
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-
-    const [projectsRaw, projectTasksRaw] = await Promise.all([
-      readFile(projectsPath, 'utf-8'),
-      readFile(projectTasksPath, 'utf-8')
+    // Read data from hierarchical storage
+    const [projects, hierarchicalTasks] = await Promise.all([
+      readAllProjects(), // Use hierarchical storage for projects
+      readAllTasks() // Use hierarchical storage for project tasks
     ]);
 
-    const projects = JSON.parse(projectsRaw);
-    const projectTasks = JSON.parse(projectTasksRaw);
+    // Convert hierarchical tasks to legacy format for compatibility
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
     const freelancerId = parseInt(userId);
 
     // Calculate stats dynamically from actual data
@@ -38,10 +37,22 @@ function calculateFreelancerStats(projects: any[], projectTasks: any[], freelanc
   // Get projects for this freelancer
   const freelancerProjects = projects.filter(p => p.freelancerId === freelancerId);
 
-  // Get ongoing projects (Active, Ongoing, Delayed statuses)
-  const ongoingProjects = freelancerProjects.filter(p =>
-    ['Active', 'Ongoing', 'Delayed'].includes(p.status)
+  // Get ongoing projects (exclude paused, completed, cancelled, archived statuses)
+  const ongoingProjects = freelancerProjects.filter(p => {
+    const status = p.status.toLowerCase();
+    const inactiveStatuses = ['paused', 'completed', 'cancelled', 'archived', 'on hold', 'suspended'];
+    return !inactiveStatuses.some(inactive => status.includes(inactive));
+  }).length;
+
+  // Console warning for debugging inconsistencies
+  const totalProjectsCount = freelancerProjects.length;
+  const pausedProjects = freelancerProjects.filter(p =>
+    p.status.toLowerCase().includes('paused')
   ).length;
+
+  if (pausedProjects > 0) {
+    console.warn(`[Dashboard Stats] User ${freelancerId}: ${pausedProjects} paused projects excluded from ongoing count. Total: ${totalProjectsCount}, Ongoing: ${ongoingProjects}`);
+  }
 
   // Get all tasks for freelancer's projects
   const freelancerProjectIds = freelancerProjects.map(p => p.projectId);

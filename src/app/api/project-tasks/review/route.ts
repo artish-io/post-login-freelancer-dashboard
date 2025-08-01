@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
-import { readProjectTasks, writeTask } from '../../../../lib/project-tasks/hierarchical-storage';
+import { readProjectTasks, writeTask } from '@/lib/project-tasks/hierarchical-storage';
 import { saveNote } from '@/lib/project-notes-utils';
 
 const notificationsFilePath = path.join(process.cwd(), 'data', 'notifications', 'freelancers.json');

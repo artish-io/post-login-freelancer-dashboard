@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
 import { eventLogger } from '../../../../../lib/events/event-logger';
-
-const proposalsFilePath = path.join(process.cwd(), 'data', 'proposals', 'proposals.json');
+import { readProposal, updateProposal } from '../../../../../lib/proposals/hierarchical-storage';
 
 export async function POST(
   request: Request,
@@ -14,29 +11,19 @@ export async function POST(
     const body = await request.json();
     const { commissionerId, reason } = body;
 
-    // Read proposals data
-    const proposalsData = fs.readFileSync(proposalsFilePath, 'utf-8');
-    const proposals = JSON.parse(proposalsData);
-
-    // Find the proposal
-    const proposalIndex = proposals.findIndex((p: any) => p.id === proposalId);
-    if (proposalIndex === -1) {
+    // Read proposal using hierarchical storage
+    const proposal = await readProposal(proposalId);
+    if (!proposal) {
       return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
     }
 
-    const proposal = proposals[proposalIndex];
-
     // Update proposal status to rejected
-    proposals[proposalIndex] = {
-      ...proposal,
+    await updateProposal(proposalId, {
       status: 'rejected',
       rejectedAt: new Date().toISOString(),
       rejectionReason: reason || 'No reason provided',
       rejectedBy: commissionerId
-    };
-
-    // Save updated data
-    fs.writeFileSync(proposalsFilePath, JSON.stringify(proposals, null, 2));
+    });
 
     // Log proposal rejection event
     try {
@@ -63,9 +50,12 @@ export async function POST(
       // Don't fail the main operation if event logging fails
     }
 
+    // Get the updated proposal
+    const updatedProposal = await readProposal(proposalId);
+
     return NextResponse.json({
       message: 'Proposal rejected successfully',
-      proposal: proposals[proposalIndex],
+      proposal: updatedProposal,
       eventLogged: true
     });
   } catch (error) {

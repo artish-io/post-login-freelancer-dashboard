@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1753975206890-2gzkotjpe",
+  "senderId": 32,
+  "timestamp": "2025-07-31T15:20:06.890Z",
+  "text": "let's rescehdule omg i'm so sorry",
+  "isEncrypted": false,
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "threadId": "31-32"
+}

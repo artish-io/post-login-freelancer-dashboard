@@ -1,0 +1,23 @@
+{
+  "id": 3,
+  "title": "Festival Social Media Campaign Strategy",
+  "organizationId": 4,
+  "category": "Marketing",
+  "tags": [
+    "Event Marketing",
+    "Social Media",
+    "Strategy"
+  ],
+  "hourlyRateMin": 60,
+  "hourlyRateMax": 85,
+  "description": "Develop a campaign strategy for Zynate’s upcoming cultural festival including teaser content, influencer outreach, and launch calendar.",
+  "deliveryTimeWeeks": 2,
+  "estimatedHours": 25,
+  "status": "Available",
+  "toolsRequired": [
+    "Notion",
+    "Canva"
+  ],
+  "notes": "Target audience includes both local attendees and tourists.",
+  "postedDate": "2025-07-03"
+}

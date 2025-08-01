@@ -5,7 +5,7 @@
   "text": "Morning! The UI components are ready for the design system. Should I proceed with the documentation?",
   "read": {
     "26": true,
-    "32": false
+    "32": true
   },
   "isEncrypted": false,
   "threadId": "26-32"

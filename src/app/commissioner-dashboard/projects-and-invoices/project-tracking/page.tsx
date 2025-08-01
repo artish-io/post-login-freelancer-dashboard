@@ -7,6 +7,7 @@ import CommissionerProjectPageHeader from '../../../../../components/commissione
 import CommissionerProjectMetaLinks from '../../../../../components/commissioner-dashboard/projects-and-invoices/project-details/project-meta-links';
 import CommissionerProjectTimeline from '../../../../../components/commissioner-dashboard/projects-and-invoices/project-details/project-timeline';
 import CommissionerProjectActionButtons from '../../../../../components/commissioner-dashboard/projects-and-invoices/project-details/project-action-buttons';
+import PauseRequestHandler from '../../../../../components/commissioner-dashboard/projects-and-invoices/project-details/pause-request-handler';
 import ProjectNotesExpansion from '../../../../../components/freelancer-dashboard/project-notes-expansion';
 
 export default function CommissionerProjectTrackingPage() {
@@ -18,9 +19,11 @@ export default function CommissionerProjectTrackingPage() {
     summary: string;
     logoUrl: string;
     tags: string[];
+    status: string;
   } | null>(null);
 
   const [showNotesModal, setShowNotesModal] = useState(false);
+  const [pauseRequestKey, setPauseRequestKey] = useState(0); // Force re-render of pause request handler
 
   const handleShowNotes = () => setShowNotesModal(true);
   const handleCloseNotes = () => setShowNotesModal(false);
@@ -34,6 +37,7 @@ export default function CommissionerProjectTrackingPage() {
         summary: json.summary,
         logoUrl: json.logoUrl,
         tags: json.typeTags,
+        status: json.status,
       });
     }
     fetchProjectDetails();
@@ -41,7 +45,7 @@ export default function CommissionerProjectTrackingPage() {
 
   if (!projectDetails) return <div>Loading...</div>;
 
-  const { title, summary, logoUrl, tags } = projectDetails;
+  const { title, summary, logoUrl, tags, status } = projectDetails;
 
   return (
     <main className="flex flex-col min-h-screen w-full max-w-6xl mx-auto bg-white">
@@ -57,6 +61,17 @@ export default function CommissionerProjectTrackingPage() {
       <div className="flex flex-col lg:flex-row gap-8 px-4 md:px-12 pb-8 bg-white">
         {/* Timeline Section - Full width on mobile, flex-1 on desktop */}
         <div className="flex-1 order-1 lg:order-1">
+          {/* Pause Request Handler - Shows if there's a pending pause request */}
+          <PauseRequestHandler
+            key={pauseRequestKey}
+            projectId={projectId}
+            projectTitle={title}
+            projectStatus={status}
+            onRequestHandled={() => {
+              // Force re-render to refresh the pause request status
+              setPauseRequestKey(prev => prev + 1);
+            }}
+          />
           <CommissionerProjectTimeline projectId={projectId} title={title} logoUrl={logoUrl} onNotesClick={handleShowNotes} />
         </div>
 

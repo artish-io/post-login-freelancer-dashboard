@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { getAllInvoices } from '../../../../../lib/invoice-storage';
 
 export async function GET(
   request: Request,
@@ -9,17 +10,16 @@ export async function GET(
   const { invoiceNumber } = await params;
 
   try {
-    const invoicesPath = path.join(process.cwd(), 'data/invoices.json');
     const usersPath = path.join(process.cwd(), 'data/users.json');
     const organizationsPath = path.join(process.cwd(), 'data/organizations.json');
 
-    const [invoicesData, usersData, organizationsData] = await Promise.all([
-      fs.readFile(invoicesPath, 'utf-8'),
+    const [invoices, usersData, organizationsData] = await Promise.all([
+      getAllInvoices(), // Use hierarchical storage for invoices
       fs.readFile(usersPath, 'utf-8'),
       fs.readFile(organizationsPath, 'utf-8')
     ]);
 
-    const invoices = JSON.parse(invoicesData);
+    // invoices is already parsed from hierarchical storage
     const users = JSON.parse(usersData);
     const organizations = JSON.parse(organizationsData);
 

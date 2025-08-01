@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 import { eventLogger } from '../../../../../lib/events/event-logger';
+import { readProposal, updateProposal } from '../../../../../lib/proposals/hierarchical-storage';
 
-const proposalsFilePath = path.join(process.cwd(), 'data', 'proposals', 'proposals.json');
 const projectsFilePath = path.join(process.cwd(), 'data', 'projects.json');
 const invoicesFilePath = path.join(process.cwd(), 'data', 'invoices.json');
 
@@ -14,24 +14,17 @@ export async function POST(
   try {
     const { proposalId } = await params;
 
-    // Read proposals data
-    const proposalsData = fs.readFileSync(proposalsFilePath, 'utf-8');
-    const proposals = JSON.parse(proposalsData);
-
-    // Find the proposal
-    const proposalIndex = proposals.findIndex((p: any) => p.id === proposalId);
-    if (proposalIndex === -1) {
+    // Read proposal using hierarchical storage
+    const proposal = await readProposal(proposalId);
+    if (!proposal) {
       return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
     }
 
-    const proposal = proposals[proposalIndex];
-
     // Update proposal status to accepted
-    proposals[proposalIndex] = {
-      ...proposal,
+    await updateProposal(proposalId, {
       status: 'accepted',
       acceptedAt: new Date().toISOString(),
-    };
+    });
 
     // Create a new project from the accepted proposal
     const projectsData = fs.readFileSync(projectsFilePath, 'utf-8');
@@ -86,7 +79,6 @@ export async function POST(
     }
 
     // Save updated data
-    fs.writeFileSync(proposalsFilePath, JSON.stringify(proposals, null, 2));
     fs.writeFileSync(projectsFilePath, JSON.stringify(projects, null, 2));
 
     // Log proposal acceptance event
@@ -141,10 +133,13 @@ export async function POST(
       // Don't fail the main operation if event logging fails
     }
 
+    // Get the updated proposal
+    const updatedProposal = await readProposal(proposalId);
+
     return NextResponse.json({
       message: 'Proposal accepted successfully',
       projectId: newProject.id,
-      proposal: proposals[proposalIndex],
+      proposal: updatedProposal,
       eventLogged: true
     });
   } catch (error) {

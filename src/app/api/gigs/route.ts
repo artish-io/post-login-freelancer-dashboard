@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs';
-
-const GIGS_PATH = path.join(process.cwd(), 'data', 'gigs', 'gigs.json');
+import { readAllGigs, getPublicGigs } from '@/lib/gigs/hierarchical-storage';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -14,12 +11,11 @@ export async function GET(req: Request) {
   const search = searchParams.get('search')?.toLowerCase();
 
   try {
-    const gigsRaw = fs.readFileSync(GIGS_PATH, 'utf-8');
-    const gigs = JSON.parse(gigsRaw);
+    // Get public gigs using hierarchical storage
+    const gigs = await getPublicGigs();
 
     const filtered = gigs.filter((gig: any) => {
-      // Only show public gigs in the explore page
-      const isPublicGig = gig.isPublic !== false && !gig.isTargetedRequest;
+      // Gigs are already filtered to public ones by getPublicGigs()
 
       const matchesCategory = category ? gig.category.toLowerCase() === category : true;
 
@@ -41,7 +37,6 @@ export async function GET(req: Request) {
         : true;
 
       return (
-        isPublicGig &&
         matchesCategory &&
         matchesRateMin &&
         matchesRateMax &&

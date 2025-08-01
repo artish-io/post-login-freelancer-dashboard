@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
+import { getCommissionedTotalSync } from '@/lib/utils/getCommissionedTotal';
+import { readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
+import { readAllGigs } from '@/lib/gigs/hierarchical-storage';
+import { getAllInvoices } from '@/lib/invoice-storage';
 
 export async function GET(
   _req: Request,
@@ -14,7 +19,6 @@ export async function GET(
     const freelancersPath = path.join(root, 'data', 'freelancers.json');
     const usersPath = path.join(root, 'data', 'users.json');
     const organizationsPath = path.join(root, 'data', 'organizations.json');
-    const gigsPath = path.join(root, 'data', 'gigs', 'gigs.json');
     const workSamplesPath = path.join(
       root,
       'data',
@@ -23,33 +27,29 @@ export async function GET(
     );
     const gigCategoriesPath = path.join(root, 'data', 'gigs', 'gig-categories.json');
     const gigToolsPath = path.join(root, 'data', 'gigs', 'gig-tools.json');
-    const invoicesPath = path.join(root, 'data', 'invoices.json');
-    const projectsPath = path.join(root, 'data', 'projects.json');
-    const projectTasksPath = path.join(root, 'data', 'project-tasks.json');
 
     // ---------- Read all files in parallel ----------
-    const [freelancersRaw, usersRaw, organizationsRaw, gigsRaw, samplesRaw, categoriesRaw, toolsRaw, invoicesRaw, projectsRaw, projectTasksRaw] = await Promise.all([
+    const [freelancersRaw, usersRaw, organizationsRaw, gigs, samplesRaw, categoriesRaw, toolsRaw, invoices, projects, hierarchicalTasks] = await Promise.all([
       readFile(freelancersPath, 'utf-8'),
       readFile(usersPath, 'utf-8'),
       readFile(organizationsPath, 'utf-8'),
-      readFile(gigsPath, 'utf-8'),
+      readAllGigs(), // Use hierarchical storage for gigs
       readFile(workSamplesPath, 'utf-8'),
       readFile(gigCategoriesPath, 'utf-8'),
       readFile(gigToolsPath, 'utf-8'),
-      readFile(invoicesPath, 'utf-8'),
-      readFile(projectsPath, 'utf-8'),
-      readFile(projectTasksPath, 'utf-8')
+      getAllInvoices(), // Use hierarchical storage for invoices
+      readAllProjects(), // Use hierarchical storage for projects
+      readAllTasks() // Use hierarchical storage for project tasks
     ]);
 
     const freelancers = JSON.parse(freelancersRaw);
     const users = JSON.parse(usersRaw);
     const organizations = JSON.parse(organizationsRaw);
-    const gigs = JSON.parse(gigsRaw);
+    // gigs, invoices, and projects are already parsed from hierarchical storage
     const workSamples = JSON.parse(samplesRaw);
     const gigTools = JSON.parse(toolsRaw);
-    const invoices = JSON.parse(invoicesRaw);
-    const projects = JSON.parse(projectsRaw);
-    const projectTasks = JSON.parse(projectTasksRaw);
+    // Convert hierarchical tasks to legacy format for compatibility
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
 
     // ---------- Look‑ups ----------
     const user = users.find((u: any) => String(u.id) === id);
@@ -115,14 +115,8 @@ export async function GET(
         ? gigs.filter((gig: any) => gig.organizationId === organization.id)
         : [];
 
-      // Calculate total budget from paid invoices for this commissioner
-      const paidInvoices = invoices.filter((invoice: any) =>
-        invoice.commissionerId === user.id && invoice.status === 'paid'
-      );
-
-      const totalBudget = paidInvoices.reduce((sum: number, invoice: any) => {
-        return sum + (invoice.totalAmount || 0);
-      }, 0);
+      // Calculate total budget from hierarchical invoice structure
+      const totalBudget = organization ? getCommissionedTotalSync(organization.id) : 0;
 
       // Calculate quarterly change (mock data for now - in real app would compare with previous quarter)
       const previousQuarterTotal = totalBudget * 0.85; // Mock 15% growth

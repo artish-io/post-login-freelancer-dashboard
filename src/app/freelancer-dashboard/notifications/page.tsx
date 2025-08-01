@@ -23,26 +23,47 @@ export default function FreelancerNotificationsPage() {
   }
 
   const handleNotificationClick = (notification: NotificationData) => {
-    // Use the link from the notification if available
+    const { type, context } = notification;
+
+    // Handle invoice notifications with special care
+    if (type === 'invoice_paid' || type === 'milestone_payment_received') {
+      // Try multiple sources for invoice number
+      const invoiceNumber =
+        context?.invoiceNumber ||
+        context?.invoiceId ||
+        notification.metadata?.invoiceNumber ||
+        notification.metadata?.invoiceId;
+
+      if (invoiceNumber) {
+        try {
+          router.push(`/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${invoiceNumber}`);
+          return;
+        } catch (error) {
+          console.error('Error navigating to invoice:', error);
+          // Fallback to invoices page
+          router.push('/freelancer-dashboard/projects-and-invoices/invoices');
+          return;
+        }
+      } else {
+        // No invoice number found, go to invoices page
+        router.push('/freelancer-dashboard/projects-and-invoices/invoices');
+        return;
+      }
+    }
+
+    // Use the link from the notification if available for other types
     if (notification.link && notification.link !== '#') {
-      router.push(notification.link);
-      return;
+      try {
+        router.push(notification.link);
+        return;
+      } catch (error) {
+        console.error('Error navigating with notification link:', error);
+        // Continue to fallback navigation
+      }
     }
 
     // Fallback navigation based on notification type
-    const { type, context } = notification;
-
     switch (type) {
-      case 'invoice_paid':
-      case 'milestone_payment_received':
-        // Navigate to invoices page
-        if (context?.invoiceNumber || context?.invoiceId || notification.metadata?.invoiceNumber) {
-          const invoiceNumber = context?.invoiceNumber || context?.invoiceId || notification.metadata?.invoiceNumber;
-          router.push(`/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${invoiceNumber}`);
-        } else {
-          router.push('/freelancer-dashboard/projects-and-invoices/invoices');
-        }
-        break;
 
       case 'task_approved':
       case 'task_rejected':
@@ -70,6 +91,17 @@ export default function FreelancerNotificationsPage() {
           router.push(`/freelancer-dashboard/storefront/product-inventory?productId=${context.productId}`);
         } else {
           router.push('/freelancer-dashboard/storefront/product-inventory');
+        }
+        break;
+
+      case 'project_pause_accepted':
+      case 'project_pause_refused':
+      case 'project_paused':
+        // Navigate to project tracking page for pause responses
+        if (context?.projectId) {
+          router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking?id=${context.projectId}`);
+        } else {
+          router.push('/freelancer-dashboard/projects-and-invoices');
         }
         break;
 

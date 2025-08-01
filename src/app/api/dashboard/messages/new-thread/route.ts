@@ -56,12 +56,18 @@ export async function POST(request: Request) {
 
     // Create initial message
     const messageId = generateMessageId();
+    // Initialize read status for all participants
+    const readStatus: { [userId: string]: boolean } = {};
+    [senderId, recipientId].forEach(participantId => {
+      readStatus[participantId.toString()] = participantId === senderId; // sender has read it, recipient hasn't
+    });
+
     const initialMessage = {
       messageId,
       senderId,
       timestamp: new Date().toISOString(),
       text: initialText,
-      read: { [senderId]: true },
+      read: readStatus,
       isEncrypted: false
     };
 

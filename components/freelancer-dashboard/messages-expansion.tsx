@@ -46,9 +46,8 @@ export default function MessagesExpansion() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            userId1: userId,
-            userId2: otherId,
-            initiatorId: userId // The current user is initiating the contact
+            senderId: userId,
+            receiverId: otherId,
           })
         });
 
@@ -148,6 +147,10 @@ export default function MessagesExpansion() {
     const ids = newThreadId.split('-').map(Number);
     const otherId = ids.find((id) => id !== userId);
     if (otherId) setActiveContact(otherId);
+
+    // Dispatch event to refresh contact list order since a new message was sent
+    window.dispatchEvent(new CustomEvent('messageSent'));
+    console.log('📨 New thread created, dispatched refresh event');
   };
 
   const handleContactSelect = (contactId: number, threadId: string) => {
@@ -166,10 +169,10 @@ export default function MessagesExpansion() {
     <div className="flex h-full w-full overflow-hidden bg-gray-50 px-0 md:px-6">
       {/* Contacts List - Hidden on mobile when thread is selected */}
       <aside className={`
-        w-full md:w-[300px] flex flex-col
+        w-full md:w-[300px] flex flex-col max-h-full
         ${showContactList ? 'block' : 'hidden md:block'}
       `}>
-        <div className="flex justify-between items-center px-4 py-3">
+        <div className="flex justify-between items-center px-4 py-3 flex-shrink-0">
           <h2 className="font-semibold text-gray-800 text-lg">Contacts</h2>
           <button
             className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-sm font-medium"
@@ -178,12 +181,14 @@ export default function MessagesExpansion() {
             + New
           </button>
         </div>
-        <MessagesContacts
-          userId={String(userId)}
-          selectedThreadId={selectedThreadId}
-          setSelectedThreadId={handleContactSelect}
-          setActiveContact={setActiveContact}
-        />
+        <div className="flex-1 overflow-hidden">
+          <MessagesContacts
+            userId={String(userId)}
+            selectedThreadId={selectedThreadId}
+            setSelectedThreadId={handleContactSelect}
+            setActiveContact={setActiveContact}
+          />
+        </div>
       </aside>
 
       {/* Message Thread Panel - Full width on mobile when contact is selected */}

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { readTask, writeTask, readAllTasks, convertHierarchicalToLegacy } from '../../../lib/project-tasks/hierarchical-storage';
 
-const PROJECT_TASKS_PATH = path.join(process.cwd(), 'data/project-tasks.json');
 const EVENTS_LOG_PATH = path.join(process.cwd(), 'data/notifications/notifications-log.json');
 
 export async function POST(request: Request) {
@@ -13,38 +13,29 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Load project tasks and events
-    const [projectTasksData, eventsData] = await Promise.all([
-      fs.readFile(PROJECT_TASKS_PATH, 'utf-8'),
-      fs.readFile(EVENTS_LOG_PATH, 'utf-8')
+    // Load events and read the specific task
+    const [eventsData, task] = await Promise.all([
+      fs.readFile(EVENTS_LOG_PATH, 'utf-8'),
+      readTask(projectId, taskId) // Use hierarchical storage to read the specific task
     ]);
 
-    const projectTasks = JSON.parse(projectTasksData);
     const events = JSON.parse(eventsData);
 
-    // Find and update the task
-    const projectIndex = projectTasks.findIndex((pt: any) => pt.projectId === projectId);
-    if (projectIndex === -1) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
-    }
-
-    const taskIndex = projectTasks[projectIndex].tasks.findIndex((t: any) => t.id === taskId);
-    if (taskIndex === -1) {
+    // Check if task exists
+    if (!task) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
 
-    const task = projectTasks[projectIndex].tasks[taskIndex];
-
     // Update task status
-    projectTasks[projectIndex].tasks[taskIndex] = {
+    const updatedTask = {
       ...task,
       status: 'Approved',
       completed: true,
       approvedAt: new Date().toISOString()
     };
 
-    // Save updated project tasks
-    await fs.writeFile(PROJECT_TASKS_PATH, JSON.stringify(projectTasks, null, 2));
+    // Write the updated task back to hierarchical storage
+    await writeTask(projectId, taskId, updatedTask);
 
     // Create task approval event
     const approvalEvent = {
@@ -53,13 +44,13 @@ export async function POST(request: Request) {
       type: 'task_approved',
       notificationType: 2,
       actorId: commissionerId,
-      targetId: projectTasks[projectIndex].tasks[taskIndex].freelancerId || 31, // Default to user 31
+      targetId: updatedTask.freelancerId || 31, // Default to user 31
       entityType: 1,
       entityId: taskId,
       metadata: {
-        taskTitle: task.title,
-        projectTitle: projectTasks[projectIndex].title,
-        version: task.version || 1
+        taskTitle: updatedTask.title,
+        projectTitle: `Project ${projectId}`, // We don't have project title readily available
+        version: updatedTask.version || 1
       },
       context: {
         projectId: projectId,

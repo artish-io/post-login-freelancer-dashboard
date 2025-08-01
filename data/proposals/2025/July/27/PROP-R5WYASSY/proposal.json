@@ -1,0 +1,73 @@
+{
+  "title": "Toye is good",
+  "summary": "ibuuhlgnvhdlsogheiro i iownchmlonecelt oinwuclowtulnwotoi ncuwteotuenmtoertuent",
+  "logoUrl": "/logos/lagos-parks-logo.png",
+  "contact": {
+    "id": 32,
+    "name": "Neilsan Mando",
+    "title": "Product Manager",
+    "avatar": "/avatars/neilsan.png",
+    "type": "commissioner",
+    "email": "neilsan.mando@example.com",
+    "address": "Hidden Leaf, Land of Fire",
+    "organizationId": 1,
+    "username": "neilsan",
+    "password": "testpass",
+    "bio": "Experienced product manager with over 8 years in public sector digital transformation. Passionate about creating user-centered solutions that improve community services and enhance citizen engagement.",
+    "rating": 4.8,
+    "responsibilities": [
+      "Project Management",
+      "Budget Oversight",
+      "Stakeholder Communication",
+      "Quality Assurance",
+      "Timeline Management",
+      "Resource Allocation",
+      "Risk Assessment",
+      "Team Coordination"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/neilsan-mando"
+      }
+    ],
+    "organization": {
+      "name": "Lagos State Parks Services",
+      "logo": "/logos/lagos-parks-logo.png",
+      "address": "3471 Hirurzen Avenue, Hidden Leaf, Land of Fire"
+    }
+  },
+  "typeTags": [
+    "Market Research"
+  ],
+  "milestones": [
+    {
+      "id": "f30bfa60-73af-44d1-91bb-b54e8c9315e5",
+      "title": "ieovnmecortoulnt",
+      "description": "wercwertxt",
+      "startDate": "2025-07-27T04:00:00.000Z",
+      "endDate": "2025-08-02T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "totalBid": 4000,
+  "customStartDate": null,
+  "endDate": "2025-08-02T04:00:00.000Z",
+  "executionMethod": "completion",
+  "startType": "Immediately",
+  "projectId": "TU-DMRVVT",
+  "expectedDurationDays": 6,
+  "upfrontAmount": 480,
+  "upfrontPercentage": 12,
+  "milestoneTotal": 0,
+  "amountPerMilestone": 0,
+  "id": "PROP-R5WYASSY",
+  "proposalTitle": "Toye is good",
+  "description": "ibuuhlgnvhdlsogheiro i iownchmlonecelt oinwuclowtulnwotoi ncuwteotuenmtoertuent",
+  "budget": 4000,
+  "commissionerId": 32,
+  "createdAt": "2025-07-27T19:53:57.613Z",
+  "status": "sent",
+  "hiddenFor": [],
+  "sentAt": "2025-07-27T19:53:57.613Z"
+}

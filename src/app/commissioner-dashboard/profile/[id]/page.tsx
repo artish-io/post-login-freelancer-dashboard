@@ -1,65 +1,84 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import CommissionerProfileView from '../../../../../components/user-profiles/recruiter/commissioner-profile-view';
 import { PageSkeleton } from '../../../../../components/ui/loading-skeleton';
-import CommissionerProfileHeader from '../../../../../components/user-profiles/recruiter/commissioner-profile-header';
-import CommissionerProfileInfo from '../../../../../components/user-profiles/recruiter/commissioner-profile-info';
-import OrganizationInfo from '../../../../../components/user-profiles/recruiter/organization-info';
-import RecentGigListings from '../../../../../components/user-profiles/recruiter/recent-gig-listings';
 
-interface Organization {
-  id: number;
-  name: string;
-  logo: string;
-  address: string;
-}
-
-interface GigListing {
-  id: number;
+interface WorkSample {
+  id: string;
+  userId: number;
   title: string;
-  category: string;
-  budget: string;
-  deadline: string;
-  applicants: number;
-  status: 'active' | 'closed' | 'in_progress';
+  image: string;
+  skill: string;
+  tool: string;
+  year: number;
+  url: string;
 }
 
-interface CommissionerProfile {
+interface Tool {
+  name: string;
+  icon: string | null;
+}
+
+interface SocialLink {
+  platform: string;
+  url: string;
+  icon: string;
+}
+
+interface Profile {
   id: number;
   name: string;
   title: string;
   avatar: string;
-  type: 'commissioner';
+  type: 'freelancer' | 'commissioner';
   location?: string;
+  rate?: string;
+  availability?: string;
+  hourlyRate?: {
+    min: number;
+    max: number;
+  };
   rating?: number;
   about: string;
-  organization: Organization | null;
-  projectsCommissioned: number;
-  totalBudget: number;
-  quarterlyChange?: number;
-  isActivelyCommissioning?: boolean;
-  gigListings: GigListing[];
-  responsibilities: string[];
-  socialLinks?: Array<{
-    platform: string;
-    url: string;
-    icon: string;
-  }>;
+  skills?: string[];
+  tools?: Tool[];
+  socialLinks?: SocialLink[];
+  workSamples?: WorkSample[];
+  responsibilities?: string[];
 }
 
 export default function CommissionerProfilePage() {
   const params = useParams();
-  const { data: session } = useSession();
-  const [profile, setProfile] = useState<CommissionerProfile | null>(null);
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   const userId = params?.id as string;
   const currentUserId = session?.user?.id;
   const isOwnProfile = userId === currentUserId;
-  const currentUserType = (session?.user as any)?.userType;
+
+  // Session validation - prevent auto-logout for cross-user-type profile viewing
+  useEffect(() => {
+    if (status === 'loading') return; // Still loading session
+
+    if (!session?.user?.id) {
+      // No session - redirect to appropriate login page
+      router.push('/login-commissioner');
+      return;
+    }
+
+    // Allow commissioners to view any profile without auto-logout
+    // Only restrict access if session is invalid, not based on user type
+    if (session?.user?.id) {
+      setAccessDenied(false);
+    }
+  }, [session, status, router]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -70,12 +89,6 @@ export default function CommissionerProfilePage() {
         }
 
         const data = await response.json();
-
-        // Ensure this is a commissioner profile
-        if (data.type !== 'commissioner') {
-          throw new Error('Profile not found');
-        }
-
         setProfile(data);
       } catch (err) {
         console.error('Error fetching profile:', err);
@@ -90,18 +103,15 @@ export default function CommissionerProfilePage() {
     }
   }, [userId]);
 
-  // Transform profile data for components
-  const profileHeaderData = profile ? {
-    id: profile.id.toString(),
-    name: profile.name,
-    avatar: profile.avatar,
-    location: profile.location || '',
-    lifetimeValue: profile.totalBudget,
-    rating: profile.rating,
-    quarterlyChange: profile.quarterlyChange,
-    isActivelyCommissioning: profile.isActivelyCommissioning,
-    socialLinks: profile.socialLinks?.filter(link => link.platform === 'linkedin') || []
-  } : null;
+  // Handle session loading
+  if (status === 'loading') {
+    return <PageSkeleton />;
+  }
+
+  // Handle access denied (will redirect, but show loading in the meantime)
+  if (accessDenied || (!session?.user?.id)) {
+    return <PageSkeleton />;
+  }
 
   if (loading) {
     return <PageSkeleton />;
@@ -119,33 +129,32 @@ export default function CommissionerProfilePage() {
     );
   }
 
+  // If viewing a commissioner profile, use the commissioner profile view
+  if (profile.type === 'commissioner') {
+    return (
+      <CommissionerProfileView
+        userId={userId}
+        isOwnProfile={isOwnProfile}
+        viewerUserType="commissioner"
+        profileType="commissioner"
+      />
+    );
+  }
+
+  // If viewing a freelancer profile, redirect to dedicated freelancer profile route
+  if (profile.type === 'freelancer') {
+    router.push(`/commissioner-dashboard/profile/freelancers/${userId}`);
+    return <PageSkeleton />;
+  }
+
+  // This route should only handle commissioner profiles
   return (
-    <div className="flex-1 p-6 bg-white min-h-screen font-['Plus_Jakarta_Sans']">
-      {/* Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_500px] gap-8 h-full">
-        {/* Left Column: User Info */}
-        <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
-          {profileHeaderData && <CommissionerProfileHeader profile={profileHeaderData} />}
-
-          <CommissionerProfileInfo
-            bio={profile.about}
-            responsibilities={profile.responsibilities}
-            isOwnProfile={isOwnProfile}
-          />
-        </div>
-
-        {/* Right Column: Organization & Gigs */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          {profile.organization && (
-            <OrganizationInfo organization={profile.organization} />
-          )}
-
-          <RecentGigListings
-            gigListings={profile.gigListings}
-            isOwnProfile={isOwnProfile}
-            currentUserType={currentUserType}
-          />
-        </div>
+    <div className="flex-1 flex items-center justify-center">
+      <div className="text-center">
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          Invalid profile type
+        </h2>
+        <p className="text-gray-600">This route only handles commissioner profiles.</p>
       </div>
     </div>
   );

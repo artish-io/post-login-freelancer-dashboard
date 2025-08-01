@@ -7,14 +7,16 @@ interface Organization {
   name: string;
   logo: string;
   address: string;
+  bio?: string;
 }
 
 interface OrganizationInfoProps {
   organization: Organization;
+  showBio?: boolean;
 }
 
-export default function OrganizationInfo({ organization }: OrganizationInfoProps) {
-  const { name, logo, address } = organization;
+export default function OrganizationInfo({ organization, showBio = false }: OrganizationInfoProps) {
+  const { name, logo, address, bio } = organization;
 
   return (
     <div className="mb-8">
@@ -42,7 +44,7 @@ export default function OrganizationInfo({ organization }: OrganizationInfoProps
       {/* Organization Description */}
       <div className="mb-6">
         <p className="text-sm text-gray-600 leading-relaxed">
-          {getOrganizationDescription(name, address)}
+          {showBio && bio ? bio : getOrganizationDescription(name, address)}
         </p>
       </div>
     </div>

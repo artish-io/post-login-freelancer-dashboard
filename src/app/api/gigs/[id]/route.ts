@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
+import { readGig } from '../../../../lib/gigs/hierarchical-storage';
 
 export async function GET(
   _req: Request,
@@ -9,14 +8,8 @@ export async function GET(
   const { id } = await context.params;
 
   try {
-    const root = process.cwd();
-    const gigsPath = path.join(root, 'data', 'gigs', 'gigs.json');
-    
-    const gigsData = await readFile(gigsPath, 'utf8');
-    const gigs = JSON.parse(gigsData);
-    
-    const gig = gigs.find((g: any) => g.id === parseInt(id));
-    
+    const gig = await readGig(parseInt(id));
+
     if (!gig) {
       return NextResponse.json(
         { error: 'Gig not found' },

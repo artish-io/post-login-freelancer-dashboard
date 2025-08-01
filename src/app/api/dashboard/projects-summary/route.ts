@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
+import { readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -13,21 +15,19 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Use universal source files instead of deprecated projects-summary.json
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
+    // Use hierarchical storage for projects and tasks
     const usersPath = path.join(process.cwd(), 'data', 'users.json');
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
 
-    const [projectsFile, projectTasksFile, usersFile, organizationsFile] = await Promise.all([
-      readFile(projectsPath, 'utf-8'),
-      readFile(projectTasksPath, 'utf-8'),
+    const [projects, hierarchicalTasks, usersFile, organizationsFile] = await Promise.all([
+      readAllProjects(), // Use hierarchical storage for projects
+      readAllTasks(), // Use hierarchical storage for project tasks
       readFile(usersPath, 'utf-8'),
       readFile(organizationsPath, 'utf-8')
     ]);
 
-    const projects = JSON.parse(projectsFile);
-    const projectTasks = JSON.parse(projectTasksFile);
+    // Convert hierarchical tasks to legacy format for compatibility
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
     const users = JSON.parse(usersFile);
     const organizations = JSON.parse(organizationsFile);
 

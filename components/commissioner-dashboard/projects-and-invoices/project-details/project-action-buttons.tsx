@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { FileText, MessageSquareText, CreditCard } from 'lucide-react';
+import { FileText, MessageSquareText, CreditCard, PauseCircle, Play } from 'lucide-react';
 
 type Props = {
   projectId: number;
@@ -16,6 +16,10 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
   const [latestUnpaidInvoice, setLatestUnpaidInvoice] = useState<string | null>(null);
   const [payInvoiceEnabled, setPayInvoiceEnabled] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [projectStatus, setProjectStatus] = useState<string>('');
+  const [projectTitle, setProjectTitle] = useState<string>('');
+  const [pausingProject, setPausingProject] = useState(false);
+  const [reactivatingProject, setReactivatingProject] = useState(false);
 
   useEffect(() => {
     // Fetch project details and check for unpaid invoices
@@ -28,6 +32,8 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
           const project = projects.find((p: any) => p.projectId === projectId);
           if (project?.freelancerId) {
             setFreelancerId(project.freelancerId);
+            setProjectStatus(project.status || 'ongoing');
+            setProjectTitle(project.title || 'Project');
           }
         }
 
@@ -101,6 +107,74 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
     window.location.href = `/commissioner-dashboard/projects-and-invoices/invoices/pay-invoice?invoice=${latestUnpaidInvoice}`;
   };
 
+  const handlePauseProject = async () => {
+    if (!session?.user?.id || !projectTitle) {
+      console.error('Unable to pause project: Missing session or project title');
+      return;
+    }
+
+    setPausingProject(true);
+    try {
+      const response = await fetch('/api/projects/pause', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectId,
+          commissionerId: Number(session.user.id),
+          projectTitle
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setProjectStatus('paused');
+        // Trigger notification refresh for dropdown
+        window.dispatchEvent(new CustomEvent('notificationRefresh'));
+      } else {
+        throw new Error(result.error || 'Failed to pause project');
+      }
+    } catch (error) {
+      console.error('Error pausing project:', error);
+    } finally {
+      setPausingProject(false);
+    }
+  };
+
+  const handleReactivateProject = async () => {
+    if (!session?.user?.id || !projectTitle) {
+      console.error('Unable to reactivate project: Missing session or project title');
+      return;
+    }
+
+    setReactivatingProject(true);
+    try {
+      const response = await fetch('/api/projects/reactivate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectId,
+          commissionerId: Number(session.user.id),
+          projectTitle
+        })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setProjectStatus('ongoing');
+        // Trigger notification refresh for dropdown
+        window.dispatchEvent(new CustomEvent('notificationRefresh'));
+      } else {
+        throw new Error(result.error || 'Failed to reactivate project');
+      }
+    } catch (error) {
+      console.error('Error reactivating project:', error);
+    } finally {
+      setReactivatingProject(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4 w-full max-w-xs lg:max-w-none mt-6">
       {/* Pay Invoice Button */}
@@ -117,6 +191,48 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
         <CreditCard size={16} />
         {loading ? 'Loading...' : 'Pay Invoice'}
       </button>
+
+      {/* Pause Project Button - Only show if project is not already paused */}
+      {projectStatus?.toLowerCase() !== 'paused' && (
+        <button
+          onClick={handlePauseProject}
+          disabled={pausingProject || loading}
+          className="w-full bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium px-6 py-3 rounded-2xl shadow flex items-center justify-center gap-2 transition"
+        >
+          {pausingProject ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Pausing...
+            </>
+          ) : (
+            <>
+              <PauseCircle size={16} />
+              Pause Project
+            </>
+          )}
+        </button>
+      )}
+
+      {/* Re-Activate Project Button - Only show if project is paused */}
+      {projectStatus?.toLowerCase() === 'paused' && (
+        <button
+          onClick={handleReactivateProject}
+          disabled={reactivatingProject || loading}
+          className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-medium px-6 py-3 rounded-2xl shadow flex items-center justify-center gap-2 transition"
+        >
+          {reactivatingProject ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              Reactivating...
+            </>
+          ) : (
+            <>
+              <Play size={16} />
+              Re-Activate Project
+            </>
+          )}
+        </button>
+      )}
 
       {/* Message Freelancer Button */}
       <Link href={getMessageUrl()}>

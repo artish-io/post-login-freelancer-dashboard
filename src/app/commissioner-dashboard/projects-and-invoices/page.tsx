@@ -65,7 +65,9 @@ export default function ProjectsAndInvoicesPage() {
         }
         const currentCommissionerId = parseInt(session.user.id);
         setCommissionerId(currentCommissionerId);
-        const response = await fetch(`/api/commissioner-stats?commissionerId=${currentCommissionerId}`);
+        const response = await fetch(`/api/commissioner-stats?commissionerId=${currentCommissionerId}`, {
+          cache: 'no-store' // Ensure fresh data
+        });
 
         if (!response.ok) {
           throw new Error('Failed to fetch commissioner stats');
@@ -98,6 +100,18 @@ export default function ProjectsAndInvoicesPage() {
     };
 
     fetchDashboardData();
+
+    // Listen for project status changes (e.g., when projects are paused)
+    const handleProjectStatusChange = () => {
+      fetchDashboardData();
+    };
+
+    // Listen for custom events that might indicate project status changes
+    window.addEventListener('projectStatusChanged', handleProjectStatusChange);
+
+    return () => {
+      window.removeEventListener('projectStatusChanged', handleProjectStatusChange);
+    };
   }, [session, status, router]);
 
   const handlePostGig = () => {

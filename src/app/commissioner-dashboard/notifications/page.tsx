@@ -77,6 +77,17 @@ export default function NotificationsPage() {
         }
         break;
 
+      case 'project_pause':
+      case 'project_pause_requested':
+      case 'project_pause_reminder':
+        // Navigate to project tracking page for pause requests
+        if (context?.projectId) {
+          router.push(`/commissioner-dashboard/projects-and-invoices/project-tracking?id=${context.projectId}`);
+        } else {
+          router.push('/commissioner-dashboard/projects-and-invoices');
+        }
+        break;
+
       default:
         console.log('Unhandled notification type:', type);
         break;

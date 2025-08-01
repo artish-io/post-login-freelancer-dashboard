@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1753975220483-e4t6o6t8v",
+  "senderId": 32,
+  "timestamp": "2025-07-31T15:20:20.483Z",
+  "text": "i have a family emergency",
+  "isEncrypted": false,
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "threadId": "31-32"
+}

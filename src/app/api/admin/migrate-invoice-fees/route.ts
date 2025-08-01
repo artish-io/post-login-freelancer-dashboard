@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { getAllInvoices, saveInvoice } from '../../../lib/invoice-storage';
 
 /**
  * Invoice Fee Migration API
@@ -12,54 +13,55 @@ import { promises as fs } from 'fs';
 
 export async function POST() {
   try {
-    const invoicesPath = path.join(process.cwd(), 'data/invoices.json');
-    
-    // Load invoices
-    const invoicesFile = await fs.readFile(invoicesPath, 'utf-8');
-    const invoices = JSON.parse(invoicesFile);
+    // Load invoices using hierarchical storage
+    const invoices = await getAllInvoices();
 
     let updatedCount = 0;
     let totalPlatformFees = 0;
 
     // Process each invoice
-    for (let i = 0; i < invoices.length; i++) {
-      const invoice = invoices[i];
-      
+    for (const invoice of invoices) {
       // Only process paid invoices that don't have paymentDetails
       if (invoice.status === 'paid' && !invoice.paymentDetails) {
         // Calculate 5% platform fee
         const platformFee = Math.round(invoice.totalAmount * 0.05 * 100) / 100;
         const freelancerAmount = Math.round((invoice.totalAmount - platformFee) * 100) / 100;
-        
-        // Add payment details
-        invoices[i].paymentDetails = {
-          paymentId: `pay_migrated_${invoice.invoiceNumber}`,
-          paymentMethod: 'stripe', // Default to stripe for historical data
-          platformFee: platformFee,
-          freelancerAmount: freelancerAmount,
-          currency: 'USD',
-          processedAt: invoice.paidDate ? `${invoice.paidDate}T12:00:00Z` : new Date().toISOString(),
-          migrated: true // Flag to indicate this was backfilled
+
+        // Create updated invoice with payment details
+        const updatedInvoice = {
+          ...invoice,
+          paymentDetails: {
+            paymentId: `pay_migrated_${invoice.invoiceNumber}`,
+            paymentMethod: 'stripe', // Default to stripe for historical data
+            platformFee: platformFee,
+            freelancerAmount: freelancerAmount,
+            currency: 'USD',
+            processedAt: invoice.paidDate ? `${invoice.paidDate}T12:00:00Z` : new Date().toISOString(),
+            migrated: true // Flag to indicate this was backfilled
+          }
         };
 
         // Ensure paidDate exists
-        if (!invoices[i].paidDate) {
+        if (!updatedInvoice.paidDate) {
           // Use issue date + 7 days as estimated paid date
           const issueDate = new Date(invoice.issueDate);
           issueDate.setDate(issueDate.getDate() + 7);
-          invoices[i].paidDate = issueDate.toISOString().split('T')[0];
+          updatedInvoice.paidDate = issueDate.toISOString().split('T')[0];
         }
+
+        // Save updated invoice using hierarchical storage
+        await saveInvoice(updatedInvoice);
 
         updatedCount++;
         totalPlatformFees += platformFee;
       }
     }
 
-    // Save updated invoices
-    await fs.writeFile(invoicesPath, JSON.stringify(invoices, null, 2));
+    // Reload invoices to get updated data for summary
+    const updatedInvoices = await getAllInvoices();
 
-    // Calculate summary statistics
-    const allPaidInvoices = invoices.filter((inv: any) => inv.status === 'paid');
+    // Calculate summary statistics using updated invoices
+    const allPaidInvoices = updatedInvoices.filter((inv: any) => inv.status === 'paid');
     const totalInvoiceValue = allPaidInvoices.reduce((sum: number, inv: any) => sum + inv.totalAmount, 0);
     const totalPlatformRevenue = allPaidInvoices.reduce((sum: number, inv: any) => sum + (inv.paymentDetails?.platformFee || 0), 0);
     const totalFreelancerPayouts = allPaidInvoices.reduce((sum: number, inv: any) => sum + (inv.paymentDetails?.freelancerAmount || 0), 0);
@@ -88,11 +90,8 @@ export async function POST() {
 
 export async function GET() {
   try {
-    const invoicesPath = path.join(process.cwd(), 'data/invoices.json');
-    
-    // Load invoices
-    const invoicesFile = await fs.readFile(invoicesPath, 'utf-8');
-    const invoices = JSON.parse(invoicesFile);
+    // Load invoices using hierarchical storage
+    const invoices = await getAllInvoices();
 
     // Analyze current state
     const allInvoices = invoices.length;

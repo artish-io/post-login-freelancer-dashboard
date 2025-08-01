@@ -23,20 +23,36 @@ export default function ProjectStatsRow() {
     overdueDeadlines: 0,
   });
 
-  useEffect(() => {
+  const fetchStats = async () => {
     if (!session?.user?.id) return;
 
-    const fetchStats = async () => {
-      try {
-        const res = await fetch(`/api/dashboard/stats?id=${session.user.id}`);
-        const data = await res.json();
-        setStats(data);
-      } catch (error) {
-        console.error('Stats fetch error:', error);
-      }
+    try {
+      const res = await fetch(`/api/dashboard/stats?id=${session.user.id}`, {
+        cache: 'no-store' // Ensure fresh data
+      });
+      const data = await res.json();
+      setStats(data);
+    } catch (error) {
+      console.error('Stats fetch error:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+  }, [session?.user?.id]);
+
+  // Listen for project status changes (e.g., when projects are paused)
+  useEffect(() => {
+    const handleProjectStatusChange = () => {
+      fetchStats();
     };
 
-    fetchStats();
+    // Listen for custom events that might indicate project status changes
+    window.addEventListener('projectStatusChanged', handleProjectStatusChange);
+
+    return () => {
+      window.removeEventListener('projectStatusChanged', handleProjectStatusChange);
+    };
   }, [session?.user?.id]);
 
   const cards = [

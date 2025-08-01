@@ -1,0 +1,11 @@
+{
+  "messageId": "msg-1753972509917-p2vkldnhg",
+  "senderId": 31,
+  "timestamp": "2025-07-31T14:35:09.917Z",
+  "text": "hello matte",
+  "isEncrypted": false,
+  "read": {
+    "31": true
+  },
+  "threadId": "31-34"
+}

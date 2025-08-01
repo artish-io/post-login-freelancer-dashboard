@@ -3,6 +3,8 @@
 import { NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import path from 'path';
+import { readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -14,14 +16,14 @@ export async function GET(request: Request) {
   }
 
   try {
-    const [projectsData, tasksData, invoicesData] = await Promise.all([
-      readFile(path.join(process.cwd(), 'data', 'projects.json'), 'utf-8'),
-      readFile(path.join(process.cwd(), 'data', 'project-tasks.json'), 'utf-8'),
+    const [allProjects, hierarchicalTasks, invoicesData] = await Promise.all([
+      readAllProjects(), // Use hierarchical storage for projects
+      readAllTasks(), // Use hierarchical storage for project tasks
       readFile(path.join(process.cwd(), 'data', 'invoices.json'), 'utf-8')
     ]);
 
-    const allProjects = JSON.parse(projectsData);
-    const allTasks = JSON.parse(tasksData);
+    // Convert hierarchical tasks to legacy format for compatibility
+    const allTasks = convertHierarchicalToLegacy(hierarchicalTasks);
     const allInvoices = JSON.parse(invoicesData);
 
     let filtered = allProjects.filter((p: any) => p.freelancerId === freelancerId);

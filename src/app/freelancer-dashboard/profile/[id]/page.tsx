@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { PageSkeleton } from '../../../../../components/ui/loading-skeleton';
 import ProfileHeader from '../../../../../components/user-profiles/profile-header';
 import ProfileInfo from '../../../../../components/user-profiles/profile-info';
 import WorkSamples from '../../../../../components/user-profiles/work-samples';
 import AddWorkSampleModal from '../../../../../components/user-profiles/add-work-sample-modal';
+import CommissionerProfileView from '../../../../../components/user-profiles/recruiter/commissioner-profile-view';
 
 interface WorkSample {
   id: string;
@@ -55,17 +56,37 @@ interface Profile {
 
 export default function ProfilePage() {
   const params = useParams();
-  const { data: session } = useSession();
+  const router = useRouter();
+  const { data: session, status } = useSession();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAddWorkSampleModal, setShowAddWorkSampleModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [availableSkills, setAvailableSkills] = useState<string[]>([]);
   const [availableTools, setAvailableTools] = useState<string[]>([]);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   const userId = params?.id as string;
   const currentUserId = session?.user?.id;
   const isOwnProfile = userId === currentUserId;
+  const currentUserType = (session?.user as any)?.userType;
+
+  // Session validation - prevent auto-logout for commissioners viewing freelancer pages
+  useEffect(() => {
+    if (status === 'loading') return; // Still loading session
+
+    if (!session?.user?.id) {
+      // No session - redirect to appropriate login page
+      router.push('/login');
+      return;
+    }
+
+    // Allow commissioners to view freelancer profiles without auto-logout
+    // Only restrict access if session is invalid, not based on user type
+    if (session?.user?.id) {
+      setAccessDenied(false);
+    }
+  }, [session, status, router]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -226,6 +247,16 @@ export default function ProfilePage() {
     year: sample.year
   })) || [];
 
+  // Handle session loading
+  if (status === 'loading') {
+    return <PageSkeleton />;
+  }
+
+  // Handle access denied (will redirect, but show loading in the meantime)
+  if (accessDenied || (!session?.user?.id)) {
+    return <PageSkeleton />;
+  }
+
   if (loading) {
     return <PageSkeleton />;
   }
@@ -242,13 +273,32 @@ export default function ProfilePage() {
     );
   }
 
+  // If viewing a commissioner profile, use the commissioner profile view
+  if (profile.type === 'commissioner') {
+    return (
+      <CommissionerProfileView
+        userId={userId}
+        isOwnProfile={isOwnProfile}
+        viewerUserType="freelancer"
+        profileType="commissioner"
+      />
+    );
+  }
+
   return (
     <div className="flex-1 p-6 bg-white min-h-screen font-['Plus_Jakarta_Sans']">
       {/* Two Column Layout with better proportions */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_500px] gap-8 h-full">
         {/* Left Column: User Info */}
         <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
-          {profileHeaderData && <ProfileHeader profile={profileHeaderData} />}
+          {profileHeaderData && (
+            <ProfileHeader
+              profile={profileHeaderData}
+              isOwnProfile={isOwnProfile}
+              viewerUserType={currentUserType}
+              profileType={profile.type}
+            />
+          )}
           
           <ProfileInfo
             bio={profile.about}

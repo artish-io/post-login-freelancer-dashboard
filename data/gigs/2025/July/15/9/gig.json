@@ -1,0 +1,37 @@
+{
+  "id": 9,
+  "title": "UI/UX Design - Lagos State Parks Services",
+  "organizationId": 1,
+  "commissionerId": 32,
+  "category": "Design",
+  "subcategory": "UI/UX Design",
+  "tags": [
+    "UI/UX Design"
+  ],
+  "hourlyRateMin": 100,
+  "hourlyRateMax": 125,
+  "description": "qwewq",
+  "deliveryTimeWeeks": 1,
+  "estimatedHours": 40,
+  "status": "Available",
+  "toolsRequired": [
+    "Figma"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "55042261-03da-430c-bb93-f28a45036acc",
+      "title": "ewqw",
+      "description": "wew",
+      "startDate": "2025-07-16T04:00:00.000Z",
+      "endDate": "2025-07-24T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-07-24T04:00:00.000Z",
+  "lowerBudget": 4000,
+  "upperBudget": 5000,
+  "postedDate": "2025-07-16",
+  "notes": "Budget range: $4,000 - $5,000"
+}

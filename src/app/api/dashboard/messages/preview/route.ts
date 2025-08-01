@@ -1,8 +1,9 @@
-// src/app/api/dashboard/messages-preview/route.ts
+// src/app/api/dashboard/messages/preview/route.ts
 
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { getMessagesPreview } from '@/lib/messages-utils';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -15,66 +16,52 @@ export async function GET(req: Request) {
   const sessionUserId = Number(userIdParam);
 
   try {
-    const [messagesData, usersData, contactsData] = await Promise.all([
-      fs.readFile(path.join(process.cwd(), 'data/messages.json'), 'utf-8'),
+    const [usersData, contactsData] = await Promise.all([
       fs.readFile(path.join(process.cwd(), 'data/users.json'), 'utf-8'),
       fs.readFile(path.join(process.cwd(), 'data/contacts.json'), 'utf-8'),
     ]);
 
-    const messages = JSON.parse(messagesData);
     const users = JSON.parse(usersData);
     const contacts = JSON.parse(contactsData);
+
+    // Get message previews using the updated hierarchical structure
+    const messagePreviews = await getMessagesPreview(sessionUserId);
 
     const userContacts =
       contacts.find((c: { userId: number }) => c.userId === sessionUserId)?.contacts || [];
 
-    const previews = userContacts
-      .map((contactId: number) => {
-        const threadIdA = `${sessionUserId}-${contactId}`;
-        const threadIdB = `${contactId}-${sessionUserId}`;
-
-        const thread = messages.find(
-          (t: { threadId: string }) => t.threadId === threadIdA || t.threadId === threadIdB
-        );
-
-        console.log(`[messages-preview] user ${sessionUserId} vs contact ${contactId} → matched thread: ${thread?.threadId ?? 'none'}`);
-
-        if (!thread) return null;
-
-        const lastMessage = [...thread.messages].sort(
-          (a: { timestamp: string }, b: { timestamp: string }) =>
-            new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-        )[0];
-
+    const previews = messagePreviews
+      .map((preview: any) => {
+        const contactId = preview.participants.find((id: number) => id !== sessionUserId);
         const contact = users.find((u: { id: number }) => u.id === contactId);
+
         if (!contact) return null;
 
-        // Handle threads with no messages
-        if (!lastMessage) {
-          return {
-            threadId: thread.threadId,
-            contactId,
-            name: contact.name,
-            title: contact.title,
-            avatar: contact.avatar,
-            lastMessageText: 'No messages yet',
-            lastMessageTime: new Date().toISOString(),
-            isUnread: false,
-          };
+        // Filter out threads with no messages (prevent ghost threads)
+        if (!preview.lastMessage) {
+          return null;
         }
 
+        // Calculate isUnread based on corrected logic: user is recipient and read status is false
+        const isUnread = preview.lastMessage.senderId !== sessionUserId &&
+                        preview.unreadCount > 0;
+
         return {
-          threadId: thread.threadId,
+          threadId: preview.threadId,
           contactId,
           name: contact.name,
           title: contact.title,
           avatar: contact.avatar,
-          lastMessageText: lastMessage.text,
-          lastMessageTime: lastMessage.timestamp,
-          isUnread: !lastMessage.read?.[sessionUserId],
+          lastMessageText: preview.lastMessage.text,
+          lastMessageTime: preview.lastMessage.timestamp,
+          isUnread,
         };
       })
-      .filter(Boolean);
+      .filter(Boolean)
+      .sort((a: any, b: any) => {
+        // Sort by last message timestamp DESC (most recent first)
+        return new Date(b.lastMessageTime).getTime() - new Date(a.lastMessageTime).getTime();
+      });
 
     // 🔍 Final Output Debug
     console.log('[messages-preview] preview response:', previews);

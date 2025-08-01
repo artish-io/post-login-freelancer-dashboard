@@ -2,9 +2,8 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
 import { eventLogger } from '../../../../lib/events/event-logger';
-
-const INVOICES_PATH = path.join(process.cwd(), 'data/invoices.json');
-const PROJECTS_PATH = path.join(process.cwd(), 'data/projects.json');
+import { readProject } from '../../../../lib/projects-utils';
+import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
 
 /**
  * Auto-Generate Invoice for Completion-Based Projects
@@ -36,16 +35,13 @@ export async function POST(request: Request) {
     }
 
     // Load data
-    const [invoicesData, projectsData] = await Promise.all([
-      fs.readFile(INVOICES_PATH, 'utf-8'),
-      fs.readFile(PROJECTS_PATH, 'utf-8')
+    const [invoices, project] = await Promise.all([
+      getAllInvoices(), // Use hierarchical storage for invoices
+      readProject(projectId) // Use hierarchical storage for projects
     ]);
 
-    const invoices = JSON.parse(invoicesData);
-    const projects = JSON.parse(projectsData);
-
-    // Find the project
-    const project = projects.find((p: any) => p.projectId === projectId);
+    // invoices is already parsed from hierarchical storage
+    // project is already the specific project we need
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
@@ -113,9 +109,8 @@ export async function POST(request: Request) {
       // }
     };
 
-    // Add to invoices
-    invoices.push(newInvoice);
-    await fs.writeFile(INVOICES_PATH, JSON.stringify(invoices, null, 2));
+    // Save invoice using hierarchical storage
+    await saveInvoice(newInvoice);
 
     // Log invoice creation event
     try {

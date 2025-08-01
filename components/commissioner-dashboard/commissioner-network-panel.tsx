@@ -189,8 +189,8 @@ export default function CommissionerNetworkPanel({ commissionerId }: Commissione
   const displayedContacts = showAll ? contacts : contacts.slice(0, 5);
 
   const handleContactClick = (contactId: number) => {
-    // Navigate to freelancer profile
-    window.open(`/freelancer-dashboard/profile/${contactId}`, '_blank');
+    // Navigate to freelancer profile using the dedicated commissioner route
+    window.open(`/commissioner-dashboard/profile/freelancers/${contactId}`, '_blank');
   };
 
   if (loading) {

@@ -3,9 +3,9 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
+import { readAllGigs } from '../../../../../lib/gigs/hierarchical-storage';
 
 const REQUESTS_PATH = path.join(process.cwd(), 'data/gigs/gig-requests.json');
-const GIGS_PATH = path.join(process.cwd(), 'data/gigs/gigs.json');
 const ORGANIZATIONS_PATH = path.join(process.cwd(), 'data/organizations.json');
 
 export async function GET(
@@ -20,9 +20,8 @@ export async function GET(
     const requestsRaw = await readFile(REQUESTS_PATH, 'utf-8');
     const requests = JSON.parse(requestsRaw);
 
-    // Read targeted gig requests from main gigs file
-    const gigsRaw = await readFile(GIGS_PATH, 'utf-8');
-    const gigs = JSON.parse(gigsRaw);
+    // Read targeted gig requests from hierarchical storage
+    const gigs = await readAllGigs();
 
     // Read organizations for enrichment
     const organizationsRaw = await readFile(ORGANIZATIONS_PATH, 'utf-8');

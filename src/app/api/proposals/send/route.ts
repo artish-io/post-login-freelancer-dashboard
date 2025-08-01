@@ -2,8 +2,15 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 import { eventLogger } from '../../../../lib/events/event-logger';
+import {
+  saveProposal,
+  readAllProposals,
+  readProposal,
+  updateProposal,
+  generateUniqueProposalId,
+  type Proposal
+} from '../../../../lib/proposals/hierarchical-storage';
 
-const sentProposalsPath = path.join(process.cwd(), 'data', 'proposals', 'proposals.json');
 const draftsPath = path.join(process.cwd(), 'data', 'proposals', 'proposal-drafts.json');
 const usersPath = path.join(process.cwd(), 'data', 'users.json');
 
@@ -59,9 +66,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields: commissioner/contact is required' }, { status: 400 });
     }
 
-    const newProposal = {
+    // Generate unique proposal ID
+    const proposalId = await generateUniqueProposalId();
+
+    const newProposal: Proposal = {
       ...body,
-      id: `proposal-${Date.now()}`,
+      id: proposalId,
       proposalTitle: actualTitle,
       description: actualDescription,
       budget: actualBudget,
@@ -72,11 +82,8 @@ export async function POST(request: Request) {
       sentAt: new Date().toISOString()
     };
 
-    // Load and update proposals
-    const sentData = await readFile(sentProposalsPath, 'utf-8');
-    const sentProposals = JSON.parse(sentData);
-    sentProposals.push(newProposal);
-    await writeFile(sentProposalsPath, JSON.stringify(sentProposals, null, 2), 'utf-8');
+    // Save proposal using hierarchical storage
+    await saveProposal(newProposal);
 
     // Remove from drafts if exists
     try {
@@ -129,9 +136,8 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const sentData = await readFile(sentProposalsPath, 'utf-8');
-    const sentProposals = JSON.parse(sentData);
-    return NextResponse.json(sentProposals, { status: 200 });
+    const allProposals = await readAllProposals();
+    return NextResponse.json(allProposals, { status: 200 });
   } catch (error) {
     console.error('Failed to retrieve sent proposals:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -146,21 +152,20 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Missing id or userId' }, { status: 400 });
     }
 
-    const fileData = await readFile(sentProposalsPath, 'utf-8');
-    const proposals = JSON.parse(fileData);
+    // Read the existing proposal
+    const proposal = await readProposal(id);
+    if (!proposal) {
+      return NextResponse.json({ error: 'Proposal not found' }, { status: 404 });
+    }
 
-    const updatedProposals = proposals.map((proposal: any) => {
-      if (proposal.id === id) {
-        const hiddenFor = proposal.hiddenFor || [];
-        if (!hiddenFor.includes(userId)) {
-          hiddenFor.push(userId);
-        }
-        return { ...proposal, hiddenFor };
-      }
-      return proposal;
-    });
+    // Update the hiddenFor array
+    const hiddenFor = proposal.hiddenFor || [];
+    if (!hiddenFor.includes(userId)) {
+      hiddenFor.push(userId);
+    }
 
-    await writeFile(sentProposalsPath, JSON.stringify(updatedProposals, null, 2), 'utf-8');
+    // Update the proposal
+    await updateProposal(id, { hiddenFor });
     return NextResponse.json({ message: 'Proposal hidden for user', id }, { status: 200 });
   } catch (error) {
     console.error('Failed to hide proposal:', error);

@@ -148,6 +148,7 @@ export default function RecentGigListings({
             setSelectedGig(null);
           }}
           showApplyButton={!isOwnProfile && currentUserType === 'freelancer' && selectedGig.status === 'active'}
+          viewerUserType={currentUserType}
         />
       )}
     </section>

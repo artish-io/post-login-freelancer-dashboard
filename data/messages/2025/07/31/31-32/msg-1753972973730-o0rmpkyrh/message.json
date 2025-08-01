@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1753972973730-o0rmpkyrh",
+  "senderId": 31,
+  "timestamp": "2025-07-31T14:42:53.730Z",
+  "text": "i am free between 4pm and 9pm",
+  "isEncrypted": false,
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "threadId": "31-32"
+}

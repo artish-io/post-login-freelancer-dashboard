@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { Star, MapPin, Linkedin, TrendingUp, TrendingDown } from 'lucide-react';
+import Link from 'next/link';
+import { Star, MapPin, Linkedin, TrendingUp, TrendingDown, MessageCircle } from 'lucide-react';
 
 interface SocialLink {
   platform: string;
@@ -21,9 +22,15 @@ interface CommissionerProfileHeaderProps {
     isActivelyCommissioning?: boolean;
     socialLinks: SocialLink[];
   };
+  viewerUserType?: 'commissioner' | 'freelancer';
+  isOwnProfile?: boolean;
 }
 
-export default function CommissionerProfileHeader({ profile }: CommissionerProfileHeaderProps) {
+export default function CommissionerProfileHeader({
+  profile,
+  viewerUserType = 'commissioner',
+  isOwnProfile = false
+}: CommissionerProfileHeaderProps) {
   const { name, avatar, location, lifetimeValue, rating, quarterlyChange, isActivelyCommissioning, socialLinks } = profile;
 
   const formatCurrency = (amount: number) => {
@@ -94,15 +101,26 @@ export default function CommissionerProfileHeader({ profile }: CommissionerProfi
 
         <h1 className="text-3xl font-semibold text-gray-900 mb-3">{name}</h1>
         
-        {/* Location */}
+        {/* Location and Message Button */}
         <div className="mb-3">
-          <div className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-full text-sm text-gray-700">
-            <MapPin className="w-4 h-4 text-gray-500" />
-            <span>{location}</span>
+          <div className="flex items-center gap-3">
+            <div className="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-full text-sm text-gray-700">
+              <MapPin className="w-4 h-4 text-gray-500" />
+              <span>{location}</span>
+            </div>
+            {/* Message Button for Freelancer Viewers */}
+            {viewerUserType === 'freelancer' && !isOwnProfile && (
+              <Link href={`/freelancer-dashboard/messages?page=new&receiverId=${profile.id}`} passHref>
+                <button className="inline-flex items-center gap-2 px-4 py-2 bg-[#eb1966] text-white rounded-full text-sm font-medium hover:bg-[#d1175a] transition-colors">
+                  <MessageCircle className="w-4 h-4" />
+                  <span>Message</span>
+                </button>
+              </Link>
+            )}
           </div>
         </div>
 
-        {/* Projects Commissioned */}
+        {/* Total Value of Projects Commissioned */}
         <div className="mb-4">
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-700">Projects Commissioned:</span>

@@ -1,0 +1,87 @@
+{
+  "title": "Love In Lagos",
+  "summary": "biiehnlofvjkofbtljgldbojzvotnibsrooi. oiwunrvoaetonsecugmj9wu vetujwvnmjsceonieutjbnawr0evsihe0 anwovgmjdrotj;bnanewjgmfiwbvjfaognjoscfblosrnofc rhnwolteung wosedklvnf sn os dhs odn. osos sb eo vn dngo josimnlbhnsoglvajglcw",
+  "logoUrl": "/logos/lagos-parks-logo.png",
+  "typeTags": [
+    "Event Marketing"
+  ],
+  "milestones": [
+    {
+      "id": "2af96850-8c27-405b-8f3b-322afe83c8f0",
+      "title": "Love is good",
+      "description": "osos sb eo vn dngo josimnlbhnsoglvajglcw",
+      "startDate": "2025-07-27T04:00:00.000Z",
+      "endDate": "2025-08-02T04:00:00.000Z",
+      "amount": 2000
+    },
+    {
+      "id": "8bc5eccc-1156-45e2-a1ac-a8b28fe314ae",
+      "title": "yoou is grat",
+      "description": "werwecregegge brtnrtbtyu",
+      "startDate": "2025-08-03T04:00:00.000Z",
+      "endDate": "2025-08-13T04:00:00.000Z",
+      "amount": 2000
+    }
+  ],
+  "paymentCycle": "Hourly Rate",
+  "rate": 50,
+  "projectId": "TU-8H886I",
+  "totalBid": 4000,
+  "customStartDate": null,
+  "endDate": "2025-08-13T04:00:00.000Z",
+  "maxHours": 50000,
+  "depositRate": "",
+  "expectedDurationDays": 17,
+  "executionMethod": "milestone",
+  "startType": "Immediately",
+  "contact": {
+    "id": 32,
+    "name": "Neilsan Mando",
+    "title": "Product Manager",
+    "avatar": "/avatars/neilsan.png",
+    "type": "commissioner",
+    "email": "neilsan.mando@example.com",
+    "address": "Hidden Leaf, Land of Fire",
+    "organizationId": 1,
+    "username": "neilsan",
+    "password": "testpass",
+    "bio": "Experienced product manager with over 8 years in public sector digital transformation. Passionate about creating user-centered solutions that improve community services and enhance citizen engagement.",
+    "rating": 4.8,
+    "responsibilities": [
+      "Project Management",
+      "Budget Oversight",
+      "Stakeholder Communication",
+      "Quality Assurance",
+      "Timeline Management",
+      "Resource Allocation",
+      "Risk Assessment",
+      "Team Coordination"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/neilsan-mando"
+      }
+    ],
+    "organization": {
+      "name": "Lagos State Parks Services",
+      "logo": "/logos/lagos-parks-logo.png",
+      "address": "3471 Hirurzen Avenue, Hidden Leaf, Land of Fire"
+    }
+  },
+  "upfrontAmount": 0,
+  "milestoneTotal": 4000,
+  "isAmountValid": true,
+  "upfrontValue": 0,
+  "upfrontPercentage": 0,
+  "amountPerMilestone": 2000,
+  "id": "PROP-H5NMBUZK",
+  "proposalTitle": "Love In Lagos",
+  "description": "biiehnlofvjkofbtljgldbojzvotnibsrooi. oiwunrvoaetonsecugmj9wu vetujwvnmjsceonieutjbnawr0evsihe0 anwovgmjdrotj;bnanewjgmfiwbvjfaognjoscfblosrnofc rhnwolteung wosedklvnf sn os dhs odn. osos sb eo vn dngo josimnlbhnsoglvajglcw",
+  "budget": 4000,
+  "commissionerId": 32,
+  "createdAt": "2025-07-27T18:21:04.349Z",
+  "status": "sent",
+  "hiddenFor": [],
+  "sentAt": "2025-07-27T18:21:04.349Z"
+}

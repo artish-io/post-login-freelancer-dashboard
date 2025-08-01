@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import {
   saveMessage,
   readThreadMetadata,
+  saveThreadMetadata,
   generateMessageId
 } from '@/lib/messages-utils';
 
@@ -21,10 +22,35 @@ export async function POST(request: Request) {
   }
 
   try {
-    const threadMetadata = await readThreadMetadata(threadId);
+    let threadMetadata = await readThreadMetadata(threadId);
 
-    if (!threadMetadata || !threadMetadata.participants.includes(userId)) {
-      return NextResponse.json({ error: 'Thread not found or access denied' }, { status: 403 });
+    // If thread doesn't exist, create it now (deferred thread creation)
+    if (!threadMetadata) {
+      const threadParts = threadId.split('-').map(Number);
+      if (threadParts.length !== 2 || !threadParts.every(id => !isNaN(id))) {
+        return NextResponse.json({ error: 'Invalid thread ID format' }, { status: 400 });
+      }
+
+      const [userId1, userId2] = threadParts.sort((a, b) => a - b);
+
+      // Create new thread metadata
+      threadMetadata = {
+        threadId,
+        participants: [userId1, userId2],
+        messages: [], // Messages are stored separately
+        metadata: {
+          createdAt: new Date().toISOString(),
+          initiatedBy: userId,
+          status: 'active'
+        }
+      };
+
+      await saveThreadMetadata(threadMetadata);
+      console.log(`[messages-send] Created new thread ${threadId} on first message from user ${userId}`);
+    }
+
+    if (!threadMetadata.participants.includes(userId)) {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
     // Anti-spam protection: Check if user can send messages
@@ -37,13 +63,20 @@ export async function POST(request: Request) {
     }
 
     const messageId = generateMessageId();
+
+    // Initialize read status for all participants
+    const readStatus: { [userId: string]: boolean } = {};
+    threadMetadata.participants.forEach(participantId => {
+      readStatus[participantId.toString()] = participantId === userId; // sender has read it, recipients haven't
+    });
+
     const newMessage = {
       messageId,
       senderId: userId,
       timestamp: new Date().toISOString(),
       text,
       isEncrypted: isEncrypted || false,
-      read: { [userId]: true }, // sender already "read" it
+      read: readStatus,
     };
 
     // Save the message to hierarchical structure

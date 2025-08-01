@@ -51,11 +51,25 @@ export default function NotificationDropdown({ dashboardType }: Props) {
     if (session?.user?.id) {
       fetchUnreadCount();
 
-      // Set up polling for unread count every 30 seconds
-      const interval = setInterval(fetchUnreadCount, 30000);
-      return () => clearInterval(interval);
+      // Set up polling for unread count every 10 seconds for better responsiveness
+      const interval = setInterval(fetchUnreadCount, 10000);
+
+      // Listen for custom notification refresh events
+      const handleNotificationRefresh = () => {
+        fetchUnreadCount();
+        if (open) {
+          fetchNotifications();
+        }
+      };
+
+      window.addEventListener('notificationRefresh', handleNotificationRefresh);
+
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener('notificationRefresh', handleNotificationRefresh);
+      };
     }
-  }, [session?.user?.id, dashboardType]);
+  }, [session?.user?.id, dashboardType, open]);
 
   // Fetch notifications when dropdown opens
   useEffect(() => {
@@ -69,13 +83,8 @@ export default function NotificationDropdown({ dashboardType }: Props) {
     if (!session?.user?.id) return;
 
     try {
-      let endpoint: string;
-
-      if (dashboardType === 'commissioner') {
-        endpoint = `/api/notifications?commissionerId=${session.user.id}&tab=all`;
-      } else {
-        endpoint = `/api/notifications-v2?userId=${session.user.id}&userType=freelancer&tab=all`;
-      }
+      // Use v2 API for both user types for consistent filtering
+      const endpoint = `/api/notifications-v2?userId=${session.user.id}&userType=${dashboardType}&tab=all`;
 
       const res = await fetch(endpoint);
       const data = await res.json();
@@ -95,13 +104,8 @@ export default function NotificationDropdown({ dashboardType }: Props) {
 
     setLoading(true);
     try {
-      let endpoint: string;
-
-      if (dashboardType === 'commissioner') {
-        endpoint = `/api/notifications?commissionerId=${session.user.id}&tab=all`;
-      } else {
-        endpoint = `/api/notifications-v2?userId=${session.user.id}&userType=freelancer&tab=all`;
-      }
+      // Use v2 API for both user types for consistent filtering
+      const endpoint = `/api/notifications-v2?userId=${session.user.id}&userType=${dashboardType}&tab=all`;
 
       const res = await fetch(endpoint);
       const data = await res.json();

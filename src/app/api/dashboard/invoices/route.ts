@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { getAllInvoices } from '../../lib/invoice-storage';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -15,12 +16,12 @@ export async function GET(req: Request) {
   const userId = Number(userIdParam);
 
   try {
-    const [invoiceData, userData] = await Promise.all([
-      fs.readFile(path.join(process.cwd(), 'data/invoices.json'), 'utf-8'),
+    const [invoices, userData] = await Promise.all([
+      getAllInvoices(), // Use hierarchical storage for invoices
       fs.readFile(path.join(process.cwd(), 'data/users.json'), 'utf-8')
     ]);
 
-    const invoices = JSON.parse(invoiceData);
+    // invoices is already parsed from hierarchical storage
     const users = JSON.parse(userData);
 
     // Filter by freelancerId

@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { readProject } from '../../../lib/projects-utils';
+import { readAllTasks, convertHierarchicalToLegacy } from '../../../lib/project-tasks/hierarchical-storage';
+import { getAllInvoices } from '../../../lib/invoice-storage';
 
 export async function GET(request: Request) {
   try {
@@ -12,22 +15,17 @@ export async function GET(request: Request) {
     }
 
     // Load data files
-    const projectsPath = path.join(process.cwd(), 'data/projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data/project-tasks.json');
-    const invoicesPath = path.join(process.cwd(), 'data/invoices.json');
-
-    const [projectsData, projectTasksData, invoicesData] = await Promise.all([
-      fs.readFile(projectsPath, 'utf-8'),
-      fs.readFile(projectTasksPath, 'utf-8'),
-      fs.readFile(invoicesPath, 'utf-8')
+    const [project, hierarchicalTasks, invoices] = await Promise.all([
+      readProject(parseInt(projectId)), // Use hierarchical storage for projects
+      readAllTasks(), // Use hierarchical storage for project tasks
+      getAllInvoices() // Use hierarchical storage for invoices
     ]);
 
-    const projects = JSON.parse(projectsData);
-    const projectTasks = JSON.parse(projectTasksData);
-    const invoices = JSON.parse(invoicesData);
+    // Convert hierarchical tasks to legacy format for compatibility
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
+    // invoices is already parsed from hierarchical storage
 
-    // Find the project
-    const project = projects.find((p: any) => p.projectId === parseInt(projectId));
+    // Check if project exists
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }

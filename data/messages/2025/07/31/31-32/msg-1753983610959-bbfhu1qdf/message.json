@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1753983610959-bbfhu1qdf",
+  "senderId": 32,
+  "timestamp": "2025-07-31T17:40:10.959Z",
+  "text": "l'll text you tommorow",
+  "isEncrypted": false,
+  "read": {
+    "31": true,
+    "32": true
+  },
+  "threadId": "31-32"
+}

@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
 import { readAllTasks, convertHierarchicalToLegacy } from '../../../../lib/project-tasks/hierarchical-storage';
+import { readAllProjects } from '../../../../lib/projects-utils';
+import { getAllInvoices } from '../../../../lib/invoice-storage';
 
-const INVOICES_PATH = path.join(process.cwd(), 'data/invoices.json');
-const PROJECTS_PATH = path.join(process.cwd(), 'data/projects.json');
 const EVENTS_LOG_PATH = path.join(process.cwd(), 'data/notifications/notifications-log.json');
 
 interface Task {
@@ -41,18 +41,16 @@ export async function POST(request: Request) {
     }
 
     // Load all required data
-    const [projectsData, invoicesData, eventsData] = await Promise.all([
-      fs.readFile(PROJECTS_PATH, 'utf-8'),
-      fs.readFile(INVOICES_PATH, 'utf-8'),
+    const [projects, hierarchicalTasks, invoices, eventsData] = await Promise.all([
+      readAllProjects(), // Use hierarchical storage for projects
+      readAllTasks(), // Use hierarchical storage for project tasks
+      getAllInvoices(), // Use hierarchical storage for invoices
       fs.readFile(EVENTS_LOG_PATH, 'utf-8')
     ]);
 
-    // Read project tasks from hierarchical storage
-    const hierarchicalTasks = await readAllTasks();
+    // Convert hierarchical tasks to legacy format for compatibility
     const projectTasks: ProjectTask[] = convertHierarchicalToLegacy(hierarchicalTasks);
-
-    const projects: Project[] = JSON.parse(projectsData);
-    const invoices = JSON.parse(invoicesData);
+    // invoices is already parsed from hierarchical storage
     const events = JSON.parse(eventsData);
 
     // Find the project and task

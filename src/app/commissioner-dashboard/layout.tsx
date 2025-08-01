@@ -26,7 +26,11 @@ export default function CommissionerDashboardLayout({
   };
 
   return (
-    <AuthGuard redirectTo="/login-commissioner" requiredUserType="commissioner">
+    <AuthGuard
+      redirectTo="/login-commissioner"
+      requiredUserType="commissioner"
+      allowCrossUserTypeProfiles={true}
+    >
       <div className="min-h-screen bg-gray-50" style={{ overflow: 'hidden', maxWidth: '100vw' }}>
         {/* Top Navbar - fixed at top, stretches full width */}
         <TopNavbar

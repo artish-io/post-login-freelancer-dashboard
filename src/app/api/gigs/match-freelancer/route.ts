@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
-import { readAllTasks, convertHierarchicalToLegacy } from '../../../../lib/project-tasks/hierarchical-storage';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 import { readAllProjects, saveProject } from '@/lib/projects-utils';
+import { readGig, updateGig } from '@/lib/gigs/hierarchical-storage';
 
-const GIGS_PATH = path.join(process.cwd(), 'data/gigs/gigs.json');
+// Using hierarchical storage for gigs and project tasks
 const APPLICATIONS_PATH = path.join(process.cwd(), 'data/gigs/gig-applications.json');
-const PROJECT_TASKS_PATH = path.join(process.cwd(), 'data/project-tasks.json');
 const ORGANIZATIONS_PATH = path.join(process.cwd(), 'data/organizations.json');
 const USERS_PATH = path.join(process.cwd(), 'data/users.json');
 
@@ -22,8 +22,7 @@ export async function POST(req: Request) {
     }
 
     // Read all necessary data files
-    const [gigsData, applicationsData, organizationsData, usersData] = await Promise.all([
-      readFile(GIGS_PATH, 'utf-8').then(data => JSON.parse(data)),
+    const [applicationsData, organizationsData, usersData] = await Promise.all([
       readFile(APPLICATIONS_PATH, 'utf-8').then(data => JSON.parse(data)),
       readFile(ORGANIZATIONS_PATH, 'utf-8').then(data => JSON.parse(data)),
       readFile(USERS_PATH, 'utf-8').then(data => JSON.parse(data))
@@ -37,7 +36,7 @@ export async function POST(req: Request) {
     const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
 
     // Find the gig and application
-    const gig = gigsData.find((g: any) => g.id === gigId);
+    const gig = await readGig(gigId);
     const application = applicationsData.find((a: any) => a.id === applicationId);
 
     if (!gig || !application) {
@@ -66,9 +65,7 @@ export async function POST(req: Request) {
     }
 
     // Update gig status to unavailable
-    const updatedGigs = gigsData.map((g: any) => 
-      g.id === gigId ? { ...g, status: 'Unavailable' } : g
-    );
+    await updateGig(gigId, { status: 'Unavailable' });
 
     // Update application status to accepted
     const updatedApplications = applicationsData.map((a: any) => 
@@ -129,7 +126,6 @@ export async function POST(req: Request) {
     const updatedProjectTasks = [...projectTasksData, newProjectTasks];
 
     await Promise.all([
-      writeFile(GIGS_PATH, JSON.stringify(updatedGigs, null, 2)),
       writeFile(APPLICATIONS_PATH, JSON.stringify(updatedApplications, null, 2)),
       writeFile(PROJECT_TASKS_PATH, JSON.stringify(updatedProjectTasks, null, 2))
     ]);

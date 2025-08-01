@@ -54,16 +54,9 @@ export default function GigCard({ gig }: GigCardProps) {
       return;
     }
 
-    // User is logged in, navigate to messages with the freelancer
-    // Create a thread ID based on user IDs (smaller ID first for consistency)
-    const currentUserId = Number(session.user.id);
-    // Use userId from the gig data (which comes from freelancer.userId)
+    // User is logged in, navigate to messages with the freelancer using new format
     const freelancerUserId = (gig as any).userId || gig.id; // Fallback to gig.id if userId not available
-    const threadId = currentUserId < freelancerUserId
-      ? `${currentUserId}-${freelancerUserId}`
-      : `${freelancerUserId}-${currentUserId}`;
-
-    router.push(`/commissioner-dashboard/messages?thread=${threadId}`);
+    router.push(`/commissioner-dashboard/messages?page=new&receiverId=${freelancerUserId}`);
   };
 
   // Handle gig request button click
