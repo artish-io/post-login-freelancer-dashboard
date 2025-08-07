@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAllInvoices, getInvoiceByNumber, saveInvoice } from '../../../lib/invoice-storage';
+import { getAllInvoices, getInvoiceByNumber, saveInvoice } from '@/lib/invoice-storage';
 
 export async function GET() {
   try {

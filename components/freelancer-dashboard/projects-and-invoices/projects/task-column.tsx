@@ -2,11 +2,13 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { MoreVertical } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import TaskCard from './task-card';
 import { getTaskCounts } from '@/lib/task-submission-rules';
 import { checkAndExecuteAutoMovement } from '@/lib/auto-task-movement';
 import { isThisWeek, startOfDay } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
+import { requireFreelancerSession, isValidFreelancerTask } from '@/lib/freelancer-access-control';
 
 type Props = {
   columnId: 'todo' | 'upcoming' | 'review';
@@ -42,18 +44,32 @@ type Organization = {
 };
 
 export default function TaskColumn({ columnId, title }: Props) {
+  const { data: session } = useSession();
   const [tasks, setTasks] = useState<any[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [projectsInfo, setProjectsInfo] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const fetchingRef = useRef(false);
+  const recentlySubmittedTasks = useRef(new Set<string>());
   const [taskCounts, setTaskCounts] = useState({
     todayUrgent: 0,
     todayTotal: 0,
     upcoming: 0,
     review: 0
   });
+
+  // Ensure user is a freelancer before rendering
+  const freelancerSession = requireFreelancerSession(session?.user as any);
+  if (!freelancerSession) {
+    return (
+      <div className="bg-white rounded-xl border shadow-sm p-6">
+        <div className="text-red-600 font-medium text-center">
+          Access denied: Freelancer authentication required
+        </div>
+      </div>
+    );
+  }
 
   // Helper function to check if a project is paused
   const isProjectPaused = (projectId: number): boolean => {
@@ -64,9 +80,20 @@ export default function TaskColumn({ columnId, title }: Props) {
 
   // Optimistic update function for smooth task transitions
   const handleOptimisticTaskUpdate = (projectId: number, taskId: number, newStatus: string) => {
+    const taskKey = `${projectId}-${taskId}`;
+
     setTasks(currentTasks => {
       // Remove the task from current column if it's moving to review
       if (newStatus === 'In review' && columnId !== 'review') {
+        // Track this task as recently submitted to prevent race conditions
+        recentlySubmittedTasks.current.add(taskKey);
+
+        // Remove from tracking after 10 seconds (enough time for API call and refresh)
+        setTimeout(() => {
+          recentlySubmittedTasks.current.delete(taskKey);
+        }, 10000);
+
+        console.log(`🚀 Optimistically removing task ${taskId} from ${columnId} column (moving to review)`);
         return currentTasks.filter(task => !(task.projectId === projectId && task.taskId === taskId));
       }
       return currentTasks;
@@ -115,16 +142,18 @@ export default function TaskColumn({ columnId, title }: Props) {
         setOrganizations(orgsData);
         setProjectsInfo(projectInfoData);
 
-        // Check for auto-movement after data refresh
-        try {
-          const result = await checkAndExecuteAutoMovement();
-          if (result.moved) {
-            console.log('🔄 Auto-movement after refresh:', result.message);
-            // Note: Removed recursive fetchData call to prevent infinite loops
-            // The next scheduled refresh will pick up the changes
-          }
-        } catch (error) {
-          console.error('Error in auto-movement during refresh:', error);
+        // Skip auto-movement during fetchData to prevent race conditions and resets
+        // Auto-movement will be handled by the scheduled interval instead
+        console.log(`✅ Data fetched successfully for ${columnId} column`);
+
+        // Log task counts for debugging
+        if (columnId === 'review') {
+          const reviewTasks = projectsData.flatMap((p: any) =>
+            p.tasks?.filter((t: any) => t.status === 'In review' && !t.completed) || []
+          );
+          console.log(`📊 Found ${reviewTasks.length} tasks in review status:`,
+            reviewTasks.map((t: any) => ({ title: t.title, status: t.status, completed: t.completed }))
+          );
         }
       }
     } catch (error) {
@@ -141,34 +170,41 @@ export default function TaskColumn({ columnId, title }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Optimized refresh mechanism - less aggressive polling
+  // Optimized refresh mechanism - much less aggressive polling to prevent resets
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchData();
-    }, 10000); // Reduced frequency to 10 seconds
+      // Only refresh if not currently fetching and no recent submissions
+      if (!fetchingRef.current) {
+        console.log(`🔄 Scheduled refresh for ${columnId} column`);
+        fetchData();
+      }
+    }, 30000); // Increased to 30 seconds to prevent overwriting recent submissions
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Enhanced auto-movement trigger - check less frequently
+  // Enhanced auto-movement trigger - check much less frequently to prevent resets
   useEffect(() => {
     if (columnId === 'todo') {
       const checkMovement = async () => {
         try {
-          const result = await checkAndExecuteAutoMovement();
-          if (result.moved) {
-            console.log('🔄 Scheduled auto-movement:', result.message);
-            // Trigger immediate refresh
-            fetchData();
+          // Only check auto-movement if not currently fetching
+          if (!fetchingRef.current) {
+            const result = await checkAndExecuteAutoMovement();
+            if (result.moved) {
+              console.log('🔄 Scheduled auto-movement:', result.message);
+              // Trigger immediate refresh only if tasks were actually moved
+              fetchData();
+            }
           }
         } catch (error) {
           console.error('Error in scheduled auto-movement:', error);
         }
       };
 
-      // Check for movement every 15 seconds for today's column
-      const movementInterval = setInterval(checkMovement, 15000);
+      // Reduced frequency to 60 seconds to prevent interfering with submissions
+      const movementInterval = setInterval(checkMovement, 60000);
       return () => clearInterval(movementInterval);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -190,6 +226,18 @@ export default function TaskColumn({ columnId, title }: Props) {
       const projectLogo = org?.logo || '/logos/fallback-logo.png';
 
       project.tasks.forEach((task, index) => {
+        // Security check: Ensure this task belongs to the current freelancer
+        const projectInfo = projectsInfo.find(p => p.projectId === project.projectId);
+        if (!isValidFreelancerTask({
+          project: {
+            freelancerId: projectInfo?.freelancerId,
+            assignedFreelancerId: projectInfo?.assignedFreelancerId
+          }
+        }, freelancerSession)) {
+          console.warn(`🚫 Task ${task.id} filtered out - not assigned to current freelancer`);
+          return; // Skip this task
+        }
+
         // Extract just the date part from the UTC string and create a local date
         const dueDateString = task.dueDate.split('T')[0]; // Gets "2025-07-05"
         const localDueDate = new Date(dueDateString + 'T00:00:00'); // Creates local midnight
@@ -218,25 +266,46 @@ export default function TaskColumn({ columnId, title }: Props) {
           });
         }
 
-        // Business Logic: All incomplete tasks are "today's work", regardless of due date
-        // Today's Tasks: Show first 3 incomplete tasks
-        // Upcoming: Show remaining incomplete tasks (overflow from today)
-        // Review: Show all tasks in review
+        // Business Logic: Proper task status filtering
+        // Today's Tasks: Show ongoing tasks that are not paused
+        // Upcoming: Show ongoing tasks (including paused project tasks)
+        // Review: Show tasks that are submitted and awaiting review
 
-        const isIncompleteTask = !task.completed && task.status === 'Ongoing';
-        const isInReview = task.status === 'In review';
+        const isOngoingTask = task.status === 'Ongoing' && !task.completed;
+        const isInReview = task.status === 'In review' && !task.completed;
         const isPaused = isProjectPaused(project.projectId);
+
+        // Debug logging for review column to track missing tasks
+        if (columnId === 'review') {
+          console.log(`Review Column Debug - Task ${task.id}:`, {
+            taskTitle: task.title,
+            status: task.status,
+            completed: task.completed,
+            isInReview,
+            shouldInclude: isInReview,
+            projectTitle: project.title
+          });
+        }
+
+        // Check if this task was recently submitted to prevent duplication
+        const taskKey = `${project.projectId}-${task.id}`;
+        const wasRecentlySubmitted = recentlySubmittedTasks.current.has(taskKey);
 
         // Paused project tasks should NEVER appear in today's column
         // They can only appear in upcoming column
+        // Approved/completed tasks should not appear in any column
+        // Recently submitted tasks should not appear in non-review columns
         const shouldInclude =
-          (columnId === 'todo' && isIncompleteTask && !isPaused) ||
-          (columnId === 'upcoming' && isIncompleteTask) ||
+          (columnId === 'todo' && isOngoingTask && !isPaused && !wasRecentlySubmitted) ||
+          (columnId === 'upcoming' && isOngoingTask && !wasRecentlySubmitted) ||
           (columnId === 'review' && isInReview);
 
-        // Log paused project task exclusion from today's column
-        if (columnId === 'todo' && isIncompleteTask && isPaused) {
+        // Log exclusions for debugging
+        if (columnId === 'todo' && isOngoingTask && isPaused) {
           console.log(`🚫 Excluding paused project task from today's column: ${task.title} (Project: ${project.title})`);
+        }
+        if (wasRecentlySubmitted && columnId !== 'review') {
+          console.log(`🚫 Excluding recently submitted task from ${columnId} column: ${task.title} (preventing duplication)`);
         }
 
         if (!shouldInclude) return;
@@ -294,8 +363,19 @@ export default function TaskColumn({ columnId, title }: Props) {
         const projectLogo = org?.logo || '/logos/fallback-logo.png';
 
         project.tasks.forEach((task, index) => {
-          // Only include incomplete tasks (regardless of due date)
-          if (!task.completed && task.status === 'Ongoing') {
+          // Security check: Ensure this task belongs to the current freelancer
+          const projectInfo = projectsInfo.find(p => p.projectId === project.projectId);
+          if (!isValidFreelancerTask({
+            project: {
+              freelancerId: projectInfo?.freelancerId,
+              assignedFreelancerId: projectInfo?.assignedFreelancerId
+            }
+          }, freelancerSession)) {
+            return; // Skip this task
+          }
+
+          // Only include ongoing tasks that are not completed or approved
+          if (task.status === 'Ongoing' && !task.completed) {
             const isPaused = isProjectPaused(project.projectId);
 
             let tag = project.typeTags[0] ?? 'General';

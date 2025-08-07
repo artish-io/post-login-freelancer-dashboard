@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { readProject } from '../../../lib/projects-utils';
-import { readAllTasks, convertHierarchicalToLegacy } from '../../../lib/project-tasks/hierarchical-storage';
-import { getAllInvoices } from '../../../lib/invoice-storage';
+import { readProject } from '@/lib/projects-utils';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
+import { getAllInvoices } from '@/lib/invoice-storage';
 
 export async function GET(request: Request) {
   try {

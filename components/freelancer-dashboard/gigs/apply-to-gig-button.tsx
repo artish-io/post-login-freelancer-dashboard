@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import ApplyForm from './apply-form';
+import { useErrorToast } from '@/components/ui/toast';
 
 interface ApplyToGigButtonProps {
   gigId: number;
@@ -13,10 +14,11 @@ export default function ApplyToGigButton({ gigId }: ApplyToGigButtonProps) {
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [gigData, setGigData] = useState<any>(null);
   const [orgData, setOrgData] = useState<any>(null);
+  const showErrorToast = useErrorToast();
 
   const handleApplyClick = async () => {
     if (!session?.user?.id) {
-      alert('Please log in to apply for gigs');
+      showErrorToast('Authentication Required', 'Please log in to apply for gigs');
       return;
     }
 
@@ -25,6 +27,13 @@ export default function ApplyToGigButton({ gigId }: ApplyToGigButtonProps) {
       const gigRes = await fetch(`/api/gigs/${gigId}`);
       if (gigRes.ok) {
         const gig = await gigRes.json();
+
+        // Check if gig is still available
+        if (gig.status !== 'Available') {
+          showErrorToast('Gig Unavailable', 'This gig is no longer accepting applications.');
+          return;
+        }
+
         setGigData(gig);
 
         // Fetch organization data if available
@@ -37,9 +46,12 @@ export default function ApplyToGigButton({ gigId }: ApplyToGigButtonProps) {
         }
 
         setShowApplyModal(true);
+      } else {
+        showErrorToast('Error', 'Failed to load gig details.');
       }
     } catch (error) {
       console.error('Failed to load gig data:', error);
+      showErrorToast('Error', 'Failed to load gig details.');
     }
   };
 

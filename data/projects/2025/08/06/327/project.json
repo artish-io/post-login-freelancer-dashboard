@@ -1,0 +1,24 @@
+{
+  "projectId": 327,
+  "title": "Motion Graphics Video for Healthcare App",
+  "description": "Create a 90-second animated video explaining features of Corlax's iOS wellness app.",
+  "organizationId": 3,
+  "typeTags": [
+    "Animation",
+    "Healthcare",
+    "Explainer Video"
+  ],
+  "manager": {
+    "name": "Matte Hannery",
+    "title": "Startup Founder",
+    "avatar": "/avatars/matte.png",
+    "email": "matte.hannery@example.com"
+  },
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "status": "ongoing",
+  "dueDate": "2025-08-27",
+  "totalTasks": 1,
+  "gigId": 2,
+  "createdAt": "2025-08-06T16:58:37.813Z"
+}

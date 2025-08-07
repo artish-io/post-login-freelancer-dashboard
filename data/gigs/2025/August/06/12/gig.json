@@ -1,0 +1,35 @@
+{
+  "id": 12,
+  "title": "Corporate Event Photography Package",
+  "organizationId": 4,
+  "commissionerId": 35,
+  "category": "Visual Media",
+  "subcategory": "Photography",
+  "tags": [
+    "Event Photography",
+    "Corporate Events",
+    "Professional Photography"
+  ],
+  "hourlyRateMin": 75,
+  "hourlyRateMax": 120,
+  "description": "Professional photography coverage for Zynate Events Group's upcoming corporate conference. Need comprehensive event documentation including keynote speakers, networking sessions, and award ceremony.",
+  "deliveryTimeWeeks": 1,
+  "estimatedHours": 16,
+  "status": "Available",
+  "toolsRequired": [
+    "Professional Camera Equipment",
+    "Adobe Lightroom",
+    "Adobe Photoshop"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "startType": "Immediately",
+  "endDate": "2025-08-20T04:00:00.000Z",
+  "lowerBudget": 1200,
+  "upperBudget": 1920,
+  "postedDate": "2025-08-06",
+  "notes": "Event takes place August 15-16, 2025 in Ottawa. Must have experience with corporate event photography and ability to work in low-light conditions.",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

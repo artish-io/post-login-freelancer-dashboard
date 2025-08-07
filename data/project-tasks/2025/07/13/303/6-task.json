@@ -8,7 +8,7 @@
     "UX Research"
   ],
   "title": "Login & onboarding flow",
-  "status": "In review",
+  "status": "Approved",
   "completed": true,
   "order": 1,
   "link": "https://figma.com/file/login-onboarding",
@@ -19,6 +19,7 @@
   "version": 1,
   "description": "Design intuitive login and onboarding flows for the iOS app.",
   "submittedDate": "2025-07-26T13:45:51.500Z",
-  "createdDate": "2025-07-29T13:32:42.038Z",
-  "lastModified": "2025-07-29T13:32:42.038Z"
+  "createdDate": "2025-08-03T15:57:39.544Z",
+  "lastModified": "2025-08-05T20:32:41.290Z",
+  "approvedDate": "2025-08-05T20:32:41.290Z"
 }

@@ -8,8 +8,8 @@
     "UX Strategy"
   ],
   "title": "Accessibility audit pass",
-  "status": "Ongoing",
-  "completed": false,
+  "status": "In review",
+  "completed": true,
   "order": 10,
   "link": "https://figma.com/file/a11y-check",
   "dueDate": "2025-07-17T00:00:00.000Z",
@@ -18,6 +18,7 @@
   "pushedBack": true,
   "version": 2,
   "description": "Run final accessibility audit and implement fixes.",
-  "createdDate": "2025-07-29T13:32:42.040Z",
-  "lastModified": "2025-07-29T13:32:42.041Z"
+  "createdDate": "2025-08-03T15:57:39.545Z",
+  "lastModified": "2025-08-04T05:10:47.661Z",
+  "submittedDate": "2025-08-04T05:10:47.661Z"
 }

@@ -2,7 +2,9 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { getProgressRingStyles, getProgressRingProps } from '../../../../../src/lib/project-status-sync';
+import { requireFreelancerSession } from '../../../../../src/lib/freelancer-access-control';
 
 type Project = {
   projectId: number;
@@ -29,10 +31,32 @@ type Props = {
 
 export default function ProjectsRow({ projects, users, filterStatus }: Props) {
   const router = useRouter();
-  const filteredProjects = projects.filter((project) => project.status === filterStatus);
+  const { data: session } = useSession();
+
+  // Ensure user is a freelancer before rendering
+  const freelancerSession = requireFreelancerSession(session?.user as any);
+  if (!freelancerSession) {
+    return (
+      <div className="relative w-full">
+        <div className="py-4 text-center text-sm text-gray-500">
+          Access denied: Freelancer authentication required
+        </div>
+      </div>
+    );
+  }
+
+  const filteredProjects = projects
+    .filter((project) => project.status === filterStatus)
+    .sort((a, b) => {
+      // Sort by nearest due date (earliest first)
+      if (!a.dueDate && !b.dueDate) return 0;
+      if (!a.dueDate) return 1;
+      if (!b.dueDate) return -1;
+      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+    });
 
   const handleProjectClick = (projectId: number) => {
-    router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking?id=${projectId}`);
+    router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking/${projectId}`);
   };
 
   const getCommissionerName = (id: number) => {

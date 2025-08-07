@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 export interface NotificationData {
   id: string;
-  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'project_pause_requested' | 'project_pause_refused' | 'project_paused' | 'project_pause_reminder' | 'gig_request' | 'gig_request_accepted' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase' | 'task_submitted' | 'job_application' | 'invoice_reminder' | 'invoice_overdue_reminder' | 'milestone_payment_received' | 'task_rejected_with_comment';
+  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'project_pause_requested' | 'project_pause_refused' | 'project_paused' | 'project_pause_reminder' | 'project_activated' | 'project_reactivated' | 'gig_request' | 'gig_request_accepted' | 'gig_rejected' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase' | 'task_submitted' | 'job_application' | 'invoice_reminder' | 'invoice_overdue_reminder' | 'milestone_payment_received' | 'task_rejected_with_comment';
   title: string;
   message: string;
   timestamp: string;
@@ -82,6 +82,8 @@ const getNotificationIcon = (type: string, notification: NotificationData): stri
       return '/icons/task-rejected.png';
     case 'gig_request':
       return '/icons/new-gig-request.png';
+    case 'gig_rejected':
+      return '/icons/gig-rejected.png';
     case 'proposal_sent':
       return '/icons/new-proposal.png';
     case 'invoice_sent':
@@ -155,16 +157,7 @@ export default function NotificationItem({
                 {notification.message}
               </p>
             )}
-            {notification.project && (
-              <p className="text-xs text-gray-500 mt-1">
-                Project: {notification.project.title}
-              </p>
-            )}
-            {notification.gig && notification.type !== 'gig_application' && (
-              <p className="text-xs text-gray-500 mt-1">
-                Gig: {notification.gig.title}
-              </p>
-            )}
+
           </div>
 
           {/* Timestamp */}

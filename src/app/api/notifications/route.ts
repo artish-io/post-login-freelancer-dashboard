@@ -4,6 +4,8 @@ import fs from 'fs';
 import path from 'path';
 import { readAllProjects } from '@/lib/projects-utils';
 import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
+import { readAllGigs } from '@/lib/gigs/hierarchical-storage';
+import { getAllInvoices } from '@/lib/invoice-storage';
 
 export async function GET(request: NextRequest) {
   try {
@@ -19,27 +21,25 @@ export async function GET(request: NextRequest) {
     }
 
     // Read data files
-    const gigsPath = path.join(process.cwd(), 'data', 'gigs', 'gigs.json');
     const gigApplicationsPath = path.join(process.cwd(), 'data', 'gigs', 'gig-applications.json');
     const usersPath = path.join(process.cwd(), 'data', 'users.json');
     const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
     const contactsPath = path.join(process.cwd(), 'data', 'contacts.json');
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
     const commissionerNotificationsPath = path.join(process.cwd(), 'data', 'notifications', 'commissioners.json');
-    const invoicesPath = path.join(process.cwd(), 'data', 'invoices.json');
 
     // Load data from hierarchical storage and flat files
     const [projectsData, hierarchicalTasks, gigsData, gigApplicationsData, usersData, freelancersData, contactsData, organizationsData, commissionerNotificationsData, invoicesData] = await Promise.all([
       readAllProjects(), // Use hierarchical storage for projects
       readAllTasks(), // Use hierarchical storage for project tasks
-      fs.promises.readFile(gigsPath, 'utf8').then(data => JSON.parse(data)),
+      readAllGigs(), // Use hierarchical storage for gigs
       fs.promises.readFile(gigApplicationsPath, 'utf8').then(data => JSON.parse(data)),
       fs.promises.readFile(usersPath, 'utf8').then(data => JSON.parse(data)),
       fs.promises.readFile(freelancersPath, 'utf8').then(data => JSON.parse(data)),
       fs.promises.readFile(contactsPath, 'utf8').then(data => JSON.parse(data)),
       fs.promises.readFile(organizationsPath, 'utf8').then(data => JSON.parse(data)),
       fs.promises.readFile(commissionerNotificationsPath, 'utf8').then(data => JSON.parse(data)),
-      fs.promises.readFile(invoicesPath, 'utf8').then(data => JSON.parse(data))
+      getAllInvoices() // Use hierarchical storage for invoices
     ]);
 
     // Convert hierarchical tasks to legacy format for compatibility

@@ -12,12 +12,35 @@ export async function POST(req: Request) {
     }
 
     // Read data files
-    const gigsPath = path.join(process.cwd(), 'data', 'gigs', 'gigs.json');
+    function getAllGigFiles(dirPath: string): any[] {
+      const gigs: any[] = [];
+      const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        if (entry.isDirectory()) {
+          gigs.push(...getAllGigFiles(fullPath));
+        } else if (entry.isFile() && entry.name === 'gig.json') {
+          try {
+            const fileContent = fs.readFileSync(fullPath, 'utf-8');
+            const parsed = JSON.parse(fileContent);
+            if (parsed?.id) gigs.push(parsed);
+          } catch (err) {
+            console.warn(`[Gig Skipped] Failed to read or parse: ${fullPath}`);
+          }
+        }
+      }
+
+      return gigs;
+    }
+
+    const gigsDir = path.join(process.cwd(), 'data', 'gigs');
+    const gigs = getAllGigFiles(gigsDir);
+
     const categoriesPath = path.join(process.cwd(), 'data', 'gigs', 'gig-categories.json');
     const toolsPath = path.join(process.cwd(), 'data', 'gigs', 'gig-tools.json');
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
 
-    const gigs = JSON.parse(fs.readFileSync(gigsPath, 'utf-8'));
     const categories = JSON.parse(fs.readFileSync(categoriesPath, 'utf-8'));
     const tools = JSON.parse(fs.readFileSync(toolsPath, 'utf-8'));
     const organizations = JSON.parse(fs.readFileSync(organizationsPath, 'utf-8'));

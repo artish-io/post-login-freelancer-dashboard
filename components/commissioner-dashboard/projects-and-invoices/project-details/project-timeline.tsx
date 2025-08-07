@@ -31,7 +31,10 @@ export default function CommissionerProjectTimeline({ projectId }: Props) {
       try {
         // Use the existing project-tasks API
         const res = await fetch('/api/project-tasks');
-        const allProjects = await res.json();
+        const projectsResponse = await res.json();
+
+        // Ensure allProjects is always an array
+        const allProjects = Array.isArray(projectsResponse) ? projectsResponse : [];
 
         // Find the specific project
         const project = allProjects.find((p: any) => p.projectId === projectId);
@@ -41,7 +44,7 @@ export default function CommissionerProjectTimeline({ projectId }: Props) {
           const transformedTasks = project.tasks.map((task: any) => ({
             id: task.id,
             title: task.title,
-            isCompleted: task.completed,
+            isCompleted: task.status === 'Approved' && task.completed, // Only show as completed when approved
             status: task.status,
             dueDate: task.dueDate,
             description: task.description,
@@ -73,10 +76,21 @@ export default function CommissionerProjectTimeline({ projectId }: Props) {
     <div className="relative">
       {/* Timeline */}
       <div className="relative px-8 pb-10">
-        <ul className="space-y-10 relative">
-          <div className="absolute top-3 left-4 w-[2px] bg-gray-300 h-full z-0" />
-          {tasks.map((task) => (
-            <li key={task.id} className="relative flex items-start gap-6">
+        {tasks.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">No milestones yet</h3>
+            <p className="text-gray-600">Project milestones will appear here once they are created.</p>
+          </div>
+        ) : (
+          <ul className="space-y-10 relative">
+            <div className="absolute top-3 left-4 w-[2px] bg-gray-300 h-full z-0" />
+            {tasks.map((task, index) => (
+            <li key={`task-${task.id}-${index}-${projectId}`} className="relative flex items-start gap-6">
               <div className="relative z-10 mt-1.5">
                 <div className="w-8 h-8 rounded-full border-2 border-gray-400 bg-white flex items-center justify-center">
                   {task.isCompleted ? (
@@ -103,7 +117,8 @@ export default function CommissionerProjectTimeline({ projectId }: Props) {
               </div>
             </li>
           ))}
-        </ul>
+          </ul>
+        )}
       </div>
 
       {/* Progress Bar at Bottom */}

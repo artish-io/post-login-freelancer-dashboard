@@ -118,5 +118,46 @@
       "Must-have for anyone working with freelancers.",
       "Clear and actionable advice."
     ]
+  },
+  {
+    "id": "#103001",
+    "title": "Wellness App Design Kit",
+    "category": "Design Templates",
+    "status": "Approved",
+    "price": 45,
+    "coverImage": "/images/products/wellness-design-kit.webp",
+    "authorId": 34,
+    "downloadLink": "/downloads/wellness-design-kit.zip",
+    "description": "Complete design system and UI kit for wellness and mental health applications. Includes components, icons, and templates.",
+    "productDetails": "50+ Components, 100+ Icons, 10 Templates",
+    "assets": [
+      "sketch",
+      "figma",
+      "pdf"
+    ],
+    "reviews": [
+      "Excellent design system for health apps.",
+      "Very comprehensive and well-organized."
+    ]
+  },
+  {
+    "id": "#103002",
+    "title": "Startup Pitch Deck Template",
+    "category": "Business Tools",
+    "status": "Approved",
+    "price": 29,
+    "coverImage": "/images/products/pitch-deck-template.webp",
+    "authorId": 34,
+    "downloadLink": "/downloads/pitch-deck-template.pptx",
+    "description": "Professional pitch deck template used by successful startups to raise funding. Includes investor-ready slides and guidance.",
+    "productDetails": "25 Slides + Guide",
+    "assets": [
+      "pptx",
+      "pdf"
+    ],
+    "reviews": [
+      "Helped us raise our Series A!",
+      "Professional and investor-friendly design."
+    ]
   }
 ]

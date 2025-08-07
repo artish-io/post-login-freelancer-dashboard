@@ -1,7 +1,9 @@
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Gig } from '../../types/gig';
+import GigRequestModal from '../commissioner-dashboard/discover-talent/gig-request-modal';
 
 type GigCardProps = {
   gig: Gig;
@@ -10,6 +12,10 @@ type GigCardProps = {
 export default function GigCard({ gig }: GigCardProps) {
   const { data: session } = useSession();
   const router = useRouter();
+  const [showGigRequestModal, setShowGigRequestModal] = useState(false);
+  const [canSendMessage, setCanSendMessage] = useState(true);
+  const [messageBlockReason, setMessageBlockReason] = useState<string | null>(null);
+  const [checkingPermission, setCheckingPermission] = useState(false);
 
   const {
     name,
@@ -22,6 +28,45 @@ export default function GigCard({ gig }: GigCardProps) {
     rating,
     avatar = '/avatar.png' // Default fallback avatar
   } = gig;
+
+  // Check message permissions for commissioners
+  useEffect(() => {
+    const checkMessagePermission = async () => {
+      const userType = (session?.user as any)?.userType;
+      if (userType !== 'commissioner' || !session?.user?.id) {
+        return; // Only check for commissioners
+      }
+
+      const freelancerUserId = (gig as any).userId || gig.id;
+      if (!freelancerUserId) return;
+
+      setCheckingPermission(true);
+      try {
+        const response = await fetch('/api/messages/check-permission', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            commissionerId: parseInt(session.user.id),
+            freelancerId: freelancerUserId
+          })
+        });
+
+        if (response.ok) {
+          const permission = await response.json();
+          setCanSendMessage(permission.canSend);
+          setMessageBlockReason(permission.reason || null);
+        }
+      } catch (error) {
+        console.error('Error checking message permission:', error);
+        // Default to allowing messages on error
+        setCanSendMessage(true);
+      } finally {
+        setCheckingPermission(false);
+      }
+    };
+
+    checkMessagePermission();
+  }, [session?.user?.id, gig]);
 
   // Extract tools from both skills and tools arrays (handle data structure inconsistency)
   const tools = (gig as any).tools || [];
@@ -67,9 +112,8 @@ export default function GigCard({ gig }: GigCardProps) {
       return;
     }
 
-    // Navigate to post-a-gig flow with freelancer pre-selected
-    const freelancerUserId = (gig as any).userId || gig.id;
-    router.push(`/commissioner-dashboard/projects-and-invoices/post-a-gig?targetFreelancer=${freelancerUserId}&freelancerName=${encodeURIComponent(name)}`);
+    // Open the gig request modal
+    setShowGigRequestModal(true);
   };
 
   const skillIcons: Record<string, string> = {
@@ -193,26 +237,41 @@ export default function GigCard({ gig }: GigCardProps) {
 
       {/* Footer */}
       <div className="p-2 sm:p-4 flex items-center justify-between mt-1 sm:mt-2">
-        {/* Message Icon - triggers DM */}
-        <button
-          onClick={handleMessageClick}
-          className="hover:bg-gray-100 p-2 rounded-lg transition-colors"
-          title="Send direct message"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-gray-600"
+        {/* Message Icon - triggers DM with anti-spam protection */}
+        <div className="relative group">
+          <button
+            onClick={canSendMessage ? handleMessageClick : undefined}
+            className={`p-2 rounded-lg transition-colors ${
+              canSendMessage
+                ? 'hover:bg-gray-100'
+                : 'cursor-not-allowed opacity-50'
+            }`}
+            title={canSendMessage ? "Send direct message" : (messageBlockReason || "Message limit reached")}
+            disabled={!canSendMessage || checkingPermission}
           >
-            <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/>
-          </svg>
-        </button>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={canSendMessage ? "text-gray-600" : "text-gray-400"}
+            >
+              <path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8z"/>
+            </svg>
+          </button>
+
+          {/* Tooltip for blocked messages */}
+          {!canSendMessage && messageBlockReason && (
+            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 pointer-events-none">
+              {messageBlockReason}
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+            </div>
+          )}
+        </div>
 
         {/* Send Gig Request Button - text only */}
         <button
@@ -224,6 +283,22 @@ export default function GigCard({ gig }: GigCardProps) {
 
         <span className="text-xs sm:text-sm text-gray-500 truncate max-w-[60px] sm:max-w-none">📍{formatLocation(location)}</span>
       </div>
+
+      {/* Gig Request Modal */}
+      <GigRequestModal
+        isOpen={showGigRequestModal}
+        onClose={() => setShowGigRequestModal(false)}
+        freelancer={{
+          id: gig.id,
+          userId: (gig as any).userId || gig.id,
+          name,
+          title,
+          avatar,
+          category,
+          skills,
+          tools: (gig as any).tools || []
+        }}
+      />
     </div>
   );
 }

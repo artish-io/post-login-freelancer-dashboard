@@ -92,11 +92,11 @@ export default function CommissionerNetworkPanel({ commissionerId }: Commissione
             return;
           }
 
-          // Collect all user IDs that this commissioner has engaged with
+          // Collect only freelancers with ACTUAL engagement history
           const engagedUserIds = new Set<number>();
           const userRelationships = new Map<number, { types: Set<string>, lastInteraction: string }>();
 
-          // 1. From projects (commissioned freelancers)
+          // 1. From projects (commissioned freelancers with actual project relationships)
           const organizationProjects = projectsData.filter((project: any) =>
             project.organizationId === organization.id
           );
@@ -108,41 +108,49 @@ export default function CommissionerNetworkPanel({ commissionerId }: Commissione
                 userRelationships.set(project.freelancerId, { types: new Set(), lastInteraction: '' });
               }
               userRelationships.get(project.freelancerId)!.types.add('project');
+              // Use project creation date as interaction timestamp
+              userRelationships.get(project.freelancerId)!.lastInteraction = project.createdAt || new Date().toISOString();
             }
           });
 
-          // 2. From messages (direct conversations)
+          // 2. From messages (ONLY active conversations where freelancer has replied)
           if (Array.isArray(messagesData)) {
             messagesData.forEach((thread: any) => {
               if (thread.participants && thread.participants.includes(commissionerId)) {
-                thread.participants.forEach((participantId: number) => {
-                  if (participantId !== commissionerId) {
-                    engagedUserIds.add(participantId);
-                    if (!userRelationships.has(participantId)) {
-                      userRelationships.set(participantId, { types: new Set(), lastInteraction: '' });
-                    }
-                    userRelationships.get(participantId)!.types.add('messages');
+                // Only include if thread status is 'active' (both parties have participated)
+                if (thread.metadata?.status === 'active') {
+                  thread.participants.forEach((participantId: number) => {
+                    if (participantId !== commissionerId) {
+                      engagedUserIds.add(participantId);
+                      if (!userRelationships.has(participantId)) {
+                        userRelationships.set(participantId, { types: new Set(), lastInteraction: '' });
+                      }
+                      userRelationships.get(participantId)!.types.add('mutual_messaging');
 
-                    // Get last message timestamp
-                    if (thread.messages && thread.messages.length > 0) {
-                      const lastMessage = thread.messages[thread.messages.length - 1];
-                      userRelationships.get(participantId)!.lastInteraction = lastMessage.timestamp;
+                      // Get last message timestamp
+                      if (thread.messages && thread.messages.length > 0) {
+                        const lastMessage = thread.messages[thread.messages.length - 1];
+                        userRelationships.get(participantId)!.lastInteraction = lastMessage.timestamp;
+                      } else {
+                        userRelationships.get(participantId)!.lastInteraction = thread.metadata?.createdAt || new Date().toISOString();
+                      }
                     }
-                  }
-                });
+                  });
+                }
               }
             });
           }
 
-          // 3. From gig applications (freelancers who applied to commissioner's gigs)
+          // 3. From ACCEPTED gig applications only (not just any application)
           if (Array.isArray(gigApplicationsData)) {
             gigApplicationsData.forEach((application: any) => {
-              if (application.freelancerId) {
+              // Only include applications that were accepted (which should create projects)
+              if (application.freelancerId && application.status === 'accepted') {
                 engagedUserIds.add(application.freelancerId);
                 if (!userRelationships.has(application.freelancerId)) {
                   userRelationships.set(application.freelancerId, { types: new Set(), lastInteraction: '' });
                 }
-                userRelationships.get(application.freelancerId)!.types.add('gig_application');
+                userRelationships.get(application.freelancerId)!.types.add('accepted_gig');
                 userRelationships.get(application.freelancerId)!.lastInteraction = application.submittedAt;
               }
             });
@@ -251,29 +259,21 @@ export default function CommissionerNetworkPanel({ commissionerId }: Commissione
                     {contact.title}
                   </div>
 
-                  {/* Relationship indicators */}
+                  {/* Relationship indicators - only showing verified engagement types */}
                   <div className="flex gap-1 mt-1">
                     {contact.relationshipTypes.includes('project') && (
                       <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
                         Project
                       </span>
                     )}
-                    {contact.relationshipTypes.includes('messages') && (
+                    {contact.relationshipTypes.includes('mutual_messaging') && (
                       <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                        Messages
+                        Conversation
                       </span>
                     )}
-                    {contact.relationshipTypes.includes('gig_application') && (
+                    {contact.relationshipTypes.includes('accepted_gig') && (
                       <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
-                        Applied
-                      </span>
-                    )}
-                    {(contact.relationshipTypes.includes('task_submission') ||
-                      contact.relationshipTypes.includes('project_pause') ||
-                      contact.relationshipTypes.includes('proposal_sent') ||
-                      contact.relationshipTypes.includes('invoice_sent')) && (
-                      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">
-                        Activity
+                        Hired
                       </span>
                     )}
                   </div>
@@ -297,7 +297,7 @@ export default function CommissionerNetworkPanel({ commissionerId }: Commissione
         {contacts.length === 0 && !loading && (
           <div className="text-center py-8 text-gray-500">
             <p>No network contacts yet</p>
-            <p className="text-sm mt-1">Your network will appear here as you engage with freelancers through projects, messages, gig applications, and other interactions</p>
+            <p className="text-sm mt-1">Your network will show freelancers you've hired for projects, had conversations with, or accepted gig applications from</p>
           </div>
         )}
       </div>

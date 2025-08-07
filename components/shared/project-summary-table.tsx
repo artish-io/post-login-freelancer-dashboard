@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { validateDataIntegrity, logDataIntegrityReport } from '../../src/lib/data-integrity';
+import { filterFreelancerProjects, getFreelancerId, requireValidSession } from '../../src/lib/freelancer-access-control';
 
 export type ProjectSummaryItem = {
   projectId: number;
@@ -144,7 +145,7 @@ export default function ProjectSummaryTable({
             const projectTasksData = await projectTasksRes.json();
             const projectsData = await projectsRes.json();
             const users = await userRes.json();
-            const organizations = await orgRes.json();
+            await orgRes.json(); // Organizations data loaded but not used in commissioner view
 
             // Run data integrity check in development
             if (process.env.NODE_ENV === 'development') {
@@ -226,7 +227,26 @@ export default function ProjectSummaryTable({
             }
           }
         } else {
-          // Freelancer view - use existing API logic
+          // Freelancer view - use session-based filtering
+          const validSession = requireValidSession(session?.user as any);
+          if (!validSession) {
+            setProjects([]);
+            return;
+          }
+
+          // Only freelancers should see this view
+          const userType = validSession.userType || validSession.type;
+          if (userType !== 'freelancer') {
+            setProjects([]);
+            return;
+          }
+
+          const freelancerId = getFreelancerId(validSession);
+          if (!freelancerId) {
+            setProjects([]);
+            return;
+          }
+
           const [projectTasksRes, projectsRes, userRes, orgRes] = await Promise.all([
             fetch('/api/project-tasks'),
             fetch('/api/projects'),
@@ -240,8 +260,17 @@ export default function ProjectSummaryTable({
             const users = await userRes.json();
             const organizations = await orgRes.json();
 
+            // Filter projects to only include those belonging to this freelancer
+            const freelancerProjects = filterFreelancerProjects(projectsData, validSession);
+            const freelancerProjectIds = freelancerProjects.map(p => p.projectId);
+
+            // Filter project tasks to only include those for freelancer's projects
+            const freelancerProjectTasks = projectTasksData.filter((pt: any) =>
+              freelancerProjectIds.includes(pt.projectId)
+            );
+
             // Transform project-tasks data
-            const transformedProjects = projectTasksData.map((project: any) => {
+            const transformedProjects = freelancerProjectTasks.map((project: any) => {
               const tasks = project.tasks || [];
               // Progress should be based on approved tasks, not just completed/submitted tasks
               const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
@@ -249,8 +278,8 @@ export default function ProjectSummaryTable({
               const progress = totalTasks > 0 ? Math.round((approvedTasks / totalTasks) * 100) : 0;
 
               // Get due date from projects.json
-              const projectInfo = projectsData.find((p: any) => p.projectId === project.projectId);
-              const dueDate = projectInfo?.dueDate || null;
+              const projectInfo = freelancerProjects.find((p: any) => p.projectId === project.projectId);
+              const dueDate = (projectInfo as any)?.dueDate || null;
 
               // Find the organization and its contact person (commissioner)
               const organization = organizations.find((org: any) => org.id === project.organizationId);

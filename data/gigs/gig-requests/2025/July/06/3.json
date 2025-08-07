@@ -1,0 +1,36 @@
+[
+  {
+    "id": 202,
+    "freelancerId": 3,
+    "gigId": 102,
+    "organizationId": 2,
+    "commissionerId": 33,
+    "title": "Channel Identity Toolkit",
+    "skills": [
+      "Branding",
+      "Brand Design",
+      "Motion Graphics"
+    ],
+    "tools": [
+      "Adobe Illustrator",
+      "After Effects"
+    ],
+    "notes": "Create identity assets for Urbana's new documentary stream.",
+    "budget": {
+      "min": 2800,
+      "max": 4200,
+      "currency": "USD"
+    },
+    "status": "accepted",
+    "createdAt": "2025-07-06T14:45:00Z",
+    "responses": [
+      {
+        "type": "accepted",
+        "timestamp": "2025-08-03T20:53:44.277Z",
+        "message": "Offer accepted"
+      }
+    ],
+    "acceptedAt": "2025-08-03T20:53:44.277Z",
+    "projectId": 324
+  }
+]

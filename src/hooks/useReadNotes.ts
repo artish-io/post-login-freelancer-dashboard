@@ -1,5 +1,5 @@
 // src/hooks/useReadNotes.ts
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 export function useReadNotes() {
   // Initialize with localStorage data immediately (synchronous)
@@ -23,8 +23,17 @@ export function useReadNotes() {
     return new Set<string>();
   });
 
+  // Use ref to track if we're updating from our own event
+  const isUpdatingFromOwnEvent = useRef(false);
+
   // Save to localStorage whenever readNotes changes
   useEffect(() => {
+    // Skip if this update is from our own custom event listener
+    if (isUpdatingFromOwnEvent.current) {
+      isUpdatingFromOwnEvent.current = false;
+      return;
+    }
+
     localStorage.setItem("readNotes", JSON.stringify(Array.from(readNotes)));
 
     // Dispatch custom event to notify other components
@@ -38,24 +47,21 @@ export function useReadNotes() {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "readNotes" && e.newValue) {
         try {
+          isUpdatingFromOwnEvent.current = true;
           setReadNotes(new Set(JSON.parse(e.newValue)));
         } catch (error) {
           console.error("Error parsing storage change:", error);
+          isUpdatingFromOwnEvent.current = false;
         }
       }
     };
 
-    const handleCustomEvent = (e: CustomEvent) => {
-      // Force re-render when read notes change
-      setReadNotes(new Set(e.detail.readNotes));
-    };
-
+    // Only listen for storage changes from other tabs, not custom events
+    // Custom events would create infinite loops since this hook dispatches them
     window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('readNotesChanged', handleCustomEvent as EventListener);
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('readNotesChanged', handleCustomEvent as EventListener);
     };
   }, []);
 

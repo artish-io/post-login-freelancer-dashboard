@@ -393,13 +393,13 @@ I'm excited to contribute to this project and deliver high-quality results.`;
                       Portfolio Link
                     </label>
                     <input
-                      type="url"
+                      type="text"
                       value={applicationData.sampleLinks[0] || ''}
                       onChange={(e) => setApplicationData(prev => ({
                         ...prev,
                         sampleLinks: [e.target.value]
                       }))}
-                      placeholder="Add portfolio link"
+                      placeholder="example.com or https://example.com"
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
                       style={{ fontFamily: 'Plus Jakarta Sans' }}
                     />
@@ -489,13 +489,13 @@ I'm excited to contribute to this project and deliver high-quality results.`;
                   Portfolio Link (Optional)
                 </label>
                 <input
-                  type="url"
+                  type="text"
                   value={applicationData.sampleLinks[0]}
                   onChange={(e) => setApplicationData(prev => ({
                     ...prev,
                     sampleLinks: [e.target.value, ...prev.sampleLinks.slice(1)]
                   }))}
-                  placeholder="https://your-portfolio.com"
+                  placeholder="your-portfolio.com or https://your-portfolio.com"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm"
                   style={{ fontFamily: 'Plus Jakarta Sans' }}
                 />

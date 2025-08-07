@@ -21,13 +21,14 @@ export const NOTIFICATION_TYPES = {
   // Project notifications (20-39)
   PROJECT_CREATED: 20,
   PROJECT_STARTED: 21,
-  PROJECT_PAUSE_REQUESTED: 22,
-  PROJECT_PAUSE_ACCEPTED: 23,
-  PROJECT_PAUSE_REFUSED: 24,
-  PROJECT_PAUSED: 25,
-  PROJECT_PAUSE_REMINDER: 26,
-  PROJECT_COMPLETED: 27,
-  PROJECT_MILESTONE_REACHED: 28,
+  PROJECT_ACTIVATED: 22,
+  PROJECT_PAUSE_REQUESTED: 23,
+  PROJECT_PAUSE_ACCEPTED: 24,
+  PROJECT_PAUSE_REFUSED: 25,
+  PROJECT_PAUSED: 26,
+  PROJECT_PAUSE_REMINDER: 27,
+  PROJECT_COMPLETED: 28,
+  PROJECT_MILESTONE_REACHED: 29,
 
   // Invoice notifications (40-59) - Granular payment actions
   INVOICE_SENT: 40,
@@ -157,6 +158,7 @@ function getNotificationTypeNumber(eventType: EventType): number {
     // Project events
     'project_created': NOTIFICATION_TYPES.PROJECT_CREATED,
     'project_started': NOTIFICATION_TYPES.PROJECT_STARTED,
+    'project_activated': NOTIFICATION_TYPES.PROJECT_ACTIVATED,
     'project_pause_requested': NOTIFICATION_TYPES.PROJECT_PAUSE_REQUESTED,
     'project_pause_accepted': NOTIFICATION_TYPES.PROJECT_PAUSE_ACCEPTED,
     'project_pause_refused': NOTIFICATION_TYPES.PROJECT_PAUSE_REFUSED,
@@ -289,6 +291,16 @@ class EventLogger {
         iconPath: '/icons/project-pause.png', // Commissioner accepts/initiates pause
         priority: 'medium',
         channels: ['in_app']
+      },
+      {
+        eventType: 'project_activated',
+        targetUserTypes: ['project_freelancer'],
+        notificationType: 'project_activated',
+        titleTemplate: '{actorName} accepted your application for {gigTitle}',
+        messageTemplate: 'This project is now active and includes {taskCount} milestones due by {dueDate}',
+        iconType: 'avatar', // Commissioner avatar on freelancer side
+        priority: 'high',
+        channels: ['in_app', 'email']
       },
 
       // Gig events - Updated per your requirements
@@ -591,7 +603,35 @@ export const logTaskSubmitted = (freelancerId: number, taskId: number, projectId
 };
 
 // New granular convenience functions
-export const logTaskApproved = (commissionerId: number, freelancerId: number, taskId: number, taskTitle: string, projectId: number) => {
+export const logTaskApproved = async (commissionerId: number, freelancerId: number, taskId: number, taskTitle: string, projectId: number) => {
+  // Get additional metadata for notification generation
+  let projectTitle = 'Unknown Project';
+  let commissionerName = 'Unknown Commissioner';
+  let freelancerName = 'Unknown Freelancer';
+
+  try {
+    // Read project and user data for metadata
+    const fs = require('fs').promises;
+    const path = require('path');
+
+    const [projectData, usersData] = await Promise.all([
+      import('@/lib/projects-utils').then(m => m.readProject(projectId)),
+      fs.readFile(path.join(process.cwd(), 'data', 'users.json'), 'utf-8').then((data: string) => JSON.parse(data))
+    ]);
+
+    if (projectData) {
+      projectTitle = projectData.title || 'Unknown Project';
+    }
+
+    const commissioner = usersData.find((u: any) => u.id === commissionerId);
+    const freelancer = usersData.find((u: any) => u.id === freelancerId);
+
+    if (commissioner) commissionerName = commissioner.name;
+    if (freelancer) freelancerName = freelancer.name;
+  } catch (error) {
+    console.error('Error reading metadata for task approved event:', error);
+  }
+
   return eventLogger.logEvent({
     id: `task_approved_${taskId}_${Date.now()}`,
     timestamp: new Date().toISOString(),
@@ -603,6 +643,9 @@ export const logTaskApproved = (commissionerId: number, freelancerId: number, ta
     entityId: taskId,
     metadata: {
       taskTitle,
+      projectTitle,
+      commissionerName,
+      freelancerName,
       priority: 'medium'
     },
     context: {
@@ -611,7 +654,35 @@ export const logTaskApproved = (commissionerId: number, freelancerId: number, ta
   });
 };
 
-export const logTaskRejected = (commissionerId: number, freelancerId: number, taskId: number, taskTitle: string, projectId: number, rejectionComment?: string) => {
+export const logTaskRejected = async (commissionerId: number, freelancerId: number, taskId: number, taskTitle: string, projectId: number, rejectionComment?: string) => {
+  // Get additional metadata for notification generation
+  let projectTitle = 'Unknown Project';
+  let commissionerName = 'Unknown Commissioner';
+  let freelancerName = 'Unknown Freelancer';
+
+  try {
+    // Read project and user data for metadata
+    const fs = require('fs').promises;
+    const path = require('path');
+
+    const [projectData, usersData] = await Promise.all([
+      import('@/lib/projects-utils').then(m => m.readProject(projectId)),
+      fs.readFile(path.join(process.cwd(), 'data', 'users.json'), 'utf-8').then((data: string) => JSON.parse(data))
+    ]);
+
+    if (projectData) {
+      projectTitle = projectData.title || 'Unknown Project';
+    }
+
+    const commissioner = usersData.find((u: any) => u.id === commissionerId);
+    const freelancer = usersData.find((u: any) => u.id === freelancerId);
+
+    if (commissioner) commissionerName = commissioner.name;
+    if (freelancer) freelancerName = freelancer.name;
+  } catch (error) {
+    console.error('Error reading metadata for task rejected event:', error);
+  }
+
   return eventLogger.logEvent({
     id: `task_rejected_${taskId}_${Date.now()}`,
     timestamp: new Date().toISOString(),
@@ -623,6 +694,9 @@ export const logTaskRejected = (commissionerId: number, freelancerId: number, ta
     entityId: taskId,
     metadata: {
       taskTitle,
+      projectTitle,
+      commissionerName,
+      freelancerName,
       priority: 'high'
     },
     context: {

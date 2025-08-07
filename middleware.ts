@@ -15,6 +15,9 @@ export default withAuth(
       pathname.startsWith('/get-started') ||
       pathname.startsWith('/marketplace') ||
       pathname.startsWith('/api/auth') ||
+      pathname.startsWith('/test-login-tilly') ||
+      pathname.startsWith('/test-login-neilsan') ||
+      pathname.startsWith('/login-freelancer-tobi') ||
       pathname === '/' ||
       pathname.startsWith('/_next') ||
       pathname.startsWith('/public')
@@ -35,18 +38,18 @@ export default withAuth(
         return NextResponse.redirect(url);
       }
 
-      // Optional: Add user type validation
-      // if (pathname.startsWith('/commissioner-dashboard') && token.userType !== 'commissioner') {
-      //   const url = req.nextUrl.clone();
-      //   url.pathname = '/login-commissioner';
-      //   return NextResponse.redirect(url);
-      // }
+      // Add user type validation to redirect users to appropriate dashboards
+      if (pathname.startsWith('/commissioner-dashboard') && token.userType !== 'commissioner') {
+        const url = req.nextUrl.clone();
+        url.pathname = '/freelancer-dashboard';
+        return NextResponse.redirect(url);
+      }
 
-      // if (pathname.startsWith('/freelancer-dashboard') && token.userType !== 'freelancer') {
-      //   const url = req.nextUrl.clone();
-      //   url.pathname = '/login';
-      //   return NextResponse.redirect(url);
-      // }
+      if (pathname.startsWith('/freelancer-dashboard') && token.userType !== 'freelancer') {
+        const url = req.nextUrl.clone();
+        url.pathname = '/commissioner-dashboard';
+        return NextResponse.redirect(url);
+      }
     }
 
     // Protect admin routes
@@ -81,6 +84,9 @@ export default withAuth(
           pathname.startsWith('/get-started') ||
           pathname.startsWith('/marketplace') ||
           pathname.startsWith('/api/auth') ||
+          pathname.startsWith('/test-login-tilly') ||
+          pathname.startsWith('/test-login-neilsan') ||
+          pathname.startsWith('/login-freelancer-tobi') ||
           pathname === '/' ||
           pathname.startsWith('/_next') ||
           pathname.startsWith('/public')

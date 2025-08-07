@@ -1,0 +1,22 @@
+{
+  "taskId": 405,
+  "projectId": 330,
+  "projectTitle": "Web 3 Virtual Assets For NFT Project",
+  "organizationId": 4,
+  "projectTypeTags": [
+    "Web Development"
+  ],
+  "title": "Initial setup for Web 3 Virtual Assets For NFT Project",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "link": "",
+  "dueDate": "2025-08-14T02:57:09.965Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Begin work on Web 3 Virtual Assets For NFT Project project",
+  "createdDate": "2025-08-07T02:57:09.965Z",
+  "lastModified": "2025-08-07T02:57:09.967Z"
+}

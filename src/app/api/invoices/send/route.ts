@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { getInvoiceByNumber, saveInvoice } from '../../../lib/invoice-storage';
+import { getInvoiceByNumber, saveInvoice } from '@/lib/invoice-storage';
 
 /**
  * Send Invoice API Endpoint

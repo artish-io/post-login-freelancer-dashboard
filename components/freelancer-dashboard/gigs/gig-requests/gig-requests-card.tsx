@@ -3,6 +3,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 
 type GigRequestCardProps = {
   organizationLogo: string;
@@ -11,6 +12,9 @@ type GigRequestCardProps = {
   projectCommissioner: string;
   requiredSkill: string;
   rateRange: string;
+  gigTitle?: string;
+  status?: 'Available' | 'Pending' | 'Accepted' | 'Rejected';
+  projectId?: number;
   onClick?: () => void;
 };
 
@@ -21,6 +25,9 @@ export default function GigRequestsCard({
   projectCommissioner,
   requiredSkill,
   rateRange,
+  gigTitle,
+  status,
+  projectId,
   onClick,
 }: GigRequestCardProps) {
   return (
@@ -40,6 +47,21 @@ export default function GigRequestsCard({
             )}
           </div>
           <span className="text-sm text-gray-700">{projectCommissioner}</span>
+          {gigTitle && (
+            <div className="mt-1">
+              {status === 'Accepted' && projectId ? (
+                <Link
+                  href={`/freelancer-dashboard/projects-and-invoices/project-tracking?projectId=${projectId}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-xs text-pink-600 hover:underline font-medium"
+                >
+                  {gigTitle}
+                </Link>
+              ) : (
+                <span className="text-xs text-gray-600">{gigTitle}</span>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <div className="flex items-center gap-10">

@@ -1,0 +1,24 @@
+{
+  "taskId": 403,
+  "projectId": 328,
+  "projectTitle": "UX Audit Walkthrough",
+  "organizationId": 7,
+  "projectTypeTags": [
+    "UX Research",
+    "Heuristic Review",
+    "User Testing"
+  ],
+  "title": "Initial setup for UX Audit Walkthrough",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "link": "",
+  "dueDate": "2025-08-14T01:44:25.387Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Begin work on UX Audit Walkthrough project",
+  "createdDate": "2025-08-07T01:44:25.387Z",
+  "lastModified": "2025-08-07T01:44:25.388Z"
+}

@@ -180,15 +180,15 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
     
-    // Load data files
+    // Load data files using hierarchical storage
+    const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
     const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-    
+
     const projectsData = fs.readFileSync(projectsPath, 'utf8');
-    const projectTasksData = fs.readFileSync(projectTasksPath, 'utf8');
-    
+    const hierarchicalTasks = await readAllTasks();
+
     const projects: Project[] = JSON.parse(projectsData);
-    const projectTasks: ProjectTasks[] = JSON.parse(projectTasksData);
+    const projectTasks: ProjectTasks[] = convertHierarchicalToLegacy(hierarchicalTasks);
     
     if (userId) {
       // Return stats for specific user
@@ -214,14 +214,14 @@ export async function POST(request: Request) {
   try {
     // Stats are now calculated dynamically from universal source files
     // No need to update static files - return current stats instead
+    const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
     const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
 
     const projectsData = fs.readFileSync(projectsPath, 'utf8');
-    const projectTasksData = fs.readFileSync(projectTasksPath, 'utf8');
+    const hierarchicalTasks = await readAllTasks();
 
     const projects: Project[] = JSON.parse(projectsData);
-    const projectTasks: ProjectTasks[] = JSON.parse(projectTasksData);
+    const projectTasks: ProjectTasks[] = convertHierarchicalToLegacy(hierarchicalTasks);
 
     // Calculate stats for all users dynamically
     const userIds = [...new Set(projects.map(p => p.freelancerId))].filter(Boolean);

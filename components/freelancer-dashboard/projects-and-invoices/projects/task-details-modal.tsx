@@ -5,10 +5,13 @@ import { X, ArrowLeft, Link2 } from 'lucide-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import clsx from 'clsx';
+import { useSession } from 'next-auth/react';
 import type { TaskStatus } from '@/lib/projects/tasks/types';
 import useSubmitTask from '@/lib/hooks/useSubmitTask';
 import { checkTaskSubmissionRules, type TaskSubmissionRule } from '@/lib/task-submission-rules';
 import { checkAndExecuteAutoMovement } from '@/lib/auto-task-movement';
+import { useErrorToast } from '@/components/ui/toast';
+import { requireFreelancerSession, isValidFreelancerTask } from '@/lib/freelancer-access-control';
 
 type Props = {
   isOpen: boolean;
@@ -47,12 +50,23 @@ export default function TaskDetailsModal({
   taskId,
   onTaskSubmitted,
 }: Props) {
+  const { data: session } = useSession();
   const [referenceUrl, setReferenceUrl] = useState('');
   const [submissionRule, setSubmissionRule] = useState<TaskSubmissionRule>({ canSubmit: true });
   const [checkingRules, setCheckingRules] = useState(false);
-  const [isProjectPaused, setIsProjectPaused] = useState(false);
+  const [, setIsProjectPaused] = useState(false);
   const [projectInfo, setProjectInfo] = useState<any>(null);
   const { submitTask, loading, error, success } = useSubmitTask();
+  const showErrorToast = useErrorToast();
+
+  // Ensure user is a freelancer and has access to this task
+  const freelancerSession = requireFreelancerSession(session?.user as any);
+  const hasTaskAccess = freelancerSession && projectInfo && isValidFreelancerTask({
+    project: {
+      freelancerId: projectInfo?.freelancerId,
+      assignedFreelancerId: projectInfo?.assignedFreelancerId
+    }
+  }, freelancerSession);
 
   useEffect(() => {
     if (isOpen) {
@@ -119,14 +133,26 @@ export default function TaskDetailsModal({
 
   if (!isOpen) return null;
 
-  const isWritable = columnId !== 'review' && status !== 'Approved';
+  // Task is writable only if it's in 'Ongoing' status (not submitted, not approved, not rejected)
+  const isWritable = status === 'Ongoing';
 
   const handleSubmit = async () => {
     if (!referenceUrl) return;
 
+    // Security check: Ensure user has access to this task
+    if (!freelancerSession) {
+      showErrorToast('Access Denied', 'Freelancer authentication required.');
+      return;
+    }
+
+    if (!hasTaskAccess) {
+      showErrorToast('Access Denied', 'You do not have permission to submit this task.');
+      return;
+    }
+
     // Check submission rules before submitting
     if (!submissionRule.canSubmit) {
-      alert(submissionRule.reason || 'Task cannot be submitted at this time.');
+      showErrorToast('Cannot Submit Task', submissionRule.reason || 'Task cannot be submitted at this time.');
       return;
     }
 
@@ -295,11 +321,19 @@ export default function TaskDetailsModal({
           </>
         ) : status === 'Approved' ? (
           <p className="text-xs text-center text-gray-500 italic">
-            This task has been approved by the project commissioner. No further edits can be made.
+            ✅ This task has been approved by the project commissioner. No further edits can be made.
+          </p>
+        ) : status === 'In review' ? (
+          <p className="text-xs text-center text-gray-500 italic">
+            ⏳ This task is currently under review. No edits can be made.
+          </p>
+        ) : status === 'Rejected' ? (
+          <p className="text-xs text-center text-red-500 italic">
+            ❌ This task was rejected. Please review the feedback and resubmit.
           </p>
         ) : (
           <p className="text-xs text-center text-gray-500 italic">
-            This task is currently under review. No edits can be made.
+            This task cannot be edited at this time.
           </p>
         )}
       </motion.div>

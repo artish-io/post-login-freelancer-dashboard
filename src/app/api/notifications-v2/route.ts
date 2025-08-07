@@ -23,6 +23,7 @@ export async function GET(request: NextRequest) {
 
     // Load data files
     const usersPath = path.join(process.cwd(), 'data', 'users.json');
+    const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
     const contactsPath = path.join(process.cwd(), 'data', 'contacts.json');
 
@@ -36,8 +37,9 @@ export async function GET(request: NextRequest) {
     );
 
     // Load data from hierarchical storage and flat files
-    const [users, projects, organizations, contacts, hierarchicalTasks] = await Promise.all([
+    const [users, freelancers, projects, organizations, contacts, hierarchicalTasks] = await Promise.all([
       fs.promises.readFile(usersPath, 'utf-8').then(data => JSON.parse(data)),
+      fs.promises.readFile(freelancersPath, 'utf-8').then(data => JSON.parse(data)),
       readAllProjects(), // Use hierarchical storage for projects
       fs.promises.readFile(organizationsPath, 'utf-8').then(data => JSON.parse(data)),
       fs.promises.readFile(contactsPath, 'utf-8').then(data => JSON.parse(data)),
@@ -116,8 +118,17 @@ export async function GET(request: NextRequest) {
         return false;
       }
 
+      // For gig-related events, actorId might be a freelancer ID, so we need to map it to user ID
+      let actorUserId;
+      if (event.type === 'gig_applied' || event.type === 'gig_request_accepted') {
+        const freelancer = freelancers.find((f: any) => f.id === parseInt(event.actorId));
+        actorUserId = freelancer ? freelancer.userId : parseInt(event.actorId);
+      } else {
+        actorUserId = parseInt(event.actorId);
+      }
+
       // Check if actor is in user's contacts
-      const directContact = isActorInNetwork(parseInt(event.actorId), userId);
+      const directContact = isActorInNetwork(actorUserId, userId);
       if (directContact) {
         return true;
       }
@@ -148,7 +159,17 @@ export async function GET(request: NextRequest) {
 
     // Convert events to notifications
     const notifications = groupedEvents.map(event => {
-      const actor = users.find((u: any) => u.id === parseInt(event.actorId));
+      // For gig-related events, actorId might be a freelancer ID, so we need to map it to user ID
+      let actor;
+      if (event.type === 'gig_applied' || event.type === 'gig_request_accepted') {
+        // actorId is a freelancer ID, find the corresponding user
+        const freelancer = freelancers.find((f: any) => f.id === parseInt(event.actorId));
+        actor = freelancer ? users.find((u: any) => u.id === freelancer.userId) : null;
+      } else {
+        // actorId is a user ID
+        actor = users.find((u: any) => u.id === parseInt(event.actorId));
+      }
+
       const organization = event.context?.organizationId ?
         organizations.find((o: any) => o.id === event.context?.organizationId) : null;
 
@@ -237,7 +258,7 @@ export async function GET(request: NextRequest) {
       ['task_submission', 'task_approved', 'task_rejected', 'project_pause_requested', 'project_pause_accepted'].includes(n.type)
     ).length;
     const gigsCount = unreadNotifications.filter(n =>
-      ['gig_request', 'gig_application', 'proposal_sent'].includes(n.type)
+      ['gig_request', 'gig_application', 'gig_rejected', 'proposal_sent'].includes(n.type)
     ).length;
 
     return NextResponse.json({
@@ -306,6 +327,7 @@ function getNotificationType(eventType: EventType): string {
     'task_commented': 'task_comment',
     'project_created': 'project_created',
     'project_started': 'project_started',
+    'project_activated': 'project_activated',
     'project_paused': 'project_pause',
     'project_resumed': 'project_resumed',
     'project_completed': 'project_completed',
@@ -317,6 +339,7 @@ function getNotificationType(eventType: EventType): string {
     'gig_request_sent': 'gig_request',
     'gig_request_accepted': 'gig_request_accepted',
     'gig_request_declined': 'gig_request_declined',
+    'gig_rejected': 'gig_rejected',
     'message_sent': 'new_message',
     'message_read': 'message_read',
     'invoice_created': 'invoice_created',
@@ -348,6 +371,7 @@ function shouldUseAvatar(eventType: EventType): boolean {
   return [
     'task_submitted',
     'project_pause_requested', // Freelancer requests pause - show freelancer avatar on commissioner side
+    'project_activated', // Commissioner accepts application - show commissioner avatar on freelancer side
     'invoice_sent', // Freelancer sends invoice - show freelancer avatar on commissioner side
     'gig_request_accepted', // Freelancer accepts gig request - show freelancer avatar on commissioner side
     'proposal_sent',
@@ -357,7 +381,8 @@ function shouldUseAvatar(eventType: EventType): boolean {
 
 function shouldUseOrgLogo(eventType: EventType): boolean {
   return [
-    'gig_request_sent' // Commissioner sends gig request - show organization logo on freelancer side
+    'gig_request_sent', // Commissioner sends gig request - show organization logo on freelancer side
+    'gig_rejected' // Organization rejects freelancer application - show organization logo on freelancer side
   ].includes(eventType);
 }
 
@@ -432,23 +457,25 @@ function generateGranularTitle(event: EventData, actor: any, project?: any, proj
     case 'task_submitted':
       return `${actorName} submitted a task`;
     case 'task_approved':
-      // Calculate remaining milestones
-      const remainingTasks = projectTaskData?.tasks?.filter((t: any) => !t.completed).length || 0;
+      // Calculate remaining milestones (only count tasks that are not approved)
+      const remainingTasks = projectTaskData?.tasks?.filter((t: any) => t.status !== 'Approved' || !t.completed).length || 0;
       if (remainingTasks === 0) {
         return `${actorName} approved "${event.metadata.taskTitle}". This project is now complete`;
       } else {
-        return `${actorName} approved "${event.metadata.taskTitle}". This project now has ${remainingTasks} milestone${remainingTasks !== 1 ? 's' : ''} left`;
+        return `${actorName} approved "${event.metadata.taskTitle}". Only ${remainingTasks} milestone${remainingTasks !== 1 ? 's' : ''} remain${remainingTasks === 1 ? 's' : ''} for this project`;
       }
     case 'task_rejected':
-      return `${actorName} rejected "${event.metadata.taskTitle}". Click to see project tracker`;
+      return `${actorName} rejected "${event.metadata.taskTitle}". Revisions are required. View notes and resume progress`;
     case 'task_rejected_with_comment':
-      return `${actorName} rejected "${event.metadata.taskTitle}" with a comment. Click to see project tracker`;
+      return `${actorName} rejected "${event.metadata.taskTitle}". Revisions are required. View notes and resume progress`;
     case 'task_completed':
       return 'Task marked as completed';
     case 'project_pause_requested':
       return `${actorName} has requested a pause for ${event.metadata.projectTitle}. Click to view the project tracker and respond.`;
     case 'project_pause_accepted':
       return 'Project pause request approved';
+    case 'project_activated':
+      return `${actorName} accepted your application for ${event.metadata.gigTitle}`;
     case 'project_paused':
       return `${actorName} has paused ${event.metadata.projectTitle}`;
     case 'project_reactivated':
@@ -476,6 +503,8 @@ function generateGranularTitle(event: EventData, actor: any, project?: any, proj
       return `New message from ${actorName}`;
     case 'proposal_sent':
       return `${actorName} sent you a proposal`;
+    case 'gig_rejected':
+      return `${event.metadata.organizationName || actorName} rejected your application for "${event.metadata.gigTitle}"`;
     default:
       // Skip generic events - they shouldn't reach here if properly filtered
       return `Activity update`;
@@ -487,13 +516,10 @@ function generateGranularMessage(event: EventData, actor: any, project?: any, pr
     case 'task_submitted':
       return `"${event.metadata.taskTitle}" is awaiting your review`;
     case 'task_approved':
-      // No subcaption needed - everything is in the title now
       return `Task approved and milestone completed`;
     case 'task_rejected':
-      // No subcaption needed - everything is in the title now
       return `Task requires revision`;
     case 'task_rejected_with_comment':
-      // No subcaption needed - everything is in the title now
       return `Task rejected with feedback`;
     case 'task_completed':
       return `"${event.metadata.taskTitle}" has been marked as completed`;
@@ -501,6 +527,10 @@ function generateGranularMessage(event: EventData, actor: any, project?: any, pr
       return event.metadata.pauseReason || 'Project pause requested';
     case 'project_pause_accepted':
       return `Your request to pause the ${event.metadata.projectTitle} project has been approved`;
+    case 'project_activated':
+      const taskCount = event.metadata.taskCount || 1;
+      const dueDate = event.metadata.dueDate || 'the deadline';
+      return `This project is now active and includes ${taskCount} milestone${taskCount !== 1 ? 's' : ''} due by ${dueDate}`;
     case 'gig_applied':
       if (event.metadata.groupCount && event.metadata.groupCount > 1) {
         return `${event.metadata.groupCount} applications received for "${event.metadata.gigTitle}"`;
@@ -524,6 +554,8 @@ function generateGranularMessage(event: EventData, actor: any, project?: any, pr
       return event.metadata.messagePreview || 'New message';
     case 'proposal_sent':
       return `New project proposal for ${event.metadata.proposalTitle || 'project'}`;
+    case 'gig_rejected':
+      return event.metadata.rejectionMessage || 'You will be able to re-apply if this gig listing is still active after 21 days.';
     default:
       return 'Activity update';
   }
@@ -535,13 +567,14 @@ function generateNotificationLink(event: EventData, project?: any, task?: any): 
     case 'task_rejected':
     case 'task_rejected_with_comment':
       // Navigate to project tracking page
-      return `/freelancer-dashboard/projects-and-invoices/project-tracking?id=${event.context?.projectId}`;
+      return `/freelancer-dashboard/projects-and-invoices/project-tracking/${event.context?.projectId}`;
     case 'project_paused':
     case 'project_pause_accepted':
     case 'project_pause_refused':
+    case 'project_activated':
     case 'project_reactivated':
-      // Navigate to project tracking page
-      return `/freelancer-dashboard/projects-and-invoices/project-tracking?id=${event.context?.projectId}`;
+      // Navigate to project tracking page with dynamic route
+      return `/freelancer-dashboard/projects-and-invoices/project-tracking/${event.context?.projectId}`;
     case 'invoice_paid':
     case 'milestone_payment_received':
       // Navigate to specific invoice if available, otherwise invoices page
@@ -553,6 +586,9 @@ function generateNotificationLink(event: EventData, project?: any, task?: any): 
     case 'invoice_created':
       // Navigate to the auto-generated invoice
       return `/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${event.context?.invoiceId}`;
+    case 'gig_applied':
+      // Navigate to gig applications page for commissioners
+      return `/commissioner-dashboard/gigs/applications?gigId=${event.context?.gigId}`;
     case 'gig_request_sent':
       // Navigate to gig requests page with details open
       return `/freelancer-dashboard/gig-requests?requestId=${event.context?.requestId}&open=true`;

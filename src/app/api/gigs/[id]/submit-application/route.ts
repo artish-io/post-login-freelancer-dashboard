@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { writeFile, mkdir, readFile } from 'fs/promises';
 import path from 'path';
+import { readGig } from '@/lib/gigs/hierarchical-storage';
 
 const APPLICATIONS_DIR = path.join(process.cwd(), 'data', 'gig-applications');
 
@@ -21,6 +22,19 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   }
 
   try {
+    // Check if gig is still available for applications
+    const gig = await readGig(parseInt(gigId));
+    if (!gig) {
+      return NextResponse.json({ error: 'Gig not found' }, { status: 404 });
+    }
+
+    if (gig.status !== 'Available') {
+      return NextResponse.json({
+        error: 'This gig is no longer accepting applications',
+        gigStatus: gig.status
+      }, { status: 409 });
+    }
+
     const body = await req.json();
 
     const application = {

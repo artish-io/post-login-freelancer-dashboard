@@ -1,0 +1,29 @@
+[
+  {
+    "id": 206,
+    "freelancerId": 7,
+    "gigId": 106,
+    "organizationId": 7,
+    "commissionerId": 38,
+    "title": "UX Audit Walkthrough",
+    "skills": [
+      "UX Research",
+      "Heuristic Review",
+      "User Testing"
+    ],
+    "tools": [
+      "Notion",
+      "Figma",
+      "Hotjar"
+    ],
+    "notes": "Record a UX walkthrough audit of our app based on given heuristics.",
+    "budget": {
+      "min": 2500,
+      "max": 4000,
+      "currency": "USD"
+    },
+    "status": "Available",
+    "createdAt": "2025-07-07T14:30:00Z",
+    "responses": []
+  }
+]

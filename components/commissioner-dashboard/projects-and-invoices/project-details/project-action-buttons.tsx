@@ -28,7 +28,9 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
         // Fetch project details to get the freelancer ID
         const projectRes = await fetch(`/api/projects`);
         if (projectRes.ok) {
-          const projects = await projectRes.json();
+          const projectsResponse = await projectRes.json();
+          // Ensure projects is always an array
+          const projects = Array.isArray(projectsResponse) ? projectsResponse : [];
           const project = projects.find((p: any) => p.projectId === projectId);
           if (project?.freelancerId) {
             setFreelancerId(project.freelancerId);

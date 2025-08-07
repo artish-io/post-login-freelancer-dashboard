@@ -14,7 +14,7 @@
   "description": "Build an analytics dashboard to track park usage, visitor patterns, and facility utilization.",
   "deliveryTimeWeeks": 7,
   "estimatedHours": 50,
-  "status": "Available",
+  "status": "Unavailable",
   "toolsRequired": [
     "React",
     "D3.js",

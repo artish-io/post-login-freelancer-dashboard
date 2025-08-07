@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import CustomSessionProvider from '../../components/providers/session-provider';
 import NavigationProgress from '../../components/ui/navigation-progress';
 import { CartProvider } from '../../components/storefront/cart-context';
+import { ToastProvider } from '../../components/ui/toast';
 import './globals.css';
 
 const jakarta = Plus_Jakarta_Sans({
@@ -30,7 +31,9 @@ export default function RootLayout({
         </Suspense>
         <CustomSessionProvider>
           <CartProvider>
-            {children}
+            <ToastProvider>
+              {children}
+            </ToastProvider>
           </CartProvider>
         </CustomSessionProvider>
       </body>

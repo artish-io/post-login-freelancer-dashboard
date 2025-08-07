@@ -1,35 +1,15 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { getSpendingSummary } from '@/lib/commissioner-spending-service';
 import {
-  parseISO,
   subDays,
   subYears,
   startOfMonth,
   startOfYear,
-  isAfter,
-  isBefore,
-  format,
   getYear,
   getMonth,
 } from 'date-fns';
-
-const SPENDING_HISTORY_PATH = path.join(process.cwd(), 'data/commissioner-payments/spending-history.json');
-
-type SpendingTransaction = {
-  id: number;
-  commissionerId: number;
-  freelancerId?: number;
-  projectId?: number;
-  type: 'freelancer_payout' | 'withdrawal';
-  amount: number;
-  currency: string;
-  date: string;
-  description: string;
-  projectName?: string;
-};
 
 export async function GET(req: Request) {
   try {
@@ -42,13 +22,7 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const range = url.searchParams.get('range') || 'month';
 
-    const historyRaw = await readFile(SPENDING_HISTORY_PATH, 'utf-8');
-    const history: SpendingTransaction[] = JSON.parse(historyRaw);
-
     const now = new Date();
-    const userHistory = history.filter(
-      (tx) => tx.commissionerId === commissionerId
-    );
 
     let fromDate: Date;
     let toDate: Date = now;
@@ -87,61 +61,26 @@ export async function GET(req: Request) {
         fromDate = startOfMonth(now);
     }
 
-    // Filter transactions by date range
-    const filtered = userHistory.filter((tx) => {
-      const txDate = parseISO(tx.date);
-      return isAfter(txDate, fromDate) && isBefore(txDate, toDate);
-    });
-
-    // Calculate current total spending
-    const currentTotal = filtered.reduce((sum, tx) => sum + tx.amount, 0);
-
-    // Calculate last week total for comparison
-    const lastWeekStart = subDays(now, 7);
-    const lastWeekFiltered = userHistory.filter((tx) => {
-      const txDate = parseISO(tx.date);
-      return isAfter(txDate, lastWeekStart) && isBefore(txDate, now);
-    });
-    const lastWeekTotal = lastWeekFiltered.reduce((sum, tx) => sum + tx.amount, 0);
-
-    // Calculate previous period total for growth calculation
-    const previousPeriodStart = range === 'month' 
+    // Calculate previous period dates
+    const previousPeriodStart = range === 'month'
       ? startOfMonth(subDays(fromDate, 1))
       : subYears(fromDate, 1);
     const previousPeriodEnd = fromDate;
-    
-    const previousFiltered = userHistory.filter((tx) => {
-      const txDate = parseISO(tx.date);
-      return isAfter(txDate, previousPeriodStart) && isBefore(txDate, previousPeriodEnd);
-    });
-    const previousTotal = previousFiltered.reduce((sum, tx) => sum + tx.amount, 0);
+    const lastWeekStart = subDays(now, 7);
 
-    // Calculate growth percentage
-    const monthlyGrowthPercent = previousTotal > 0 
-      ? ((currentTotal - previousTotal) / previousTotal) * 100 
-      : 0;
-
-    // Create daily breakdown for chart
-    const map = new Map<string, number>();
-    filtered.forEach((tx) => {
-      const date = format(parseISO(tx.date), 'yyyy-MM-dd');
-      map.set(date, (map.get(date) || 0) + tx.amount);
-    });
-
-    const dailyBreakdown = Array.from(map.entries())
-      .sort((a, b) => new Date(a[0]).getTime() - new Date(b[0]).getTime())
-      .map(([date, amount]) => ({
-        date,
-        amount: Number(amount.toFixed(2)),
-      }));
+    // Get spending summary using unified service
+    const summary = await getSpendingSummary(
+      commissionerId,
+      fromDate,
+      toDate,
+      previousPeriodStart,
+      previousPeriodEnd,
+      lastWeekStart
+    );
 
     return NextResponse.json({
       range,
-      currentTotal: Number(currentTotal.toFixed(2)),
-      lastWeekTotal: Number(lastWeekTotal.toFixed(2)),
-      previousTotal: Number(previousTotal.toFixed(2)),
-      monthlyGrowthPercent: Number(monthlyGrowthPercent.toFixed(2)),
-      dailyBreakdown,
+      ...summary,
     });
   } catch (error) {
     console.error('Error building spending summary:', error);

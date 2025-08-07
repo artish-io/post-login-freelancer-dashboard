@@ -1,0 +1,22 @@
+{
+  "projectId": 318,
+  "title": "Interactive Park Map Web App",
+  "description": "Build an interactive web app for visualizing Lagos park layouts with routes, amenities, and accessibility features.",
+  "organizationId": 1,
+  "typeTags": [
+    "Frontend",
+    "React",
+    "GIS"
+  ],
+  "manager": {
+    "name": "Neilsan Mando",
+    "title": "Product Manager",
+    "avatar": "/avatars/neilsan.png",
+    "email": "neilsan.mando@example.com"
+  },
+  "freelancerId": 29,
+  "status": "ongoing",
+  "dueDate": "2025-09-07",
+  "totalTasks": 1,
+  "createdAt": "2025-08-03T14:09:05.610Z"
+}

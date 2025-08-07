@@ -3,7 +3,7 @@ import path from 'path';
 import { readFile } from 'fs/promises';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { getAllInvoices } from '../../../../lib/invoice-storage';
+import { getAllInvoices } from '@/lib/invoice-storage';
 
 const HISTORY_PATH = path.join(process.cwd(), 'data/wallet/wallet-history.json');
 const PURCHASES_PATH = path.join(process.cwd(), 'data/storefront/purchases.json');

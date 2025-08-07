@@ -124,5 +124,105 @@
     "productId": "#102002",
     "date": "2025-07-01",
     "amount": 35
+  },
+  {
+    "productId": "#101001",
+    "date": "2025-05-15",
+    "amount": 15
+  },
+  {
+    "productId": "#101002",
+    "date": "2025-05-18",
+    "amount": 25
+  },
+  {
+    "productId": "#101004",
+    "date": "2025-05-22",
+    "amount": 10
+  },
+  {
+    "productId": "#102001",
+    "date": "2025-05-25",
+    "amount": 30
+  },
+  {
+    "productId": "#102002",
+    "date": "2025-05-28",
+    "amount": 35
+  },
+  {
+    "productId": "#103001",
+    "date": "2025-07-20",
+    "amount": 45
+  },
+  {
+    "productId": "#103001",
+    "date": "2025-07-19",
+    "amount": 45
+  },
+  {
+    "productId": "#103002",
+    "date": "2025-07-18",
+    "amount": 29
+  },
+  {
+    "productId": "#103001",
+    "date": "2025-07-17",
+    "amount": 45
+  },
+  {
+    "productId": "#103002",
+    "date": "2025-07-16",
+    "amount": 29
+  },
+  {
+    "productId": "#103001",
+    "date": "2025-07-15",
+    "amount": 45
+  },
+  {
+    "productId": "#103002",
+    "date": "2025-07-14",
+    "amount": 29
+  },
+  {
+    "productId": "#103001",
+    "date": "2025-07-13",
+    "amount": 45
+  },
+  {
+    "productId": "#103002",
+    "date": "2025-07-12",
+    "amount": 29
+  },
+  {
+    "productId": "#103001",
+    "date": "2025-07-11",
+    "amount": 45
+  },
+  {
+    "productId": "#103002",
+    "date": "2025-07-10",
+    "amount": 29
+  },
+  {
+    "productId": "#103001",
+    "date": "2025-06-15",
+    "amount": 45
+  },
+  {
+    "productId": "#103002",
+    "date": "2025-06-12",
+    "amount": 29
+  },
+  {
+    "productId": "#103001",
+    "date": "2025-05-20",
+    "amount": 45
+  },
+  {
+    "productId": "#103002",
+    "date": "2025-05-18",
+    "amount": 29
   }
 ]

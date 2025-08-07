@@ -1,0 +1,122 @@
+[
+  {
+    "id": "task_approved_24_1754426160025",
+    "timestamp": "2025-08-05T20:36:00.025Z",
+    "type": "task_approved",
+    "notificationType": 2,
+    "actorId": 34,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 24,
+    "metadata": {
+      "taskTitle": "Carousel animation mock",
+      "projectTitle": "Nebula CMS landing redesign",
+      "commissionerName": "Matte Hannery",
+      "freelancerName": "Margsate Flether",
+      "priority": "medium"
+    },
+    "context": {
+      "projectId": 306
+    }
+  },
+  {
+    "id": "task_approved_23_1754426050641",
+    "timestamp": "2025-08-05T20:34:10.641Z",
+    "type": "task_approved",
+    "notificationType": 2,
+    "actorId": 34,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 23,
+    "metadata": {
+      "taskTitle": "Mobile nav menu prototype",
+      "projectTitle": "Nebula CMS landing redesign",
+      "commissionerName": "Matte Hannery",
+      "freelancerName": "Margsate Flether",
+      "priority": "medium"
+    },
+    "context": {
+      "projectId": 306
+    }
+  },
+  {
+    "id": "task_approved_21_1754426025026",
+    "timestamp": "2025-08-05T20:33:45.026Z",
+    "type": "task_approved",
+    "notificationType": 2,
+    "actorId": 34,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 21,
+    "metadata": {
+      "taskTitle": "CTA Button States",
+      "projectTitle": "Nebula CMS landing redesign",
+      "commissionerName": "Matte Hannery",
+      "freelancerName": "Margsate Flether",
+      "priority": "medium"
+    },
+    "context": {
+      "projectId": 306
+    }
+  },
+  {
+    "id": "task_approved_7_1754425966282",
+    "timestamp": "2025-08-05T20:32:46.282Z",
+    "type": "task_approved",
+    "notificationType": 2,
+    "actorId": 34,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 7,
+    "metadata": {
+      "taskTitle": "iOS testing & deployment",
+      "projectTitle": "Corlax iOS app UX",
+      "commissionerName": "Matte Hannery",
+      "freelancerName": "Margsate Flether",
+      "priority": "medium"
+    },
+    "context": {
+      "projectId": 303
+    }
+  },
+  {
+    "id": "task_approved_6_1754425961291",
+    "timestamp": "2025-08-05T20:32:41.291Z",
+    "type": "task_approved",
+    "notificationType": 2,
+    "actorId": 34,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 6,
+    "metadata": {
+      "taskTitle": "Login & onboarding flow",
+      "projectTitle": "Corlax iOS app UX",
+      "commissionerName": "Matte Hannery",
+      "freelancerName": "Margsate Flether",
+      "priority": "medium"
+    },
+    "context": {
+      "projectId": 303
+    }
+  },
+  {
+    "id": "task_approved_307_1754418732292",
+    "timestamp": "2025-08-05T18:32:12.292Z",
+    "type": "task_approved",
+    "notificationType": 2,
+    "actorId": 32,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 307,
+    "metadata": {
+      "taskTitle": "Stakeholder Review & Revisions",
+      "projectTitle": "Advertising Design - Lagos State Parks Services",
+      "commissionerName": "Neilsan Mando",
+      "freelancerName": "Margsate Flether",
+      "priority": "medium"
+    },
+    "context": {
+      "projectId": 326
+    }
+  }
+]

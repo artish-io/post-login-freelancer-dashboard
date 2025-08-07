@@ -3,9 +3,22 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
+import { requireFreelancerSession } from '../../src/lib/freelancer-access-control';
 
 export default function FreelancerHeader() {
   const { data: session } = useSession();
+
+  // Ensure user is a freelancer before rendering
+  const freelancerSession = requireFreelancerSession(session?.user as any);
+  if (!freelancerSession) {
+    return (
+      <div className="flex items-center justify-between p-4 bg-red-50 border border-red-200 rounded-lg">
+        <div className="text-red-600 font-medium">
+          Access denied: Freelancer authentication required
+        </div>
+      </div>
+    );
+  }
 
   const [status, setStatus] = useState<'Available' | 'Away' | 'Busy'>('Available');
   const [name, setName] = useState('...');

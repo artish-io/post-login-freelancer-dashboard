@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { staggerContainer, staggerItem, fadeIn } from '../../../../components/ui/page-transition';
 // Using correct relative path from src/app/freelancer-dashboard/gig-requests/ to components/
 import GigRequestsSidebar from '../../../../components/freelancer-dashboard/gigs/gig-requests/gig-requests-nav';
 import GigRequestTable from '../../../../components/freelancer-dashboard/gigs/gig-requests/gig-request-table';
 import GigRequestDetails from '../../../../components/freelancer-dashboard/gigs/gig-requests/gig-request-details';
+import { requireFreelancerSession, getFreelancerId } from '../../../lib/freelancer-access-control';
 
 type GigRequest = {
   id: number;
@@ -54,6 +55,7 @@ function getPostedTimeAgo(dateStr: string): string {
 }
 
 export default function GigRequestsPage() {
+  const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const statusFilter = searchParams.get('status') || 'all';
 
@@ -73,12 +75,33 @@ export default function GigRequestsPage() {
   const [selectedGigRequest, setSelectedGigRequest] = useState<GigRequest | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setError(null);
+
+        // Ensure user is a freelancer before fetching data
+        const freelancerSession = requireFreelancerSession(session?.user as any);
+        if (!freelancerSession) {
+          console.warn('Access denied: User is not a freelancer');
+          setError('Access denied: Freelancer authentication required');
+          setLoading(false);
+          return;
+        }
+
+        const freelancerId = getFreelancerId(freelancerSession);
+        if (!freelancerId) {
+          console.warn('Access denied: Invalid freelancer ID');
+          setError('Access denied: Invalid freelancer ID');
+          setLoading(false);
+          return;
+        }
+
+        // Fetch data using the secure freelancer-specific endpoint
         const [gigRequestsRes, organizationsRes, usersRes] = await Promise.all([
-          fetch('/api/gigs/gig-requests/all'), // Fetch all gig requests regardless of freelancer
+          fetch(`/api/gigs/gig-requests/${freelancerId}`), // Fetch only gig requests for this freelancer
           fetch('/api/organizations'),
           fetch('/api/users')
         ]);
@@ -96,20 +119,36 @@ export default function GigRequestsPage() {
           });
           setOrganizations(organizationsData);
           setUsers(usersData);
+        } else {
+          throw new Error('Failed to fetch data from one or more endpoints');
         }
       } catch (error) {
         console.error('Error fetching gig requests data:', error);
+        setError(error instanceof Error ? error.message : 'Failed to load gig requests');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, []);
+    // Only fetch data if session is loaded and user is authenticated
+    if (status !== 'loading' && session?.user?.id) {
+      fetchData();
+    } else if (status !== 'loading' && !session?.user?.id) {
+      setError('Please log in to view gig requests');
+      setLoading(false);
+    }
+  }, [session, status]);
 
   // Helper function to get organization data
-  const getOrganization = (organizationId: number) => {
-    return organizations.find(org => org.id === organizationId);
+  const getOrganization = (organizationId: number | null, commissionerId?: number) => {
+    if (organizationId) {
+      return organizations.find(org => org.id === organizationId);
+    }
+    // Fallback: find organization by commissioner if organizationId is null
+    if (commissionerId) {
+      return organizations.find(org => org.contactPersonId === commissionerId);
+    }
+    return null;
   };
 
   // Helper function to get commissioner data
@@ -155,11 +194,11 @@ export default function GigRequestsPage() {
 
   // Transform data for table component
   const tableData = filteredRequests.map((request: GigRequest) => {
-    const organization = getOrganization(request.organizationId);
+    const organization = getOrganization(request.organizationId, request.commissionerId);
     const commissioner = getCommissioner(request.commissionerId);
     return {
       id: request.id,
-      organizationLogo: organization?.logo || '/logos/default-org.png',
+      organizationLogo: organization?.logo || '/logos/fallback-logo.png',
       organizationName: organization?.name || 'Unknown Organization',
       organizationVerified: true, // You can add verification logic
       commissionerName: commissioner?.name || 'Unknown Commissioner',
@@ -170,6 +209,32 @@ export default function GigRequestsPage() {
     };
   });
 
+  // Handle session loading
+  if (status === 'loading') {
+    return (
+      <main className="flex w-full min-h-screen bg-white">
+        <div className="flex items-center justify-center w-full">
+          <div className="text-gray-500">Loading session...</div>
+        </div>
+      </main>
+    );
+  }
+
+  // Handle authentication errors
+  if (error) {
+    return (
+      <main className="flex w-full min-h-screen bg-white">
+        <div className="flex items-center justify-center w-full">
+          <div className="text-center">
+            <div className="text-red-600 font-medium mb-2">Access Denied</div>
+            <div className="text-gray-500">{error}</div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // Handle data loading
   if (loading) {
     return (
       <main className="flex w-full min-h-screen bg-white">

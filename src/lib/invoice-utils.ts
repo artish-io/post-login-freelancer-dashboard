@@ -2,10 +2,10 @@
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { getAllInvoices, getInvoiceByNumber, saveInvoice, type Invoice } from './invoice-storage';
+import { readAllTasks, convertHierarchicalToLegacy } from './project-tasks/hierarchical-storage';
 
 const usersPath = path.join(process.cwd(), 'data', 'users.json');
 const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-const tasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
 
 // ✅ Generate shortened invoice number like "MF-5447A0"
 export function generateInvoiceNumber(fullName: string): string {
@@ -35,8 +35,11 @@ export async function findProjectById(projectId: number) {
 
 // ✅ Get tasks by project ID
 export async function getTasksByProjectId(projectId: number) {
-  const data = await readFile(tasksPath, 'utf-8');
-  const taskData = JSON.parse(data);
+  // Read all tasks from hierarchical storage
+  const hierarchicalTasks = await readAllTasks();
+
+  // Convert back to legacy format for backward compatibility
+  const taskData = convertHierarchicalToLegacy(hierarchicalTasks);
   const entry = taskData.find((p: any) => p.projectId === projectId);
   return entry ? entry.tasks : [];
 }

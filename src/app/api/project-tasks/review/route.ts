@@ -3,8 +3,8 @@ import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 import { readProjectTasks, writeTask } from '@/lib/project-tasks/hierarchical-storage';
 import { saveNote } from '@/lib/project-notes-utils';
-
-const notificationsFilePath = path.join(process.cwd(), 'data', 'notifications', 'freelancers.json');
+import { readProject } from '@/lib/projects-utils';
+import { logTaskApproved, logTaskRejected } from '@/lib/events/event-logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -65,82 +65,68 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Create notification for freelancer
-    if (freelancerId) {
-      try {
-        const notificationsFile = await readFile(notificationsFilePath, 'utf-8');
-        const notificationsData = JSON.parse(notificationsFile);
+    // Get project information and user data for notifications
+    let projectInfo = null;
+    let usersData = [];
+    let commissionerId = null;
+    let commissionerName = 'Unknown Commissioner';
+    let freelancerName = 'Unknown Freelancer';
 
-        // Find or create freelancer notifications entry
-        let freelancerNotifications = notificationsData.find((f: any) => f.freelancerId === freelancerId);
-        if (!freelancerNotifications) {
-          freelancerNotifications = {
-            freelancerId,
-            notifications: []
-          };
-          notificationsData.push(freelancerNotifications);
-        }
+    try {
+      // Read project info
+      projectInfo = await readProject(projectId);
 
-        // Create notification based on action
-        const notificationId = `task-${action}-${taskId}-${Date.now()}`;
-        let notification;
+      // Read users data to get names
+      const usersPath = path.join(process.cwd(), 'data', 'users.json');
+      const usersFile = await readFile(usersPath, 'utf-8');
+      usersData = JSON.parse(usersFile);
 
-        if (action === 'complete') {
-          notification = {
-            id: notificationId,
-            type: 'task_completed',
-            title: 'Task marked as completed',
-            message: `"${taskTitle || task.title}" has been approved`,
-            timestamp: new Date().toISOString(),
-            isRead: false,
-            project: {
-              id: projectId,
-              title: projects[projectIndex].title
-            }
-          };
-        } else if (action === 'reject') {
-          notification = {
-            id: notificationId,
-            type: 'task_rejected',
-            title: 'Task needs revision',
-            message: `"${taskTitle || task.title}" was rejected and needs to be revised`,
-            timestamp: new Date().toISOString(),
-            isRead: false,
-            project: {
-              id: projectId,
-              title: projects[projectIndex].title
-            }
-          };
-
-          // Add separate notification for comment if provided
-          if (comment && comment.trim()) {
-            const commentNotificationId = `comment-${taskId}-${Date.now()}`;
-            const commentNotification = {
-              id: commentNotificationId,
-              type: 'task_comment',
-              title: 'New comment on task',
-              message: `Commissioner left a comment on "${taskTitle || task.title}" - click to view`,
-              timestamp: new Date().toISOString(),
-              isRead: false,
-              project: {
-                id: projectId,
-                title: projects[projectIndex].title
-              }
-            };
-            freelancerNotifications.notifications.unshift(commentNotification);
-          }
-        }
-
-        if (notification) {
-          freelancerNotifications.notifications.unshift(notification);
-        }
-
-        // Save updated notifications
-        await writeFile(notificationsFilePath, JSON.stringify(notificationsData, null, 2));
-      } catch (notificationError) {
-        console.error('Error creating notification:', notificationError);
-        // Don't fail the main operation if notification creation fails
+      // Get commissioner ID from project data
+      if (projectInfo) {
+        commissionerId = projectInfo.commissionerId;
       }
+
+      // Get user names
+      const commissioner = usersData.find((u: any) => u.id === commissionerId);
+      const freelancer = usersData.find((u: any) => u.id === freelancerId);
+
+      if (commissioner) {
+        commissionerName = commissioner.name;
+      }
+      if (freelancer) {
+        freelancerName = freelancer.name;
+      }
+    } catch (error) {
+      console.error('Error reading project/user info:', error);
+    }
+
+    // Log event using the new event logging system
+    if (freelancerId && commissionerId) {
+      try {
+        if (action === 'complete') {
+          await logTaskApproved(
+            commissionerId,
+            freelancerId,
+            taskId,
+            taskTitle || task.title,
+            projectId
+          );
+        } else if (action === 'reject') {
+          await logTaskRejected(
+            commissionerId,
+            freelancerId,
+            taskId,
+            taskTitle || task.title,
+            projectId,
+            comment && comment.trim() ? comment.trim() : undefined
+          );
+        }
+      } catch (eventError) {
+        console.error('Error logging event:', eventError);
+        // Don't fail the main operation if event logging fails
+      }
+    } else {
+      console.warn('Missing freelancerId or commissionerId for event logging:', { freelancerId, commissionerId });
     }
 
     return NextResponse.json({ 

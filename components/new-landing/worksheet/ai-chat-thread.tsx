@@ -43,52 +43,7 @@ function isValidContent(str: string): boolean {
   return true;
 }
 
-// Dynamic gig category matching using gig-categories.json
-async function matchGigCategories(prompt: string): Promise<any[]> {
-  try {
-    const response = await fetch('/data/gigs/gig-categories.json');
-    const categories = await response.json();
-
-    const lowerPrompt = prompt.toLowerCase();
-    const keywords = lowerPrompt.split(' ').filter(word => word.length > 2);
-
-    const matches: any[] = [];
-
-    categories.forEach((category: any) => {
-      // Check main category label
-      if (keywords.some(keyword => category.label.toLowerCase().includes(keyword))) {
-        matches.push({
-          type: 'category',
-          id: category.id,
-          label: category.label,
-          match: category.label
-        });
-      }
-
-      // Check subcategories
-      category.subcategories?.forEach((sub: any) => {
-        if (keywords.some(keyword =>
-          sub.name.toLowerCase().includes(keyword) ||
-          sub.description.toLowerCase().includes(keyword)
-        )) {
-          matches.push({
-            type: 'subcategory',
-            categoryId: category.id,
-            categoryLabel: category.label,
-            name: sub.name,
-            description: sub.description,
-            match: sub.name
-          });
-        }
-      });
-    });
-
-    return matches.slice(0, 4); // Return max 4 matches
-  } catch (error) {
-    console.error('Failed to match gig categories:', error);
-    return [];
-  }
-}
+// Dynamic gig category matching removed - now handled by API
 
 // Match organizations based on project type and tags
 async function matchOrganizations(projectType: string): Promise<any[]> {
@@ -225,11 +180,8 @@ function classifyIntent(prompt: string, previousMessages: ChatMessage[] = []): s
     return 'post_gig';
   }
 
-  // Custom proposal confirmation
-  if (lowerPrompt === 'yes' && previousMessages.some(msg =>
-      msg.content.includes('create a custom proposal instead'))) {
-    return 'custom_proposal_confirm';
-  }
+  // Custom proposal confirmation - now handled by direct routing
+  // Removed since we route directly to proposal page
 
   // Project type response
   const hasIdeaQuestion = previousMessages.some(msg =>
@@ -243,8 +195,8 @@ function classifyIntent(prompt: string, previousMessages: ChatMessage[] = []): s
     return 'commissioner_research';
   }
 
-  // Default: gig matching
-  return 'gig_matching';
+  // Default: let API handle gig matching
+  return 'api_gig_matching';
 }
 
 // Utility functions for message handling
@@ -356,10 +308,8 @@ Want to create a custom proposal instead?`;
         // Add user message
         setMessages(prev => [...prev, createMessage('user', 'Yes')]);
 
-        // Add AI response asking for project type
-        setTimeout(() => {
-          setMessages(prev => [...prev, createMessage('ai', 'What kind of idea do you want to work on?')]);
-        }, 500);
+        // Route directly to proposal creation with prompt context
+        window.location.href = `/freelancer-dashboard/proposals/create?fromPrompt=${encodeURIComponent(prompt)}`;
       }
     };
 
@@ -538,43 +488,7 @@ Want to review this as a product listing?`;
               setMessages(prev => [...prev, createMessage('ai', routeButton)]);
             }, 1000);
             break;
-          case 'gig_matching':
-            // Handle dynamic gig matching
-            const matchedCategories = await matchGigCategories(prompt);
-            if (matchedCategories.length > 0) {
-              friendlyMessage = `✨ Found ${matchedCategories.length} matching gig categories!
 
-${matchedCategories.map(cat => `• ${cat.match} - ${cat.categoryLabel || cat.label}`).join('\n')}
-
-Do you want to create a custom proposal instead?`;
-
-              // Add quick reply button
-              setTimeout(() => {
-                const quickReply = `<div style="margin-top: 12px;">
-                  <button onclick="document.dispatchEvent(new CustomEvent('quickReply', { detail: 'Yes' }))"
-                          style="background: #FCD5E3; color: #eb1966; padding: 8px 16px; border-radius: 8px; border: none; font-size: 14px; cursor: pointer; font-family: Plus Jakarta Sans; margin-right: 8px;">
-                    ✅ Yes
-                  </button>
-                </div>`;
-                setMessages(prev => [...prev, createMessage('ai', quickReply)]);
-              }, 1000);
-            } else {
-              friendlyMessage = `Yikes — I couldn't find any gigs that match your prompt.
-
-Do you want to create a custom proposal instead?`;
-
-              // Add quick reply button
-              setTimeout(() => {
-                const quickReply = `<div style="margin-top: 12px;">
-                  <button onclick="document.dispatchEvent(new CustomEvent('quickReply', { detail: 'Yes' }))"
-                          style="background: #FCD5E3; color: #eb1966; padding: 8px 16px; border-radius: 8px; border: none; font-size: 14px; cursor: pointer; font-family: Plus Jakarta Sans; margin-right: 8px;">
-                    ✅ Yes
-                  </button>
-                </div>`;
-                setMessages(prev => [...prev, createMessage('ai', quickReply)]);
-              }, 1000);
-            }
-            break;
           default:
             // Make API call for general queries
             const apiEndpoint = userType === 'freelancer'
@@ -601,9 +515,28 @@ Do you want to create a custom proposal instead?`;
               // Try to parse structured response
               try {
                 const parsedResult = JSON.parse(data.result || '{}');
-                if (parsedResult.opportunities && Array.isArray(parsedResult.opportunities)) {
+                if (parsedResult.step === 'opportunities_results' && Array.isArray(parsedResult.opportunities)) {
                   const count = parsedResult.opportunities.length;
-                  friendlyMessage = `✨ Found ${count} matching opportunit${count !== 1 ? 'ies' : 'y'} for you! Check them out in the worksheet.`;
+                  if (count === 0) {
+                    // True zero matches - show fallback with proposal option
+                    friendlyMessage = `Yikes — I couldn't find any gigs that match your prompt.
+
+Do you want to create a custom proposal instead?`;
+
+                    // Add quick reply button for proposal creation
+                    setTimeout(() => {
+                      const quickReply = `<div style="margin-top: 12px;">
+                        <button onclick="window.location.href='/freelancer-dashboard/proposals/create?fromPrompt=${encodeURIComponent(prompt)}'"
+                                style="background: #FCD5E3; color: #eb1966; padding: 8px 16px; border-radius: 8px; border: none; font-size: 14px; cursor: pointer; font-family: Plus Jakarta Sans; margin-right: 8px;">
+                          ✅ Yes
+                        </button>
+                      </div>`;
+                      setMessages(prev => [...prev, createMessage('ai', quickReply)]);
+                    }, 1000);
+                  } else {
+                    // Valid gigs found - let worksheet handle display
+                    friendlyMessage = `✨ Found ${count} matching opportunit${count !== 1 ? 'ies' : 'y'} for you! Check them out in the worksheet.`;
+                  }
                 } else {
                   friendlyMessage = "Hmm, I'm not sure how to help with that yet — want to try asking differently?";
                 }
@@ -662,121 +595,59 @@ Do you want to create a custom proposal instead?`;
     initializeChat();
   }, [prompt, userType]);
 
-  const handleSendMessage = async () => {
-    if (!newMessage.trim()) return;
-
-    // Add user message to chat
-    const userMessage = createMessage('user', newMessage);
-    setMessages(prev => [...prev, userMessage]);
-
-    const messageToSend = newMessage;
-    setNewMessage('');
+  // Unified AI agent intake system for chat thread
+  const sendMessageToAgent = async (prompt: string) => {
     setLoading(true);
-
     try {
-      // Check for local intent overrides first (with chat memory)
-      const recentMessages = messages.slice(-5); // Last 5 messages for context
-      const intent = classifyIntent(messageToSend, recentMessages);
-      let friendlyResponse = '';
+      const session = await fetch('/api/auth/session').then(res => res.json());
+      const response = await fetch('/api/ai-intake/agent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt,
+          userType: session?.user?.type || 'freelancer',
+          intent: 'ai_chat_thread',
+          context: {
+            pathname: window.location.pathname,
+            session: session?.user || null,
+          },
+        }),
+      });
 
-      switch (intent) {
-        case 'gratitude':
-          friendlyResponse = "You're welcome! Let me know how else I can help 🌟";
-          break;
-        case 'greeting':
-          friendlyResponse = "Hello! I'm here to help you find amazing creative opportunities. What are you looking to work on?";
-          break;
-        case 'post_gig':
-          friendlyResponse = "Let's get your creative brief in shape. What's the title of your gig?";
-          break;
-        case 'custom_proposal_ideas':
-          friendlyResponse = `Let's build something amazing. What's the core idea you want to pitch?
+      const result = await response.json();
 
-Here are some creative directions to consider:
-<span class="bg-gray-100 text-xs rounded-full px-2 py-1 mr-2 mb-1 inline-block">Brand Identity Design</span>
-<span class="bg-gray-100 text-xs rounded-full px-2 py-1 mr-2 mb-1 inline-block">User Experience Audit</span>
-<span class="bg-gray-100 text-xs rounded-full px-2 py-1 mr-2 mb-1 inline-block">Content Strategy</span>
-<span class="bg-gray-100 text-xs rounded-full px-2 py-1 mr-2 mb-1 inline-block">Digital Marketing Campaign</span>
-<span class="bg-gray-100 text-xs rounded-full px-2 py-1 mr-2 mb-1 inline-block">Product Photography</span>`;
-          break;
-        case 'mobile_app_ideas':
-          friendlyResponse = `Perfect! Mobile apps are exciting projects. Here are some focused ideas for your custom proposal:
-
-<span class="bg-gray-100 text-xs rounded-full px-2 py-1 mr-2 mb-1 inline-block">iOS/Android UI Design</span>
-<span class="bg-gray-100 text-xs rounded-full px-2 py-1 mr-2 mb-1 inline-block">User Flow Optimization</span>
-<span class="bg-gray-100 text-xs rounded-full px-2 py-1 mr-2 mb-1 inline-block">App Icon & Branding</span>
-<span class="bg-gray-100 text-xs rounded-full px-2 py-1 mr-2 mb-1 inline-block">Prototype Development</span>
-<span class="bg-gray-100 text-xs rounded-full px-2 py-1 mr-2 mb-1 inline-block">App Store Assets</span>
-
-What type of mobile app are you thinking about?`;
-          break;
-        case 'commissioner_research':
-          friendlyResponse = "I can help you research recent commissioners! Let me check who's been posting creative projects lately.";
-          break;
-        case 'custom_proposal_confirm':
-          friendlyResponse = "What kind of idea do you want to work on?";
-          break;
-        case 'project_type_response':
-          // Show commissioner selection based on project type
-          const organizations = await matchOrganizations(messageToSend);
-          if (organizations.length > 0) {
-            const commissionerCards = organizations.map((org: any) => `
-              <div style="border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: background-color 0.2s;"
-                   onclick="document.dispatchEvent(new CustomEvent('commissionerSelected', { detail: { organization: ${JSON.stringify(org).replace(/"/g, '&quot;')}, projectType: '${messageToSend}' } }))"
-                   onmouseover="this.style.backgroundColor='#f9fafb'"
-                   onmouseout="this.style.backgroundColor='white'">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <img src="${org.logo}" alt="${org.name}" style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;" />
-                  <div>
-                    <h4 style="font-weight: 600; color: #111827; margin: 0; font-family: Plus Jakarta Sans;">${org.name}</h4>
-                    <div style="display: flex; gap: 8px; margin-top: 4px;">
-                      ${org.tags.map((tag: string) => `<span style="background: #f3f4f6; color: #374151; font-size: 12px; padding: 2px 8px; border-radius: 4px;">${tag}</span>`).join('')}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            `).join('');
-
-            friendlyResponse = `These clients recently commissioned similar projects. Pick one to reach out to:
-
-${commissionerCards}`;
-          } else {
-            friendlyResponse = "I had trouble finding commissioners for that project type. Let me help you create a custom proposal instead.";
-          }
-          break;
-        default:
-          // Make API call for general queries
-          const apiEndpoint = userType === 'freelancer'
-            ? '/api/ai-intake/freelancer'
-            : '/api/ai-intake/client';
-
-          const res = await fetch(apiEndpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              intent: messageToSend,
-              step: 'followup'
-            }),
-          });
-
-          const data = await res.json();
-          const resultText = typeof data.result === 'string' ? data.result : '';
-
-          // Validate content before showing to user
-          if (isValidContent(resultText)) {
-            friendlyResponse = resultText;
-          } else {
-            friendlyResponse = "Hmm, I'm not sure how to help with that yet — want to try asking differently?";
-          }
+      if (result?.result) {
+        setMessages((prev) => [
+          ...prev,
+          createMessage('user', prompt),
+          createMessage('ai', result.result),
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          createMessage('user', prompt),
+          createMessage('ai', result?.error || 'Agent did not respond as expected.'),
+        ]);
       }
-
-      setMessages(prev => [...prev, createMessage('ai', friendlyResponse)]);
     } catch (error) {
-      console.error('Failed to send message:', error);
-      setMessages(prev => [...prev, createMessage('ai', 'Sorry, I encountered an error. Please try again.')]);
+      setMessages((prev) => [
+        ...prev,
+        createMessage('user', prompt),
+        createMessage('ai', 'Something went wrong while contacting the agent.'),
+      ]);
+      console.error('Agent error:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSendMessage = async () => {
+    if (!newMessage.trim()) return;
+    const prompt = newMessage;
+    setNewMessage('');
+    await sendMessageToAgent(prompt);
   };
 
   return (

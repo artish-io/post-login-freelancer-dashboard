@@ -22,8 +22,8 @@ type Props = {
   briefUrl?: string;
   workingFileUrl?: string;
   columnId: 'todo' | 'upcoming' | 'review';
-  projectId?: number;
-  taskId?: number;
+  projectId: number;
+  taskId: number;
   onTaskSubmitted?: () => void;
   completed?: boolean;
 };
@@ -43,8 +43,8 @@ export default function TaskCard({
   briefUrl = '',
   workingFileUrl = '',
   columnId,
-  projectId = 1,
-  taskId = 1,
+  projectId,
+  taskId,
   onTaskSubmitted,
   completed = false,
 }: Props) {

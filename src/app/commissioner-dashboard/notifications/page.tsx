@@ -25,27 +25,35 @@ export default function NotificationsPage() {
   const handleNotificationClick = (notification: NotificationData) => {
     const { type, context } = notification;
 
-    switch (type) {
-      case 'invoice_sent':
-        // Navigate to pay invoice page with specific invoice
-        if (notification.invoice?.number) {
-          router.push(`/commissioner-dashboard/projects-and-invoices/invoices/pay-invoice?invoice=${notification.invoice.number}`);
-        } else if (context?.invoiceId) {
-          router.push(`/commissioner-dashboard/projects-and-invoices/invoices/pay-invoice?invoice=${context.invoiceId}`);
-        } else {
-          router.push('/commissioner-dashboard/projects-and-invoices/invoices');
-        }
-        break;
+    // Handle invoice notifications with universal routing
+    if (type === 'invoice_sent' || type === 'invoice_reminder' || type === 'invoice_overdue_reminder') {
+      // Try multiple sources for invoice number with proper fallback
+      const invoiceNumber =
+        notification.invoice?.number ||
+        context?.invoiceNumber ||
+        context?.invoiceId ||
+        notification.metadata?.invoiceNumber ||
+        notification.metadata?.invoiceId;
 
-      case 'invoice_reminder':
-      case 'invoice_overdue_reminder':
-        // Navigate to pay invoice page for reminder notifications
-        if (notification.invoice?.number) {
-          router.push(`/commissioner-dashboard/projects-and-invoices/invoices/pay-invoice?invoice=${notification.invoice.number}`);
-        } else {
+      if (invoiceNumber) {
+        try {
+          // Use the universal invoice preview route
+          router.push(`/commissioner-dashboard/projects-and-invoices/invoices/invoice/${invoiceNumber}`);
+          return;
+        } catch (error) {
+          console.error('Error navigating to invoice:', error);
+          // Fallback to invoices page
           router.push('/commissioner-dashboard/projects-and-invoices/invoices');
+          return;
         }
-        break;
+      } else {
+        // No invoice number found, go to invoices page
+        router.push('/commissioner-dashboard/projects-and-invoices/invoices');
+        return;
+      }
+    }
+
+    switch (type) {
 
       case 'gig_application':
         // Navigate to job listings with candidate details
@@ -80,9 +88,11 @@ export default function NotificationsPage() {
       case 'project_pause':
       case 'project_pause_requested':
       case 'project_pause_reminder':
-        // Navigate to project tracking page for pause requests
+      case 'project_activated':
+      case 'project_reactivated':
+        // Navigate to project tracking page for pause requests and project activation
         if (context?.projectId) {
-          router.push(`/commissioner-dashboard/projects-and-invoices/project-tracking?id=${context.projectId}`);
+          router.push(`/commissioner-dashboard/projects-and-invoices/project-tracking/${context.projectId}`);
         } else {
           router.push('/commissioner-dashboard/projects-and-invoices');
         }

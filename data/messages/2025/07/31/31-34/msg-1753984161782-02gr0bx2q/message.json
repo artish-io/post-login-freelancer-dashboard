@@ -6,7 +6,7 @@
   "isEncrypted": false,
   "read": {
     "31": true,
-    "34": false
+    "34": true
   },
   "threadId": "31-34"
 }

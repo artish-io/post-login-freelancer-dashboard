@@ -75,8 +75,10 @@ export async function PUT(request: NextRequest) {
     }
 
     // Get remaining milestone count
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-    const projectTasksData = JSON.parse(fs.readFileSync(projectTasksPath, 'utf-8'));
+    // Use hierarchical storage for project tasks
+    const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
+    const hierarchicalTasks = await readAllTasks();
+    const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
     const projectTasks = projectTasksData.find((pt: any) => pt.projectId === projectId);
     const remainingTasks = projectTasks?.tasks?.filter((task: any) => !task.completed).length || 0;
 

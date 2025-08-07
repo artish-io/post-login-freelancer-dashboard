@@ -114,7 +114,7 @@ export function getProgressRingProps(progress: number, radius: number = 14) {
 }
 
 /**
- * Sync project status between project-tasks.json and projects.json
+ * Sync project status between hierarchical project tasks and projects
  * This function should be called whenever task status changes
  */
 export async function syncProjectStatus(projectId: number): Promise<boolean> {
@@ -168,7 +168,7 @@ export function transformProjectData(projectTaskData: ProjectTaskData, projectIn
 }
 
 /**
- * Validate data consistency between projects.json and project-tasks.json
+ * Validate data consistency between projects and hierarchical project tasks
  */
 export function validateProjectDataConsistency(project: Project, projectTaskData: ProjectTaskData): {
   isConsistent: boolean;
@@ -178,7 +178,7 @@ export function validateProjectDataConsistency(project: Project, projectTaskData
   
   // Check if totalTasks matches actual task count
   if (project.totalTasks !== projectTaskData.tasks.length) {
-    issues.push(`totalTasks mismatch: projects.json has ${project.totalTasks}, but project-tasks.json has ${projectTaskData.tasks.length} tasks`);
+    issues.push(`totalTasks mismatch: projects has ${project.totalTasks}, but hierarchical tasks has ${projectTaskData.tasks.length} tasks`);
   }
   
   // Check if status is consistent with task completion

@@ -1,0 +1,63 @@
+{
+  "id": 10,
+  "title": "Advertising Design - Lagos State Parks Services",
+  "organizationId": 1,
+  "commissionerId": "32",
+  "category": "Design",
+  "subcategory": "Advertising Design",
+  "tags": [
+    "Design"
+  ],
+  "hourlyRateMin": 67,
+  "hourlyRateMax": 100,
+  "description": "Design compelling advertising materials for Lagos State Parks Services to promote park facilities and recreational activities to the public.",
+  "deliveryTimeWeeks": 3,
+  "estimatedHours": 120,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Figma"
+  ],
+  "executionMethod": "milestone",
+  "milestones": [
+    {
+      "id": "8b7f6f50-83a9-4de3-a4a2-806a35feaa82",
+      "title": "Creative Concept Development",
+      "description": "Brainstorm and finalize visual direction, messaging tone, and key campaign themes aligned with the fundraiser’s goals.",
+      "startDate": "2025-08-04T04:00:00.000Z",
+      "endDate": "2025-08-08T04:00:00.000Z"
+    },
+    {
+      "id": "195040e5-7567-4414-a12d-5c399d0517d3",
+      "title": "Asset Design & Production",
+      "description": "Design core advertising materials including posters, social media banners, t-shirts, stage backdrops, and signage.",
+      "startDate": "2025-08-11T04:00:00.000Z",
+      "endDate": "2025-08-15T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "94990bd3-ae35-4536-b589-d791c5343159",
+      "title": "Stakeholder Review & Revisions",
+      "description": "Present drafts to Lagos Parks Services and event partners for feedback and iterate based on approvals.",
+      "startDate": "2025-08-18T04:00:00.000Z",
+      "endDate": "2025-08-22T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "776fc337-6304-4081-b4bd-eda6caea8c73",
+      "title": "Final Delivery & Print Prep",
+      "description": "Package all approved assets in print-ready and digital formats, optimized for event deployment across channels.",
+      "startDate": "2025-08-25T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 8000,
+  "upperBudget": 12000,
+  "postedDate": "2025-08-04",
+  "notes": "Budget range: $8,000 - $12,000",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

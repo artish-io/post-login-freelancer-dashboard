@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import GigRequestHeader from './gig-request-header';
 import GigRequestBody from './gig-request-body';
 import GigRequestMetaPanel from './gig-request-meta-panel';
+import { useSuccessToast, useErrorToast } from '@/components/ui/toast';
 
 type GigRequest = {
   id: number;
@@ -31,10 +33,13 @@ type Props = {
 };
 
 const GigRequestDetails: React.FC<Props> = ({ request }) => {
+  const router = useRouter();
   const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const showSuccessToast = useSuccessToast();
+  const showErrorToast = useErrorToast();
 
   const handleAcceptOffer = () => {
     setShowAcceptModal(true);
@@ -57,16 +62,20 @@ const GigRequestDetails: React.FC<Props> = ({ request }) => {
       });
 
       if (res.ok) {
-        alert('Offer accepted successfully!');
+        const result = await res.json();
+        showSuccessToast('Offer Accepted', `Offer accepted successfully! Project #${result.projectId} has been created.`);
         setShowAcceptModal(false);
-        // Optionally refresh the page or update the request status
-        window.location.reload();
+        // Navigate to the project tracking page
+        setTimeout(() => {
+          router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking?projectId=${result.projectId}`);
+        }, 1500);
       } else {
-        throw new Error('Failed to accept offer');
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to accept offer');
       }
     } catch (error) {
       console.error('Error accepting offer:', error);
-      alert('Failed to accept offer. Please try again.');
+      showErrorToast('Acceptance Failed', error instanceof Error ? error.message : 'Failed to accept offer. Please try again.');
     } finally {
       setSubmitting(false);
     }

@@ -70,7 +70,7 @@ export default function FreelancerNotificationsPage() {
       case 'task_rejected_with_comment':
         // Navigate to project tracking page
         if (context?.projectId) {
-          router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking?id=${context.projectId}`);
+          router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking/${context.projectId}`);
         } else {
           router.push('/freelancer-dashboard/projects-and-invoices');
         }
@@ -97,9 +97,11 @@ export default function FreelancerNotificationsPage() {
       case 'project_pause_accepted':
       case 'project_pause_refused':
       case 'project_paused':
-        // Navigate to project tracking page for pause responses
+      case 'project_activated':
+      case 'project_reactivated':
+        // Navigate to project tracking page for pause responses and project activation
         if (context?.projectId) {
-          router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking?id=${context.projectId}`);
+          router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking/${context.projectId}`);
         } else {
           router.push('/freelancer-dashboard/projects-and-invoices');
         }

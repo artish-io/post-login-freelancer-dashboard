@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1754532591164,
+    "freelancerId": 1,
+    "commissionerId": 35,
+    "gigId": null,
+    "organizationId": 4,
+    "title": "Web 3 Virtual Assets For NFT Project",
+    "skills": [
+      "Web Development"
+    ],
+    "tools": [
+      "Python"
+    ],
+    "notes": "",
+    "budget": {
+      "min": 5000,
+      "max": 7000,
+      "currency": "USD"
+    },
+    "hourlyRateMin": null,
+    "hourlyRateMax": null,
+    "deliveryTimeWeeks": 2,
+    "status": "Available",
+    "createdAt": "2025-08-07T02:09:51.161Z",
+    "responses": []
+  }
+]

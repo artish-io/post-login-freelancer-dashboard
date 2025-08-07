@@ -112,19 +112,75 @@ export async function ensureDirectoryExists(dirPath: string): Promise<void> {
 }
 
 /**
+ * Find existing task file location by searching through the hierarchical structure
+ */
+async function findExistingTaskFile(projectId: number, taskId: number): Promise<string | null> {
+  const basePath = path.join(process.cwd(), 'data', 'project-tasks');
+
+  try {
+    // Walk through year/month/day directories to find the existing file
+    const years = await fs.readdir(basePath);
+
+    for (const year of years) {
+      const yearPath = path.join(basePath, year);
+      const months = await fs.readdir(yearPath);
+
+      for (const month of months) {
+        const monthPath = path.join(yearPath, month);
+        const days = await fs.readdir(monthPath);
+
+        for (const day of days) {
+          const dayPath = path.join(monthPath, day);
+          const projectPath = path.join(dayPath, projectId.toString());
+
+          try {
+            const taskFiles = await fs.readdir(projectPath);
+            const taskFileName = `${taskId}-task.json`;
+
+            if (taskFiles.includes(taskFileName)) {
+              return path.join(projectPath, taskFileName);
+            }
+          } catch {
+            // Project directory doesn't exist for this date, continue
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.warn(`Error searching for existing task file ${projectId}/${taskId}:`, error);
+  }
+
+  return null;
+}
+
+/**
  * Write a single task to hierarchical storage
+ * First tries to find the existing file location, then falls back to due date path
  */
 export async function writeTask(task: HierarchicalTask): Promise<void> {
-  const filePath = generateTaskFilePath(task.dueDate, task.projectId, task.taskId);
+  let filePath: string;
+
+  // First, try to find the existing file location
+  const existingFilePath = await findExistingTaskFile(task.projectId, task.taskId);
+
+  if (existingFilePath) {
+    // Use the existing file location
+    filePath = existingFilePath;
+    console.log(`📝 Updating existing task ${task.taskId} at: ${filePath}`);
+  } else {
+    // Fall back to generating path based on due date (for new tasks)
+    filePath = generateTaskFilePath(task.dueDate, task.projectId, task.taskId);
+    console.log(`📝 Creating new task ${task.taskId} at: ${filePath}`);
+  }
+
   const dirPath = path.dirname(filePath);
-  
   await ensureDirectoryExists(dirPath);
-  
+
   const taskWithTimestamp = {
     ...task,
     lastModified: new Date().toISOString()
   };
-  
+
   await fs.writeFile(filePath, JSON.stringify(taskWithTimestamp, null, 2));
 }
 

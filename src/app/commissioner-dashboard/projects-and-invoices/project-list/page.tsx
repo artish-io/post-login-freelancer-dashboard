@@ -65,24 +65,43 @@ export default function CommissionerProjectListPage() {
         }
 
         if (projectTasksRes.ok && projectsRes.ok && userRes.ok && orgRes.ok) {
-          const projectTasksData = await projectTasksRes.json();
-          const projectsData = await projectsRes.json();
-          const users = await userRes.json();
-          const organizations = await orgRes.json();
+          const projectTasksResponse = await projectTasksRes.json();
+          const projectsResponse = await projectsRes.json();
+          const usersResponse = await userRes.json();
+          const organizationsResponse = await orgRes.json();
+
+          // Ensure all responses are arrays
+          const projectTasksData = Array.isArray(projectTasksResponse) ? projectTasksResponse : [];
+          const projectsData = Array.isArray(projectsResponse) ? projectsResponse : [];
+          const users = Array.isArray(usersResponse) ? usersResponse : [];
+          const organizations = Array.isArray(organizationsResponse) ? organizationsResponse : [];
 
           const currentCommissionerId = parseInt(session.user.id);
+
+          // Find the organization for this commissioner
+          const organization = organizations.find((org: any) =>
+            org.contactPersonId === currentCommissionerId
+          );
+
+          if (!organization) {
+            console.error('No organization found for commissioner:', currentCommissionerId);
+            setLoading(false);
+            return;
+          }
 
           console.log('🔍 Debug - Fetched data:', {
             projectTasksCount: projectTasksData.length,
             projectsCount: projectsData.length,
             userCount: users.length,
             orgCount: organizations.length,
-            currentCommissionerId
+            currentCommissionerId,
+            organizationId: organization.id,
+            organizationName: organization.name
           });
 
-          // Filter projects to only include those belonging to the current commissioner
+          // Filter projects to only include those belonging to the commissioner's organization
           const commissionerProjects = projectsData.filter((project: any) =>
-            project.commissionerId === currentCommissionerId
+            project.organizationId === organization.id
           );
 
           console.log('🔍 Debug - Commissioner projects:', {
@@ -124,8 +143,16 @@ export default function CommissionerProjectListPage() {
               // Normalize the status from projects.json (handle case variations)
               const normalizedStatus = projectInfo.status.toLowerCase();
               console.log(`🔍 Project ${projectTasks.projectId}: Found status "${projectInfo.status}" -> normalized to "${normalizedStatus}"`);
-              if (['ongoing', 'paused', 'completed'].includes(normalizedStatus)) {
-                projectStatus = normalizedStatus as 'ongoing' | 'paused' | 'completed';
+
+              // Map various status values to our standard format
+              if (normalizedStatus === 'ongoing') {
+                projectStatus = 'ongoing';
+                console.log(`✅ Using status from projects.json: ${projectStatus}`);
+              } else if (normalizedStatus === 'paused') {
+                projectStatus = 'paused';
+                console.log(`✅ Using status from projects.json: ${projectStatus}`);
+              } else if (normalizedStatus === 'completed') {
+                projectStatus = 'completed';
                 console.log(`✅ Using status from projects.json: ${projectStatus}`);
               } else {
                 // Fallback to calculated status if status is not recognized
@@ -181,9 +208,14 @@ export default function CommissionerProjectListPage() {
         } else if (projectTasksRes.ok && userRes.ok && orgRes.ok) {
           // Fallback: Use project-tasks data even if projects.json fails
           console.warn('⚠️ Projects.json failed, using project-tasks data only');
-          const projectTasksData = await projectTasksRes.json();
-          const users = await userRes.json();
-          const organizations = await orgRes.json();
+          const projectTasksResponse = await projectTasksRes.json();
+          const usersResponse = await userRes.json();
+          const organizationsResponse = await orgRes.json();
+
+          // Ensure all responses are arrays
+          const projectTasksData = Array.isArray(projectTasksResponse) ? projectTasksResponse : [];
+          const users = Array.isArray(usersResponse) ? usersResponse : [];
+          const organizations = Array.isArray(organizationsResponse) ? organizationsResponse : [];
 
           // Transform without projects.json data (use calculated status)
           const transformedProjects = projectTasksData.map((projectTasks: any) => {

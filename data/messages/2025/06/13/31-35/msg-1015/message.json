@@ -5,7 +5,7 @@
   "text": "Got it. Processing now.",
   "read": {
     "31": true,
-    "35": false
+    "35": true
   },
   "isEncrypted": false,
   "threadId": "31-35"

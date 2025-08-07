@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { readTask, writeTask, readAllTasks, convertHierarchicalToLegacy } from '../../../lib/project-tasks/hierarchical-storage';
+import { readTask, writeTask, readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 
 const EVENTS_LOG_PATH = path.join(process.cwd(), 'data/notifications/notifications-log.json');
 
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       type: 'task_approved',
       notificationType: 2,
       actorId: commissionerId,
-      targetId: updatedTask.freelancerId || 31, // Default to user 31
+      targetId: updatedTask.freelancerId, // Use actual freelancer ID from task
       entityType: 1,
       entityId: taskId,
       metadata: {

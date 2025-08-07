@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { readAllProjects } from '@/lib/projects-utils';
 
 export async function GET(request: NextRequest) {
   try {
@@ -15,13 +16,13 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Read data files
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
+    // Read data files using hierarchical storage
+    const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
 
-    const projectsData = JSON.parse(fs.readFileSync(projectsPath, 'utf8'));
-    const projectTasksData = JSON.parse(fs.readFileSync(projectTasksPath, 'utf8'));
+    const projectsData = await readAllProjects(); // Use hierarchical storage for projects
+    const hierarchicalTasks = await readAllTasks();
+    const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
     const organizationsData = JSON.parse(fs.readFileSync(organizationsPath, 'utf8'));
 
     // Find the organization for this commissioner
@@ -37,15 +38,19 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter projects for this organization
-    const organizationProjects = projectsData.filter((project: any) => 
+    const organizationProjects = projectsData.filter((project: any) =>
       project.organizationId === organization.id
     );
 
-    // Calculate active projects (exclude paused, completed, cancelled, archived statuses)
+    // Get project IDs that have task data (to match what the project list shows)
+    const projectsWithTasks = new Set(projectTasksData.map((pt: any) => pt.projectId));
+
+    // Calculate active projects (only count projects with status "ongoing" AND have task data)
     const activeProjects = organizationProjects.filter((project: any) => {
       const status = project.status.toLowerCase();
-      const inactiveStatuses = ['paused', 'completed', 'cancelled', 'archived', 'on hold', 'suspended'];
-      return !inactiveStatuses.some(inactive => status.includes(inactive));
+      const hasTaskData = projectsWithTasks.has(project.projectId);
+      // Only count projects that are explicitly ongoing AND have task data
+      return status === 'ongoing' && hasTaskData;
     });
 
     // Console warning for debugging inconsistencies
@@ -58,8 +63,10 @@ export async function GET(request: NextRequest) {
       console.warn(`[Commissioner Stats] Organization ${organization.id}: ${pausedProjects} paused projects excluded from active count. Total: ${totalProjectsCount}, Active: ${activeProjects.length}`);
     }
 
-    // Calculate total projects
-    const totalProjects = organizationProjects.length;
+    // Calculate total projects (only count projects with task data to match project list)
+    const totalProjects = organizationProjects.filter((project: any) =>
+      projectsWithTasks.has(project.projectId)
+    ).length;
 
     // Calculate tasks awaiting review for this commissioner's projects
     // Only count tasks from ongoing projects (exclude Completed/Paused)

@@ -1,0 +1,12 @@
+{
+  "messageId": "msg-1754431006195-cnr88rjo3",
+  "senderId": 34,
+  "timestamp": "2025-08-05T21:56:46.195Z",
+  "text": "hey jennu",
+  "isEncrypted": false,
+  "read": {
+    "2": false,
+    "34": true
+  },
+  "threadId": "2-34"
+}

@@ -3,6 +3,8 @@
 import Image from 'next/image';
 import { MapPin, Star, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface Profile {
   id: string;
@@ -63,6 +65,49 @@ export default function ProfileHeader({
   viewerUserType,
   profileType
 }: ProfileHeaderProps) {
+  const { data: session } = useSession();
+  const [canSendMessage, setCanSendMessage] = useState(true);
+  const [messageBlockReason, setMessageBlockReason] = useState<string | null>(null);
+  const [checkingPermission, setCheckingPermission] = useState(false);
+
+  // Check message permissions for commissioners viewing freelancer profiles
+  useEffect(() => {
+    const checkMessagePermission = async () => {
+      if (viewerUserType !== 'commissioner' || profileType !== 'freelancer' || isOwnProfile) {
+        return; // Only check for commissioners viewing freelancer profiles
+      }
+
+      const commissionerId = session?.user?.id;
+      if (!commissionerId) return;
+
+      setCheckingPermission(true);
+      try {
+        const response = await fetch('/api/messages/check-permission', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            commissionerId: parseInt(commissionerId),
+            freelancerId: parseInt(profile.id)
+          })
+        });
+
+        if (response.ok) {
+          const permission = await response.json();
+          setCanSendMessage(permission.canSend);
+          setMessageBlockReason(permission.reason || null);
+        }
+      } catch (error) {
+        console.error('Error checking message permission:', error);
+        // Default to allowing messages on error
+        setCanSendMessage(true);
+      } finally {
+        setCheckingPermission(false);
+      }
+    };
+
+    checkMessagePermission();
+  }, [viewerUserType, profileType, isOwnProfile, session?.user?.id, profile.id]);
+
   const getMessageHref = () => {
     // For freelancers viewing commissioner profiles
     if (viewerUserType === 'freelancer' && profileType === 'commissioner') {
@@ -104,17 +149,44 @@ export default function ProfileHeader({
 
           {/* Direct Message Button - Only show if not own profile */}
           {!isOwnProfile && (
-            <Link href={getMessageHref()}>
-              <button
-                className="inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-colors text-gray-700 hover:bg-opacity-40"
-                style={{
-                  backgroundColor: 'rgba(252, 213, 227, 0.3)'
-                }}
-              >
-                <MessageCircle className="w-4 h-4" />
-                <span>Message</span>
-              </button>
-            </Link>
+            <div className="relative">
+              {canSendMessage ? (
+                <Link href={getMessageHref()}>
+                  <button
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-colors text-gray-700 hover:bg-opacity-40"
+                    style={{
+                      backgroundColor: 'rgba(252, 213, 227, 0.3)'
+                    }}
+                    disabled={checkingPermission}
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>{checkingPermission ? 'Checking...' : 'Message'}</span>
+                  </button>
+                </Link>
+              ) : (
+                <div className="group relative">
+                  <button
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-colors text-gray-400 cursor-not-allowed"
+                    style={{
+                      backgroundColor: 'rgba(229, 231, 235, 0.5)'
+                    }}
+                    disabled
+                    title={messageBlockReason || "Message limit reached"}
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>Message</span>
+                  </button>
+
+                  {/* Tooltip */}
+                  {messageBlockReason && (
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                      {messageBlockReason}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           )}
         </div>
 

@@ -1,0 +1,29 @@
+[
+  {
+    "id": 204,
+    "freelancerId": 2,
+    "gigId": 104,
+    "organizationId": 5,
+    "commissionerId": 36,
+    "title": "Concept Testing Deck",
+    "skills": [
+      "Design Research",
+      "User Research",
+      "Content Design"
+    ],
+    "tools": [
+      "PowerPoint",
+      "Figma",
+      "Miro"
+    ],
+    "notes": "Build out visual layouts for an insights deck to present to board.",
+    "budget": {
+      "min": 2200,
+      "max": 3800,
+      "currency": "USD"
+    },
+    "status": "Accepted",
+    "createdAt": "2025-07-01T17:50:00Z",
+    "responses": []
+  }
+]

@@ -11,7 +11,7 @@ const usersFilePath = path.join(process.cwd(), 'data/users.json');
 
 export async function POST(request: NextRequest) {
   try {
-    const { projectId, taskId, action, freelancerId, commissionerId } = await request.json();
+    const { projectId, taskId, action, freelancerId, commissionerId, referenceUrl } = await request.json();
 
     if (!projectId || !taskId || !action) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -50,21 +50,29 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'submit':
-        // First submission: mark as completed and in review, but don't increment version yet
-        updatedTask.completed = true;
+        // First submission: mark as in review but NOT completed (completed = true only when approved)
+        updatedTask.completed = false; // Keep false until approved by commissioner
         updatedTask.status = 'In review';
         updatedTask.submittedDate = new Date().toISOString();
+        // Update task link with submitted reference URL
+        if (referenceUrl) {
+          updatedTask.link = referenceUrl;
+        }
         // Version stays the same (1) for first submission
         if (!updatedTask.version) updatedTask.version = 1;
         eventType = 'task_submitted';
         targetUserId = actualCommissionerId;
         break;
       case 'resubmit':
-        // Resubmission after rejection: increment version and mark as in review
+        // Resubmission after rejection: increment version and mark as in review but NOT completed
         updatedTask.rejected = false;
-        updatedTask.completed = true;
+        updatedTask.completed = false; // Keep false until approved by commissioner
         updatedTask.status = 'In review';
         updatedTask.submittedDate = new Date().toISOString();
+        // Update task link with submitted reference URL
+        if (referenceUrl) {
+          updatedTask.link = referenceUrl;
+        }
         updatedTask.version = (updatedTask.version || 1) + 1;
         eventType = 'task_submitted';
         targetUserId = actualCommissionerId;
@@ -98,6 +106,17 @@ export async function POST(request: NextRequest) {
     // Log event for notification system
     if (eventType && targetUserId) {
       try {
+        // Validate commissioner ID for task submissions
+        if (eventType === 'task_submitted' && !actualCommissionerId) {
+          console.error('❌ Cannot send task submission notification: Commissioner ID is missing');
+          console.error('Project info:', { projectId, commissionerId: projectInfo?.commissionerId });
+          throw new Error('Commissioner ID is required for task submission notifications');
+        }
+
+        // Get freelancer and commissioner names for notification
+        const freelancer = users.find((u: any) => u.id === actualFreelancerId);
+        const commissioner = users.find((u: any) => u.id === actualCommissionerId);
+
         await eventLogger.logEvent({
           id: `${eventType}_${taskId}_${Date.now()}`,
           timestamp: new Date().toISOString(),
@@ -109,8 +128,10 @@ export async function POST(request: NextRequest) {
           entityId: taskId,
           metadata: {
             taskTitle: task.title,
-            projectTitle: projects[projectIndex].title,
-            version: task.version || 1,
+            projectTitle: projectInfo.title,
+            freelancerName: freelancer?.name || 'Unknown Freelancer',
+            commissionerName: commissioner?.name || 'Unknown Commissioner',
+            version: updatedTask.version || 1,
             action: action
           },
           context: {
@@ -118,6 +139,9 @@ export async function POST(request: NextRequest) {
             taskId: taskId
           }
         });
+
+        console.log(`✅ Notification logged: ${eventType} for ${eventType === 'task_submitted' ? 'commissioner' : 'freelancer'}`);
+        console.log(`📧 Notification details: ${freelancer?.name} → ${commissioner?.name} (Task: "${task.title}")`);
       } catch (eventError) {
         console.error('Failed to log event:', eventError);
         // Don't fail the main operation if event logging fails
@@ -136,7 +160,7 @@ export async function POST(request: NextRequest) {
             freelancerId: actualFreelancerId,
             commissionerId: actualCommissionerId,
             taskTitle: task.title,
-            projectTitle: projects[projectIndex].title
+            projectTitle: projectInfo.title
           })
         });
 

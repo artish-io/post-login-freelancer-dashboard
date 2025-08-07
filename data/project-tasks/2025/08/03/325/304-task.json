@@ -1,0 +1,24 @@
+{
+  "taskId": 304,
+  "projectId": 325,
+  "projectTitle": "UI/UX Design - Lagos State Parks Services",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "UI/UX Design"
+  ],
+  "title": "Initial setup for UI/UX Design - Lagos State Parks Services",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "link": "bit.ly123132323434234",
+  "dueDate": "2025-08-04T00:00:00.000Z",
+  "rejected": true,
+  "feedbackCount": 1,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Begin work on UI/UX Design - Lagos State Parks Services project",
+  "createdDate": "2025-08-03T22:21:08.957Z",
+  "lastModified": "2025-08-05T18:13:39.415Z",
+  "submittedDate": "2025-08-05T17:54:33.403Z",
+  "rejectedDate": "2025-08-05T18:13:39.407Z"
+}

@@ -13,17 +13,20 @@ export async function GET(req: Request) {
   }
 
   try {
-    // Use universal source files instead of deprecated projects-summary.json
+    // Use hierarchical storage for project tasks
+    const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
     const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
 
-    const [projectsFile, projectTasksFile] = await Promise.all([
+    const [projectsFile, hierarchicalTasks] = await Promise.all([
       readFile(projectsPath, 'utf-8'),
-      readFile(projectTasksPath, 'utf-8')
+      readAllTasks()
     ]);
 
+    // Convert to legacy format for compatibility
+    const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
+
     const projects = JSON.parse(projectsFile);
-    const projectTasks = JSON.parse(projectTasksFile);
+    const projectTasks = projectTasksData;
 
     const freelancerId = parseInt(userId);
 

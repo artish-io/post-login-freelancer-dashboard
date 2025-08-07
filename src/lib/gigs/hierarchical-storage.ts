@@ -44,10 +44,15 @@ export interface Gig {
  * Get the hierarchical path for a gig based on its posted date
  */
 function getGigPath(gigId: number, postedDate: string): string {
-  const date = new Date(postedDate);
-  const year = date.getFullYear();
+  // Parse date more reliably to avoid timezone issues
+  const dateParts = postedDate.split('-');
+  const year = parseInt(dateParts[0]);
+  const monthNum = parseInt(dateParts[1]);
+  const dayNum = parseInt(dateParts[2]);
+
+  const date = new Date(year, monthNum - 1, dayNum); // Month is 0-indexed
   const month = date.toLocaleString('en-US', { month: 'long' });
-  const day = date.getDate().toString().padStart(2, '0');
+  const day = dayNum.toString().padStart(2, '0');
   
   return path.join(
     process.cwd(),
@@ -118,8 +123,20 @@ export async function readGig(gigId: number): Promise<Gig | null> {
     
     // Read the gig file
     const gigPath = getGigPath(gigId, postedDate);
-    const gigData = await fs.readFile(gigPath, 'utf-8');
-    return JSON.parse(gigData);
+
+    // Check if file exists before attempting to read
+    if (!await fs.access(gigPath).then(() => true).catch(() => false)) {
+      console.warn(`Gig file not found: ${gigPath}`);
+      return null;
+    }
+
+    try {
+      const gigData = await fs.readFile(gigPath, 'utf-8');
+      return JSON.parse(gigData);
+    } catch (parseError) {
+      console.error(`Error parsing gig file ${gigPath}:`, parseError);
+      return null;
+    }
   } catch (error) {
     console.error(`Error reading gig ${gigId}:`, error);
     return null;
@@ -278,10 +295,15 @@ export async function getGigsByCategory(category: string): Promise<Gig[]> {
 
 /**
  * Get public gigs (for explore page)
+ * Only returns gigs that are available for applications
  */
 export async function getPublicGigs(): Promise<Gig[]> {
   const allGigs = await readAllGigs();
-  return allGigs.filter(gig => gig.isPublic !== false && !gig.isTargetedRequest);
+  return allGigs.filter(gig =>
+    gig.isPublic !== false &&
+    !gig.isTargetedRequest &&
+    gig.status === 'Available'
+  );
 }
 
 /**

@@ -1,0 +1,65 @@
+[
+  {
+    "id": "task_rejected_25_1754426467081",
+    "timestamp": "2025-08-05T20:41:07.081Z",
+    "type": "task_rejected_with_comment",
+    "notificationType": 4,
+    "actorId": 34,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 25,
+    "metadata": {
+      "taskTitle": "404 error page concept",
+      "projectTitle": "Nebula CMS landing redesign",
+      "commissionerName": "Matte Hannery",
+      "freelancerName": "Margsate Flether",
+      "priority": "high"
+    },
+    "context": {
+      "projectId": 306,
+      "rejectionComment": "The colour scheme does not match the rest of the design. Please let me se another version."
+    }
+  },
+  {
+    "id": "task_rejected_22_1754426047047",
+    "timestamp": "2025-08-05T20:34:07.047Z",
+    "type": "task_rejected_with_comment",
+    "notificationType": 4,
+    "actorId": 34,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 22,
+    "metadata": {
+      "taskTitle": "Analytics tag setup",
+      "projectTitle": "Nebula CMS landing redesign",
+      "commissionerName": "Matte Hannery",
+      "freelancerName": "Margsate Flether",
+      "priority": "high"
+    },
+    "context": {
+      "projectId": 306,
+      "rejectionComment": "This could be improved better. Let's jump on a call if you have more questions."
+    }
+  },
+  {
+    "id": "task_rejected_308_1754418732640",
+    "timestamp": "2025-08-05T18:32:12.640Z",
+    "type": "task_rejected_with_comment",
+    "notificationType": 4,
+    "actorId": 32,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 308,
+    "metadata": {
+      "taskTitle": "Final Deliverables & Handoff",
+      "projectTitle": "Advertising Design - Lagos State Parks Services",
+      "commissionerName": "Neilsan Mando",
+      "freelancerName": "Margsate Flether",
+      "priority": "high"
+    },
+    "context": {
+      "projectId": 326,
+      "rejectionComment": "Please revise the final deliverables. The color scheme needs adjustment."
+    }
+  }
+]

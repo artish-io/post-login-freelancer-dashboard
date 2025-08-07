@@ -1,11 +1,8 @@
 // src/app/api/dashboard/tasks/active/route.ts
 
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
+import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 import { calculateTaskPriority } from '@/lib/task-priority.util';
-
-const TASKS_PATH = path.join(process.cwd(), 'data', 'project-tasks.json');
 
 function isSameDay(date1: Date, date2: Date) {
   return date1.toDateString() === date2.toDateString();
@@ -13,8 +10,11 @@ function isSameDay(date1: Date, date2: Date) {
 
 export async function GET() {
   try {
-    const file = await readFile(TASKS_PATH, 'utf-8');
-    const projects = JSON.parse(file);
+    // Read all tasks from hierarchical storage
+    const hierarchicalTasks = await readAllTasks();
+
+    // Convert back to legacy format for backward compatibility
+    const projects = convertHierarchicalToLegacy(hierarchicalTasks);
 
     const today = new Date();
     const endOfWeek = new Date();

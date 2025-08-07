@@ -28,10 +28,18 @@ type Props = {
 
 export default function CommissionerProjectsRow({ projects, users, filterStatus }: Props) {
   const router = useRouter();
-  const filteredProjects = projects.filter((project) => project.status === filterStatus);
+  const filteredProjects = projects
+    .filter((project) => project.status === filterStatus)
+    .sort((a, b) => {
+      // Sort by nearest due date (earliest first)
+      if (!a.dueDate && !b.dueDate) return 0;
+      if (!a.dueDate) return 1;
+      if (!b.dueDate) return -1;
+      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+    });
 
   const handleProjectClick = (projectId: number) => {
-    router.push(`/commissioner-dashboard/projects-and-invoices/project-tracking?id=${projectId}`);
+    router.push(`/commissioner-dashboard/projects-and-invoices/project-tracking/${projectId}`);
   };
 
   const getFreelancerName = (id: number) => {

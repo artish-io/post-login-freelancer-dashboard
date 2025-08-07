@@ -1,0 +1,34 @@
+[
+  {
+    "id": 201,
+    "freelancerId": 1,
+    "gigId": 101,
+    "organizationId": 1,
+    "commissionerId": 32,
+    "title": "Park Services Website Rebrand",
+    "skills": [
+      "Web Design",
+      "UI/UX Design"
+    ],
+    "tools": [
+      "Figma",
+      "Adobe Photoshop"
+    ],
+    "notes": "Help us redesign our digital presence for better accessibility.",
+    "budget": {
+      "min": 3500,
+      "max": 5000,
+      "currency": "USD"
+    },
+    "status": "Accepted",
+    "createdAt": "2025-07-05T10:12:00Z",
+    "responses": [
+      {
+        "type": "accepted",
+        "timestamp": "2025-07-27T18:21:33.003Z",
+        "message": "Offer accepted"
+      }
+    ],
+    "acceptedAt": "2025-07-27T18:21:33.003Z"
+  }
+]

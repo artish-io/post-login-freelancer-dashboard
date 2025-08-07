@@ -208,18 +208,22 @@ export default function TaskReviewModal({ isOpen, onClose, task, onTaskReviewed 
           <p className="text-sm text-gray-800">{task.description}</p>
         </div>
 
-        {/* Task Reference Link */}
+        {/* Submitted Work Link - Primary Review Item */}
         {task.link && (
-          <div className="mb-6">
+          <div className="mb-6 p-4 bg-pink-50 border border-pink-200 rounded-xl">
+            <h3 className="text-sm font-medium text-gray-900 mb-2">Submitted Work</h3>
             <a
               href={task.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm font-semibold text-pink-600 underline flex items-center gap-1"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-pink-600 text-white text-sm font-medium rounded-lg hover:bg-pink-700 transition-colors"
             >
               <Link2 className="w-4 h-4" />
-              Click here to see task reference
+              View Submitted Work
             </a>
+            <p className="text-xs text-gray-600 mt-2">
+              This is the primary deliverable submitted by the freelancer for your review.
+            </p>
           </div>
         )}
 

@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { NotificationStorage } from '../../../lib/notifications/notification-storage';
-import { getInvoiceByNumber, saveInvoice } from '../../../lib/invoice-storage';
+import { NotificationStorage } from '@/lib/notifications/notification-storage';
+import { getInvoiceByNumber, saveInvoice } from '@/lib/invoice-storage';
 
 /**
  * Pay Invoice API Endpoint

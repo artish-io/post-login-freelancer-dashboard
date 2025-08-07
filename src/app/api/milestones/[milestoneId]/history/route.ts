@@ -17,17 +17,18 @@ export async function GET(
   try {
     // Use universal source files to get milestone data
     const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
+    // Use hierarchical storage for project tasks
+    const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
     const milestonesMinimalPath = path.join(process.cwd(), 'data', 'milestones-minimal.json');
 
-    const [projectsFile, projectTasksFile, milestonesFile] = await Promise.all([
+    const [projectsFile, hierarchicalTasks, milestonesFile] = await Promise.all([
       readFile(projectsPath, 'utf-8'),
-      readFile(projectTasksPath, 'utf-8'),
+      readAllTasks(),
       readFile(milestonesMinimalPath, 'utf-8')
     ]);
 
     const projects = JSON.parse(projectsFile);
-    const projectTasks = JSON.parse(projectTasksFile);
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
     const milestones = JSON.parse(milestonesFile);
 
     // Extract milestone ID number from string (e.g., "M301-1" → 1)

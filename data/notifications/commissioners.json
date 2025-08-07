@@ -247,6 +247,96 @@
           "title": "E-commerce Platform UI Redesign"
         },
         "isFromNetwork": true
+      },
+      {
+        "id": "gig-app-6",
+        "type": "gig_application",
+        "title": "Margsate Flether applied for Park Analytics Dashboard",
+        "message": "New application for \"Park Analytics Dashboard\"",
+        "timestamp": "2025-08-03T14:04:43.567Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "gig": {
+          "id": 8,
+          "title": "Park Analytics Dashboard"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "gig-app-11",
+        "type": "gig_application",
+        "title": "Margsate Flether applied for UI/UX Design - Lagos State Parks Services",
+        "message": "New application for \"UI/UX Design - Lagos State Parks Services\"",
+        "timestamp": "2025-08-03T22:19:53.645Z",
+        "isRead": true,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "gig": {
+          "id": 9,
+          "title": "UI/UX Design - Lagos State Parks Services"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-203-315",
+        "type": "task_submission",
+        "title": "Geeko Leni submitted a task",
+        "message": "\"Initial setup for Interactive Park Map Web App\" is awaiting your review",
+        "timestamp": "2025-08-03T14:00:50.108Z",
+        "isRead": true,
+        "user": {
+          "id": 3,
+          "name": "Geeko Leni",
+          "avatar": "/avatars/geeko.png"
+        },
+        "project": {
+          "id": 315,
+          "title": "Interactive Park Map Web App"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "gig-app-network-10",
+        "type": "gig_application",
+        "title": "Margsate Flether applied for Advertising Design - Lagos State Parks Services",
+        "message": "1 network application for \"Advertising Design - Lagos State Parks Services\"",
+        "timestamp": "2025-08-04T20:35:35.161Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "gig": {
+          "id": 10,
+          "title": "Advertising Design - Lagos State Parks Services"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "gig-app-public-10",
+        "type": "gig_application",
+        "title": "Riya Desai applied for Advertising Design - Lagos State Parks Services",
+        "message": "1 application for \"Advertising Design - Lagos State Parks Services\"",
+        "timestamp": "2025-08-03T16:00:00Z",
+        "isRead": false,
+        "user": {
+          "id": 11,
+          "name": "Riya Desai",
+          "avatar": "/avatars/riya.png"
+        },
+        "gig": {
+          "id": 10,
+          "title": "Advertising Design - Lagos State Parks Services"
+        },
+        "isFromNetwork": false
       }
     ]
   },
@@ -256,6 +346,316 @@
   },
   {
     "commissionerId": 34,
-    "notifications": []
+    "notifications": [
+      {
+        "id": "invoice-mgl000306-m1",
+        "type": "invoice_sent",
+        "title": "Margsate Flether sent you a new invoice",
+        "message": "Invoice MGL000306-M1 for Nebula CMS landing redesign",
+        "timestamp": "2025-07-30T10:30:00.000Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "invoice": {
+          "number": "MGL000306-M1",
+          "amount": 2500,
+          "projectTitle": "Nebula CMS landing redesign"
+        },
+        "context": {
+          "projectId": 306,
+          "invoiceNumber": "MGL000306-M1"
+        },
+        "metadata": {
+          "invoiceNumber": "MGL000306-M1",
+          "projectTitle": "Nebula CMS landing redesign",
+          "amount": 2500,
+          "freelancerName": "Margsate Flether"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "invoice-mgl000303-m1",
+        "type": "invoice_sent",
+        "title": "Margsate Flether sent you a new invoice",
+        "message": "Invoice MGL000303-M1 for Corlax iOS app UX",
+        "timestamp": "2025-07-21T10:30:00.000Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "invoice": {
+          "number": "MGL000303-M1",
+          "amount": 2333.33,
+          "projectTitle": "Corlax iOS app UX"
+        },
+        "context": {
+          "projectId": 303,
+          "invoiceNumber": "MGL000303-M1"
+        },
+        "metadata": {
+          "invoiceNumber": "MGL000303-M1",
+          "projectTitle": "Corlax iOS app UX",
+          "amount": 2333.33,
+          "freelancerName": "Margsate Flether"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-21-306",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"CTA Button States\" is awaiting your review",
+        "timestamp": "2025-07-30T02:50:37.167Z",
+        "isRead": true,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 306,
+          "title": "Nebula CMS landing redesign"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-22-306",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Analytics tag setup\" is awaiting your review",
+        "timestamp": "2025-07-31T18:01:16.248Z",
+        "isRead": true,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 306,
+          "title": "Nebula CMS landing redesign"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-23-306",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Mobile nav menu prototype\" is awaiting your review",
+        "timestamp": "2025-07-31T10:42:52.714Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 306,
+          "title": "Nebula CMS landing redesign"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-24-306",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Carousel animation mock\" is awaiting your review",
+        "timestamp": "2025-07-30T22:29:24.786Z",
+        "isRead": true,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 306,
+          "title": "Nebula CMS landing redesign"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-25-306",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"404 error page concept\" is awaiting your review",
+        "timestamp": "2025-08-01T21:11:26.860Z",
+        "isRead": true,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 306,
+          "title": "Nebula CMS landing redesign"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-26-306",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Global search UI wireframe\" is awaiting your review",
+        "timestamp": "2025-07-31T08:00:34.104Z",
+        "isRead": true,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 306,
+          "title": "Nebula CMS landing redesign"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-27-306",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Accessibility audit pass\" is awaiting your review",
+        "timestamp": "2025-08-02T06:55:16.672Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 306,
+          "title": "Nebula CMS landing redesign"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-29-306",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"URGENT: Footer contact form\" is awaiting your review",
+        "timestamp": "2025-08-04T09:30:56.487Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 306,
+          "title": "Nebula CMS landing redesign"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-30-306",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Blog layout template\" is awaiting your review",
+        "timestamp": "2025-08-04T20:27:36.686Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 306,
+          "title": "Nebula CMS landing redesign"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-6-303",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"Login & onboarding flow\" is awaiting your review",
+        "timestamp": "2025-08-02T19:21:15.585Z",
+        "isRead": false,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 303,
+          "title": "Corlax iOS app UX"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "task-7-303",
+        "type": "task_submission",
+        "title": "Margsate Flether submitted a task",
+        "message": "\"iOS testing & deployment\" is awaiting your review",
+        "timestamp": "2025-07-30T06:23:56.429Z",
+        "isRead": true,
+        "user": {
+          "id": 31,
+          "name": "Margsate Flether",
+          "avatar": "/avatars/margsate-flether.png"
+        },
+        "project": {
+          "id": 303,
+          "title": "Corlax iOS app UX"
+        },
+        "isFromNetwork": true
+      },
+      {
+        "id": "invoice-paid-1",
+        "type": "invoice_paid",
+        "title": "Invoice payment processed",
+        "message": "Payment for milestone 2 has been processed successfully",
+        "timestamp": "2025-08-05T18:32:21.223Z",
+        "isRead": false,
+        "project": {
+          "id": 1,
+          "title": "Interactive Park Map Web App"
+        },
+        "isFromNetwork": false
+      },
+      {
+        "id": "project-pause-accepted-1",
+        "type": "project_pause_accepted",
+        "title": "Project pause request approved",
+        "message": "Your request to pause the Interactive Park Map project has been approved",
+        "timestamp": "2025-08-05T16:32:21.223Z",
+        "isRead": false,
+        "project": {
+          "id": 1,
+          "title": "Interactive Park Map Web App"
+        },
+        "isFromNetwork": false
+      },
+      {
+        "id": "storefront-purchase-1",
+        "type": "storefront_purchase",
+        "title": "Marsgate Fletcher just purchased Poetry Slam Live tickets",
+        "message": "New sale on your storefront",
+        "timestamp": "2025-08-05T19:32:21.223Z",
+        "isRead": false,
+        "isFromNetwork": false
+      },
+      {
+        "id": "gig-app-14",
+        "type": "gig_application",
+        "title": "Tobi Philly applied for Motion Graphics Video for Healthcare App",
+        "message": "New application for \"Motion Graphics Video for Healthcare App\"",
+        "timestamp": "2025-08-06T16:58:01.797Z",
+        "isRead": true,
+        "user": {
+          "id": 1,
+          "name": "Tobi Philly",
+          "avatar": "/avatars/tobi.png"
+        },
+        "gig": {
+          "id": 2,
+          "title": "Motion Graphics Video for Healthcare App"
+        },
+        "isFromNetwork": true
+      }
+    ]
   }
 ]

@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import FreelancerHeader from '../../../../../components/freelancer-dashboard/freelancer-header';
 import ApplyModal from '../../../../../components/freelancer-dashboard/gigs/apply';
 import CategoryDropdown from '../../../../../components/freelancer-dashboard/gigs/category-dropdown';
+import { useErrorToast } from '@/components/ui/toast';
 
 type Gig = {
   id: number;
@@ -27,6 +28,13 @@ type Organization = {
   logo: string;
 };
 
+// Helper function to check if description is a placeholder
+const isPlaceholderDescription = (description: string): boolean => {
+  const placeholders = ['wewewe', 'placeholder', 'lorem ipsum', 'test', 'sample'];
+  const cleanDesc = description.toLowerCase().trim();
+  return placeholders.some(placeholder => cleanDesc === placeholder || cleanDesc.includes(placeholder));
+};
+
 export default function ExploreGigsPage() {
   const { data: session } = useSession();
   const [gigs, setGigs] = useState<Gig[]>([]);
@@ -35,6 +43,8 @@ export default function ExploreGigsPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedGig, setSelectedGig] = useState<Gig | null>(null);
   const [showApplyModal, setShowApplyModal] = useState(false);
+  const [userApplications, setUserApplications] = useState<any[]>([]);
+  const showErrorToast = useErrorToast();
 
   // Filter states
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
@@ -49,23 +59,33 @@ export default function ExploreGigsPage() {
         setLoading(true);
         setError(null);
 
-        const [gigsRes, orgsRes] = await Promise.all([
+        const [gigsRes, orgsRes, applicationsRes] = await Promise.all([
           fetch('/api/gigs'),
-          fetch('/api/organizations')
+          fetch('/api/organizations'),
+          session?.user?.id ? fetch('/api/gigs/gig-applications') : Promise.resolve({ ok: true, json: () => [] })
         ]);
 
-        if (!gigsRes.ok || !orgsRes.ok) {
+        if (!gigsRes.ok || !orgsRes.ok || !applicationsRes.ok) {
           throw new Error('Failed to fetch data');
         }
 
-        const [gigsData, orgsData] = await Promise.all([
+        const [gigsData, orgsData, applicationsData] = await Promise.all([
           gigsRes.json(),
-          orgsRes.json()
+          orgsRes.json(),
+          applicationsRes.json()
         ]);
 
         if (isMounted) {
           setGigs(Array.isArray(gigsData) ? gigsData : []);
           setOrganizations(Array.isArray(orgsData) ? orgsData : []);
+
+          // Filter applications for current user
+          if (session?.user?.id) {
+            const userApps = Array.isArray(applicationsData) ? applicationsData.filter((app: any) =>
+              app.freelancerId === parseInt(session.user.id)
+            ) : [];
+            setUserApplications(userApps);
+          }
         }
       } catch (err) {
         if (isMounted) {
@@ -84,7 +104,7 @@ export default function ExploreGigsPage() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [session?.user?.id]);
 
   // Filter gigs based on search and category
   const filteredGigs = useMemo(() => {
@@ -113,15 +133,66 @@ export default function ExploreGigsPage() {
     return organizations.find(org => org.id === organizationId);
   }, [organizations]);
 
+  // Check application status for a gig
+  const getApplicationStatus = useCallback((gigId: number) => {
+    if (!session?.user?.id) return null;
+
+    const applications = userApplications.filter(app => app.gigId === gigId);
+    if (applications.length === 0) return null;
+
+    const latestApplication = applications[applications.length - 1];
+
+    // Check for pending or accepted applications
+    if (latestApplication.status === 'pending' || latestApplication.status === 'accepted' || !latestApplication.status) {
+      return {
+        status: latestApplication.status || 'pending',
+        canApply: false,
+        buttonText: 'Applied',
+        buttonClass: 'ml-4 bg-gray-400 text-white px-6 py-2 rounded-lg cursor-not-allowed'
+      };
+    }
+
+    // Check for rejected applications with cooldown
+    if (latestApplication.status === 'rejected' && latestApplication.rejectedAt) {
+      const rejectionDate = new Date(latestApplication.rejectedAt);
+      const cooldownEnd = new Date(rejectionDate.getTime() + 21 * 24 * 60 * 60 * 1000);
+      const now = new Date();
+
+      if (now < cooldownEnd) {
+        const daysRemaining = Math.ceil((cooldownEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+        return {
+          status: 'cooldown',
+          canApply: false,
+          buttonText: `Wait ${daysRemaining}d`,
+          buttonClass: 'ml-4 bg-red-400 text-white px-6 py-2 rounded-lg cursor-not-allowed',
+          daysRemaining
+        };
+      }
+    }
+
+    return null; // Can apply normally
+  }, [session?.user?.id, userApplications]);
+
   // Handle apply button click
   const handleApplyClick = useCallback((gig: Gig) => {
     if (!session?.user?.id) {
-      alert('Please log in to apply for gigs');
+      showErrorToast('Authentication Required', 'Please log in to apply for gigs');
       return;
     }
+
+    const appStatus = getApplicationStatus(gig.id);
+    if (appStatus && !appStatus.canApply) {
+      if (appStatus.status === 'cooldown' && appStatus.daysRemaining) {
+        showErrorToast('Cannot Apply Yet', `You must wait ${appStatus.daysRemaining} more day${appStatus.daysRemaining > 1 ? 's' : ''} before re-applying to this gig.`);
+      } else {
+        showErrorToast('Already Applied', 'You have already applied to this gig.');
+      }
+      return;
+    }
+
     setSelectedGig(gig);
     setShowApplyModal(true);
-  }, [session?.user?.id]);
+  }, [session?.user?.id, showErrorToast, getApplicationStatus]);
 
   // Format posted date
   const formatPostedDate = useCallback((dateStr: string) => {
@@ -228,7 +299,7 @@ export default function ExploreGigsPage() {
                       <span>{formatPostedDate(gig.postedDate)}</span>
                     </div>
 
-                    {gig.description && (
+                    {gig.description && gig.description.trim() && !isPlaceholderDescription(gig.description) && (
                       <p className="text-gray-700 text-sm mb-3 line-clamp-2">{gig.description}</p>
                     )}
 
@@ -246,12 +317,28 @@ export default function ExploreGigsPage() {
                     )}
                   </div>
 
-                  <button
-                    onClick={() => handleApplyClick(gig)}
-                    className="ml-4 bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
-                  >
-                    Apply
-                  </button>
+                  {(() => {
+                    const appStatus = getApplicationStatus(gig.id);
+                    if (appStatus) {
+                      return (
+                        <button
+                          onClick={() => handleApplyClick(gig)}
+                          className={appStatus.buttonClass}
+                          disabled={!appStatus.canApply}
+                        >
+                          {appStatus.buttonText}
+                        </button>
+                      );
+                    }
+                    return (
+                      <button
+                        onClick={() => handleApplyClick(gig)}
+                        className="ml-4 bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+                      >
+                        Apply
+                      </button>
+                    );
+                  })()}
                 </div>
               </div>
             );
@@ -269,9 +356,25 @@ export default function ExploreGigsPage() {
             setShowApplyModal(false);
             setSelectedGig(null);
           }}
-          onSuccess={() => {
-            // Optionally refresh the gigs list or show a success message
-            console.log('Application submitted successfully!');
+          onSuccess={async () => {
+            // Refresh applications list to update button states
+            try {
+              if (session?.user?.id) {
+                const applicationsRes = await fetch('/api/gigs/gig-applications');
+                if (applicationsRes.ok) {
+                  const applicationsData = await applicationsRes.json();
+                  const userApps = Array.isArray(applicationsData) ? applicationsData.filter((app: any) =>
+                    app.freelancerId === parseInt(session.user.id)
+                  ) : [];
+                  setUserApplications(userApps);
+                }
+              }
+            } catch (error) {
+              console.error('Failed to refresh applications:', error);
+            }
+
+            setShowApplyModal(false);
+            setSelectedGig(null);
           }}
         />
       )}

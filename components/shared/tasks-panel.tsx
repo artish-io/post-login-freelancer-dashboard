@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { startOfDay } from 'date-fns';
 import { NotesTab } from '../freelancer-dashboard/notes-tab';
 import ProjectNotesExpansion from '../freelancer-dashboard/project-notes-expansion';
 import TaskDetailsModal from '../freelancer-dashboard/projects-and-invoices/projects/task-details-modal';
@@ -106,6 +107,14 @@ export default function TasksPanel({
   const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
   const [projects, setProjects] = useState<any[]>([]);
   const [organizations, setOrganizations] = useState<any[]>([]);
+  const [projectsInfo, setProjectsInfo] = useState<any[]>([]);
+
+  // Helper function to check if a project is paused (aligned with task-column.tsx)
+  const isProjectPaused = (projectId: number): boolean => {
+    if (!projectsInfo || projectsInfo.length === 0) return false;
+    const projectInfo = projectsInfo.find(p => p.projectId === projectId);
+    return projectInfo?.status?.toLowerCase() === 'paused';
+  };
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -119,11 +128,12 @@ export default function TasksPanel({
           const readNotesData = typeof window !== 'undefined' ? localStorage.getItem('readNotes') : null;
           const readNotesParam = readNotesData ? encodeURIComponent(readNotesData) : '';
 
-          const [taskRes, notesRes, projectsRes, organizationsRes] = await Promise.all([
+          const [taskRes, notesRes, projectsRes, organizationsRes, projectInfoRes] = await Promise.all([
             fetch(`/api/dashboard/tasks-summary?id=${session.user.id}`),
             fetch(`/api/dashboard/project-notes/count?userId=${session.user.id}&readNotes=${readNotesParam}`),
             fetch('/api/projects'),
-            fetch('/api/organizations')
+            fetch('/api/organizations'),
+            fetch('/api/projects') // Fetch project status info for paused project filtering
           ]);
 
           const taskData = await taskRes.json();
@@ -131,27 +141,55 @@ export default function TasksPanel({
           const projectsData = await projectsRes.json();
           const organizationsData = await organizationsRes.json();
 
+          // Fetch project status info for paused project filtering (aligned with task-column.tsx)
+          let projectInfoData: any[] = [];
+          if (projectInfoRes.ok) {
+            try {
+              projectInfoData = await projectInfoRes.json();
+              console.log('✅ Successfully fetched project status information for task filtering');
+            } catch (error) {
+              console.warn('⚠️ Failed to parse project status info:', error);
+              projectInfoData = [];
+            }
+          } else {
+            console.warn('⚠️ Failed to fetch project status info. Status:', projectInfoRes.status);
+            projectInfoData = [];
+          }
+
           // Store projects and organizations data in state for modal enrichment
           setProjects(projectsData);
           setOrganizations(organizationsData);
+          setProjectsInfo(projectInfoData);
 
 
 
-          // Filter out tasks from completed or paused projects
+          // Filter out tasks from completed projects and apply paused project logic (aligned with task-column.tsx)
           const filteredTasks = taskData.filter((task: FreelancerTask) => {
             const projectInfo = projectsData.find((p: any) => p.projectId === task.projectId);
-            return projectInfo && !['Completed', 'Paused'].includes(projectInfo.status);
+            // Only exclude completed projects, but handle paused projects in the next step
+            return projectInfo && projectInfo.status !== 'Completed';
           });
 
-
-
           // Filter to only show tasks that should be in "Today's Tasks" based on urgency hierarchy
+          // Exclude tasks from paused projects (aligned with task-column.tsx logic)
+          // Note: This component handles "Today's Tasks" panel only. "Upcoming This Week" filtering
+          // is handled in task-column.tsx with isThisWeek() from date-fns
           const todaysTasks = filteredTasks.filter((task: FreelancerTask) => {
             // Only show incomplete, ongoing tasks (not in review, not completed)
-            return !task.completed && task.status === 'Ongoing';
+            const isIncompleteTask = !task.completed && task.status === 'Ongoing';
+            const isPaused = isProjectPaused(task.projectId);
+
+            // Paused project tasks should NEVER appear in "Today's Tasks" (aligned with task-column.tsx)
+            if (isPaused && isIncompleteTask) {
+              console.log(`🚫 Excluding paused project task from today's tasks: ${task.title} (Project ID: ${task.projectId})`);
+              return false;
+            }
+
+            return isIncompleteTask;
           });
 
           // Sort by urgency hierarchy: rejected > feedback > pushed back > due today > others
+          // (aligned with task-column.tsx sorting logic)
           const sortedByUrgency = todaysTasks.sort((a: FreelancerTask, b: FreelancerTask) => {
             // Get task details from project-tasks data to check urgency flags
             const getTaskUrgency = (task: FreelancerTask) => {
@@ -161,10 +199,15 @@ export default function TasksPanel({
               if (task.feedbackCount && task.feedbackCount > 0) urgencyScore += 400;
               if (task.pushedBack) urgencyScore += 300;
 
-              // Check if due today (simplified check)
-              const today = new Date().toISOString().split('T')[0];
-              const taskDueDate = task.dueDateRaw ? new Date(task.dueDateRaw).toISOString().split('T')[0] : '';
-              if (taskDueDate === today) urgencyScore += 100;
+              // Check if due today using proper date handling (aligned with task-column.tsx)
+              if (task.dueDateRaw) {
+                const dueDateString = task.dueDateRaw.split('T')[0]; // Gets "2025-08-04"
+                const localDueDate = new Date(dueDateString + 'T00:00:00'); // Creates local midnight
+                const today = startOfDay(new Date());
+                const dueDay = startOfDay(localDueDate);
+
+                if (dueDay.getTime() === today.getTime()) urgencyScore += 100;
+              }
 
               return urgencyScore;
             };

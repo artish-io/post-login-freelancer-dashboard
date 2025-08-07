@@ -3,8 +3,11 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { readAllProjects } from '@/lib/projects-utils';
 import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
+import { filterFreelancerProjects } from '@/lib/freelancer-access-control';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -12,6 +15,17 @@ export async function GET(request: Request) {
 
   if (!userId) {
     return NextResponse.json({ error: 'Missing user ID' }, { status: 400 });
+  }
+
+  // Validate session for security
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  // Ensure the requested user ID matches the session user ID (prevent data leakage)
+  if (session.user.id !== userId) {
+    return NextResponse.json({ error: 'Forbidden: Cannot access other user data' }, { status: 403 });
   }
 
   try {
@@ -30,8 +44,8 @@ export async function GET(request: Request) {
 
     const freelancerId = parseInt(userId);
 
-    // Get projects for this freelancer
-    const freelancerProjects = projects.filter((p: any) => p.freelancerId === freelancerId);
+    // Get projects for this freelancer using secure filtering
+    const freelancerProjects = filterFreelancerProjects(projects, session.user as any);
     const freelancerProjectIds = freelancerProjects.map((p: any) => p.projectId);
 
     // Get project tasks for freelancer's projects only
@@ -89,7 +103,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(flattenedTasks);
   } catch (err) {
-    console.error('❌ Error loading project-tasks.json:', err);
+    console.error('❌ Error loading project tasks from hierarchical storage:', err);
     return NextResponse.json({ error: 'Failed to load tasks' }, { status: 500 });
   }
 }

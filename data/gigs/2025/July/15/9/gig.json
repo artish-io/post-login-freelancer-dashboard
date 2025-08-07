@@ -13,7 +13,7 @@
   "description": "qwewq",
   "deliveryTimeWeeks": 1,
   "estimatedHours": 40,
-  "status": "Available",
+  "status": "Unavailable",
   "toolsRequired": [
     "Figma"
   ],

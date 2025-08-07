@@ -163,5 +163,38 @@
     "date": "2025-06-22T11:15:00Z",
     "description": "Project milestone payment",
     "projectName": "E-commerce Platform Redesign"
+  },
+  {
+    "id": 2016,
+    "commissionerId": 32,
+    "freelancerId": 31,
+    "projectId": 301,
+    "type": "freelancer_payout",
+    "amount": 250.00,
+    "currency": "USD",
+    "date": "2025-05-15T14:30:00Z",
+    "description": "Project milestone payment",
+    "projectName": "Interactive Park Map Web App"
+  },
+  {
+    "id": 2017,
+    "commissionerId": 32,
+    "freelancerId": 31,
+    "projectId": 302,
+    "type": "freelancer_payout",
+    "amount": 180.00,
+    "currency": "USD",
+    "date": "2025-05-22T11:15:00Z",
+    "description": "Project milestone payment",
+    "projectName": "E-commerce Platform Redesign"
+  },
+  {
+    "id": 2018,
+    "commissionerId": 32,
+    "type": "withdrawal",
+    "amount": 75.00,
+    "currency": "USD",
+    "date": "2025-05-28T16:45:00Z",
+    "description": "Bank withdrawal to Chase ****1234"
   }
 ]

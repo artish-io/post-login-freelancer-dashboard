@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { getAllInvoices, saveInvoice } from '../../../lib/invoice-storage';
+import { getAllInvoices, saveInvoice } from '@/lib/invoice-storage';
 
 /**
  * Invoice Fee Migration API

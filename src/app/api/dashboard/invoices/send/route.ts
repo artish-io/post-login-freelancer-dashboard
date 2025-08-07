@@ -2,7 +2,7 @@
 
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
-import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
+import { getAllInvoices, saveInvoice } from '@/lib/invoice-storage';
 
 export async function POST(request: Request) {
   try {

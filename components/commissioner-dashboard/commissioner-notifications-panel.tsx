@@ -5,43 +5,10 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-
-type NotificationType =
-  | 'gig_application'
-  | 'task_submission'
-  | 'project_pause'
-  | 'gig_request'
-  | 'project_accepted'
-  | 'new_gig_request'
-  | 'proposal_sent'
-  | 'invoice_sent';
-
-type CommissionerNotification = {
-  id: string;
-  type: NotificationType;
-  title: string;
-  message: string;
-  timestamp: string;
-  isRead: boolean;
-  user?: {
-    id: number;
-    name: string;
-    avatar: string;
-    title?: string;
-  };
-  project?: {
-    id: number;
-    title: string;
-  };
-  gig?: {
-    id: number;
-    title: string;
-  };
-  isFromNetwork?: boolean;
-};
+import { NotificationData } from '../notifications/notification-item';
 
 // Helper functions for notification display
-const getNotificationIcon = (type: NotificationType): string => {
+const getNotificationIcon = (type: NotificationData['type']): string => {
   switch (type) {
     case 'gig_application':
       return '/icons/gig-applied.png';
@@ -75,7 +42,7 @@ const formatTimeAgo = (timestamp: string): string => {
 export default function CommissionerNotificationsPanel() {
   const { data: session } = useSession();
   const router = useRouter();
-  const [notifications, setNotifications] = useState<CommissionerNotification[]>([]);
+  const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -84,7 +51,9 @@ export default function CommissionerNotificationsPanel() {
 
       setLoading(true);
       try {
-        const response = await fetch(`/api/notifications?commissionerId=${session.user.id}&tab=all`);
+        // Use the same API endpoint as the main notifications page for consistency
+        const userType = (session.user as any).userType || 'commissioner';
+        const response = await fetch(`/api/notifications-v2?userId=${session.user.id}&userType=${userType}&tab=all`);
         if (!response.ok) throw new Error('Failed to fetch notifications');
 
         const data = await response.json();

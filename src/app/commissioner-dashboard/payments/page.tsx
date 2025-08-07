@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import DashboardModeToggle from '../../../../components/commissioner-dashboard/payment/dashboard-mode-toggle';
 import OverviewToggle from '../../../../components/commissioner-dashboard/payment/overview-toggle';
 import SpendingChart from '../../../../components/commissioner-dashboard/payment/spending-chart';
@@ -14,11 +16,31 @@ type DashboardMode = 'spending' | 'revenue';
 type RangeOption = 'month' | 'january' | 'february' | 'march' | 'april' | 'may' | 'june' | 'july' | 'august' | 'september' | 'october' | 'november' | 'december' | 'year' | 'all';
 
 export default function CommissionerPaymentsPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [mode, setMode] = useState<DashboardMode>('spending');
   const [range, setRange] = useState<RangeOption>('month');
   const [showChartModal, setShowChartModal] = useState(false);
   const [lastMonthTotal, setLastMonthTotal] = useState<number>(0);
   const [hasStorefront, setHasStorefront] = useState<boolean>(false);
+
+  // Session validation - ensure only commissioners can access this page
+  useEffect(() => {
+    if (status === 'loading') return; // Still loading session
+
+    if (!session?.user?.id) {
+      router.push('/login-commissioner');
+      return;
+    }
+
+    // Verify user type is commissioner
+    const userType = (session.user as any).userType;
+    if (userType !== 'commissioner') {
+      console.warn('Non-commissioner user attempted to access commissioner payments page');
+      router.push('/login-commissioner');
+      return;
+    }
+  }, [session, status, router]);
 
   // Check if user has storefront products
   useEffect(() => {
@@ -65,6 +87,20 @@ export default function CommissionerPaymentsPage() {
     }
     return `Last Month $${formattedAmount} earned`;
   };
+
+  // Show loading state while session is being validated
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-pulse text-gray-500">Loading...</div>
+      </div>
+    );
+  }
+
+  // Don't render anything if session is invalid (user will be redirected)
+  if (!session?.user?.id || (session.user as any).userType !== 'commissioner') {
+    return null;
+  }
 
   return (
     <section className="w-full flex flex-col gap-6 px-6 py-8">

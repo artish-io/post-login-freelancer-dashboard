@@ -6,7 +6,9 @@
     "avatar": "/avatars/tobi.png",
     "type": "freelancer",
     "email": "tobi.philly@example.com",
-    "address": "1 Remote Lane, Virtual City, Country"
+    "address": "1 Remote Lane, Virtual City, Country",
+    "username": "tobi",
+    "password": "testpass"
   },
   {
     "id": 2,
@@ -396,6 +398,8 @@
     "email": "matte.hannery@example.com",
     "address": "Toronto, Canada",
     "organizationId": 3,
+    "username": "matte",
+    "password": "testpass",
     "bio": "Serial entrepreneur focused on wellness technology and mental health solutions. Building products that make wellness accessible and sustainable for everyone.",
     "rating": 4.9,
     "responsibilities": [
@@ -420,6 +424,8 @@
     "avatar": "/avatars/tilly.png",
     "type": "commissioner",
     "email": "tilly.burzinsky@example.com",
+    "username": "tilly",
+    "password": "password123",
     "address": "Ottawa, Canada",
     "organizationId": 4,
     "bio": "Dynamic events professional specializing in large-scale corporate and cultural events. Expert in creating memorable experiences that bring communities together.",

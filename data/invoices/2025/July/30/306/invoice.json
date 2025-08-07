@@ -1,0 +1,21 @@
+{
+  "invoiceNumber": "MGL000306-M1",
+  "freelancerId": 31,
+  "projectId": 306,
+  "commissionerId": 34,
+  "projectTitle": "Nebula CMS landing redesign",
+  "milestoneDescription": "Milestone 1 for Nebula CMS landing redesign",
+  "milestoneNumber": 1,
+  "issueDate": "2025-07-30",
+  "dueDate": "2025-08-09",
+  "totalAmount": 2500,
+  "status": "sent",
+  "milestones": [
+    {
+      "description": "Initial design concepts and wireframes",
+      "rate": 2500
+    }
+  ],
+  "isManualInvoice": true,
+  "parentInvoiceNumber": "MGL000306"
+}

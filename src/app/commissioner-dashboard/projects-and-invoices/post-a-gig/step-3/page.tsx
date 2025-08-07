@@ -55,6 +55,18 @@ export default function PostAGigStep3Page() {
   }
 
   const handleBack = () => {
+    // Save current form data before navigating back
+    FormPersistence.saveStepData(3, {
+      selectedCategory: selectedCategory || '',
+      selectedSubcategory: selectedSubcategory || '',
+      startType,
+      customStartDate: customStartDate?.toISOString(),
+      endDate: endDate?.toISOString(),
+      executionMethod,
+      lowerBudget,
+      upperBudget,
+    });
+
     router.push(`/commissioner-dashboard/projects-and-invoices/post-a-gig/step-2?category=${encodeURIComponent(selectedCategory || '')}`);
   };
 

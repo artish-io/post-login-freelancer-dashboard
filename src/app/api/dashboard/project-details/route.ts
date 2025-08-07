@@ -6,6 +6,9 @@ import { readFile } from 'fs/promises';
 import { readProjectTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 import { readAllProjects } from '@/lib/projects-utils';
 import { readProjectNotes } from '@/lib/project-notes-utils';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { validateFreelancerProjectAccess } from '@/lib/freelancer-access-control';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -16,7 +19,26 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Missing or invalid projectId' }, { status: 400 });
   }
 
+  // Validate session and access control
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
+    // First, load all projects to validate access
+    const allProjects = await readAllProjects();
+
+    // Validate that the user has access to this project
+    const hasAccess = validateFreelancerProjectAccess(
+      projectId,
+      allProjects,
+      session.user as any
+    );
+
+    if (!hasAccess) {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    }
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
     const organizationsFile = await readFile(organizationsPath, 'utf-8');
 
@@ -26,7 +48,6 @@ export async function GET(request: Request) {
 
     // Read data from hierarchical structures
     const allNotes = await readProjectNotes(projectId);
-    const allProjects = await readAllProjects();
     const allOrganizations = JSON.parse(organizationsFile);
 
     const taskGroup = allTasks.find((t: any) => t.projectId === projectId);

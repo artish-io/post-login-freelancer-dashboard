@@ -11,11 +11,10 @@ interface ResultsDropdownProps {
   results: string;
   isVisible: boolean;
   mode: 'building' | 'executing';
-  onFreelancerSelect?: (freelancerId: number) => void;
+  onFreelancerSelect?: (freelancerId: number | null) => void;
   onConfirmRequirements?: () => void;
   onEditRequirements?: () => void;
   onSaveEdits?: () => void;
-  onGigSelect?: (gigId: number) => void;
   onCreateProposal?: () => void;
   onApplyForGig?: () => void;
   onShowOtherGigs?: () => void;
@@ -37,6 +36,7 @@ interface ParsedResults {
     avatar: string;
     completedProjects: number;
     estimatedCost: number;
+    location?: string;
   }>;
   opportunities?: Array<{
     gigId: number;
@@ -68,6 +68,52 @@ interface ParsedResults {
     categories: string[];
   };
   totalOpportunities?: number;
+  gigApplication?: {
+    gigTitle: string;
+    organization: string;
+    autoPitch: string;
+    matchingSkills: string[];
+    toolFamiliarity: string[];
+  };
+  proposalRequirements?: {
+    selectedContact: {
+      name: string;
+      organization?: {
+        name: string;
+      };
+    };
+    projectName: string;
+    projectScope: string;
+    totalAmount: number;
+    executionMethod: string;
+    milestones?: Array<{
+      title: string;
+      description: string;
+      percentage: number;
+    }>;
+  };
+  suggestions?: string[];
+  projectRequirements?: {
+    title: string;
+    category: string;
+    subcategory: string;
+    description: string;
+    deliverables: string[];
+    timeline: string;
+    skillsRequired: string[];
+    toolsRequired: string[];
+    milestones: Array<{
+      title: string;
+      description: string;
+      percentage: number;
+    }>;
+    startType: string;
+    budget: number;
+    estimatedHours: number;
+    recommendedBudget: number;
+    paymentSchedule: string;
+  };
+  isPrivateGig?: boolean;
 }
 
 export default function ResultsDropdown({
@@ -78,7 +124,6 @@ export default function ResultsDropdown({
   onConfirmRequirements,
   onEditRequirements,
   onSaveEdits,
-  onGigSelect,
   onCreateProposal,
   onApplyForGig,
   onShowOtherGigs,
@@ -197,7 +242,7 @@ export default function ResultsDropdown({
         }
 
         // Extract main message
-        const messageMatch = results.match(/^(.+?)(?=\n\*\*)/s);
+        const messageMatch = results.match(/^(.+?)(?=\n\*\*)/);
         if (messageMatch) {
           parsed.message = messageMatch[1].trim();
         }

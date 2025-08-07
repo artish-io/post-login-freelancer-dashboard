@@ -38,6 +38,7 @@ export default function TasksToReviewPage() {
   const [selectedTask, setSelectedTask] = useState<TaskToReview | null>(null);
   const [commissionerId, setCommissionerId] = useState<number | null>(null);
 
+  // Initial fetch and setup polling
   useEffect(() => {
     if (status === 'loading') return;
 
@@ -122,6 +123,7 @@ export default function TasksToReviewPage() {
         });
 
         setTasks(reviewTasks);
+        console.log(`📋 Commissioner ${currentCommissionerId} found ${reviewTasks.length} tasks to review`);
       } catch (error) {
         console.error('Error fetching tasks to review:', error);
       } finally {
@@ -129,7 +131,16 @@ export default function TasksToReviewPage() {
       }
     };
 
+    // Initial fetch
     fetchTasksToReview();
+
+    // Set up polling every 30 seconds to check for new submissions
+    const pollInterval = setInterval(() => {
+      console.log('🔄 Commissioner polling for new task submissions...');
+      fetchTasksToReview();
+    }, 30000);
+
+    return () => clearInterval(pollInterval);
   }, [session, status, router]);
 
   const handleTaskClick = (task: TaskToReview) => {

@@ -4,8 +4,8 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
 import { readAllGigs } from '../../../../../lib/gigs/hierarchical-storage';
+import { readGigRequestsForFreelancer } from '../../../../../lib/gigs/gig-request-storage';
 
-const REQUESTS_PATH = path.join(process.cwd(), 'data/gigs/gig-requests.json');
 const ORGANIZATIONS_PATH = path.join(process.cwd(), 'data/organizations.json');
 
 export async function GET(
@@ -16,9 +16,8 @@ export async function GET(
   const freelancerId = Number(freelancerIdStr);
 
   try {
-    // Read existing gig requests
-    const requestsRaw = await readFile(REQUESTS_PATH, 'utf-8');
-    const requests = JSON.parse(requestsRaw);
+    // Read existing gig requests for this freelancer
+    const existingRequests = await readGigRequestsForFreelancer(freelancerId);
 
     // Read targeted gig requests from hierarchical storage
     const gigs = await readAllGigs();
@@ -26,9 +25,6 @@ export async function GET(
     // Read organizations for enrichment
     const organizationsRaw = await readFile(ORGANIZATIONS_PATH, 'utf-8');
     const organizations = JSON.parse(organizationsRaw);
-
-    // Filter existing requests for this freelancer
-    const existingRequests = requests.filter((r: any) => r.freelancerId === freelancerId);
 
     // Find targeted gig requests for this freelancer
     const targetedGigs = gigs.filter((gig: any) =>
@@ -43,6 +39,7 @@ export async function GET(
         gigId: gig.id,
         freelancerId: freelancerId,
         commissionerId: gig.commissionerId,
+        organizationId: gig.organizationId,
         title: gig.title,
         category: gig.category,
         subcategory: gig.subcategory,

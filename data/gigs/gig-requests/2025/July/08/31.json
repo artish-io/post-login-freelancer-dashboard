@@ -1,0 +1,34 @@
+[
+  {
+    "id": 207,
+    "freelancerId": 31,
+    "gigId": 107,
+    "organizationId": 1,
+    "commissionerId": 32,
+    "title": "Content Strategy for Parks Website",
+    "skills": [
+      "Content Strategy",
+      "UX Writing"
+    ],
+    "tools": [
+      "Figma",
+      "Google Docs"
+    ],
+    "notes": "We need help developing a comprehensive content strategy for our new parks website.",
+    "budget": {
+      "min": 2000,
+      "max": 3500,
+      "currency": "USD"
+    },
+    "status": "Accepted",
+    "createdAt": "2025-07-08T09:15:00Z",
+    "responses": [
+      {
+        "type": "accepted",
+        "timestamp": "2025-08-03T20:36:02.348Z",
+        "message": "Offer accepted"
+      }
+    ],
+    "acceptedAt": "2025-08-03T20:36:02.348Z"
+  }
+]

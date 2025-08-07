@@ -11,6 +11,7 @@ import {
   startOfYear,
   isAfter,
   isBefore,
+  isWithinInterval,
   format,
   getYear,
   getMonth,
@@ -101,10 +102,10 @@ export async function GET(req: Request) {
         fromDate = startOfMonth(now);
     }
 
-    // Filter sales by date range
+    // Filter sales by date range (inclusive of boundary dates)
     const filtered = userSales.filter((sale) => {
       const saleDate = parseISO(sale.date);
-      return isAfter(saleDate, fromDate) && isBefore(saleDate, toDate);
+      return isWithinInterval(saleDate, { start: fromDate, end: toDate });
     });
 
     // Calculate current total revenue
@@ -114,7 +115,7 @@ export async function GET(req: Request) {
     const lastWeekStart = subDays(now, 7);
     const lastWeekFiltered = userSales.filter((sale) => {
       const saleDate = parseISO(sale.date);
-      return isAfter(saleDate, lastWeekStart) && isBefore(saleDate, now);
+      return isWithinInterval(saleDate, { start: lastWeekStart, end: now });
     });
     const lastWeekTotal = lastWeekFiltered.reduce((sum, sale) => sum + sale.amount, 0);
 
@@ -126,7 +127,7 @@ export async function GET(req: Request) {
     
     const previousFiltered = userSales.filter((sale) => {
       const saleDate = parseISO(sale.date);
-      return isAfter(saleDate, previousPeriodStart) && isBefore(saleDate, previousPeriodEnd);
+      return isWithinInterval(saleDate, { start: previousPeriodStart, end: previousPeriodEnd });
     });
     const previousTotal = previousFiltered.reduce((sum, sale) => sum + sale.amount, 0);
 

@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { PauseCircle, FileText, MessageSquareText, FilePlus2, Play } from 'lucide-react';
+import { useSuccessToast, useErrorToast, useInfoToast, useConfirmation } from '@/components/ui/toast';
 
 type Props = {
   projectId: number;
@@ -25,6 +26,11 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
   const [remainingTasks, setRemainingTasks] = useState(0);
   const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
 
+  const showSuccessToast = useSuccessToast();
+  const showErrorToast = useErrorToast();
+  const showInfoToast = useInfoToast();
+  const showConfirmation = useConfirmation();
+
   // Check for eligible tasks when component mounts or projectId changes
   useEffect(() => {
     const checkEligibleTasks = async () => {
@@ -32,8 +38,10 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
 
       try {
         const res = await fetch(`/api/dashboard/invoice-meta/projects?freelancerId=${session.user.id}`);
-        const projects = await res.json();
+        const projectsResponse = await res.json();
 
+        // Ensure projects is always an array
+        const projects = Array.isArray(projectsResponse) ? projectsResponse : [];
         const currentProject = projects.find((p: any) => p.projectId === projectId);
 
         if (currentProject) {
@@ -62,7 +70,9 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
         // Fetch project details
         const projectRes = await fetch(`/api/projects`);
         if (projectRes.ok) {
-          const projects = await projectRes.json();
+          const projectsResponse = await projectRes.json();
+          // Ensure projects is always an array
+          const projects = Array.isArray(projectsResponse) ? projectsResponse : [];
           const project = projects.find((p: any) => p.projectId === projectId);
           if (project) {
             setProjectTitle(project.title || 'Project');
@@ -72,7 +82,9 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
         // Fetch project tasks to get remaining count
         const tasksRes = await fetch(`/api/project-tasks`);
         if (tasksRes.ok) {
-          const projectTasksData = await tasksRes.json();
+          const projectTasksResponse = await tasksRes.json();
+          // Ensure projectTasksData is always an array
+          const projectTasksData = Array.isArray(projectTasksResponse) ? projectTasksResponse : [];
           const projectTasks = projectTasksData.find((pt: any) => pt.projectId === projectId);
           if (projectTasks) {
             const remaining = projectTasks.tasks?.filter((task: any) => !task.completed).length || 0;
@@ -93,7 +105,7 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
 
   const handleGenerateInvoice = async () => {
     if (!session?.user?.id) {
-      alert('Please log in to generate an invoice');
+      showErrorToast('Authentication Required', 'Please log in to generate an invoice');
       return;
     }
 
@@ -118,7 +130,7 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
       }
     } catch (error) {
       console.error('Error generating invoice:', error);
-      alert(`Failed to generate invoice: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      showErrorToast('Invoice Generation Failed', error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setGenerating(false);
     }
@@ -126,7 +138,7 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
 
   const handlePauseRequest = async () => {
     if (!session?.user?.id || !projectTitle) {
-      alert('Unable to send pause request. Please try again.');
+      showErrorToast('Request Failed', 'Unable to send pause request. Please try again.');
       return;
     }
 
@@ -148,20 +160,20 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
       if (response.ok) {
         setPauseRequestState('sent');
         setCurrentRequestId(result.requestId);
-        alert('Pause request sent successfully. The commissioner will be notified.');
+        showSuccessToast('Request Sent', 'Pause request sent successfully. The commissioner will be notified.');
       } else {
         throw new Error(result.error || 'Failed to send pause request');
       }
     } catch (error) {
       console.error('Error sending pause request:', error);
-      alert(`Failed to send pause request: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      showErrorToast('Request Failed', `Failed to send pause request: ${error instanceof Error ? error.message : 'Unknown error'}`);
       setPauseRequestState('none');
     }
   };
 
   const handleSendReminder = async () => {
     if (!session?.user?.id || !currentRequestId) {
-      alert('Unable to send reminder. Please try again.');
+      showErrorToast('Reminder Failed', 'Unable to send reminder. Please try again.');
       return;
     }
 
@@ -181,26 +193,36 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
 
       if (response.ok) {
         if (result.autoPaused) {
-          alert('Project has been automatically paused after 3 reminders.');
+          showInfoToast('Project Paused', 'Project has been automatically paused after 3 reminders.');
           // Refresh the page to update the project status
           window.location.reload();
         } else {
-          alert(`Reminder sent successfully. You have ${result.remainingReminders} reminder(s) left.`);
+          showSuccessToast('Reminder Sent', `Reminder sent successfully. You have ${result.remainingReminders} reminder(s) left.`);
         }
       } else {
         throw new Error(result.error || 'Failed to send reminder');
       }
     } catch (error) {
       console.error('Error sending reminder:', error);
-      alert(`Failed to send reminder: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      showErrorToast('Reminder Failed', `Failed to send reminder: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
   const handleWithdrawRequest = async () => {
     if (!currentRequestId) return;
 
-    const confirmed = confirm('Are you sure you want to withdraw your pause request?');
-    if (!confirmed) return;
+    showConfirmation({
+      title: 'Withdraw Pause Request',
+      message: 'Are you sure you want to withdraw your pause request?',
+      confirmText: 'Withdraw',
+      cancelText: 'Cancel',
+      onConfirm: async () => {
+        await performWithdrawRequest();
+      }
+    });
+  };
+
+  const performWithdrawRequest = async () => {
 
     try {
       const response = await fetch(`/api/projects/pause/reminder?projectId=${projectId}&requestId=${currentRequestId}`, {
@@ -210,13 +232,13 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
       if (response.ok) {
         setPauseRequestState('none');
         setCurrentRequestId(null);
-        alert('Pause request withdrawn successfully.');
+        showSuccessToast('Request Withdrawn', 'Pause request withdrawn successfully.');
       } else {
         throw new Error('Failed to withdraw request');
       }
     } catch (error) {
       console.error('Error withdrawing request:', error);
-      alert('Failed to withdraw request. Please try again.');
+      showErrorToast('Withdrawal Failed', 'Failed to withdraw request. Please try again.');
     }
   };
 

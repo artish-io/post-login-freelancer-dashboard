@@ -15,6 +15,8 @@
     "@headlessui/react": "^2.2.4",
     "@radix-ui/react-popover": "^1.1.14",
     "@tailwindcss/postcss": "^4.1.7",
+    "@upstash/ratelimit": "^2.0.6",
+    "@upstash/redis": "^1.35.3",
     "chart.js": "^4.5.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

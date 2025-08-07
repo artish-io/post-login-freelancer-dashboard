@@ -8,8 +8,8 @@
     "UX Writing"
   ],
   "title": "Error message redesign",
-  "status": "Ongoing",
-  "completed": false,
+  "status": "In review",
+  "completed": true,
   "order": 2,
   "link": "https://docs.google.com/document/error-messages",
   "dueDate": "2025-07-14T00:00:00.000Z",
@@ -18,6 +18,7 @@
   "pushedBack": false,
   "version": 2,
   "description": "Rewrite all error messages for clarity and user-friendliness.",
-  "createdDate": "2025-07-29T13:32:42.043Z",
-  "lastModified": "2025-07-29T13:32:42.043Z"
+  "createdDate": "2025-08-03T15:57:39.542Z",
+  "lastModified": "2025-08-04T05:10:33.267Z",
+  "submittedDate": "2025-08-04T05:10:33.266Z"
 }

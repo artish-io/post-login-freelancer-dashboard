@@ -1,0 +1,27 @@
+[
+  {
+    "id": 203,
+    "freelancerId": 6,
+    "gigId": 103,
+    "organizationId": 3,
+    "commissionerId": 34,
+    "title": "App Promo Video",
+    "skills": [
+      "Video Editing",
+      "Motion Graphics"
+    ],
+    "tools": [
+      "Premiere Pro",
+      "After Effects"
+    ],
+    "notes": "Edit a 60s vertical promo for Corlax's new wellness app.",
+    "budget": {
+      "min": 1500,
+      "max": 2500,
+      "currency": "USD"
+    },
+    "status": "Rejected",
+    "createdAt": "2025-07-03T08:20:00Z",
+    "responses": []
+  }
+]

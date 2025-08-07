@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useSuccessToast, useErrorToast, useInfoToast } from '@/components/ui/toast';
 
 import CommissionerHeader from '../../../../../../components/commissioner-dashboard/commissioner-header';
 import FreelancerInfoBox from '../../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-preview/freelancer-info-box';
@@ -58,6 +59,10 @@ export default function PayInvoicePage() {
   const [error, setError] = useState<string | null>(null);
   const [paying, setPaying] = useState(false);
 
+  const showSuccessToast = useSuccessToast();
+  const showErrorToast = useErrorToast();
+  const showInfoToast = useInfoToast();
+
   useEffect(() => {
     const fetchInvoiceData = async () => {
       if (!invoiceNumber) {
@@ -88,12 +93,12 @@ export default function PayInvoicePage() {
 
   const handlePayInvoice = async () => {
     if (!invoiceData || !session?.user?.id) {
-      alert('Unable to process payment. Please try again.');
+      showErrorToast('Payment Error', 'Unable to process payment. Please try again.');
       return;
     }
 
     if (invoiceData.status === 'paid') {
-      alert('This invoice has already been paid.');
+      showInfoToast('Already Paid', 'This invoice has already been paid.');
       return;
     }
 
@@ -112,17 +117,17 @@ export default function PayInvoicePage() {
       });
 
       if (response.ok) {
-        alert('Payment processed successfully!');
+        showSuccessToast('Payment Successful', 'Payment processed successfully!');
 
         // Update local invoice data to reflect paid status
         setInvoiceData(prev => prev ? { ...prev, status: 'paid' } : null);
       } else {
         const error = await response.json();
-        alert(`Payment failed: ${error.error}`);
+        showErrorToast('Payment Failed', error.error || 'Payment failed. Please try again.');
       }
     } catch (error) {
       console.error('Error processing payment:', error);
-      alert('Payment failed. Please try again.');
+      showErrorToast('Payment Failed', 'Payment failed. Please try again.');
     } finally {
       setPaying(false);
     }
@@ -130,7 +135,7 @@ export default function PayInvoicePage() {
 
   const handleDownloadInvoice = () => {
     console.log('Download invoice functionality to be implemented');
-    alert('Download functionality coming soon!');
+    showInfoToast('Coming Soon', 'Download functionality coming soon!');
   };
 
   if (loading) {

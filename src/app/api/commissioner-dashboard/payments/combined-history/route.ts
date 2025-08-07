@@ -3,22 +3,15 @@ import path from 'path';
 import { readFile } from 'fs/promises';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { getSpendingTransactionsForHistory } from '@/lib/commissioner-spending-service';
 
-const SPENDING_HISTORY_PATH = path.join(process.cwd(), 'data/commissioner-payments/spending-history.json');
 const UNIT_SALES_PATH = path.join(process.cwd(), 'data/storefront/unit-sales.json');
 const PRODUCTS_PATH = path.join(process.cwd(), 'data/storefront/products.json');
 
-type SpendingTransaction = {
-  id: number;
-  commissionerId: number;
-  freelancerId?: number;
-  projectId?: number;
-  type: 'freelancer_payout' | 'withdrawal';
-  amount: number;
-  currency: string;
+type SalesTransaction = {
+  productId: string;
   date: string;
-  description: string;
-  projectName?: string;
+  amount: number;
 };
 
 type SalesTransaction = {
@@ -55,12 +48,8 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const limit = parseInt(url.searchParams.get('limit') || '20');
 
-    // Read spending history
-    const spendingRaw = await readFile(SPENDING_HISTORY_PATH, 'utf-8');
-    const spendingHistory: SpendingTransaction[] = JSON.parse(spendingRaw);
-
-    // Filter spending by commissioner
-    const userSpending = spendingHistory.filter(tx => tx.commissionerId === commissionerId);
+    // Get spending history from unified service
+    const userSpending = await getSpendingTransactionsForHistory(commissionerId, limit);
 
     // Read storefront data for earnings
     let userEarnings: SalesTransaction[] = [];

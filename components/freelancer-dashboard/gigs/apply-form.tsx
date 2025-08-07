@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useErrorToast, useSuccessToast } from '@/components/ui/toast';
 
 interface ApplyFormProps {
   gig: any;
@@ -13,6 +14,8 @@ interface ApplyFormProps {
 export default function ApplyForm({ gig, organization, onSuccess, onCancel }: ApplyFormProps) {
   const { data: session } = useSession();
   const [submitting, setSubmitting] = useState(false);
+  const showErrorToast = useErrorToast();
+  const showSuccessToast = useSuccessToast();
   const [error, setError] = useState<string | null>(null);
 
   // Form fields
@@ -100,13 +103,19 @@ export default function ApplyForm({ gig, organization, onSuccess, onCancel }: Ap
       console.log('📡 API Response:', result);
 
       if (!res.ok) {
+        // Handle specific error cases
+        if (res.status === 409 && result.error?.includes('no longer accepting applications')) {
+          showErrorToast('Gig Unavailable', 'This gig is no longer accepting applications.');
+          onCancel?.(); // Close the modal
+          return;
+        }
         throw new Error(result.error || `Server error: ${res.status}`);
       }
 
       // Success
-      alert('Application submitted successfully!');
+      showSuccessToast('Your application was sent successfully.');
       onSuccess?.();
-      
+
       // Reset form
       setPitch('');
       setSampleLinks(['']);
@@ -115,7 +124,9 @@ export default function ApplyForm({ gig, organization, onSuccess, onCancel }: Ap
       setNewSkill('');
     } catch (err) {
       console.error('Application submission error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to submit application');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to submit application';
+      showErrorToast('Submission Failed', errorMessage);
+      setError(errorMessage);
     } finally {
       setSubmitting(false);
     }

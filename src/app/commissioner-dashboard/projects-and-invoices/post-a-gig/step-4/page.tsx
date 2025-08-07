@@ -74,9 +74,29 @@ export default function PostAGigStep4Page() {
   }
 
   const handleBack = () => {
+    // Save current form data before navigating back
+    const milestonesToSave = milestones.map(m => ({
+      ...m,
+      startDate: m.startDate?.toISOString() || null,
+      endDate: m.endDate?.toISOString() || null,
+    }));
+
+    FormPersistence.saveStepData(4, {
+      projectDescription,
+      skills,
+      tools,
+      milestones: milestonesToSave,
+    });
+
     const params = new URLSearchParams({
       category: selectedCategory || '',
       subcategory: selectedSubcategory || '',
+      startType: startType || '',
+      customStartDate: customStartDate?.toISOString() || '',
+      endDate: endDate?.toISOString() || '',
+      executionMethod: executionMethod || '',
+      lowerBudget,
+      upperBudget,
     });
     router.push(`/commissioner-dashboard/projects-and-invoices/post-a-gig/step-3?${params.toString()}`);
   };

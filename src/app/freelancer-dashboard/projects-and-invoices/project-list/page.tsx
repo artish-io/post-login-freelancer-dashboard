@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import FreelancerHeader from '../../../../../components/freelancer-dashboard/freelancer-header';
 import ProjectsRow from '../../../../../components/freelancer-dashboard/projects-and-invoices/projects/project-status-list/projects-row';
+import { requireFreelancerSession, getFreelancerId, filterFreelancerProjects } from '../../../../lib/freelancer-access-control';
 import ProjectStatusNav from '../../../../../components/freelancer-dashboard/projects-and-invoices/projects/project-status-list/project-status-nav';
 import { calculateProjectProgress, calculateProjectStatus } from '../../../../lib/project-status-sync';
 
@@ -15,12 +16,28 @@ export default function ProjectListPage() {
   const currentStatus = searchParams.get('status') || 'ongoing';
   const [projects, setProjects] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
-  const [organizations, setOrganizations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
+        // Ensure user is a freelancer before fetching data
+        const freelancerSession = requireFreelancerSession(session?.user as any);
+        if (!freelancerSession) {
+          console.warn('Access denied: User is not a freelancer');
+          setProjects([]);
+          setLoading(false);
+          return;
+        }
+
+        const freelancerId = getFreelancerId(freelancerSession);
+        if (!freelancerId) {
+          console.warn('Access denied: Invalid freelancer ID');
+          setProjects([]);
+          setLoading(false);
+          return;
+        }
+
         const [projectTasksRes, projectsRes, userRes, orgRes] = await Promise.all([
           fetch('/api/project-tasks'),
           fetch('/api/projects'),
@@ -43,10 +60,16 @@ export default function ProjectListPage() {
         }
 
         if (projectTasksRes.ok && projectsRes.ok && userRes.ok && orgRes.ok) {
-          const projectTasksData = await projectTasksRes.json();
-          const projectsData = await projectsRes.json();
-          const users = await userRes.json();
-          const organizations = await orgRes.json();
+          const projectTasksResponse = await projectTasksRes.json();
+          const projectsResponse = await projectsRes.json();
+          const usersResponse = await userRes.json();
+          const organizationsResponse = await orgRes.json();
+
+          // Ensure all responses are arrays
+          const projectTasksData = Array.isArray(projectTasksResponse) ? projectTasksResponse : [];
+          const projectsData = Array.isArray(projectsResponse) ? projectsResponse : [];
+          const users = Array.isArray(usersResponse) ? usersResponse : [];
+          const organizations = Array.isArray(organizationsResponse) ? organizationsResponse : [];
 
           console.log('🔍 Debug - Fetched data:', {
             projectTasksCount: projectTasksData.length,
@@ -55,10 +78,25 @@ export default function ProjectListPage() {
             orgCount: organizations.length
           });
 
+          // Filter projects to only include those belonging to this freelancer
+          const freelancerProjects = filterFreelancerProjects(projectsData, freelancerSession);
+          const freelancerProjectIds = freelancerProjects.map(p => p.projectId);
+
+          // Filter project tasks to only include those for freelancer's projects
+          const freelancerProjectTasks = projectTasksData.filter((pt: any) =>
+            freelancerProjectIds.includes(pt.projectId)
+          );
+
+          console.log('🔍 Debug - Filtered for freelancer:', {
+            freelancerId,
+            freelancerProjectsCount: freelancerProjects.length,
+            freelancerProjectTasksCount: freelancerProjectTasks.length
+          });
+
           // Transform project-tasks data and merge with projects.json status
-          const transformedProjects = projectTasksData.map((projectTasks: any) => {
-            // Find the corresponding project from projects.json
-            const projectInfo = projectsData.find((p: any) => p.projectId === projectTasks.projectId);
+          const transformedProjects = freelancerProjectTasks.map((projectTasks: any) => {
+            // Find the corresponding project from filtered freelancer projects
+            const projectInfo = freelancerProjects.find((p: any) => p.projectId === projectTasks.projectId);
             const tasks = projectTasks.tasks || [];
             const totalTasks = tasks.length;
             const progress = calculateProjectProgress(tasks);
@@ -131,7 +169,7 @@ export default function ProjectListPage() {
               completionDate: completionDate ? new Date(completionDate).toLocaleDateString() : null,
               managerId, // Add the managerId for commissioner lookup
               manager: {
-                name: projectInfo?.typeTags?.join(', ') || projectTasks.typeTags?.join(', ') || 'No manager assigned'
+                name: (projectInfo as any)?.typeTags?.join(', ') || projectTasks.typeTags?.join(', ') || 'No manager assigned'
               }
             };
           });
@@ -144,13 +182,17 @@ export default function ProjectListPage() {
 
           setProjects(transformedProjects);
           setUsers(users);
-          setOrganizations(organizations);
         } else if (projectTasksRes.ok && userRes.ok && orgRes.ok) {
           // Fallback: Use project-tasks data even if projects.json fails
           console.warn('⚠️ Projects.json failed, using project-tasks data only');
-          const projectTasksData = await projectTasksRes.json();
-          const users = await userRes.json();
-          const organizations = await orgRes.json();
+          const projectTasksResponse = await projectTasksRes.json();
+          const usersResponse = await userRes.json();
+          const organizationsResponse = await orgRes.json();
+
+          // Ensure all responses are arrays
+          const projectTasksData = Array.isArray(projectTasksResponse) ? projectTasksResponse : [];
+          const users = Array.isArray(usersResponse) ? usersResponse : [];
+          const organizations = Array.isArray(organizationsResponse) ? organizationsResponse : [];
 
           // Transform without projects.json data (use calculated status)
           const transformedProjects = projectTasksData.map((projectTasks: any) => {
@@ -196,17 +238,10 @@ export default function ProjectListPage() {
             };
           });
 
-          // Filter projects to only show those where the logged-in user is the freelancer
-          const freelancerId = Number(session?.user?.id);
-          const filteredProjects = transformedProjects.filter((project: any) => {
-            return project.freelancerId === freelancerId;
-          });
+          console.log(`🔍 Transformed projects for freelancer ${freelancerId}:`, transformedProjects);
 
-          console.log(`🔍 Filtered projects for freelancer ${freelancerId}:`, filteredProjects);
-
-          setProjects(filteredProjects);
+          setProjects(transformedProjects);
           setUsers(users);
-          setOrganizations(organizations);
         } else {
           console.error('Failed to fetch essential data (project-tasks, users, or organizations)');
         }
@@ -218,7 +253,7 @@ export default function ProjectListPage() {
     };
 
     fetchProjects();
-  }, []);
+  }, [session]);
 
   if (loading) {
     return (

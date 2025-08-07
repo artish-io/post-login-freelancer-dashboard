@@ -2,7 +2,7 @@
  * Data Integrity Validation Utilities
  * 
  * This module provides functions to validate data consistency between
- * projects.json and project-tasks.json to prevent silent data corruption.
+ * projects and hierarchical project tasks to prevent silent data corruption.
  */
 
 export interface DataIntegrityIssue {
@@ -26,7 +26,7 @@ export interface DataIntegrityReport {
 }
 
 /**
- * Validates data consistency between projects.json and project-tasks.json
+ * Validates data consistency between projects and hierarchical project tasks
  */
 export function validateDataIntegrity(
   projectsData: any[],
@@ -77,7 +77,7 @@ export function validateDataIntegrity(
         type: 'error',
         projectId: project.projectId,
         field: 'organizationId',
-        message: 'organizationId mismatch between projects.json and project-tasks.json',
+        message: 'organizationId mismatch between projects and hierarchical project tasks',
         expected: taskData.organizationId,
         actual: project.organizationId
       });

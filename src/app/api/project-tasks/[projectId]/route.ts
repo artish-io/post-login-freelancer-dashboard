@@ -2,6 +2,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { readProjectTasks } from '@/lib/project-tasks/hierarchical-storage';
+import { readAllProjects } from '@/lib/projects-utils';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { validateFreelancerProjectAccess } from '@/lib/freelancer-access-control';
 
 export async function GET(
   request: NextRequest,
@@ -13,6 +17,26 @@ export async function GET(
 
     if (isNaN(projectId)) {
       return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 });
+    }
+
+    // Validate session and access control
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Load all projects to validate access
+    const allProjects = await readAllProjects();
+
+    // Validate that the user has access to this project
+    const hasAccess = validateFreelancerProjectAccess(
+      projectId,
+      allProjects,
+      session.user as any
+    );
+
+    if (!hasAccess) {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
     // Read tasks for this specific project from hierarchical storage

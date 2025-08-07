@@ -18,9 +18,9 @@ export async function POST(
       );
     }
 
-    // Read gig requests data
-    const requestsPath = path.join(process.cwd(), 'data', 'gigs', 'gig-requests.json');
-    const requestsData = JSON.parse(fs.readFileSync(requestsPath, 'utf8'));
+    // Read gig requests data from hierarchical storage
+    const { readAllGigRequests } = await import('../../../../../lib/gigs/gig-request-storage');
+    const requestsData = await readAllGigRequests();
     
     // Find the specific request
     const requestIndex = requestsData.findIndex((r: any) => r.id === requestId);

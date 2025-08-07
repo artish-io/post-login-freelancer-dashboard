@@ -1,0 +1,882 @@
+[
+  {
+    "projectId": 299,
+    "title": "UX Writing",
+    "organizationId": 7,
+    "typeTags": [
+      "Content Strategy",
+      "UX Writing"
+    ],
+    "tasks": [
+      {
+        "id": 24,
+        "title": "Accessibility microcopy audit",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 1,
+        "link": "https://docs.google.com/document/accessibility-audit",
+        "dueDate": "2025-07-26T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Comprehensive audit of existing microcopy for accessibility compliance."
+      },
+      {
+        "id": 25,
+        "title": "Error message redesign",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 2,
+        "link": "https://docs.google.com/document/error-messages",
+        "dueDate": "2025-07-14T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Rewrite all error messages for clarity and user-friendliness."
+      },
+      {
+        "id": 26,
+        "title": "Onboarding flow copy",
+        "status": "In review",
+        "completed": true,
+        "order": 3,
+        "link": "https://docs.google.com/document/onboarding-copy",
+        "dueDate": "2025-07-14T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Write engaging and clear copy for user onboarding experience."
+      }
+    ]
+  },
+  {
+    "projectId": 303,
+    "title": "Corlax iOS app UX",
+    "organizationId": 3,
+    "typeTags": [
+      "Mobile Design",
+      "UX Research"
+    ],
+    "tasks": [
+      {
+        "id": 6,
+        "title": "Login & onboarding flow",
+        "status": "In review",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/login-onboarding",
+        "dueDate": "2025-07-14T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design intuitive login and onboarding flows for the iOS app.",
+        "submittedDate": "2025-07-26T13:45:51.500Z"
+      },
+      {
+        "id": 7,
+        "title": "iOS testing & deployment",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 2,
+        "link": "https://testflight.apple.com/app-build",
+        "dueDate": "2025-07-15T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 2,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Test app functionality and deploy to App Store for review."
+      },
+      {
+        "id": 16,
+        "title": "Scroll gestures & microinteractions",
+        "status": "Rejected",
+        "completed": false,
+        "order": 3,
+        "link": "https://figma.com/file/scroll-gestures",
+        "dueDate": "2025-07-16T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 1,
+        "pushedBack": true,
+        "version": 3,
+        "description": "Prototype scroll interactions and subtle animations for mobile UI."
+      }
+    ]
+  },
+  {
+    "projectId": 306,
+    "title": "Nebula CMS landing redesign",
+    "organizationId": 3,
+    "typeTags": [
+      "Web Design",
+      "UX Strategy"
+    ],
+    "tasks": [
+      {
+        "id": 21,
+        "title": "CTA Button States",
+        "status": "In review",
+        "completed": true,
+        "order": 4,
+        "link": "https://figma.com/file/cta-buttons",
+        "dueDate": "2025-08-23T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Design various hover and active states for CTAs."
+      },
+      {
+        "id": 22,
+        "title": "Analytics tag setup",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 5,
+        "link": "https://figma.com/file/analytics-tags",
+        "dueDate": "2025-07-15T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Configure tracking for scroll events and button clicks."
+      },
+      {
+        "id": 23,
+        "title": "Mobile nav menu prototype",
+        "status": "In review",
+        "completed": true,
+        "order": 6,
+        "link": "https://figma.com/file/mobile-nav",
+        "dueDate": "2025-08-23T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": true,
+        "version": 3,
+        "description": "Build interactive prototype of mobile navigation."
+      },
+      {
+        "id": 24,
+        "title": "Carousel animation mock",
+        "status": "In review",
+        "completed": true,
+        "order": 7,
+        "link": "https://figma.com/file/carousel-animation",
+        "dueDate": "2025-07-26T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Design a looping carousel animation for the homepage."
+      },
+      {
+        "id": 25,
+        "title": "404 error page concept",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 8,
+        "link": "https://figma.com/file/404-concept",
+        "dueDate": "2025-07-14T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Create a playful and branded 404 error page."
+      },
+      {
+        "id": 26,
+        "title": "Global search UI wireframe",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 9,
+        "link": "https://figma.com/file/global-search",
+        "dueDate": "2025-07-14T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 2,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Wireframe layout for global site-wide search feature."
+      },
+      {
+        "id": 27,
+        "title": "Accessibility audit pass",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 10,
+        "link": "https://figma.com/file/a11y-check",
+        "dueDate": "2025-07-17T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": true,
+        "version": 2,
+        "description": "Run final accessibility audit and implement fixes."
+      },
+      {
+        "id": 28,
+        "title": "URGENT: Header redesign",
+        "status": "Rejected",
+        "completed": false,
+        "order": 11,
+        "link": "https://figma.com/file/header-redesign",
+        "dueDate": "2025-07-17T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 2,
+        "pushedBack": false,
+        "version": 4,
+        "description": "Redesign the main header with new navigation structure - URGENT."
+      },
+      {
+        "id": 29,
+        "title": "URGENT: Footer contact form",
+        "status": "In review",
+        "completed": true,
+        "order": 12,
+        "link": "https://figma.com/file/footer-form",
+        "dueDate": "2025-08-26T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 3,
+        "pushedBack": true,
+        "version": 3,
+        "description": "Add contact form to footer section - high priority."
+      },
+      {
+        "id": 30,
+        "title": "Blog layout template",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 13,
+        "link": "https://figma.com/file/blog-template",
+        "dueDate": "2025-07-18T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create reusable blog post layout template."
+      }
+    ]
+  },
+  {
+    "projectId": 300,
+    "title": "Event Production",
+    "organizationId": 6,
+    "typeTags": [
+      "Event Management",
+      "Brand Design"
+    ],
+    "tasks": [
+      {
+        "id": 21,
+        "title": "Event branding package",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 1,
+        "link": "https://figma.com/file/event-branding",
+        "dueDate": "2025-08-29T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design comprehensive branding package for tech showcase event."
+      },
+      {
+        "id": 22,
+        "title": "Venue signage design",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 2,
+        "link": "https://figma.com/file/venue-signage",
+        "dueDate": "2025-07-15T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": true,
+        "version": 1,
+        "description": "Create wayfinding and promotional signage for event venue."
+      },
+      {
+        "id": 23,
+        "title": "Speaker presentation templates",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 3,
+        "link": "https://figma.com/file/speaker-templates",
+        "dueDate": "2025-08-22T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design standardized presentation templates for all speakers."
+      }
+    ]
+  },
+  {
+    "projectId": 301,
+    "title": "Lagos Parks Services website re-design",
+    "organizationId": 1,
+    "typeTags": [
+      "Brand Design",
+      "Content Design"
+    ],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Develop colour palette",
+        "status": "Approved",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/color-palette-link",
+        "dueDate": "2025-07-29T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create a fresh color scheme aligned with the brand’s visual identity.",
+        "submittedDate": "2025-07-29T13:34:45.820Z",
+        "approvedDate": "2025-07-29T15:37:52.419Z"
+      },
+      {
+        "id": 2,
+        "title": "Hero section design",
+        "status": "Rejected",
+        "completed": false,
+        "order": 2,
+        "link": "https://figma.com/file/hero-section-link",
+        "dueDate": "2025-07-15T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 1,
+        "pushedBack": true,
+        "version": 2,
+        "description": "Design the landing page’s hero section with clear messaging and CTAs."
+      },
+      {
+        "id": 3,
+        "title": "10 year anniversary graphic assets",
+        "status": "Approved",
+        "completed": true,
+        "order": 3,
+        "link": "https://figma.com/file/anniversary-assets",
+        "dueDate": "2025-08-27T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create commemorative graphic assets for the 10-year anniversary celebration."
+      },
+      {
+        "id": 11,
+        "title": "Testimonial section design",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 4,
+        "link": "https://figma.com/file/testimonials",
+        "dueDate": "2025-07-17T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design a testimonial section with 3–4 quotes and brand-aligned visuals."
+      }
+    ]
+  },
+  {
+    "projectId": 304,
+    "title": "Zynate events brand toolkit",
+    "organizationId": 4,
+    "typeTags": [
+      "Print Design",
+      "Events"
+    ],
+    "tasks": [
+      {
+        "id": 7,
+        "title": "Design event templates",
+        "status": "Rejected",
+        "completed": false,
+        "order": 1,
+        "link": "https://figma.com/file/event-templates",
+        "dueDate": "2025-07-15T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Design reusable templates for event promotional materials."
+      },
+      {
+        "id": 8,
+        "title": "Print-ready social media assets",
+        "status": "Approved",
+        "completed": true,
+        "order": 2,
+        "link": "https://figma.com/file/social-assets",
+        "dueDate": "2025-08-29T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Prepare print-ready social assets optimized for various platforms.",
+        "submittedDate": "2025-07-15T14:20:00.000Z"
+      }
+    ]
+  },
+  {
+    "projectId": 302,
+    "title": "Urbana channel brand refresh",
+    "organizationId": 2,
+    "typeTags": [
+      "Motion Design",
+      "Brand Strategy"
+    ],
+    "tasks": [
+      {
+        "id": 4,
+        "title": "Brand concept iteration",
+        "status": "Rejected",
+        "completed": false,
+        "order": 1,
+        "link": "https://figma.com/file/brand-concept",
+        "dueDate": "2025-07-16T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 2,
+        "pushedBack": true,
+        "version": 3,
+        "description": "Iterate on brand concept direction based on client feedback."
+      },
+      {
+        "id": 5,
+        "title": "Motion intro animation",
+        "status": "In review",
+        "completed": true,
+        "order": 2,
+        "link": "https://figma.com/file/motion-intro",
+        "dueDate": "2025-08-24T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Animate a branded motion intro for Urbana’s digital presence.",
+        "submittedDate": "2025-07-14T09:30:00.000Z"
+      },
+      {
+        "id": 14,
+        "title": "Visual identity lockup",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 3,
+        "link": "https://figma.com/file/visual-id",
+        "dueDate": "2025-07-26T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Consolidate logo and visual identity assets into a consistent lockup."
+      },
+      {
+        "id": 13,
+        "title": "Client review deck",
+        "status": "Approved",
+        "completed": true,
+        "order": 4,
+        "link": "https://figma.com/file/client-deck",
+        "dueDate": "2025-08-15T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Prepare a presentation deck to walk the client through the updated design system."
+      },
+      {
+        "id": 15,
+        "title": "Finalize brand icons",
+        "status": "Approved",
+        "completed": true,
+        "order": 4,
+        "link": "https://figma.com/file/brand-icons",
+        "dueDate": "2025-08-23T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 2,
+        "description": "Refine and finalize the brand's primary and secondary icon set."
+      }
+    ]
+  },
+  {
+    "projectId": 305,
+    "title": "HERO research launch collateral",
+    "organizationId": 5,
+    "typeTags": [
+      "Content Strategy",
+      "Editorial Design"
+    ],
+    "tasks": [
+      {
+        "id": 9,
+        "title": "Write product documentation",
+        "status": "Rejected",
+        "completed": false,
+        "order": 1,
+        "link": "https://docs.google.com/document/product-docs",
+        "dueDate": "2025-07-16T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 3,
+        "pushedBack": true,
+        "version": 2,
+        "description": "Document the product’s features, usage guidelines, and workflows."
+      },
+      {
+        "id": 10,
+        "title": "Internal training slides",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 2,
+        "link": "https://figma.com/file/training-slides",
+        "dueDate": "2025-07-18T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create internal slides for onboarding and training sessions."
+      }
+    ]
+  },
+  {
+    "projectId": 314,
+    "title": "E-commerce Platform UI Redesign",
+    "organizationId": 1,
+    "typeTags": [
+      "UI/UX Design",
+      "E-commerce"
+    ],
+    "tasks": [
+      {
+        "id": 201,
+        "title": "User research and wireframing",
+        "status": "Approved",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/ecommerce-wireframes",
+        "dueDate": "2025-08-15T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Conduct user research and create wireframes for the new e-commerce interface.",
+        "submittedDate": "2025-07-20T14:30:00.000Z"
+      },
+      {
+        "id": 202,
+        "title": "High-fidelity UI design and prototyping",
+        "status": "Ongoing",
+        "completed": false,
+        "order": 2,
+        "link": "https://figma.com/file/ecommerce-ui-design",
+        "dueDate": "2025-07-28T00:00:00.000Z",
+        "rejected": true,
+        "feedbackCount": 1,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create high-fidelity UI designs and interactive prototypes for the e-commerce platform.",
+        "submittedDate": "2025-07-21T16:45:00.000Z"
+      }
+    ]
+  },
+  {
+    "projectId": 315,
+    "title": "Interactive Park Map Web App",
+    "organizationId": 1,
+    "typeTags": [
+      "Frontend",
+      "React",
+      "GIS"
+    ],
+    "tasks": [
+      {
+        "id": 203,
+        "title": "Initial setup for Interactive Park Map Web App",
+        "status": "Upcoming",
+        "completed": false,
+        "order": 1,
+        "link": "",
+        "dueDate": "2025-07-28T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Begin work on Interactive Park Map Web App project"
+      }
+    ]
+  },
+  {
+    "projectId": 311,
+    "title": "Lagos Parks Mobile App Development",
+    "organizationId": 1,
+    "typeTags": [
+      "Mobile Development",
+      "UI/UX Design"
+    ],
+    "tasks": [
+      {
+        "id": 101,
+        "title": "User authentication flow design",
+        "status": "Approved",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/auth-flow-design",
+        "dueDate": "2025-08-15T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the complete user authentication and registration flow.",
+        "submittedDate": "2025-07-16T10:15:00.000Z"
+      },
+      {
+        "id": 102,
+        "title": "Park booking interface mockups",
+        "status": "Approved",
+        "completed": true,
+        "order": 2,
+        "link": "https://figma.com/file/booking-interface",
+        "dueDate": "2025-08-18T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create mockups for the park facility booking interface.",
+        "submittedDate": "2025-07-16T08:45:00.000Z"
+      },
+      {
+        "id": 103,
+        "title": "Maintenance reporting feature",
+        "status": "Approved",
+        "completed": true,
+        "order": 3,
+        "link": "https://figma.com/file/maintenance-reporting",
+        "dueDate": "2025-08-20T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the maintenance issue reporting feature with photo upload.",
+        "submittedDate": "2025-07-15T16:30:00.000Z"
+      },
+      {
+        "id": 104,
+        "title": "Navigation and menu structure",
+        "status": "Approved",
+        "completed": true,
+        "order": 4,
+        "link": "https://figma.com/file/navigation-menu",
+        "dueDate": "2025-08-22T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the main navigation and menu structure for the mobile app.",
+        "submittedDate": "2025-07-15T11:20:00.000Z"
+      },
+      {
+        "id": 105,
+        "title": "Push notification system design",
+        "status": "Approved",
+        "completed": true,
+        "order": 5,
+        "link": "https://figma.com/file/notification-system",
+        "dueDate": "2025-08-25T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the push notification system for booking confirmations and updates.",
+        "submittedDate": "2025-07-14T13:10:00.000Z"
+      }
+    ]
+  },
+  {
+    "projectId": 312,
+    "title": "Lagos Parks Mobile App Development",
+    "organizationId": 1,
+    "typeTags": [
+      "Mobile Development",
+      "UI/UX Design"
+    ],
+    "tasks": [
+      {
+        "id": 101,
+        "title": "User authentication flow design",
+        "status": "Approved",
+        "completed": true,
+        "order": 1,
+        "link": "https://figma.com/file/auth-flow-design",
+        "dueDate": "2025-08-15T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the complete user authentication and registration flow.",
+        "submittedDate": "2025-07-16T10:15:00.000Z"
+      },
+      {
+        "id": 102,
+        "title": "Park booking interface mockups",
+        "status": "Approved",
+        "completed": true,
+        "order": 2,
+        "link": "https://figma.com/file/booking-interface",
+        "dueDate": "2025-08-18T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Create mockups for the park facility booking interface.",
+        "submittedDate": "2025-07-16T08:45:00.000Z"
+      },
+      {
+        "id": 103,
+        "title": "Maintenance reporting feature",
+        "status": "Approved",
+        "completed": true,
+        "order": 3,
+        "link": "https://figma.com/file/maintenance-reporting",
+        "dueDate": "2025-08-20T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the maintenance issue reporting feature with photo upload.",
+        "submittedDate": "2025-07-15T16:30:00.000Z"
+      },
+      {
+        "id": 104,
+        "title": "Navigation and menu structure",
+        "status": "Approved",
+        "completed": true,
+        "order": 4,
+        "link": "https://figma.com/file/navigation-menu",
+        "dueDate": "2025-08-22T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the main navigation and menu structure for the mobile app.",
+        "submittedDate": "2025-07-15T11:20:00.000Z"
+      },
+      {
+        "id": 105,
+        "title": "Push notification system design",
+        "status": "Approved",
+        "completed": true,
+        "order": 5,
+        "link": "https://figma.com/file/notification-system",
+        "dueDate": "2025-08-25T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the push notification system for booking confirmations and updates.",
+        "submittedDate": "2025-07-14T13:10:00.000Z"
+      },
+      {
+        "id": 106,
+        "title": "User profile and settings screens",
+        "status": "Approved",
+        "completed": true,
+        "order": 6,
+        "link": "https://figma.com/file/user-profile-settings",
+        "dueDate": "2025-08-28T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design user profile management and app settings screens.",
+        "submittedDate": "2025-07-18T14:25:00.000Z"
+      },
+      {
+        "id": 107,
+        "title": "Payment integration interface",
+        "status": "Approved",
+        "completed": true,
+        "order": 7,
+        "link": "https://figma.com/file/payment-integration",
+        "dueDate": "2025-08-30T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Design the payment interface for park facility bookings.",
+        "submittedDate": "2025-07-19T09:40:00.000Z"
+      },
+      {
+        "id": 108,
+        "title": "Final app prototype and handoff",
+        "status": "Approved",
+        "completed": true,
+        "order": 8,
+        "link": "https://figma.com/file/final-prototype",
+        "dueDate": "2025-09-02T00:00:00.000Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Complete final prototype with all screens and prepare developer handoff documentation.",
+        "submittedDate": "2025-07-20T16:15:00.000Z"
+      }
+    ]
+  },
+  {
+    "projectId": 320,
+    "title": "Park Visitor Mobile App",
+    "organizationId": 1,
+    "typeTags": [
+      "React Native",
+      "Mobile",
+      "iOS",
+      "Android"
+    ],
+    "tasks": [
+      {
+        "id": 204,
+        "title": "Initial setup for Park Visitor Mobile App",
+        "status": "Upcoming",
+        "completed": false,
+        "order": 1,
+        "link": "",
+        "dueDate": "2025-08-10T14:53:43.060Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Begin work on Park Visitor Mobile App project"
+      }
+    ]
+  },
+  {
+    "projectId": 321,
+    "title": "Park Maintenance Mobile App",
+    "organizationId": 1,
+    "typeTags": [
+      "React Native",
+      "Mobile",
+      "iOS",
+      "Android",
+      "GPS"
+    ],
+    "tasks": [
+      {
+        "id": 205,
+        "title": "Initial setup for Park Maintenance Mobile App",
+        "status": "Upcoming",
+        "completed": false,
+        "order": 1,
+        "link": "",
+        "dueDate": "2025-08-10T15:17:21.234Z",
+        "rejected": false,
+        "feedbackCount": 0,
+        "pushedBack": false,
+        "version": 1,
+        "description": "Begin work on Park Maintenance Mobile App project"
+      }
+    ]
+  }
+]

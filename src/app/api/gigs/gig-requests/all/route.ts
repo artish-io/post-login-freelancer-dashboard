@@ -1,13 +1,9 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
-
-const REQUESTS_PATH = path.join(process.cwd(), 'data/gigs/gig-requests.json');
+import { readAllGigRequests } from '../../../../../lib/gigs/gig-request-storage';
 
 export async function GET() {
   try {
-    const raw = await readFile(REQUESTS_PATH, 'utf-8');
-    const requests = JSON.parse(raw);
+    const requests = await readAllGigRequests();
 
     const grouped = {
       available: [] as any[],

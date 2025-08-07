@@ -1,0 +1,34 @@
+[
+  {
+    "id": 205,
+    "freelancerId": 5,
+    "gigId": 105,
+    "organizationId": 6,
+    "commissionerId": 37,
+    "title": "Tech Showcase Speaker Reel",
+    "skills": [
+      "Video Editing",
+      "Motion Graphics"
+    ],
+    "tools": [
+      "After Effects",
+      "Premiere Pro"
+    ],
+    "notes": "Edit highlight reel of our keynote speakers and testimonials.",
+    "budget": {
+      "min": 3200,
+      "max": 4800,
+      "currency": "USD"
+    },
+    "status": "Accepted",
+    "createdAt": "2025-07-07T12:00:00Z",
+    "responses": [
+      {
+        "type": "accepted",
+        "timestamp": "2025-07-28T19:30:39.175Z",
+        "message": "Offer accepted"
+      }
+    ],
+    "acceptedAt": "2025-07-28T19:30:39.175Z"
+  }
+]

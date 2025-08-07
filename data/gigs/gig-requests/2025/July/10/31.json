@@ -1,0 +1,27 @@
+[
+  {
+    "id": 208,
+    "freelancerId": 31,
+    "gigId": 108,
+    "organizationId": 2,
+    "commissionerId": 33,
+    "title": "Brand Voice Guidelines",
+    "skills": [
+      "Brand Strategy",
+      "Content Design"
+    ],
+    "tools": [
+      "Adobe InDesign",
+      "Figma"
+    ],
+    "notes": "Create comprehensive brand voice guidelines for our documentary channel.",
+    "budget": {
+      "min": 1500,
+      "max": 2500,
+      "currency": "USD"
+    },
+    "status": "Available",
+    "createdAt": "2025-07-10T16:45:00Z",
+    "responses": []
+  }
+]

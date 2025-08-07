@@ -1,0 +1,94 @@
+[
+  {
+    "id": "project_activated_330_1754535429967",
+    "timestamp": "2025-08-07T02:57:09.967Z",
+    "type": "project_activated",
+    "notificationType": 22,
+    "actorId": 1,
+    "targetId": 35,
+    "entityType": 2,
+    "entityId": 330,
+    "metadata": {
+      "projectTitle": "Web 3 Virtual Assets For NFT Project",
+      "gigTitle": "Web 3 Virtual Assets For NFT Project",
+      "taskCount": 1,
+      "dueDate": "2025-09-04",
+      "freelancerName": "Freelancer",
+      "organizationName": "Zynate Events Group"
+    },
+    "context": {
+      "projectId": 330,
+      "gigId": null,
+      "requestId": 1754532591164
+    }
+  },
+  {
+    "id": "project_activated_329_1754531073717",
+    "timestamp": "2025-08-07T01:44:33.717Z",
+    "type": "project_activated",
+    "notificationType": 22,
+    "actorId": 31,
+    "targetId": 33,
+    "entityType": 2,
+    "entityId": 329,
+    "metadata": {
+      "projectTitle": "Brand Voice Guidelines",
+      "gigTitle": "Brand Voice Guidelines",
+      "taskCount": 1,
+      "dueDate": "2025-09-04",
+      "freelancerName": "Freelancer",
+      "organizationName": "Urbana Channel Studios"
+    },
+    "context": {
+      "projectId": 329,
+      "gigId": 108,
+      "requestId": 208
+    }
+  },
+  {
+    "id": "project_activated_328_1754531065388",
+    "timestamp": "2025-08-07T01:44:25.388Z",
+    "type": "project_activated",
+    "notificationType": 22,
+    "actorId": 7,
+    "targetId": 38,
+    "entityType": 2,
+    "entityId": 328,
+    "metadata": {
+      "projectTitle": "UX Audit Walkthrough",
+      "gigTitle": "UX Audit Walkthrough",
+      "taskCount": 1,
+      "dueDate": "2025-09-04",
+      "freelancerName": "Freelancer",
+      "organizationName": "Access UX Consultancy"
+    },
+    "context": {
+      "projectId": 328,
+      "gigId": 106,
+      "requestId": 206
+    }
+  },
+  {
+    "id": "project_activated_327_1754499517817",
+    "timestamp": "2025-08-06T16:58:37.817Z",
+    "type": "project_activated",
+    "notificationType": 22,
+    "actorId": 34,
+    "targetId": 1,
+    "entityType": 2,
+    "entityId": 327,
+    "metadata": {
+      "projectTitle": "Motion Graphics Video for Healthcare App",
+      "gigTitle": "Motion Graphics Video for Healthcare App",
+      "taskCount": 1,
+      "dueDate": "2025-08-27",
+      "commissionerName": "Matte Hannery",
+      "organizationName": "Corlax Wellness"
+    },
+    "context": {
+      "projectId": 327,
+      "gigId": 2,
+      "applicationId": 14
+    }
+  }
+]

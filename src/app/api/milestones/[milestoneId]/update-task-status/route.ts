@@ -16,16 +16,19 @@ export async function PUT(
       return NextResponse.json({ error: 'Missing or invalid fields' }, { status: 400 });
     }
 
-    // Use universal source files
-    const projectTasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
+    // Use hierarchical storage for project tasks
+    const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
     const milestonesMinimalPath = path.join(process.cwd(), 'data', 'milestones-minimal.json');
 
-    const [projectTasksFile, milestonesFile] = await Promise.all([
-      readFile(projectTasksPath, 'utf-8'),
+    const [hierarchicalTasks, milestonesFile] = await Promise.all([
+      readAllTasks(),
       readFile(milestonesMinimalPath, 'utf-8')
     ]);
 
-    const projectTasks = JSON.parse(projectTasksFile);
+    // Convert to legacy format for compatibility
+    const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
+
+    const projectTasks = projectTasksData;
     const milestones = JSON.parse(milestonesFile);
 
     // Extract milestone ID number and find milestone

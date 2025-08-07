@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import ProgressIndicator from '../../../../../../components/commissioner-dashboard/projects-and-invoices/post-a-gig/progress-indicator';
 import OrganizationMetadataForm from '../../../../../../components/commissioner-dashboard/projects-and-invoices/post-a-gig/organization-metadata-form';
 import { FormPersistence } from '../../../../../../utils/form-persistence';
+import organizationsData from '../../../../../../data/organizations.json';
 
 type StartType = 'Immediately' | 'Custom';
 type ExecutionMethod = 'completion' | 'milestone';
@@ -70,33 +71,37 @@ export default function PostAGigStep5Page() {
         return; // Use cached data if available
       }
 
-      // Otherwise load from API
+      // Load organization data from JSON file based on contactPersonId
       try {
-        const response = await fetch(`/api/organizations?contactPersonId=${session.user.id}`);
-        if (response.ok) {
-          const orgData = await response.json();
-          if (orgData) {
-            const organizationData = {
-              ...orgData,
-              website: orgData.website || '',
-              description: orgData.description || '',
-            };
-            setOrganizationData(organizationData);
-            // Save to form persistence for future use
-            FormPersistence.saveStepData(5, { organizationData });
-          } else {
-            // Set default values with user info if no organization exists
-            const defaultOrgData = {
-              name: '',
-              email: session.user.email || '',
-              logo: '',
-              address: '',
-              contactPersonId: parseInt(session.user.id),
-              website: '',
-              description: '',
-            };
-            setOrganizationData(defaultOrgData);
-          }
+        const commissionerId = parseInt(session.user.id);
+        const orgData = organizationsData.find(org => org.contactPersonId === commissionerId);
+
+        if (orgData) {
+          const organizationData = {
+            id: orgData.id,
+            name: orgData.name,
+            email: orgData.email,
+            logo: orgData.logo,
+            address: orgData.address,
+            contactPersonId: orgData.contactPersonId,
+            website: '', // Organizations.json uses 'bio' instead of 'website', so we'll leave this empty for editing
+            description: orgData.bio || '', // Map 'bio' to 'description'
+          };
+          setOrganizationData(organizationData);
+          // Save to form persistence for future use
+          FormPersistence.saveStepData(5, { organizationData });
+        } else {
+          // Set default values with user info if no organization exists
+          const defaultOrgData = {
+            name: '',
+            email: session.user.email || '',
+            logo: '',
+            address: '',
+            contactPersonId: parseInt(session.user.id),
+            website: '',
+            description: '',
+          };
+          setOrganizationData(defaultOrgData);
         }
       } catch (error) {
         console.error('Error loading organization data:', error);

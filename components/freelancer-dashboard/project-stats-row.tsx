@@ -1,18 +1,9 @@
 'use client';
 
-// 🔐 Session-aware data fetching note (Dev Only)
-// ----------------------------------------------------------------------
-// This component uses `useSession()` to access `session.user.id` on the client.
-// We pass that ID as a query param to API routes (e.g. `/api/dashboard/stats?id=31`).
-// This is necessary because `getServerSession()` does not reliably work inside
-// API route handlers when called from client-side fetches (cookie context is missing).
-// In production, we will refactor this to server components using `getServerSession()`
-// directly to eliminate client-side ID forwarding.
-// ----------------------------------------------------------------------
-
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import ProjectStatsCard from './project-statscard';
+import { requireFreelancerSession, getFreelancerId } from '../../src/lib/freelancer-access-control';
 
 export default function ProjectStatsRow() {
   const { data: session } = useSession();
@@ -24,10 +15,31 @@ export default function ProjectStatsRow() {
   });
 
   const fetchStats = async () => {
-    if (!session?.user?.id) return;
+    // Ensure user is a freelancer before fetching stats
+    const freelancerSession = requireFreelancerSession(session?.user as any);
+    if (!freelancerSession) {
+      setStats({
+        tasksToday: 0,
+        ongoingProjects: 0,
+        upcomingDeadlines: 0,
+        overdueDeadlines: 0,
+      });
+      return;
+    }
+
+    const freelancerId = getFreelancerId(freelancerSession);
+    if (!freelancerId) {
+      setStats({
+        tasksToday: 0,
+        ongoingProjects: 0,
+        upcomingDeadlines: 0,
+        overdueDeadlines: 0,
+      });
+      return;
+    }
 
     try {
-      const res = await fetch(`/api/dashboard/stats?id=${session.user.id}`, {
+      const res = await fetch(`/api/dashboard/stats?id=${freelancerId}`, {
         cache: 'no-store' // Ensure fresh data
       });
       const data = await res.json();

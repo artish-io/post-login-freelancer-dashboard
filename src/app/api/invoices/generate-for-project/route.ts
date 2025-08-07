@@ -11,12 +11,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Fetch project data, tasks, and existing invoices
-    const [projectsData, projectTasksData, invoicesData] = await Promise.all([
+    // Fetch project data, tasks, and existing invoices using hierarchical storage
+    const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
+
+    const [projectsData, hierarchicalTasks, invoicesData] = await Promise.all([
       fs.promises.readFile(path.join(process.cwd(), 'data', 'projects.json'), 'utf-8'),
-      fs.promises.readFile(path.join(process.cwd(), 'data', 'project-tasks.json'), 'utf-8'),
+      readAllTasks(),
       fs.promises.readFile(path.join(process.cwd(), 'data', 'invoices.json'), 'utf-8')
     ]);
+
+    // Convert tasks to legacy format for compatibility
+    const projectTasksData = JSON.stringify(convertHierarchicalToLegacy(hierarchicalTasks));
 
     const allProjects = JSON.parse(projectsData);
     const allProjectTasks = JSON.parse(projectTasksData);

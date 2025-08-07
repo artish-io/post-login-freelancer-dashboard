@@ -6,7 +6,7 @@ import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/h
 
 /**
  * API endpoint to automatically update project status when all tasks are approved
- * This ensures data consistency between project-tasks.json and projects.json
+ * This ensures data consistency between hierarchical project tasks and projects
  */
 export async function POST(request: Request) {
   try {
