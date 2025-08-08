@@ -43,24 +43,15 @@ type Props = {
 
 const PER_PAGE = 10;
 
-const statusColors = {
-  draft: 'bg-blue-100 text-blue-800',
-  sent: 'bg-yellow-100 text-yellow-800',
-  paid: 'bg-green-100 text-green-800',
-  cancelled: 'bg-red-100 text-red-800',
-  failed: 'bg-red-100 text-red-800',
-  pending: 'bg-yellow-100 text-yellow-800',
-  processing: 'bg-blue-100 text-blue-800'
-};
+import { getInvoiceStatusConfig } from '@/lib/invoice-status-definitions';
 
-const statusLabels = {
-  draft: 'Processing',
-  sent: 'On Hold',
-  paid: 'Completed',
-  cancelled: 'Cancelled',
-  failed: 'Failed',
-  pending: 'Pending',
-  processing: 'Processing'
+// Use the centralized status configuration
+const getStatusDisplay = (status: string) => {
+  const config = getInvoiceStatusConfig(status as any);
+  return {
+    color: `${config.bgColor} ${config.color}`,
+    label: config.label
+  };
 };
 
 // Format timestamp to relative time
@@ -159,9 +150,14 @@ export default function InvoiceHistoryTable({ invoices, onInvoiceClick, loading 
 
                 {/* Status Column */}
                 <div>
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusColors[invoice.status]}`}>
-                    {statusLabels[invoice.status]}
-                  </span>
+                  {(() => {
+                    const statusDisplay = getStatusDisplay(invoice.status);
+                    return (
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusDisplay.color}`}>
+                        {statusDisplay.label}
+                      </span>
+                    );
+                  })()}
                 </div>
 
                 {/* Amount Column */}

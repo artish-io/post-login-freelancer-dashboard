@@ -13,5 +13,10 @@
   "dueDate": "2025-08-16",
   "totalTasks": 5,
   "invoicingMethod": "milestone",
-  "createdAt": "2025-07-29T14:26:40.166Z"
+  "createdAt": "2025-07-29T14:26:40.166Z",
+  "budget": {
+    "lower": 1000,
+    "upper": 5000,
+    "currency": "USD"
+  }
 }

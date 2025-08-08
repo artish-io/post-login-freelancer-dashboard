@@ -18,5 +18,11 @@
   "dueDate": "2025-09-04",
   "totalTasks": 1,
   "gigId": null,
-  "createdAt": "2025-08-07T02:57:09.961Z"
+  "createdAt": "2025-08-07T02:57:09.961Z",
+  "invoicingMethod": "completion",
+  "budget": {
+    "lower": 1000,
+    "upper": 5000,
+    "currency": "USD"
+  }
 }

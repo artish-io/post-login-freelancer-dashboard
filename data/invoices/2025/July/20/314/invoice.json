@@ -26,5 +26,6 @@
     }
   ],
   "isManualInvoice": true,
-  "parentInvoiceNumber": "MGL000314"
+  "parentInvoiceNumber": "MGL000314",
+  "invoicingMethod": "milestone"
 }

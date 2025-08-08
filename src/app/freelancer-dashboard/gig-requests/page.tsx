@@ -30,6 +30,7 @@ type GigRequest = {
   responses: any[];
   hourlyRateMin?: number;
   hourlyRateMax?: number;
+  projectId?: number;
 };
 
 type Organization = {
@@ -326,7 +327,8 @@ export default function GigRequestsPage() {
                   estimatedDelivery: "2 weeks",
                   hoursOfWork: "40 hours",
                   maxRate: selectedGigRequest.budget?.max.toString() || '5000',
-                  minRate: selectedGigRequest.budget?.min.toString() || '3000'
+                  minRate: selectedGigRequest.budget?.min.toString() || '3000',
+                  projectId: selectedGigRequest.projectId
                 }}
               />
             </motion.div>

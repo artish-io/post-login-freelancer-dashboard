@@ -54,8 +54,7 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
     tools: [] as string[],
     milestones: [] as Milestone[],
     budgetMin: '',
-    budgetMax: '',
-    deliveryTimeWeeks: 0
+    budgetMax: ''
   });
 
   // State for dropdowns and inputs
@@ -156,24 +155,20 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
   // Handle start date selection with auto-calculation
   const handleStartDateSelect = (date: Date | null) => {
     const newDuration = calculateDuration(date, formData.endDate);
-    const newDeliveryTimeWeeks = Math.ceil(newDuration / 7); // Convert days to weeks
     setFormData(prev => ({
       ...prev,
       startDate: date,
-      duration: newDuration,
-      deliveryTimeWeeks: newDeliveryTimeWeeks
+      duration: newDuration
     }));
   };
 
   // Handle end date selection with auto-calculation
   const handleEndDateSelect = (date: Date | null) => {
     const newDuration = calculateDuration(formData.startDate, date);
-    const newDeliveryTimeWeeks = Math.ceil(newDuration / 7); // Convert days to weeks
     setFormData(prev => ({
       ...prev,
       endDate: date,
-      duration: newDuration,
-      deliveryTimeWeeks: newDeliveryTimeWeeks
+      duration: newDuration
     }));
   };
 
@@ -257,8 +252,7 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
             min: parseInt(formData.budgetMin),
             max: parseInt(formData.budgetMax),
             currency: 'USD'
-          } : undefined,
-          deliveryTimeWeeks: formData.deliveryTimeWeeks > 0 ? formData.deliveryTimeWeeks : undefined
+          } : undefined
         }),
       });
 
@@ -278,8 +272,7 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
           tools: [],
           milestones: [],
           budgetMin: '',
-          budgetMax: '',
-          deliveryTimeWeeks: 0
+          budgetMax: ''
         });
         // Show success toast
         showSuccessToast('Request Sent', 'Your gig request was successfully delivered.');
@@ -422,52 +415,52 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
               </div>
             )}
 
-            {/* Start Date */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Start Date *
-              </label>
-              <Popover className="relative">
-                <Popover.Button className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#eb1966] focus:border-transparent text-left flex items-center justify-between">
-                  <span className={formData.startDate ? 'text-gray-900' : 'text-gray-500'}>
-                    {formData.startDate ? format(formData.startDate, 'PPP') : 'Select start date'}
-                  </span>
-                  <Calendar className="w-4 h-4 text-gray-400" />
-                </Popover.Button>
-                <Popover.Panel className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-                  <CalendarComponent
-                    mode="single"
-                    selected={formData.startDate || undefined}
-                    onSelect={(date) => handleStartDateSelect(date || null)}
-                    disabled={(date) => date < new Date()}
-                    initialFocus
-                  />
-                </Popover.Panel>
-              </Popover>
-            </div>
-
-            {/* End Date */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                End Date *
-              </label>
-              <Popover className="relative">
-                <Popover.Button className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#eb1966] focus:border-transparent text-left flex items-center justify-between">
-                  <span className={formData.endDate ? 'text-gray-900' : 'text-gray-500'}>
-                    {formData.endDate ? format(formData.endDate, 'PPP') : 'Select end date'}
-                  </span>
-                  <Calendar className="w-4 h-4 text-gray-400" />
-                </Popover.Button>
-                <Popover.Panel className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-                  <CalendarComponent
-                    mode="single"
-                    selected={formData.endDate || undefined}
-                    onSelect={(date) => handleEndDateSelect(date || null)}
-                    disabled={(date) => date < (formData.startDate || new Date())}
-                    initialFocus
-                  />
-                </Popover.Panel>
-              </Popover>
+            {/* Start and End Date - Horizontal Layout */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Start Date *
+                </label>
+                <Popover className="relative">
+                  <Popover.Button className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#eb1966] focus:border-transparent text-left flex items-center justify-between">
+                    <span className={formData.startDate ? 'text-gray-900' : 'text-gray-500'}>
+                      {formData.startDate ? format(formData.startDate, 'PPP') : 'Select start date'}
+                    </span>
+                    <Calendar className="w-4 h-4 text-gray-400" />
+                  </Popover.Button>
+                  <Popover.Panel className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                    <CalendarComponent
+                      mode="single"
+                      selected={formData.startDate || undefined}
+                      onSelect={(date) => handleStartDateSelect(date || null)}
+                      disabled={(date) => date < new Date()}
+                      initialFocus
+                    />
+                  </Popover.Panel>
+                </Popover>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  End Date *
+                </label>
+                <Popover className="relative">
+                  <Popover.Button className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#eb1966] focus:border-transparent text-left flex items-center justify-between">
+                    <span className={formData.endDate ? 'text-gray-900' : 'text-gray-500'}>
+                      {formData.endDate ? format(formData.endDate, 'PPP') : 'Select end date'}
+                    </span>
+                    <Calendar className="w-4 h-4 text-gray-400" />
+                  </Popover.Button>
+                  <Popover.Panel className="absolute z-10 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                    <CalendarComponent
+                      mode="single"
+                      selected={formData.endDate || undefined}
+                      onSelect={(date) => handleEndDateSelect(date || null)}
+                      disabled={(date) => date < (formData.startDate || new Date())}
+                      initialFocus
+                    />
+                  </Popover.Panel>
+                </Popover>
+              </div>
             </div>
 
             {/* Project Duration (Auto-calculated) */}
@@ -680,19 +673,7 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
               </div>
             </div>
 
-            {/* Delivery Time (Auto-calculated) */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Delivery Time (Weeks)
-              </label>
-              <input
-                type="text"
-                value={formData.deliveryTimeWeeks > 0 ? `${formData.deliveryTimeWeeks} weeks` : 'Select start and end dates'}
-                readOnly
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed"
-                placeholder="Auto-calculated from dates"
-              />
-            </div>
+
 
             {/* Skills */}
             <div>

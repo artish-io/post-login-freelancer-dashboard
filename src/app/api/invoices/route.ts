@@ -1,9 +1,37 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
 import { getAllInvoices, getInvoiceByNumber, saveInvoice } from '@/lib/invoice-storage';
+import { filterInvoicesForCommissioner, filterInvoicesForFreelancer } from '@/lib/invoice-status-definitions';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const invoices = await getAllInvoices();
+    // Get session to determine user type and apply proper filtering
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const url = new URL(request.url);
+    const userType = url.searchParams.get('userType') || 'freelancer';
+    const userId = parseInt(session.user.id);
+
+    // Get all invoices
+    let invoices = await getAllInvoices();
+
+    // Apply user-specific filtering
+    if (userType === 'commissioner') {
+      // Commissioners can only see non-draft invoices for their projects
+      invoices = filterInvoicesForCommissioner(invoices.filter(inv =>
+        inv.commissionerId === userId
+      ));
+    } else {
+      // Freelancers can see all their invoices including drafts
+      invoices = filterInvoicesForFreelancer(invoices.filter(inv =>
+        parseInt(inv.freelancerId.toString()) === userId
+      ));
+    }
+
     return NextResponse.json(invoices);
   } catch (err) {
     console.error('[invoices] Failed to load data:', err);

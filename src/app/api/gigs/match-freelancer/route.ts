@@ -113,6 +113,12 @@ export async function POST(req: Request) {
       status: 'ongoing',
       dueDate: gig.endDate || new Date(Date.now() + gig.deliveryTimeWeeks * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       totalTasks: milestoneCount,
+      invoicingMethod: gig.executionMethod || 'completion', // CRITICAL: Pass invoicing method from gig
+      budget: {
+        lower: gig.lowerBudget || 0,
+        upper: gig.upperBudget || 0,
+        currency: 'USD'
+      },
       gigId: gigId, // Link to original gig
       createdAt: new Date().toISOString()
     };

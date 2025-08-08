@@ -17,5 +17,11 @@
   "status": "ongoing",
   "dueDate": "2025-08-10",
   "totalTasks": 1,
-  "createdAt": "2025-08-03T22:21:08.956Z"
+  "createdAt": "2025-08-03T22:21:08.956Z",
+  "invoicingMethod": "completion",
+  "budget": {
+    "lower": 1000,
+    "upper": 5000,
+    "currency": "USD"
+  }
 }

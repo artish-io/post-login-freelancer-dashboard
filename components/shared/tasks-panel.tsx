@@ -255,6 +255,12 @@ export default function TasksPanel({
           });
         } else {
           // Commissioner - fetch real data and filter by commissioner's organization
+          if (!session?.user?.id) {
+            console.log('No commissioner ID found in session');
+            setTasks([]);
+            return;
+          }
+
           const [projectTasksRes, projectsRes, organizationsRes] = await Promise.all([
             fetch('/api/project-tasks'),
             fetch('/api/projects'),
@@ -266,15 +272,18 @@ export default function TasksPanel({
             const projectsData = await projectsRes.json();
             const organizationsData = await organizationsRes.json();
 
-            // For demo purposes, use organization 1 (Lagos Parks Services)
-            // In production, this would use session?.user?.id to find the correct organization
-            const commissionerOrg = organizationsData.find((org: any) => org.id === 1);
+            const currentCommissionerId = parseInt(session.user.id);
+
+            // Find the organization where this commissioner is the contact person
+            const commissionerOrg = organizationsData.find((org: any) => org.contactPersonId === currentCommissionerId);
 
             if (!commissionerOrg) {
-              console.log('No organization found for commissioner');
+              console.log(`No organization found for commissioner ${currentCommissionerId}`);
               setTasks([]);
               return;
             }
+
+            console.log(`📋 Commissioner ${currentCommissionerId} accessing tasks for organization ${commissionerOrg.id} (${commissionerOrg.name})`);
 
             // Filter projects for this commissioner's organization
             const orgProjects = projectsData.filter((project: any) =>
@@ -359,7 +368,7 @@ export default function TasksPanel({
   const displayedTasks = viewType === 'freelancer' ? filteredTasks.slice(0, 5) : filteredTasks;
 
   // Convert CommissionerTask to TaskToReview format for modal
-  const convertToTaskToReview = async (commissionerTask: CommissionerTask): Promise<TaskToReview | null> => {
+  const convertToTaskToReview = async (commissionerTask: CommissionerTask, currentCommissionerId: number): Promise<TaskToReview | null> => {
     try {
       // Fetch additional data needed for the modal
       const [projectTasksRes, projectsRes, organizationsRes, usersRes] = await Promise.all([
@@ -379,6 +388,12 @@ export default function TasksPanel({
         const projectData = projectTasksData.find((p: any) => p.projectId === commissionerTask.projectId);
         const projectInfo = projectsData.find((p: any) => p.projectId === commissionerTask.projectId);
         const organization = organizationsData.find((org: any) => org.id === projectInfo?.organizationId);
+
+        // SECURITY CHECK: Verify this commissioner has access to this organization
+        if (!organization || organization.contactPersonId !== currentCommissionerId) {
+          console.error(`🚫 Access denied: Commissioner ${currentCommissionerId} attempted to access task from organization ${organization?.id} (${organization?.name})`);
+          return null;
+        }
 
         if (projectData && projectInfo) {
           const taskDetail = projectData.tasks?.find((t: any) => t.id === commissionerTask.id);
@@ -417,7 +432,13 @@ export default function TasksPanel({
 
   // Handle commissioner task click
   const handleCommissionerTaskClick = async (task: CommissionerTask) => {
-    const taskToReview = await convertToTaskToReview(task);
+    if (!session?.user?.id) {
+      console.error('No commissioner ID found in session');
+      return;
+    }
+
+    const currentCommissionerId = parseInt(session.user.id);
+    const taskToReview = await convertToTaskToReview(task, currentCommissionerId);
     if (taskToReview) {
       setSelectedTaskForReview(taskToReview);
     }

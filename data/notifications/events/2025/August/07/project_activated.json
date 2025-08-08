@@ -1,0 +1,25 @@
+[
+  {
+    "id": "project_activated_331_1754588977348",
+    "timestamp": "2025-08-07T17:49:37.348Z",
+    "type": "project_activated",
+    "notificationType": 22,
+    "actorId": 35,
+    "targetId": 1,
+    "entityType": 2,
+    "entityId": 331,
+    "metadata": {
+      "projectTitle": "Corporate Event Photography Package",
+      "gigTitle": "Corporate Event Photography Package",
+      "taskCount": 1,
+      "dueDate": "2025-08-20T04:00:00.000Z",
+      "commissionerName": "Tilly Burzinsky",
+      "organizationName": "Zynate Events Group"
+    },
+    "context": {
+      "projectId": 331,
+      "gigId": 12,
+      "applicationId": 21
+    }
+  }
+]

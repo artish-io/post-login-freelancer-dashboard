@@ -294,11 +294,11 @@ class EventLogger {
       },
       {
         eventType: 'project_activated',
-        targetUserTypes: ['project_freelancer'],
+        targetUserTypes: ['project_commissioner'],
         notificationType: 'project_activated',
-        titleTemplate: '{actorName} accepted your application for {gigTitle}',
-        messageTemplate: 'This project is now active and includes {taskCount} milestones due by {dueDate}',
-        iconType: 'avatar', // Commissioner avatar on freelancer side
+        titleTemplate: '{actorName} has accepted your gig request for {gigTitle}',
+        messageTemplate: 'This project is now active.',
+        iconType: 'avatar', // Freelancer avatar on commissioner side
         priority: 'high',
         channels: ['in_app', 'email']
       },

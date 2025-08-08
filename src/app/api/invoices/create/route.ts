@@ -1,11 +1,21 @@
 // src/app/api/dashboard/invoices/create/route.ts
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
 import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
+import { readProject } from '../../../../lib/projects-utils';
+
 const ALLOWED_STATUSES = ['draft', 'sent', 'paid'];
 const ALLOWED_EXECUTION_MODES = ['milestone', 'completion'];
 
 export async function POST(request: Request) {
   try {
+    // 🔒 SECURITY: Verify session authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
 
     const {
@@ -21,6 +31,8 @@ export async function POST(request: Request) {
       executionMode,
     } = body;
 
+    const sessionUserId = parseInt(session.user.id);
+
     if (
       !freelancerId ||
       !projectId ||
@@ -35,6 +47,25 @@ export async function POST(request: Request) {
       (status && !ALLOWED_STATUSES.includes(status))
     ) {
       return NextResponse.json({ error: 'Missing or invalid fields' }, { status: 400 });
+    }
+
+    // 🔒 SECURITY: Verify freelancer can only create invoices for their own projects
+    if (freelancerId !== sessionUserId) {
+      return NextResponse.json({
+        error: 'Unauthorized: You can only create invoices for your own projects'
+      }, { status: 403 });
+    }
+
+    // 🔒 SECURITY: Verify project exists and freelancer is assigned to it
+    const project = await readProject(projectId);
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    if (project.freelancerId !== sessionUserId) {
+      return NextResponse.json({
+        error: 'Unauthorized: You are not assigned to this project'
+      }, { status: 403 });
     }
 
     for (const milestone of milestones) {

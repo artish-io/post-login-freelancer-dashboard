@@ -17,5 +17,11 @@
   "status": "ongoing",
   "dueDate": "2025-08-26",
   "totalTasks": 4,
-  "createdAt": "2025-08-05T14:47:18.290Z"
+  "createdAt": "2025-08-05T14:47:18.290Z",
+  "invoicingMethod": "milestone",
+  "budget": {
+    "lower": 1000,
+    "upper": 5000,
+    "currency": "USD"
+  }
 }

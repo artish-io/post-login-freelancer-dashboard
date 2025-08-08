@@ -18,5 +18,15 @@
   ],
   "isCustomProject": true,
   "isManualInvoice": true,
-  "parentInvoiceNumber": "CUSTOM-001"
+  "parentInvoiceNumber": "CUSTOM-001",
+  "paymentDetails": {
+    "paymentId": "migrated_1754601151048_308",
+    "paymentMethod": "migrated",
+    "platformFee": 75,
+    "freelancerAmount": 1425,
+    "currency": "USD",
+    "processedAt": "2025-08-07T21:12:31.048Z"
+  },
+  "paidDate": "2025-07-15",
+  "invoicingMethod": "milestone"
 }

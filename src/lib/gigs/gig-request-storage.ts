@@ -150,8 +150,60 @@ export function filterGigRequestsByStatus(requests: GigRequest[], status?: strin
   if (!status || status === 'all') {
     return requests;
   }
-  
-  return requests.filter(request => 
+
+  return requests.filter(request =>
     request.status?.toLowerCase() === status.toLowerCase()
   );
+}
+
+/**
+ * Update a gig request status in hierarchical storage
+ */
+export async function updateGigRequestStatus(
+  requestId: number,
+  updates: Partial<GigRequest>
+): Promise<void> {
+  try {
+    // Read all requests to find the one to update
+    const allRequests = await readAllGigRequests();
+    const requestIndex = allRequests.findIndex(req => req.id === requestId);
+
+    if (requestIndex === -1) {
+      throw new Error(`Gig request ${requestId} not found`);
+    }
+
+    const requestToUpdate = allRequests[requestIndex];
+    const updatedRequest = { ...requestToUpdate, ...updates };
+
+    // Determine the file path based on the request's creation date
+    const createdAt = new Date(requestToUpdate.createdAt);
+    const year = createdAt.getFullYear();
+    const month = createdAt.toLocaleString('default', { month: 'long' });
+    const day = createdAt.getDate().toString().padStart(2, '0');
+
+    const filePath = path.join(
+      GIG_REQUESTS_BASE_PATH,
+      year.toString(),
+      month,
+      day,
+      `${requestToUpdate.freelancerId}.json`
+    );
+
+    // Read the file containing this request
+    const fileData = await readFile(filePath, 'utf-8');
+    const fileRequests = JSON.parse(fileData);
+
+    // Update the specific request in the file
+    const fileRequestIndex = fileRequests.findIndex((req: GigRequest) => req.id === requestId);
+    if (fileRequestIndex !== -1) {
+      fileRequests[fileRequestIndex] = updatedRequest;
+
+      // Write back to file
+      const { writeFile } = await import('fs/promises');
+      await writeFile(filePath, JSON.stringify(fileRequests, null, 2));
+    }
+  } catch (error) {
+    console.error('Error updating gig request status:', error);
+    throw error;
+  }
 }

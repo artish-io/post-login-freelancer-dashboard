@@ -90,8 +90,8 @@ export default function GigRequestMetaPanel({
 
       {/* Show status message for non-available gigs */}
       {status === 'Accepted' && (
-        <div className="w-full rounded-md bg-green-50 border border-green-200 text-green-800 font-medium py-2 text-sm mt-4 text-center">
-          ✓ Offer Accepted
+        <div className="w-full rounded-md bg-green-50 border border-green-200 text-green-600 font-semibold py-2 text-sm mt-4 text-center">
+          Offer Accepted
         </div>
       )}
 

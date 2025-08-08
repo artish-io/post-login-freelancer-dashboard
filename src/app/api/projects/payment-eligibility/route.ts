@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { promises as fs } from 'fs';
 import { readProject } from '@/lib/projects-utils';
 import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 import { getAllInvoices } from '@/lib/invoice-storage';
@@ -90,9 +88,11 @@ export async function GET(request: Request) {
           upfrontCommitment: project.upfrontCommitment || 0,
           remaining: (project.totalBudget || 0) - (project.upfrontCommitment || 0)
         },
-        latestEligibleInvoice: eligibleInvoices.length > 0 
-          ? eligibleInvoices.sort((a, b) => b.milestoneNumber - a.milestoneNumber)[0]
-          : null
+        latestEligibleInvoice: eligibleInvoices.length > 0
+          ? eligibleInvoices.sort((a, b) => (b.milestoneNumber || 0) - (a.milestoneNumber || 0))[0]
+          : null,
+        paymentMethodAvailable: !!project.invoicingMethod && ['completion', 'milestone'].includes(project.invoicingMethod),
+        paymentTriggerEndpoint: '/api/payments/trigger'
       });
 
     } else {
@@ -111,9 +111,11 @@ export async function GET(request: Request) {
           status: inv.status,
           description: inv.milestoneDescription
         })),
-        latestEligibleInvoice: sentInvoices.length > 0 
-          ? sentInvoices.sort((a: any, b: any) => b.milestoneNumber - a.milestoneNumber)[0]
-          : null
+        latestEligibleInvoice: sentInvoices.length > 0
+          ? sentInvoices.sort((a: any, b: any) => (b.milestoneNumber || 0) - (a.milestoneNumber || 0))[0]
+          : null,
+        paymentMethodAvailable: !!project.invoicingMethod && ['completion', 'milestone'].includes(project.invoicingMethod),
+        paymentTriggerEndpoint: '/api/payments/trigger'
       });
     }
 

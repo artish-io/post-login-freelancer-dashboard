@@ -1,0 +1,22 @@
+[
+  {
+    "id": "task_approved_402_1754588560784",
+    "timestamp": "2025-08-07T17:42:40.784Z",
+    "type": "task_approved",
+    "notificationType": 2,
+    "actorId": 34,
+    "targetId": 1,
+    "entityType": 1,
+    "entityId": 402,
+    "metadata": {
+      "taskTitle": "Create storyboard and animation concepts",
+      "projectTitle": "Motion Graphics Video for Healthcare App",
+      "commissionerName": "Matte Hannery",
+      "freelancerName": "Tobi Philly",
+      "priority": "medium"
+    },
+    "context": {
+      "projectId": 327
+    }
+  }
+]

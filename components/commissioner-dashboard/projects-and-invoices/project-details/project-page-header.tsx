@@ -1,7 +1,6 @@
 'use client';
 // Commissioner project page header component
 
-import Link from 'next/link';
 import Image from 'next/image';
 
 export type Props = {
@@ -21,15 +20,8 @@ export default function CommissionerProjectPageHeader({
 }: Props) {
   return (
     <div className="pb-6">
-      {/* Back Link */}
-      <Link href="/commissioner-dashboard/projects-and-invoices/project-list">
-        <span className="text-sm text-gray-600 hover:text-pink-600 flex items-center gap-1">
-          ← Back
-        </span>
-      </Link>
-
       {/* Project Meta Block */}
-      <div className="mt-3">
+      <div>
         <div className="flex items-center gap-3">
           <span className="text-sm text-black font-medium">Project ID: #{projectId}</span>
         </div>

@@ -9,7 +9,7 @@
   "issueDate": "2025-07-21",
   "dueDate": "2025-08-04",
   "totalAmount": 1500,
-  "status": "sent",
+  "status": "paid",
   "milestones": [
     {
       "description": "10 year anniversary graphic assets",
@@ -17,5 +17,16 @@
     }
   ],
   "isManualInvoice": true,
-  "parentInvoiceNumber": "MGL000301"
+  "parentInvoiceNumber": "MGL000301",
+  "updatedAt": "2025-08-07T19:53:06.411Z",
+  "paidDate": "2025-08-07T19:53:06.408Z",
+  "paymentDetails": {
+    "paymentId": "migrated_1754601151049_420",
+    "paymentMethod": "migrated",
+    "platformFee": 75,
+    "freelancerAmount": 1425,
+    "currency": "USD",
+    "processedAt": "2025-08-07T19:53:06.408Z"
+  },
+  "invoicingMethod": "milestone"
 }

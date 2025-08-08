@@ -75,8 +75,10 @@ export async function GET(
 
       if (status === 'available') {
         grouped.available.push(req);
-      } else if (status === 'pending' || status === 'applied' || status === 'accepted') {
+      } else if (status === 'pending' || status === 'applied') {
         grouped.pending.push(req);
+      } else if (status === 'accepted') {
+        grouped.accepted.push(req);
       } else if (status === 'rejected') {
         grouped.rejected.push(req);
       } else {

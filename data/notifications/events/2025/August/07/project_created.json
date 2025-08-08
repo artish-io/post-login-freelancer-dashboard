@@ -1,0 +1,24 @@
+[
+  {
+    "id": "project_created_332_1754590758900",
+    "timestamp": "2025-08-07T18:19:18.900Z",
+    "type": "project_created",
+    "notificationType": 20,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 2,
+    "entityId": 332,
+    "metadata": {
+      "projectTitle": "NFT Asset Created Update",
+      "gigTitle": "NFT Asset Created Update",
+      "taskCount": 1,
+      "dueDate": "2025-09-04",
+      "freelancerName": "Freelancer",
+      "organizationName": "Corlax Wellness"
+    },
+    "context": {
+      "projectId": 332,
+      "requestId": 1754588739598
+    }
+  }
+]

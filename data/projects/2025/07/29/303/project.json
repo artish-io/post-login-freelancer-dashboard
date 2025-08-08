@@ -15,5 +15,10 @@
   "invoicingMethod": "completion",
   "totalBudget": 9000,
   "upfrontCommitment": 2000,
-  "createdAt": "2025-07-29T14:26:40.166Z"
+  "createdAt": "2025-07-29T14:26:40.166Z",
+  "budget": {
+    "lower": 7200,
+    "upper": 9000,
+    "currency": "USD"
+  }
 }

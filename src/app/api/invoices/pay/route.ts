@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
 import path from 'path';
 import { promises as fs } from 'fs';
 import { NotificationStorage } from '@/lib/notifications/notification-storage';
@@ -30,6 +32,12 @@ import { getInvoiceByNumber, saveInvoice } from '@/lib/invoice-storage';
 
 export async function POST(request: Request) {
   try {
+    // 🔒 SECURITY: Verify session authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const {
       invoiceNumber,
       commissionerId,
@@ -38,8 +46,17 @@ export async function POST(request: Request) {
       currency = 'USD'
     } = await request.json();
 
+    const sessionUserId = parseInt(session.user.id);
+
     if (!invoiceNumber || !commissionerId || !amount) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // 🔒 SECURITY: Verify only the commissioner can pay their own invoices
+    if (commissionerId !== sessionUserId) {
+      return NextResponse.json({
+        error: 'Unauthorized: You can only pay invoices for your own projects'
+      }, { status: 403 });
     }
 
     // Load data files
@@ -51,6 +68,13 @@ export async function POST(request: Request) {
     const invoice = await getInvoiceByNumber(invoiceNumber);
     if (!invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
+    }
+
+    // 🔒 SECURITY: Double-check invoice belongs to this commissioner
+    if (invoice.commissionerId !== sessionUserId) {
+      return NextResponse.json({
+        error: 'Unauthorized: This invoice does not belong to you'
+      }, { status: 403 });
     }
 
     // Check if invoice is already paid
@@ -147,6 +171,38 @@ export async function POST(request: Request) {
 
     // Add notification using the new partitioned storage system
     NotificationStorage.addEvent(newNotification);
+
+    // CRITICAL: Create wallet transaction for freelancer
+    const walletHistoryPath = path.join(process.cwd(), 'data/wallet/wallet-history.json');
+    let walletHistory = [];
+    try {
+      const walletData = await fs.readFile(walletHistoryPath, 'utf-8');
+      walletHistory = JSON.parse(walletData);
+    } catch (error) {
+      console.log('Creating new wallet history file');
+      walletHistory = [];
+    }
+
+    // Add wallet credit transaction
+    const walletTransaction = {
+      id: Date.now(),
+      userId: parseInt(invoice.freelancerId),
+      commissionerId: commissionerIdNum,
+      organizationId: null, // Could be derived from project if needed
+      projectId: invoice.projectId,
+      type: 'credit',
+      amount: freelancerAmount,
+      currency: currency,
+      date: new Date().toISOString(),
+      source: 'project_payment',
+      description: `Payment for ${invoice.projectTitle}`,
+      invoiceNumber: invoiceNumber
+    };
+
+    walletHistory.push(walletTransaction);
+    await fs.writeFile(walletHistoryPath, JSON.stringify(walletHistory, null, 2));
+
+    console.log(`💰 Created wallet transaction for freelancer ${invoice.freelancerId}: $${freelancerAmount}`);
 
     // Save updated invoice data
     await saveInvoice(updatedInvoice);

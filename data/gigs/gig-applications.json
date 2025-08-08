@@ -434,5 +434,24 @@
     "submittedAt": "2025-08-07T01:05:10.126Z",
     "status": "rejected",
     "rejectedAt": "2025-08-07T01:05:58.297Z"
+  },
+  {
+    "id": 21,
+    "gigId": 12,
+    "freelancerId": 1,
+    "pitch": "As noble as Manchin’s call for bipartisanship is, the senator must take a hard look at whether he is being played for a fool by the GOP.  If the situation were reversed, and Republicans held 50 seats in the U.S. Senate along with the tie-breaking vice presidential vote, would they be seeking bipartisanship?",
+    "sampleLinks": [
+      "https://www.bbc.com/news/"
+    ],
+    "skills": [
+      "Graphic Design"
+    ],
+    "tools": [
+      "Professional Camera Equipment",
+      "Adobe Lightroom",
+      "Adobe Photoshop"
+    ],
+    "submittedAt": "2025-08-07T17:48:13.387Z",
+    "status": "accepted"
   }
 ]

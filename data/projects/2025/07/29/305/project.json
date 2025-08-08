@@ -13,5 +13,10 @@
   "dueDate": "2025-08-29",
   "totalTasks": 2,
   "invoicingMethod": "completion",
-  "createdAt": "2025-07-29T14:26:40.167Z"
+  "createdAt": "2025-07-29T14:26:40.167Z",
+  "budget": {
+    "lower": 1000,
+    "upper": 5000,
+    "currency": "USD"
+  }
 }

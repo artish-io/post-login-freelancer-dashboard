@@ -16,5 +16,15 @@
       "rate": 1350
     }
   ],
-  "parentInvoiceNumber": "MGL100008"
+  "parentInvoiceNumber": "MGL100008",
+  "paymentDetails": {
+    "paymentId": "migrated_1754601151041_751",
+    "paymentMethod": "migrated",
+    "platformFee": 67.5,
+    "freelancerAmount": 1282.5,
+    "currency": "USD",
+    "processedAt": "2025-08-07T21:12:31.041Z"
+  },
+  "paidDate": "2024-07-23",
+  "invoicingMethod": "milestone"
 }

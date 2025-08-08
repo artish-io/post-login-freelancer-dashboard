@@ -29,12 +29,12 @@ export default function InvoiceHistoryFilters({ filters, onFiltersChange }: Prop
 
   const statusOptions = [
     { value: 'all', label: 'All Statuses' },
-    { value: 'paid', label: 'Completed' },
+    { value: 'paid', label: 'Paid' },
+    { value: 'sent', label: 'Awaiting Payment' },
+    { value: 'on_hold', label: 'On Hold' },
+    { value: 'overdue', label: 'Overdue' },
     { value: 'cancelled', label: 'Cancelled' },
-    { value: 'sent', label: 'On Hold' },
-    { value: 'failed', label: 'Failed' },
-    { value: 'pending', label: 'Pending' },
-    { value: 'draft', label: 'Processing' }
+    { value: 'draft', label: 'Draft' } // Note: Commissioners won't see these anyway
   ];
 
   const sortOptions = [

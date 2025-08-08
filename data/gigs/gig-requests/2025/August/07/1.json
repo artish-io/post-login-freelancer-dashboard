@@ -1,0 +1,39 @@
+[
+  {
+    "id": 1754588739598,
+    "freelancerId": 1,
+    "commissionerId": 34,
+    "gigId": null,
+    "organizationId": 3,
+    "title": "NFT Asset Created Update",
+    "skills": [
+      "Web Development"
+    ],
+    "tools": [
+      "Ruby",
+      "Python",
+      "Adobe Photoshop"
+    ],
+    "notes": "Manchin, a conservative Democrat who has held onto his seat in increasingly-red West Virginia, finds himself in a golden prison.  As a Dem, he is walking a geopolitical tightrope in a state that overwhelmingly voted for Donald Trump in both 2016 and 2020.  His votes to convict the controversial president in both of his impeachment trials were politically risky, making him vulnerable to pro-Trump Republican challengers.  ",
+    "budget": {
+      "min": 25000,
+      "max": 3000,
+      "currency": "USD"
+    },
+    "hourlyRateMin": null,
+    "hourlyRateMax": null,
+    "deliveryTimeWeeks": 2,
+    "status": "Accepted",
+    "createdAt": "2025-08-07T17:45:39.594Z",
+    "responses": [
+      {
+        "type": "accepted",
+        "timestamp": "2025-08-07T18:19:18.763Z",
+        "message": "Offer accepted",
+        "projectId": 332
+      }
+    ],
+    "acceptedAt": "2025-08-07T18:19:18.763Z",
+    "projectId": 332
+  }
+]

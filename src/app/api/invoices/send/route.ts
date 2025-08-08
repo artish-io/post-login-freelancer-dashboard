@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
 import path from 'path';
 import { promises as fs } from 'fs';
 import { getInvoiceByNumber, saveInvoice } from '@/lib/invoice-storage';
@@ -30,10 +32,24 @@ import { getInvoiceByNumber, saveInvoice } from '@/lib/invoice-storage';
 
 export async function POST(request: Request) {
   try {
+    // 🔒 SECURITY: Verify session authentication
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { invoiceNumber, freelancerId, commissionerId } = await request.json();
+    const sessionUserId = parseInt(session.user.id);
 
     if (!invoiceNumber || !freelancerId || !commissionerId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // 🔒 SECURITY: Verify only the freelancer can send their own invoices
+    if (freelancerId !== sessionUserId) {
+      return NextResponse.json({
+        error: 'Unauthorized: You can only send invoices for your own projects'
+      }, { status: 403 });
     }
 
     // Load data files
@@ -52,6 +68,13 @@ export async function POST(request: Request) {
     const invoice = await getInvoiceByNumber(invoiceNumber);
     if (!invoice) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
+    }
+
+    // 🔒 SECURITY: Double-check invoice belongs to this freelancer
+    if (invoice.freelancerId !== sessionUserId) {
+      return NextResponse.json({
+        error: 'Unauthorized: This invoice does not belong to you'
+      }, { status: 403 });
     }
 
     // Validate invoice can be sent

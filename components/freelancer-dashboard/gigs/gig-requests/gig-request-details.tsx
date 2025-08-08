@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import GigRequestHeader from './gig-request-header';
 import GigRequestBody from './gig-request-body';
 import GigRequestMetaPanel from './gig-request-meta-panel';
@@ -26,6 +25,7 @@ type GigRequest = {
   hoursOfWork: string;
   maxRate: string;
   minRate: string;
+  projectId?: number;
 };
 
 type Props = {
@@ -33,7 +33,6 @@ type Props = {
 };
 
 const GigRequestDetails: React.FC<Props> = ({ request }) => {
-  const router = useRouter();
   const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
@@ -42,6 +41,11 @@ const GigRequestDetails: React.FC<Props> = ({ request }) => {
   const showErrorToast = useErrorToast();
 
   const handleAcceptOffer = () => {
+    // Prevent opening modal for already accepted requests
+    if (request.status === 'Accepted') {
+      showErrorToast('Error', 'This offer has already been accepted.');
+      return;
+    }
     setShowAcceptModal(true);
   };
 
@@ -50,6 +54,13 @@ const GigRequestDetails: React.FC<Props> = ({ request }) => {
   };
 
   const confirmAccept = async () => {
+    // Prevent accepting already accepted requests
+    if (request.status === 'Accepted') {
+      showErrorToast('Error', 'This offer has already been accepted.');
+      setShowAcceptModal(false);
+      return;
+    }
+
     setSubmitting(true);
     try {
       // API call to accept the gig request
@@ -65,10 +76,9 @@ const GigRequestDetails: React.FC<Props> = ({ request }) => {
         const result = await res.json();
         showSuccessToast('Offer Accepted', `Offer accepted successfully! Project #${result.projectId} has been created.`);
         setShowAcceptModal(false);
-        // Navigate to the project tracking page
-        setTimeout(() => {
-          router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking?projectId=${result.projectId}`);
-        }, 1500);
+
+        // Trigger a page refresh to update the UI state
+        window.location.reload();
       } else {
         const errorData = await res.json();
         throw new Error(errorData.error || 'Failed to accept offer');
@@ -121,6 +131,8 @@ const GigRequestDetails: React.FC<Props> = ({ request }) => {
           subtitle={request.subtitle}
           organizationLogo={request.organizationLogo}
           createdAt={request.createdAt}
+          status={request.status}
+          projectId={request.projectId}
         />
         <GigRequestBody
           description={request.description}

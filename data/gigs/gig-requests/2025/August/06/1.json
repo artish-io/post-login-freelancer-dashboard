@@ -21,8 +21,17 @@
     "hourlyRateMin": null,
     "hourlyRateMax": null,
     "deliveryTimeWeeks": 2,
-    "status": "Available",
+    "status": "Accepted",
     "createdAt": "2025-08-07T02:09:51.161Z",
-    "responses": []
+    "responses": [
+      {
+        "type": "accepted",
+        "timestamp": "2025-08-07T02:57:09.967Z",
+        "message": "Offer accepted",
+        "projectId": 330
+      }
+    ],
+    "acceptedAt": "2025-08-07T02:57:09.967Z",
+    "projectId": 330
   }
 ]

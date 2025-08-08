@@ -9,10 +9,10 @@
     "GIS"
   ],
   "title": "Design interactive map interface",
-  "status": "Ongoing",
+  "status": "In review",
   "completed": false,
   "order": 1,
-  "link": "",
+  "link": "bit.ly/34234324234234243",
   "dueDate": "2025-08-15T00:00:00.000Z",
   "rejected": false,
   "feedbackCount": 0,
@@ -20,5 +20,6 @@
   "version": 1,
   "description": "Create the main interface for the interactive park map with zoom, pan, and layer controls.",
   "createdDate": "2025-08-03T14:42:54.025Z",
-  "lastModified": "2025-08-06T17:00:00.000Z"
+  "lastModified": "2025-08-07T17:39:04.283Z",
+  "submittedDate": "2025-08-07T17:39:04.283Z"
 }

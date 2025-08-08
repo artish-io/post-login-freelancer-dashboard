@@ -26,5 +26,6 @@
     }
   ],
   "isManualInvoice": true,
-  "parentInvoiceNumber": "MGL100000"
+  "parentInvoiceNumber": "MGL100000",
+  "invoicingMethod": "milestone"
 }

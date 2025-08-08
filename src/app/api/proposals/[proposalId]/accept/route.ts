@@ -38,6 +38,7 @@ export async function POST(
       commissionerId: proposal.commissionerId,
       status: 'ongoing',
       executionMethod: proposal.executionMethod,
+      invoicingMethod: proposal.executionMethod || 'completion', // CRITICAL: Add invoicing method
       totalBudget: proposal.totalBid,
       upfrontAmount: proposal.upfrontAmount,
       upfrontPercentage: proposal.upfrontPercentage,
