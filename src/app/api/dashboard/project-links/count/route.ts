@@ -1,8 +1,7 @@
 // src/app/api/dashboard/project-links/count/route.ts
 
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
+import { readAllProjects } from '@/lib/projects-utils';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -15,18 +14,14 @@ export async function GET(req: Request) {
   try {
     // Use hierarchical storage for project tasks
     const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
 
-    const [projectsFile, hierarchicalTasks] = await Promise.all([
-      readFile(projectsPath, 'utf-8'),
+    const [projects, hierarchicalTasks] = await Promise.all([
+      readAllProjects(), // ✅ Use hierarchical storage
       readAllTasks()
     ]);
 
     // Convert to legacy format for compatibility
-    const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
-
-    const projects = JSON.parse(projectsFile);
-    const projectTasks = projectTasksData;
+    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
 
     const freelancerId = parseInt(userId);
 

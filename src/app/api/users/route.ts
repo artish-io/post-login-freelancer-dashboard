@@ -1,16 +1,12 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { getAllUsers } from '@/lib/storage/unified-storage-service';
 
 export async function GET() {
   try {
-    const filePath = path.join(process.cwd(), 'data', 'users.json');
-    const fileContents = fs.readFileSync(filePath, 'utf8');
-    const users = JSON.parse(fileContents);
-    
+    const users = await getAllUsers();
     return NextResponse.json(users);
   } catch (error) {
-    console.error('Error reading users.json:', error);
+    console.error('Error reading users:', error);
     return NextResponse.json(
       { error: 'Failed to load users' },
       { status: 500 }

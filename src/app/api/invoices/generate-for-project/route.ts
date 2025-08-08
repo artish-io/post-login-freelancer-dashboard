@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { readAllProjects } from '@/lib/projects-utils';
+import { getAllInvoices } from '@/lib/invoice-storage';
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,21 +14,17 @@ export async function POST(request: NextRequest) {
     // Fetch project data, tasks, and existing invoices using hierarchical storage
     const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
 
-    const [projectsData, hierarchicalTasks, invoicesData] = await Promise.all([
-      fs.promises.readFile(path.join(process.cwd(), 'data', 'projects.json'), 'utf-8'),
-      readAllTasks(),
-      fs.promises.readFile(path.join(process.cwd(), 'data', 'invoices.json'), 'utf-8')
+    const [projects, hierarchicalTasks, invoices] = await Promise.all([
+      readAllProjects(), // ✅ Use hierarchical storage
+      readAllTasks(),    // ✅ Already correct
+      getAllInvoices()   // ✅ Use hierarchical storage
     ]);
 
     // Convert tasks to legacy format for compatibility
-    const projectTasksData = JSON.stringify(convertHierarchicalToLegacy(hierarchicalTasks));
-
-    const allProjects = JSON.parse(projectsData);
-    const allProjectTasks = JSON.parse(projectTasksData);
-    const allInvoices = JSON.parse(invoicesData);
+    const allProjectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
 
     // Find the specific project
-    const projectInfo = allProjects.find((p: any) => p.projectId === projectId);
+    const projectInfo = projects.find((p: any) => p.projectId === projectId);
     const projectTasks = allProjectTasks.find((pt: any) => pt.projectId === projectId);
 
     if (!projectInfo || !projectTasks) {
@@ -40,7 +36,7 @@ export async function POST(request: NextRequest) {
     // Get already invoiced tasks
     const invoicedTaskIds = new Set();
     const invoicedTaskTitles = new Set();
-    allInvoices
+    invoices
       .filter((invoice: any) => invoice.projectId === projectId)
       .forEach((invoice: any) => {
         if (invoice.milestones) {
@@ -112,15 +108,15 @@ export async function POST(request: NextRequest) {
 
     // Save to invoices.json
     const invoicesPath = path.join(process.cwd(), 'data', 'invoices.json');
-    const invoices = JSON.parse(fs.readFileSync(invoicesPath, 'utf-8'));
+    const existingInvoices = JSON.parse(fs.readFileSync(invoicesPath, 'utf-8'));
     
     const newInvoice = {
       ...invoiceData,
-      id: invoices.length > 0 ? Math.max(...invoices.map((inv: any) => inv.id || 0)) + 1 : 1
+      id: existingInvoices.length > 0 ? Math.max(...existingInvoices.map((inv: any) => inv.id || 0)) + 1 : 1
     };
 
-    invoices.push(newInvoice);
-    fs.writeFileSync(invoicesPath, JSON.stringify(invoices, null, 2));
+    existingInvoices.push(newInvoice);
+    fs.writeFileSync(invoicesPath, JSON.stringify(existingInvoices, null, 2));
 
     return NextResponse.json({
       success: true,

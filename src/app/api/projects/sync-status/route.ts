@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { readProject, updateProject, readAllProjects } from '@/lib/projects-utils';
-import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
+import { getProjectById, updateProject, readAllProjects } from '@/app/api/payments/repos/projects-repo';
+import { readAllTasks } from '@/app/api/payments/repos/tasks-repo';
 
 export async function POST(request: Request) {
   try {
@@ -26,10 +26,10 @@ export async function POST(request: Request) {
 
     // Calculate task statistics
     const totalTasks = tasks.length;
-    const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
+    const approvedTasks = tasks.filter((task: any) => task.status === 'approved').length;
     const completedTasks = tasks.filter((task: any) => task.completed).length;
     const inReviewTasks = tasks.filter((task: any) => task.status === 'In review').length;
-    const ongoingTasks = tasks.filter((task: any) => task.status === 'Ongoing').length;
+    const ongoingTasks = tasks.filter((task: any) => task.status === 'incomplete').length;
 
     // Determine new status based on task completion
     let newStatus = project.status;

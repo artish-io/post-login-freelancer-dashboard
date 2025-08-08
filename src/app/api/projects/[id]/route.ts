@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readProject, readAllProjects } from '@/lib/projects-utils';
+import { getProjectById } from '@/app/api/payments/repos/projects-repo';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { validateFreelancerProjectAccess } from '@/lib/freelancer-access-control';
+import { readAllProjects } from '@/lib/projects-utils';
 
 export async function GET(
   request: NextRequest,
@@ -36,7 +37,7 @@ export async function GET(
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
-    const project = await readProject(projectId);
+    const project = await getProjectById(projectId);
 
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
@@ -49,14 +50,5 @@ export async function GET(
   }
 }
 
-async function GET_ALL_PROJECTS() {
-  try {
-    const filePath = path.join(process.cwd(), 'data', 'projects.json');
-    const file = await readFile(filePath, 'utf-8');
-    const projects = JSON.parse(file);
-    return NextResponse.json(projects);
-  } catch (error) {
-    console.error('Error reading project data:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  }
-}
+// ✅ DEPRECATED: This function has been replaced by hierarchical storage
+// Use readAllProjects() from @/lib/projects-utils instead

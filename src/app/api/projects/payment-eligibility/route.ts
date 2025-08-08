@@ -1,124 +1,126 @@
 import { NextResponse } from 'next/server';
-import { readProject } from '@/lib/projects-utils';
-import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
-import { getAllInvoices } from '@/lib/invoice-storage';
+import { getProjectById } from '@/app/api/payments/repos/projects-repo';
+import { listTasksByProject } from '@/app/api/payments/repos/tasks-repo';
+import { listInvoicesByProject } from '@/app/api/payments/repos/invoices-repo';
+import { normalizeTaskStatus } from '@/app/api/payments/domain/types';
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const projectId = searchParams.get('projectId');
+    const projectIdParam = searchParams.get('projectId');
 
-    if (!projectId) {
+    if (!projectIdParam) {
       return NextResponse.json({ error: 'Project ID is required' }, { status: 400 });
     }
 
-    // Load data files
-    const [project, hierarchicalTasks, invoices] = await Promise.all([
-      readProject(parseInt(projectId)), // Use hierarchical storage for projects
-      readAllTasks(), // Use hierarchical storage for project tasks
-      getAllInvoices() // Use hierarchical storage for invoices
+    const projectId = Number(projectIdParam);
+
+    // Load via repos (single source of truth)
+    const [project, tasks, invoices] = await Promise.all([
+      getProjectById(projectId),
+      listTasksByProject(projectId),
+      listInvoicesByProject(projectId),
     ]);
 
-    // Convert hierarchical tasks to legacy format for compatibility
-    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
-    // invoices is already parsed from hierarchical storage
-
-    // Check if project exists
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    // Find project tasks
-    const projectTaskData = projectTasks.find((pt: any) => pt.projectId === parseInt(projectId));
-    if (!projectTaskData) {
-      return NextResponse.json({ error: 'Project tasks not found' }, { status: 404 });
-    }
+    // Normalize task statuses and compute approved
+    const safeTasks = (tasks || []).map(t => ({
+      ...t,
+      status: normalizeTaskStatus((t as any).status),
+    }));
 
-    const tasks = projectTaskData.tasks || [];
-    const approvedTasks = tasks.filter((task: any) => task.status === 'Approved');
-    const projectInvoices = invoices.filter((inv: any) => inv.projectId === parseInt(projectId));
+    const approvedTasks = safeTasks.filter(t => t.status === 'approved' || t.completed === true);
 
-    // For completion-based projects, validate payment eligibility more strictly
+    // Branch by invoicing method
     if (project.invoicingMethod === 'completion') {
-      // Find approved tasks that have corresponding sent invoices
-      const eligibleInvoices = [];
-      
+      const eligibleInvoices: Array<{
+        invoiceNumber: string;
+        taskId: string | number;
+        taskTitle?: string;
+        taskOrder?: number;
+        amount: number;
+        milestoneNumber?: number;
+        status: string;
+      }> = [];
+
       for (const task of approvedTasks) {
-        // Find invoice that corresponds to this approved task
-        const taskInvoice = projectInvoices.find((inv: any) => {
-          // Match by milestone number (task order) or description content
-          return (
-            inv.milestoneNumber === task.order ||
-            inv.milestoneDescription.toLowerCase().includes(task.title.toLowerCase()) ||
-            task.title.toLowerCase().includes(inv.milestoneDescription.toLowerCase())
-          ) && inv.status === 'sent';
+        const taskTitleLc = String((task as any).title ?? '').toLowerCase();
+        const taskOrder = (task as any).order ?? (task as any).index;
+
+        const match = (invoices || []).find((inv: any) => {
+          const desc = String(inv?.milestoneDescription ?? '').toLowerCase();
+          const isSent = String(inv?.status) === 'sent';
+          const milestoneMatches = inv?.milestoneNumber != null && inv.milestoneNumber === taskOrder;
+          const textMatches = desc && (desc.includes(taskTitleLc) || taskTitleLc.includes(desc));
+          return isSent && (milestoneMatches || textMatches);
         });
 
-        if (taskInvoice) {
+        if (match) {
           eligibleInvoices.push({
-            invoiceNumber: taskInvoice.invoiceNumber,
+            invoiceNumber: String(match.invoiceNumber),
             taskId: task.id,
-            taskTitle: task.title,
-            taskOrder: task.order,
-            amount: taskInvoice.totalAmount,
-            milestoneNumber: taskInvoice.milestoneNumber,
-            status: taskInvoice.status
+            taskTitle: (task as any).title,
+            taskOrder,
+            amount: Number(match.totalAmount ?? 0),
+            milestoneNumber: match.milestoneNumber,
+            status: String(match.status),
           });
         }
       }
 
-      // Calculate completion-based amounts
-      let calculatedAmountPerTask = 0;
-      if (project.totalBudget && project.upfrontCommitment && project.totalTasks) {
-        const remainingBudget = project.totalBudget - project.upfrontCommitment;
-        calculatedAmountPerTask = remainingBudget / project.totalTasks;
-      }
+      // Calculate completion-based amounts (if project carries budget metadata)
+      const totalBudget = Number((project as any).totalBudget || 0);
+      const upfrontCommitment = Number((project as any).upfrontCommitment || 0);
+      const totalTasks = Number((project as any).totalTasks || safeTasks.length || 0);
+      const remainingBudget = Math.max(0, totalBudget - upfrontCommitment);
+      const calculatedAmountPerTask = totalTasks > 0 ? Math.round((remainingBudget / totalTasks) * 100) / 100 : 0;
 
       return NextResponse.json({
-        projectId: parseInt(projectId),
-        projectTitle: project.title,
+        projectId,
+        projectTitle: (project as any).title,
         invoicingMethod: project.invoicingMethod,
         paymentEligible: eligibleInvoices.length > 0,
         eligibleInvoices,
         approvedTasksCount: approvedTasks.length,
-        totalTasksCount: tasks.length,
-        calculatedAmountPerTask: Math.round(calculatedAmountPerTask * 100) / 100,
+        totalTasksCount: safeTasks.length,
+        calculatedAmountPerTask,
         projectBudget: {
-          total: project.totalBudget || 0,
-          upfrontCommitment: project.upfrontCommitment || 0,
-          remaining: (project.totalBudget || 0) - (project.upfrontCommitment || 0)
+          total: totalBudget,
+          upfrontCommitment,
+          remaining: remainingBudget,
         },
         latestEligibleInvoice: eligibleInvoices.length > 0
-          ? eligibleInvoices.sort((a, b) => (b.milestoneNumber || 0) - (a.milestoneNumber || 0))[0]
+          ? eligibleInvoices.sort((a, b) => (Number(b.milestoneNumber || 0) - Number(a.milestoneNumber || 0)))[0]
           : null,
         paymentMethodAvailable: !!project.invoicingMethod && ['completion', 'milestone'].includes(project.invoicingMethod),
-        paymentTriggerEndpoint: '/api/payments/trigger'
-      });
-
-    } else {
-      // For milestone-based projects, use simpler logic
-      const sentInvoices = projectInvoices.filter((inv: any) => inv.status === 'sent');
-      
-      return NextResponse.json({
-        projectId: parseInt(projectId),
-        projectTitle: project.title,
-        invoicingMethod: project.invoicingMethod,
-        paymentEligible: sentInvoices.length > 0,
-        eligibleInvoices: sentInvoices.map((inv: any) => ({
-          invoiceNumber: inv.invoiceNumber,
-          amount: inv.totalAmount,
-          milestoneNumber: inv.milestoneNumber,
-          status: inv.status,
-          description: inv.milestoneDescription
-        })),
-        latestEligibleInvoice: sentInvoices.length > 0
-          ? sentInvoices.sort((a: any, b: any) => (b.milestoneNumber || 0) - (a.milestoneNumber || 0))[0]
-          : null,
-        paymentMethodAvailable: !!project.invoicingMethod && ['completion', 'milestone'].includes(project.invoicingMethod),
-        paymentTriggerEndpoint: '/api/payments/trigger'
+        paymentTriggerEndpoint: '/api/payments/trigger',
       });
     }
 
+    // Milestone-based: simpler — any 'sent' invoice is eligible
+    const sentInvoices = (invoices || []).filter((inv: any) => String(inv.status) === 'sent');
+
+    return NextResponse.json({
+      projectId,
+      projectTitle: (project as any).title,
+      invoicingMethod: project.invoicingMethod,
+      paymentEligible: sentInvoices.length > 0,
+      eligibleInvoices: sentInvoices.map((inv: any) => ({
+        invoiceNumber: String(inv.invoiceNumber),
+        amount: Number(inv.totalAmount),
+        milestoneNumber: inv.milestoneNumber,
+        status: String(inv.status),
+        description: inv.milestoneDescription,
+      })),
+      latestEligibleInvoice: sentInvoices.length > 0
+        ? sentInvoices.sort((a: any, b: any) => (Number(b.milestoneNumber || 0) - Number(a.milestoneNumber || 0)))[0]
+        : null,
+      paymentMethodAvailable: !!project.invoicingMethod && ['completion', 'milestone'].includes(project.invoicingMethod),
+      paymentTriggerEndpoint: '/api/payments/trigger',
+    });
   } catch (error) {
     console.error('Error checking payment eligibility:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

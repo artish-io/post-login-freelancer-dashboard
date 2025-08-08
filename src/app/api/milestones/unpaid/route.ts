@@ -1,22 +1,18 @@
 
 
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
+import { readAllProjects } from '@/lib/projects-utils';
 
 export async function GET() {
   try {
-    // Calculate milestones from universal source files
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    // Use hierarchical storage for project tasks
+    // Calculate milestones from hierarchical storage
     const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
 
-    const [projectsFile, hierarchicalTasks] = await Promise.all([
-      readFile(projectsPath, 'utf-8'),
+    const [projects, hierarchicalTasks] = await Promise.all([
+      readAllProjects(), // ✅ Use hierarchical storage
       readAllTasks()
     ]);
 
-    const projects = JSON.parse(projectsFile);
     const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
 
     // Generate milestones dynamically from project data

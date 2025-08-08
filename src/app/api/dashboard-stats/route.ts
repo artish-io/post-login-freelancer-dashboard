@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { readAllProjects } from '@/lib/projects-utils';
 
 // Types
 interface Project {
@@ -182,12 +181,12 @@ export async function GET(request: Request) {
     
     // Load data files using hierarchical storage
     const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
 
-    const projectsData = fs.readFileSync(projectsPath, 'utf8');
-    const hierarchicalTasks = await readAllTasks();
+    const [projects, hierarchicalTasks] = await Promise.all([
+      readAllProjects(), // ✅ Use hierarchical storage
+      readAllTasks()
+    ]);
 
-    const projects: Project[] = JSON.parse(projectsData);
     const projectTasks: ProjectTasks[] = convertHierarchicalToLegacy(hierarchicalTasks);
     
     if (userId) {
@@ -215,12 +214,12 @@ export async function POST(request: Request) {
     // Stats are now calculated dynamically from universal source files
     // No need to update static files - return current stats instead
     const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
 
-    const projectsData = fs.readFileSync(projectsPath, 'utf8');
-    const hierarchicalTasks = await readAllTasks();
+    const [projects, hierarchicalTasks] = await Promise.all([
+      readAllProjects(), // ✅ Use hierarchical storage
+      readAllTasks()
+    ]);
 
-    const projects: Project[] = JSON.parse(projectsData);
     const projectTasks: ProjectTasks[] = convertHierarchicalToLegacy(hierarchicalTasks);
 
     // Calculate stats for all users dynamically

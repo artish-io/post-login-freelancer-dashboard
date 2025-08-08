@@ -67,30 +67,18 @@ export default function NotificationsList({
       )
     );
 
-    // Mark as read on server
+    // Mark as read on server using the unified v2 endpoint
     if (wasUnread) {
       try {
-        if (userType === 'commissioner') {
-          await fetch('/api/notifications', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              notificationId: notification.id,
-              commissionerId: commissionerId
-            })
-          });
-        } else {
-          // For freelancers, use the notifications-v2 endpoint
-          await fetch('/api/notifications-v2', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              notificationId: notification.id,
-              userId: commissionerId,
-              userType: userType
-            })
-          });
-        }
+        await fetch('/api/notifications-v2', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            notificationId: notification.id,
+            userId: commissionerId,
+            userType: userType
+          })
+        });
       } catch (error) {
         console.error('Failed to mark notification as read:', error);
       }

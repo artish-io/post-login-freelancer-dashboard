@@ -1,162 +1,255 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
-import path from 'path';
-import fs from 'fs/promises';
-import { getInvoiceByNumber, updateInvoice } from '@/lib/invoice-storage';
-import { processMockPayment } from '../utils/test-gateway';
+import { getInvoiceByNumber, updateInvoice } from '@/app/api/payments/repos/invoices-repo';
+import { listByInvoiceNumber, appendTransaction, updateTransaction } from '@/app/api/payments/repos/transactions-repo';
+import { processMockPayment } from '../utils/gateways/test-gateway';
+import { getWallet, upsertWallet } from '@/app/api/payments/repos/wallets-repo';
+import { PaymentsService } from '@/app/api/payments/services/payments-service';
+import { ok, err, RefreshHints, ErrorCodes, withErrorHandling } from '@/lib/http/envelope';
+import { logInvoiceTransition, logWalletChange, Subsystems } from '@/lib/log/transitions';
+import { emit as emitBus } from '@/lib/events/bus';
+import { requireSession, assert, assertOwnership } from '@/lib/auth/session-guard';
+import { zExecuteBody } from '@/lib/validation/z';
+import { withRateLimit, RateLimiters } from '@/lib/security/rate-limiter';
+import { withRequestValidation, VALIDATION_CONFIGS } from '@/lib/security/request-validator';
+import { sanitizeApiInput } from '@/lib/security/input-sanitizer';
+import type { InvoiceLike } from '@/app/api/payments/domain/types';
 
-const MOCK_PAYMENTS_PATH = path.join(process.cwd(), 'data', 'payments', 'mock-transactions.json');
 
-// Payment gateway environment flags
+
+// Gateway flags (future real integrations)
 const useStripe = process.env.PAYMENT_GATEWAY_STRIPE === 'true';
 const usePaystack = process.env.PAYMENT_GATEWAY_PAYSTACK === 'true';
 const usePayPal = process.env.PAYMENT_GATEWAY_PAYPAL === 'true';
 
-export async function POST(req: Request) {
+async function handleExecutePayment(req: Request) {
   try {
-    // 🔒 SECURITY: Verify session authentication
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // 🔒 Auth - get session and validate
+    const { userId: actorId } = await requireSession(req);
 
-    const { invoiceNumber, commissionerId } = await req.json();
-    const sessionUserId = parseInt(session.user.id);
+    // 🔒 Parse, sanitize, and validate request body
+    const rawBody = await req.json();
+    const sanitizedBody = sanitizeApiInput(rawBody);
+    const body = zExecuteBody.parse(sanitizedBody) as { invoiceNumber: string };
+    const { invoiceNumber } = body;
 
-    // Validate required parameters
-    if (!invoiceNumber || !commissionerId) {
-      return NextResponse.json({ error: 'Missing invoiceNumber or commissionerId' }, { status: 400 });
-    }
+    // Load invoice first to validate ownership
+    const invRaw = await getInvoiceByNumber(invoiceNumber);
+    assert(invRaw, ErrorCodes.INVOICE_NOT_FOUND, 404, 'Invoice not found');
 
-    // 🔒 SECURITY: Verify only the commissioner can execute payment for their own invoices
-    if (commissionerId !== sessionUserId) {
-      return NextResponse.json({
-        error: 'Unauthorized: You can only execute payments for your own invoices'
-      }, { status: 403 });
-    }
+    // 🔒 Ensure invoice belongs to the session user (commissioner)
+    assertOwnership(actorId, invRaw!.commissionerId, 'invoice');
 
-    // Get invoice using hierarchical storage
-    const invoice = await getInvoiceByNumber(invoiceNumber);
-    if (!invoice) {
-      return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
-    }
+    // Status guards - only allow processing → paid transition
+    assert(invRaw!.status !== 'paid', ErrorCodes.PAYMENT_ALREADY_PROCESSED, 409, 'Invoice already paid');
 
-    // Validate commissioner authorization
-    if (invoice.commissionerId !== commissionerId) {
-      return NextResponse.json({ error: 'Unauthorized commissioner' }, { status: 403 });
-    }
+    // Shape to domain DTO
+    const invoice: InvoiceLike = {
+      invoiceNumber: String(invRaw!.invoiceNumber),
+      projectId: Number(invRaw!.projectId ?? 0),
+      freelancerId: Number(invRaw!.freelancerId),
+      commissionerId: Number(invRaw!.commissionerId),
+      totalAmount: Number(invRaw!.totalAmount),
+      currency: (invRaw as any)?.currency || 'USD',
+      status: invRaw!.status,
+      method: (invRaw as any)?.method || 'milestone',
+      milestoneNumber: (invRaw as any)?.milestoneNumber,
+      issueDate: (invRaw as any)?.issueDate,
+      dueDate: (invRaw as any)?.dueDate,
+      paidDate: (invRaw as any)?.paidDate,
+    };
 
-    // Check if invoice is already paid
-    if (invoice.status === 'paid') {
-      return NextResponse.json({ error: 'Invoice already paid' }, { status: 409 });
-    }
+    // ✅ Service-layer rule: execute requires 'processing' by default
+    const canExec = PaymentsService.canExecutePayment(invoice, actorId);
+    assert(canExec.ok, ErrorCodes.INVALID_STATUS_TRANSITION, 400, !canExec.ok ? (canExec as any).reason : 'Cannot execute payment');
 
-    // For mock implementation, we'll accept "sent" status invoices directly
-    // In production, this would check for "processing" status from the trigger endpoint
-    if (invoice.status !== 'sent') {
-      return NextResponse.json({
-        error: 'Invoice must be in "sent" status for payment execution'
-      }, { status: 400 });
-    }
-
-    // Payment gateway execution placeholder
-    let executionResult = null;
+    // Gateway placeholders (real integrations later)
     let paymentRecord: any = null;
-
     if (useStripe) {
-      // TODO: Replace with Stripe payment execution once live
-      // executionResult = await executeStripePayment(invoice);
-      console.log('Stripe payment execution placeholder - would finalize payment here');
-      executionResult = { success: true, mockPayment: false };
+      console.log('[payments.execute] Stripe placeholder');
       paymentRecord = { transactionId: `TXN-${invoice.invoiceNumber}` };
     } else if (usePaystack) {
-      // TODO: Replace with Paystack payment execution when API keys are available
-      // executionResult = await executePaystackPayment(invoice);
-      console.log('Paystack payment execution placeholder - would finalize payment here');
-      executionResult = { success: true, mockPayment: false };
+      console.log('[payments.execute] Paystack placeholder');
       paymentRecord = { transactionId: `TXN-${invoice.invoiceNumber}` };
     } else if (usePayPal) {
-      // TODO: Replace with PayPal payment execution if selected
-      // executionResult = await executePayPalPayment(invoice);
-      console.log('PayPal payment execution placeholder - would finalize payment here');
-      executionResult = { success: true, mockPayment: false };
+      console.log('[payments.execute] PayPal placeholder');
       paymentRecord = { transactionId: `TXN-${invoice.invoiceNumber}` };
     } else {
-      // Fallback: mock payment execution
-      console.log('Using mock payment execution');
+      console.log('[payments.execute] Using mock gateway');
       paymentRecord = await processMockPayment({
         invoiceNumber: invoice.invoiceNumber,
-        projectId: invoice.projectId ? Number(invoice.projectId) : 0,
+        projectId: Number(invoice.projectId ?? 0),
         freelancerId: Number(invoice.freelancerId),
-        commissionerId: Number(commissionerId),
-        totalAmount: invoice.totalAmount
+        commissionerId: Number(invoice.commissionerId),
+        totalAmount: Number(invoice.totalAmount)
       }, 'execute');
-      executionResult = paymentRecord;
     }
 
-    // Update invoice status to paid using hierarchical storage
+    // Update invoice → paid
     const paidDate = new Date().toISOString();
-    const updateSuccess = await updateInvoice(invoiceNumber, {
+    const invoiceUpdated = await updateInvoice(invoiceNumber, {
       status: 'paid',
       paidDate,
       updatedAt: paidDate
     });
+    assert(invoiceUpdated, ErrorCodes.INTERNAL_ERROR, 500, 'Failed to update invoice status');
 
-    if (!updateSuccess) {
-      return NextResponse.json({ error: 'Failed to update invoice status' }, { status: 500 });
-    }
-
-    // Update or create mock transaction record
-    let payments = [];
-    try {
-      const paymentsRaw = await fs.readFile(MOCK_PAYMENTS_PATH, 'utf-8');
-      payments = JSON.parse(paymentsRaw);
-    } catch {
-      // File missing or unreadable, start with empty array
-      payments = [];
-    }
-
-    const timestamp = new Date().toISOString();
+    // Update transaction log
+    const existingTxs = await listByInvoiceNumber(invoiceNumber);
+    const latestTx = existingTxs[existingTxs.length - 1];
     const integrationMethod = useStripe ? 'stripe' : usePaystack ? 'paystack' : usePayPal ? 'paypal' : 'mock';
+    const timestamp = new Date().toISOString();
 
-    // Find existing transaction record
-    const txnIndex = payments.findIndex((p: any) => p.invoiceNumber === invoiceNumber);
-    if (txnIndex !== -1) {
-      // Update existing transaction
-      payments[txnIndex].status = 'paid';
-      payments[txnIndex].timestamp = timestamp;
-      payments[txnIndex].executionResult = executionResult;
+    if (latestTx && latestTx.transactionId) {
+      await updateTransaction(latestTx.transactionId, {
+        status: 'paid',
+        timestamp,
+        currency: invoice.currency,
+        metadata: {
+          ...(latestTx.metadata || {}),
+          executedBy: actorId,
+        }
+      });
     } else {
-      // Create new transaction record if it doesn't exist
-      payments.push({
-        transactionId: paymentRecord.transactionId,
-        invoiceNumber,
+      // No prior tx found — append a new paid record
+      const fallbackTx = PaymentsService.buildTransaction({
+        invoiceNumber: invoice.invoiceNumber,
         projectId: invoice.projectId,
         freelancerId: invoice.freelancerId,
-        commissionerId,
-        amount: invoice.totalAmount,
-        status: 'paid',
-        integration: integrationMethod,
-        timestamp,
-        executionResult
-      });
+        commissionerId: invoice.commissionerId,
+        totalAmount: invoice.totalAmount,
+      }, 'execute', integrationMethod as any);
+
+      // Add currency to transaction
+      (fallbackTx as any).currency = invoice.currency;
+      await appendTransaction(fallbackTx as any);
     }
 
-    // Save updated transaction log
-    await fs.writeFile(MOCK_PAYMENTS_PATH, JSON.stringify(payments, null, 2));
+    // Credit freelancer wallet with the paid amount (multi-currency)
+    const amountPaid = Number(invoice.totalAmount);
+    const freelancerIdNum = Number(invoice.freelancerId);
+    const currency = String(invoice.currency || 'USD');
+    const nowISO = new Date().toISOString();
 
-    return NextResponse.json({
-      message: 'Payment executed successfully',
-      status: 'paid',
-      invoiceNumber,
-      transactionId: paymentRecord.transactionId,
-      amount: invoice.totalAmount,
-      paidDate,
-      integration: integrationMethod
-    });
+    let wallet = await getWallet(freelancerIdNum, 'freelancer', currency);
+    const previousBalance = wallet?.availableBalance || 0;
+
+    if (!wallet) {
+      wallet = {
+        userId: freelancerIdNum,
+        userType: 'freelancer',
+        currency,
+        availableBalance: 0,
+        pendingWithdrawals: 0,
+        totalWithdrawn: 0,
+        lifetimeEarnings: 0,
+        holds: 0,
+        updatedAt: nowISO,
+      };
+    }
+
+    wallet.availableBalance = Number(wallet.availableBalance) + amountPaid;
+    wallet.lifetimeEarnings = Number(wallet.lifetimeEarnings) + amountPaid;
+    wallet.updatedAt = nowISO;
+
+    await upsertWallet(wallet);
+
+    // Log transitions for observability
+    logInvoiceTransition(
+      invoice.invoiceNumber,
+      invRaw!.status,
+      'paid',
+      actorId,
+      Subsystems.PAYMENTS_EXECUTE,
+      {
+        projectId: invoice.projectId,
+        amount: invoice.totalAmount,
+        currency: invoice.currency,
+        integration: integrationMethod,
+        transactionId: paymentRecord.transactionId,
+      }
+    );
+
+    logWalletChange(
+      freelancerIdNum,
+      'freelancer',
+      'credit',
+      amountPaid,
+      currency,
+      actorId,
+      Subsystems.WALLETS_UPDATE,
+      {
+        reason: 'invoice_payment',
+        transactionId: paymentRecord.transactionId,
+        invoiceNumber: invoice.invoiceNumber,
+        previousBalance,
+        newBalance: wallet.availableBalance,
+      }
+    );
+
+    // 🔔 Emit event for notifications/UI refresh hooks
+    try {
+      await emitBus('invoice.paid', {
+        actorId: actorId,
+        targetId: Number(invoice.freelancerId),
+        projectId: Number(invoice.projectId),
+        invoiceNumber: invoice.invoiceNumber,
+        amount: invoice.totalAmount,
+        projectTitle: undefined, // Could be fetched if needed
+      });
+    } catch (e) {
+      console.warn('[payments.execute] bus emit failed:', e);
+    }
+
+    return NextResponse.json(
+      ok({
+        entities: {
+          invoice: {
+            invoiceNumber,
+            status: 'paid',
+            amount: invoice.totalAmount,
+            currency: invoice.currency,
+            paidDate,
+          },
+          transaction: {
+            transactionId: paymentRecord.transactionId,
+            integration: integrationMethod,
+            status: 'paid',
+            amount: invoice.totalAmount,
+            currency: invoice.currency,
+          },
+          wallet: {
+            availableBalance: wallet.availableBalance,
+            pendingWithdrawals: wallet.pendingWithdrawals,
+            totalWithdrawn: wallet.totalWithdrawn,
+            lifetimeEarnings: wallet.lifetimeEarnings,
+            currency: wallet.currency,
+          },
+        },
+        refreshHints: [
+          RefreshHints.WALLET_SUMMARY,
+          RefreshHints.INVOICES_LIST,
+          RefreshHints.TRANSACTIONS_LIST,
+          RefreshHints.PROJECTS_OVERVIEW,
+          RefreshHints.DASHBOARD,
+        ],
+        notificationsQueued: true,
+        message: 'Payment executed successfully',
+      })
+    );
   } catch (error) {
     console.error('[PAYMENT_EXECUTE_ERROR]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      err(ErrorCodes.INTERNAL_ERROR, 'Internal server error', 500),
+      { status: 500 }
+    );
   }
 }
+
+// Wrap the handler with security middleware
+export const POST = withRateLimit(
+  RateLimiters.payments,
+  withRequestValidation(
+    VALIDATION_CONFIGS.payments,
+    withErrorHandling(handleExecutePayment)
+  )
+);

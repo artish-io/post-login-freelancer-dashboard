@@ -20,7 +20,7 @@ We've implemented a comprehensive safeguard system with multiple layers of prote
 
 **Fixed APIs (now use hierarchical storage):**
 - ✅ `src/app/api/notifications-v2/route.ts`
-- ✅ `src/app/api/notifications/route.ts`
+- 🗑️ `src/app/api/notifications/route.ts` - REMOVED (deprecated legacy endpoint)
 - ✅ `src/app/api/dashboard/projects-summary/route.ts`
 - ✅ `src/app/api/dashboard/stats/route.ts`
 - ✅ `src/app/api/dashboard/tasks-summary/route.ts`

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readAllProjects } from '@/lib/projects-utils';
+import { readAllProjects } from '@/app/api/payments/repos/projects-repo';
 
 export async function GET() {
   try {

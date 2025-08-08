@@ -6,6 +6,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
+// Rate limiting for invoice number generation
+const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
+const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
+const RATE_LIMIT_MAX_REQUESTS = 10; // Max 10 invoice numbers per minute per user
+
 const INVOICES_PATH = path.join(process.cwd(), 'data', 'invoices.json');
 const AUDIT_LOG_PATH = path.join(process.cwd(), 'data', 'logs', 'invoice-audit.json');
 
@@ -41,8 +46,14 @@ async function generateUniqueInvoiceNumber(freelancerName: string): Promise<stri
 
 /**
  * Write audit trail for traceability.
+ * Only logs meaningful status changes, not preview generations.
  */
 async function logInvoiceAudit(invoiceNumber: string, status: string) {
+  // Don't log preview status to reduce audit spam
+  if (status === 'preview') {
+    return;
+  }
+
   const auditPathExists = await readFile(AUDIT_LOG_PATH).catch(() => null);
   const auditTrail = auditPathExists ? JSON.parse(auditPathExists.toString()) : [];
 
@@ -57,6 +68,27 @@ async function logInvoiceAudit(invoiceNumber: string, status: string) {
 }
 
 /**
+ * Check rate limit for user
+ */
+function checkRateLimit(userId: string): boolean {
+  const now = Date.now();
+  const userLimit = rateLimitMap.get(userId);
+
+  if (!userLimit || now > userLimit.resetTime) {
+    // Reset or initialize rate limit
+    rateLimitMap.set(userId, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+    return true;
+  }
+
+  if (userLimit.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return false;
+  }
+
+  userLimit.count++;
+  return true;
+}
+
+/**
  * API handler for generating invoice number.
  */
 export async function GET(request: Request) {
@@ -65,10 +97,25 @@ export async function GET(request: Request) {
 
   try {
     const session = await getServerSession(authOptions);
-    const name = session?.user?.name || 'Generic User';
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = session.user.id;
+    const name = session.user.name || 'Generic User';
+
+    // Check rate limit
+    if (!checkRateLimit(userId)) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Please wait before generating more invoice numbers.' },
+        { status: 429 }
+      );
+    }
 
     const invoiceNumber = await generateUniqueInvoiceNumber(name);
     await logInvoiceAudit(invoiceNumber, status);
+
+    console.log(`📄 Generated invoice number ${invoiceNumber} for user ${userId} (status: ${status})`);
 
     return NextResponse.json({ invoiceNumber, status });
   } catch (error) {

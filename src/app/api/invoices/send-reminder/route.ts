@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { NotificationStorage } from '@/lib/notifications/notification-storage';
+import { ok, err, RefreshHints, ErrorCodes } from '@/lib/http/envelope';
 
 const INVOICES_PATH = path.join(process.cwd(), 'data', 'invoices.json');
 const COMMISSIONER_NOTIFICATIONS_PATH = path.join(process.cwd(), 'data', 'notifications', 'commissioners.json');
@@ -118,41 +120,64 @@ export async function POST(request: NextRequest) {
       commissionerNotifications.push(commissionerEntry);
     }
 
-    // Create notification for commissioner
-    const notification = {
+    // Create notification event using the event system
+    const notificationEvent = {
       id: `invoice-reminder-${invoiceNumber}-${Date.now()}`,
-      type: isOverdue ? 'invoice_overdue_reminder' : 'invoice_reminder',
-      title: `${freelancerName} sent you a payment reminder`,
-      message: notificationText,
       timestamp: now.toISOString(),
-      isRead: false,
-      userId: freelancerId,
-      invoice: {
-        number: invoiceNumber,
-        amount: invoice.totalAmount,
-        dueDate: invoice.dueDate
+      type: isOverdue ? 'invoice_overdue_reminder' : 'invoice_reminder',
+      notificationType: isOverdue ? 25 : 24, // Using appropriate notification type numbers
+      actorId: Number(freelancerId),
+      targetId: Number(invoice.commissionerId),
+      entityType: 2, // INVOICE entity type
+      entityId: String(invoiceNumber),
+      metadata: {
+        freelancerName,
+        invoiceAmount: invoice.totalAmount,
+        dueDate: invoice.dueDate,
+        reminderText: notificationText,
+        isOverdue
       },
-      isFromNetwork: true
+      context: {
+        invoiceNumber,
+        projectId: invoice.projectId
+      }
     };
 
-    commissionerEntry.notifications.unshift(notification); // Add to beginning
+    // Add event to notification storage
+    NotificationStorage.addEvent(notificationEvent);
 
-    // Save updated data
-    await Promise.all([
-      fs.promises.writeFile(INVOICES_PATH, JSON.stringify(invoices, null, 2)),
-      fs.promises.writeFile(COMMISSIONER_NOTIFICATIONS_PATH, JSON.stringify(commissionerNotifications, null, 2))
-    ]);
+    // Save updated invoice data
+    await fs.promises.writeFile(INVOICES_PATH, JSON.stringify(invoices, null, 2));
 
-    return NextResponse.json({
-      success: true,
-      message: 'Reminder sent successfully',
-      reminderCount: invoice.reminders.length,
-      isOverdue: isOverdue,
-      nextReminderAllowedAt: new Date(now.getTime() + (invoice.reminders.length < 2 ? 48 : 72) * 60 * 60 * 1000).toISOString()
-    });
+    return NextResponse.json(
+      ok({
+        entities: {
+          invoice: {
+            invoiceNumber,
+            reminderCount: invoice.reminders.length,
+            isOverdue,
+            nextReminderAllowedAt: new Date(now.getTime() + (invoice.reminders.length < 2 ? 48 : 72) * 60 * 60 * 1000).toISOString(),
+          },
+        },
+        refreshHints: [
+          RefreshHints.INVOICES_LIST,
+          RefreshHints.INVOICE_DETAIL,
+          RefreshHints.NOTIFICATIONS,
+        ],
+        notificationsQueued: true,
+        message: 'Reminder sent successfully',
+      })
+    );
 
   } catch (error) {
     console.error('Error sending invoice reminder:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      err({
+        code: ErrorCodes.INTERNAL_ERROR,
+        message: 'Internal server error',
+        status: 500,
+      }),
+      { status: 500 }
+    );
   }
 }

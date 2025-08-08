@@ -141,8 +141,10 @@ export default function ProjectSummaryTable({
             fetch('/api/organizations')
           ]);
 
-          if (projectTasksRes.ok && projectsRes.ok && userRes.ok && orgRes.ok) {
-            const projectTasksData = await projectTasksRes.json();
+          // Proceed if we have at least projects, users, and organizations data
+          // project-tasks is optional for basic project display
+          if (projectsRes.ok && userRes.ok && orgRes.ok) {
+            const projectTasksData = projectTasksRes.ok ? await projectTasksRes.json() : [];
             const projectsData = await projectsRes.json();
             const users = await userRes.json();
             await orgRes.json(); // Organizations data loaded but not used in commissioner view
@@ -254,8 +256,10 @@ export default function ProjectSummaryTable({
             fetch('/api/organizations')
           ]);
 
-          if (projectTasksRes.ok && projectsRes.ok && userRes.ok && orgRes.ok) {
-            const projectTasksData = await projectTasksRes.json();
+          // Proceed if we have at least projects, users, and organizations data
+          // project-tasks is optional for basic project display
+          if (projectsRes.ok && userRes.ok && orgRes.ok) {
+            const projectTasksData = projectTasksRes.ok ? await projectTasksRes.json() : [];
             const projectsData = await projectsRes.json();
             const users = await userRes.json();
             const organizations = await orgRes.json();
@@ -269,8 +273,11 @@ export default function ProjectSummaryTable({
               freelancerProjectIds.includes(pt.projectId)
             );
 
-            // Transform project-tasks data
-            const transformedProjects = freelancerProjectTasks.map((project: any) => {
+            let transformedProjects;
+
+            if (freelancerProjectTasks.length > 0) {
+              // Transform project-tasks data when available
+              transformedProjects = freelancerProjectTasks.map((project: any) => {
               const tasks = project.tasks || [];
               // Progress should be based on approved tasks, not just completed/submitted tasks
               const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
@@ -304,7 +311,29 @@ export default function ProjectSummaryTable({
                 progress,
                 totalTasks
               };
-            });
+              });
+            } else {
+              // Fallback: use projects.json data when project-tasks API fails
+              transformedProjects = freelancerProjects.map((project: any) => {
+                // Use project status from projects.json
+                const projectStatus = project.status?.toLowerCase() || 'ongoing';
+
+                return {
+                  projectId: project.projectId,
+                  name: project.title,
+                  person: 'Unknown', // No commissioner info without organizations
+                  dueDate: project.dueDate ? new Date(project.dueDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  }) : 'No due date',
+                  dueDateRaw: project.dueDate,
+                  status: projectStatus,
+                  progress: 0, // No task data available
+                  totalTasks: 0
+                };
+              });
+            }
 
             // Filter out completed projects - only show ongoing, paused, and delayed
             const activeProjects = transformedProjects.filter((project: any) =>

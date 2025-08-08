@@ -3,38 +3,35 @@ import { NotificationStorage } from '../../../../lib/notifications/notification-
 
 /**
  * Migration API Endpoint
- * 
- * This endpoint migrates notifications from the legacy single file
- * (data/notifications/notifications-log.json) to the new partitioned
- * storage system for better scalability.
- * 
+ *
+ * @deprecated Legacy migration is no longer needed as all legacy files have been removed.
+ * The system now uses the new granular event storage exclusively.
+ *
  * Usage: POST /api/notifications/migrate
  */
 export async function POST() {
   try {
-    console.log('🔄 Starting notification migration...');
-    
-    // Perform the migration
-    NotificationStorage.migrateLegacyFile();
-    
-    // Get storage statistics after migration
+    console.log('⚠️  Migration endpoint called but no longer needed');
+
+    // Get storage statistics
     const stats = NotificationStorage.getStorageStats();
-    
-    console.log('✅ Migration completed successfully');
+
+    console.log('✅ System is already using granular storage');
     console.log('📊 Storage stats:', stats);
-    
+
     return NextResponse.json({
       success: true,
-      message: 'Notifications migrated successfully to partitioned storage',
-      stats: stats
+      message: 'Migration not needed - system already using granular storage',
+      stats: stats,
+      note: 'Legacy files have been removed. System is fully migrated.'
     });
-    
+
   } catch (error) {
-    console.error('❌ Migration failed:', error);
-    
+    console.error('Error getting storage stats:', error);
+
     return NextResponse.json({
       success: false,
-      error: 'Migration failed',
+      error: 'Failed to get storage statistics',
       details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }

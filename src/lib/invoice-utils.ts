@@ -2,7 +2,7 @@
 import { readFile } from 'fs/promises';
 import path from 'path';
 import { getAllInvoices, getInvoiceByNumber, saveInvoice, type Invoice } from './invoice-storage';
-import { readAllTasks, convertHierarchicalToLegacy } from './project-tasks/hierarchical-storage';
+import { readAllTasks } from '@/app/api/payments/repos/tasks-repo';
 
 const usersPath = path.join(process.cwd(), 'data', 'users.json');
 const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
@@ -35,13 +35,11 @@ export async function findProjectById(projectId: number) {
 
 // ✅ Get tasks by project ID
 export async function getTasksByProjectId(projectId: number) {
-  // Read all tasks from hierarchical storage
-  const hierarchicalTasks = await readAllTasks();
+  // Read all tasks from tasks repo
+  const allTasks = await readAllTasks();
 
-  // Convert back to legacy format for backward compatibility
-  const taskData = convertHierarchicalToLegacy(hierarchicalTasks);
-  const entry = taskData.find((p: any) => p.projectId === projectId);
-  return entry ? entry.tasks : [];
+  // Filter tasks by project ID
+  return allTasks.filter((task: any) => task.projectId === projectId);
 }
 
 // ✅ Get invoice by ID

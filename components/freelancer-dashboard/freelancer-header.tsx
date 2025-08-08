@@ -7,6 +7,10 @@ import { requireFreelancerSession } from '../../src/lib/freelancer-access-contro
 
 export default function FreelancerHeader() {
   const { data: session } = useSession();
+  const [status, setStatus] = useState<'Available' | 'Away' | 'Busy'>('Available');
+  const [name, setName] = useState('...');
+  const [avatar, setAvatar] = useState('/default-avatar.png');
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   // Ensure user is a freelancer before rendering
   const freelancerSession = requireFreelancerSession(session?.user as any);
@@ -19,11 +23,6 @@ export default function FreelancerHeader() {
       </div>
     );
   }
-
-  const [status, setStatus] = useState<'Available' | 'Away' | 'Busy'>('Available');
-  const [name, setName] = useState('...');
-  const [avatar, setAvatar] = useState('/default-avatar.png');
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     if (!session?.user?.id) return;

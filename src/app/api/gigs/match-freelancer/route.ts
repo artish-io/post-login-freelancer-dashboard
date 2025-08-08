@@ -1,26 +1,27 @@
 import { NextResponse } from 'next/server';
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
-import { readAllTasks, convertHierarchicalToLegacy, writeTask, convertLegacyToHierarchical } from '@/lib/project-tasks/hierarchical-storage';
-import { readAllProjects, saveProject, deleteProject } from '@/lib/projects-utils';
 import { readGig, updateGig } from '@/lib/gigs/hierarchical-storage';
 import { eventLogger, NOTIFICATION_TYPES, ENTITY_TYPES } from '@/lib/events/event-logger';
+import { ProjectService } from '@/app/api/projects/services/project-service';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
+import { UnifiedTaskService } from '@/lib/services/unified-task-service';
+import { requireSession, assert, assertOwnership } from '@/lib/auth/session-guard';
+import { ok, err, ErrorCodes, withErrorHandling } from '@/lib/http/envelope';
+import { logProjectTransition, Subsystems } from '@/lib/log/transitions';
 
 // Using hierarchical storage for gigs and project tasks
 const APPLICATIONS_PATH = path.join(process.cwd(), 'data/gigs/gig-applications.json');
 const ORGANIZATIONS_PATH = path.join(process.cwd(), 'data/organizations.json');
 const USERS_PATH = path.join(process.cwd(), 'data/users.json');
 
-export async function POST(req: Request) {
+async function handleGigMatching(req: Request) {
   try {
-    const { applicationId, gigId, freelancerId } = await req.json();
+    // 🔒 Auth - get session and validate (commissioner only can match freelancers)
+    const { userId: actorId } = await requireSession(req);
 
-    if (!applicationId || !gigId || !freelancerId) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
+    const { applicationId, gigId, freelancerId } = await req.json();
+    assert(applicationId && gigId && freelancerId, ErrorCodes.MISSING_REQUIRED_FIELD, 400, 'Missing required fields: applicationId, gigId, freelancerId');
 
     // Read all necessary data files
     const [applicationsData, organizationsData, usersData] = await Promise.all([
@@ -29,231 +30,160 @@ export async function POST(req: Request) {
       readFile(USERS_PATH, 'utf-8').then(data => JSON.parse(data))
     ]);
 
-    // Read projects from hierarchical structure
-    const projectsData = await readAllProjects();
-
-    // Read project tasks from hierarchical storage
-    const hierarchicalTasks = await readAllTasks();
-    const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
-
     // Find the gig and application
     const gig = await readGig(gigId);
     const application = applicationsData.find((a: any) => a.id === applicationId);
 
-    if (!gig || !application) {
-      return NextResponse.json(
-        { error: 'Gig or application not found' },
-        { status: 404 }
-      );
-    }
+    assert(gig, ErrorCodes.NOT_FOUND, 404, 'Gig not found');
+    assert(application, ErrorCodes.NOT_FOUND, 404, 'Application not found');
 
-    // Validation guards
-    if (!gig.title || !gig.description) {
-      return NextResponse.json(
-        { error: 'Gig missing required fields (title, description)' },
-        { status: 400 }
-      );
-    }
+    // 🔒 Ensure session user is the commissioner who owns this gig
+    const organization = organizationsData.find((org: any) => org.id === gig!.organizationId);
+    assert(organization, ErrorCodes.NOT_FOUND, 404, 'Organization not found');
+    assertOwnership(actorId, organization.contactPersonId, 'gig');
 
-    if (gig.status === 'Unavailable') {
-      return NextResponse.json(
-        { error: 'Gig is no longer available' },
-        { status: 409 }
-      );
-    }
-
-    // Find organization for the gig
-    const organization = organizationsData.find((org: any) => org.id === gig.organizationId);
-    if (!organization) {
-      return NextResponse.json(
-        { error: 'Organization not found' },
-        { status: 404 }
-      );
-    }
+    // Additional validation guards
+    assert(gig!.title && gig!.description, ErrorCodes.INVALID_INPUT, 400, 'Gig missing required fields (title, description)');
+    assert(gig!.status === 'Available', ErrorCodes.OPERATION_NOT_ALLOWED, 409, 'Gig is no longer available');
 
     // Find contact person (manager) for the organization
     const manager = usersData.find((user: any) => user.id === organization.contactPersonId);
-    if (!manager) {
-      return NextResponse.json(
-        { error: 'Manager not found' },
-        { status: 404 }
-      );
+    assert(manager, ErrorCodes.NOT_FOUND, 404, 'Manager not found');
+
+    // 🔒 Use ProjectService for secure gig acceptance
+    let acceptResult;
+    try {
+      acceptResult = ProjectService.acceptGig({
+        gig: gig! as any,
+        freelancerId: Number(freelancerId),
+        commissionerId: actorId,
+      });
+    } catch (serviceError: any) {
+      throw Object.assign(new Error(serviceError.message || 'Cannot accept gig'), {
+        code: ErrorCodes.OPERATION_NOT_ALLOWED,
+        status: 400
+      });
     }
 
-    // Update gig status to unavailable
-    await updateGig(gigId, { status: 'Unavailable' });
+    // Update gig status using the service result
+    await updateGig(gigId, acceptResult.gigUpdate);
 
     // Update application status to accepted
-    const updatedApplications = applicationsData.map((a: any) => 
+    const updatedApplications = applicationsData.map((a: any) =>
       a.id === applicationId ? { ...a, status: 'accepted' } : a
     );
 
-    // Generate new project ID
-    const maxProjectId = Math.max(...projectsData.map((p: any) => p.projectId), 0);
-    const newProjectId = maxProjectId + 1;
-
-    // Determine task count based on gig milestones
-    const milestoneCount = gig.milestones && Array.isArray(gig.milestones) ? gig.milestones.length : 1;
-
-    // Create new project
-    const newProject = {
-      projectId: newProjectId,
-      title: gig.title,
-      description: gig.description,
-      organizationId: gig.organizationId,
-      typeTags: gig.tags,
-      manager: {
-        name: manager.name,
-        title: manager.title,
-        avatar: manager.avatar,
-        email: manager.email
-      },
-      commissionerId: organization.contactPersonId, // Add commissionerId for dashboard filtering
-      freelancerId: freelancerId,
+    // Save project using unified storage
+    await UnifiedStorageService.saveProject({
+      ...acceptResult.project,
       status: 'ongoing',
-      dueDate: gig.endDate || new Date(Date.now() + gig.deliveryTimeWeeks * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      totalTasks: milestoneCount,
-      invoicingMethod: gig.executionMethod || 'completion', // CRITICAL: Pass invoicing method from gig
-      budget: {
-        lower: gig.lowerBudget || 0,
-        upper: gig.upperBudget || 0,
-        currency: 'USD'
-      },
-      gigId: gigId, // Link to original gig
-      createdAt: new Date().toISOString()
-    };
+      invoicingMethod: acceptResult.project.invoicingMethod || 'completion',
+      createdAt: acceptResult.project.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
 
-    // Generate tasks from gig milestones or create default task
-    let tasksToCreate = [];
-
-    if (gig.milestones && Array.isArray(gig.milestones) && gig.milestones.length > 0) {
-      // Create tasks from milestones
-      const maxTaskId = Math.max(...projectTasksData.flatMap((p: any) => p.tasks?.map((t: any) => t.id) || []), 0);
-
-      tasksToCreate = gig.milestones.map((milestone: any, index: number) => ({
-        taskId: maxTaskId + index + 1,
-        projectId: newProjectId,
-        projectTitle: gig.title,
-        organizationId: gig.organizationId,
-        projectTypeTags: gig.tags,
-        title: milestone.title,
+    // Save tasks using unified storage with proper project creation date
+    for (const task of acceptResult.tasks) {
+      await UnifiedStorageService.saveTask({
+        taskId: task.id,
+        projectId: task.projectId,
+        projectTitle: acceptResult.project.title,
+        organizationId: acceptResult.project.organizationId || 0,
+        projectTypeTags: acceptResult.project.tags || [],
+        title: task.title,
+        description: task.description || '',
         status: 'Ongoing',
         completed: false,
-        order: index + 1,
+        order: task.order || 1,
         link: '',
-        dueDate: milestone.endDate || new Date(Date.now() + (index + 1) * 7 * 24 * 60 * 60 * 1000).toISOString(),
+        dueDate: task.dueDate,
         rejected: false,
         feedbackCount: 0,
         pushedBack: false,
         version: 1,
-        description: milestone.description || `Work on ${milestone.title}`,
-        createdDate: new Date().toISOString(),
+        createdDate: acceptResult.project.createdAt || new Date().toISOString(),
         lastModified: new Date().toISOString()
-      }));
-    } else {
-      // Create default task if no milestones
-      const maxTaskId = Math.max(...projectTasksData.flatMap((p: any) => p.tasks?.map((t: any) => t.id) || []), 0);
-
-      tasksToCreate = [{
-        taskId: maxTaskId + 1,
-        projectId: newProjectId,
-        projectTitle: gig.title,
-        organizationId: gig.organizationId,
-        projectTypeTags: gig.tags,
-        title: `Initial setup for ${gig.title}`,
-        status: 'Ongoing',
-        completed: false,
-        order: 1,
-        link: '',
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        rejected: false,
-        feedbackCount: 0,
-        pushedBack: false,
-        version: 1,
-        description: `Begin work on ${gig.title} project`,
-        createdDate: new Date().toISOString(),
-        lastModified: new Date().toISOString()
-      }];
+      });
     }
 
-    // Save new project to hierarchical structure
-    await saveProject(newProject);
+    // Save application status update
+    await writeFile(APPLICATIONS_PATH, JSON.stringify(updatedApplications, null, 2));
 
-    // Save tasks to hierarchical structure
-    try {
-      await Promise.all([
-        writeFile(APPLICATIONS_PATH, JSON.stringify(updatedApplications, null, 2)),
-        ...tasksToCreate.map(task => writeTask(task))
-      ]);
-
-      // Validate that tasks were created successfully
-      if (tasksToCreate.length === 0) {
-        throw new Error('No tasks were created for the project');
+    // Log project creation
+    logProjectTransition(
+      acceptResult.project.projectId,
+      undefined,
+      'ongoing',
+      actorId,
+      Subsystems.GIGS_MATCH,
+      {
+        gigId: gigId,
+        freelancerId: Number(freelancerId),
+        applicationId: applicationId,
       }
-
-      console.log(`✅ Successfully created ${tasksToCreate.length} tasks for project ${newProjectId}`);
-    } catch (taskError) {
-      console.error('Failed to create project tasks:', taskError);
-      // Clean up the project if task creation failed
-      try {
-        await deleteProject(newProjectId);
-      } catch (cleanupError) {
-        console.error('Failed to clean up project after task creation failure:', cleanupError);
-      }
-      return NextResponse.json(
-        { error: 'Failed to create project tasks' },
-        { status: 500 }
-      );
-    }
+    );
 
     // Create project activation notification for freelancer
     try {
-      // Validate notification context
-      if (!newProjectId || !freelancerId || !organization.contactPersonId) {
-        throw new Error('Missing required notification context');
-      }
-
       await eventLogger.logEvent({
-        id: `project_activated_${newProjectId}_${Date.now()}`,
+        id: `project_activated_${acceptResult.project.projectId}_${Date.now()}`,
         timestamp: new Date().toISOString(),
         type: 'project_activated',
         notificationType: NOTIFICATION_TYPES.PROJECT_ACTIVATED,
-        actorId: organization.contactPersonId, // Commissioner who accepted
-        targetId: freelancerId, // Freelancer who gets notified
+        actorId: actorId, // Commissioner who accepted
+        targetId: Number(freelancerId), // Freelancer who gets notified
         entityType: ENTITY_TYPES.PROJECT,
-        entityId: newProjectId,
+        entityId: acceptResult.project.projectId,
         metadata: {
-          projectTitle: gig.title,
-          gigTitle: gig.title,
-          taskCount: newProject.totalTasks,
-          dueDate: newProject.dueDate,
+          projectTitle: acceptResult.project.title,
+          gigTitle: gig!.title,
+          taskCount: acceptResult.tasks.length,
           commissionerName: manager.name,
           organizationName: organization.name
         },
         context: {
-          projectId: newProjectId,
+          projectId: acceptResult.project.projectId,
           gigId: gigId,
           applicationId: applicationId
         }
       });
 
-      console.log(`✅ Successfully sent project activation notification for project ${newProjectId}`);
+      console.log(`✅ Successfully sent project activation notification for project ${acceptResult.project.projectId}`);
     } catch (eventError) {
       console.error('Failed to log project activation event:', eventError);
       // Don't fail the main operation if event logging fails
     }
 
-    return NextResponse.json({
-      success: true,
-      projectId: newProjectId,
-      message: 'Successfully matched with freelancer and created project'
-    });
+    return NextResponse.json(
+      ok({
+        entities: {
+          project: {
+            projectId: acceptResult.project.projectId,
+            title: acceptResult.project.title,
+            status: acceptResult.project.status,
+            freelancerId: acceptResult.project.freelancerId,
+            commissionerId: acceptResult.project.commissionerId,
+          },
+          tasks: acceptResult.tasks.map(task => ({
+            id: task.id,
+            title: task.title,
+            status: task.status,
+            projectId: task.projectId,
+          })),
+        },
+        message: 'Successfully matched with freelancer and created project',
+        notificationsQueued: true,
+      })
+    );
 
   } catch (error) {
     console.error('Error matching with freelancer:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      err(ErrorCodes.INTERNAL_ERROR, 'Failed to match freelancer', 500),
       { status: 500 }
     );
   }
 }
+
+// Wrap the handler with error handling
+export const POST = withErrorHandling(handleGigMatching);

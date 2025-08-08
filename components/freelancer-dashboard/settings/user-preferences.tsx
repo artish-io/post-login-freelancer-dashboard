@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { X, Plus } from 'lucide-react';
 import Image from 'next/image';
 import CustomDropdown from './custom-dropdown';
@@ -17,6 +18,7 @@ interface ToolCategory {
 }
 
 export default function UserPreferences() {
+  const { data: session } = useSession();
   const [openToWork, setOpenToWork] = useState(true);
   const [selectedSkills, setSelectedSkills] = useState<string[]>(['Copy Writing', 'UX Design', 'UX Research', 'Graphic Design']);
   const [selectedTools, setSelectedTools] = useState<string[]>(['Figma', 'Adobe Illustrator', 'Adobe Photoshop']);
@@ -25,6 +27,98 @@ export default function UserPreferences() {
   const [showToolsInput, setShowToolsInput] = useState(false);
   const [newSkill, setNewSkill] = useState('');
   const [newTool, setNewTool] = useState('');
+
+  // Hourly rate management state
+  const [rateEditStatus, setRateEditStatus] = useState<{
+    canEdit: boolean;
+    daysRemaining: number;
+    message: string;
+    loading: boolean;
+  }>({
+    canEdit: true,
+    daysRemaining: 0,
+    message: '',
+    loading: true
+  });
+  const [showRateWarning, setShowRateWarning] = useState(false);
+  const [isUpdatingRate, setIsUpdatingRate] = useState(false);
+
+  // Check hourly rate editing status on component mount
+  useEffect(() => {
+    const checkRateEditStatus = async () => {
+      if (!session?.user?.id) return;
+
+      try {
+        const response = await fetch('/api/users/hourly-rate');
+        const data = await response.json();
+
+        setRateEditStatus({
+          canEdit: data.canEdit,
+          daysRemaining: data.daysRemaining,
+          message: data.message,
+          loading: false
+        });
+
+        if (data.currentRate) {
+          setHourlyRate(data.currentRate);
+        }
+      } catch (error) {
+        console.error('Error checking rate edit status:', error);
+        setRateEditStatus(prev => ({ ...prev, loading: false }));
+      }
+    };
+
+    checkRateEditStatus();
+  }, [session?.user?.id]);
+
+  // Handle hourly rate change with cooldown validation
+  const handleRateChange = async (newRate: string) => {
+    if (!rateEditStatus.canEdit) {
+      setShowRateWarning(true);
+      setTimeout(() => setShowRateWarning(false), 5000);
+      return;
+    }
+
+    setHourlyRate(newRate);
+  };
+
+  // Handle rate update on save
+  const handleSaveRateChange = async () => {
+    if (!session?.user?.id || !rateEditStatus.canEdit) return;
+
+    setIsUpdatingRate(true);
+    try {
+      const response = await fetch('/api/users/hourly-rate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newRate: hourlyRate })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update the edit status to reflect the new cooldown
+        setRateEditStatus({
+          canEdit: false,
+          daysRemaining: 60,
+          message: "Note you won't be able to edit your hourly rate for the next 60 days",
+          loading: false
+        });
+
+        // Show success message
+        console.log('Rate updated successfully');
+      } else {
+        // Show error message
+        console.error('Failed to update rate:', data.error);
+        setShowRateWarning(true);
+        setTimeout(() => setShowRateWarning(false), 5000);
+      }
+    } catch (error) {
+      console.error('Error updating rate:', error);
+    } finally {
+      setIsUpdatingRate(false);
+    }
+  };
 
   // Flatten all tools from the JSON data
   const allTools: Tool[] = (gigTools as ToolCategory[]).flatMap(category => category.tools);
@@ -297,16 +391,65 @@ export default function UserPreferences() {
           <CustomDropdown
             options={hourlyRateOptions}
             value={hourlyRate}
-            onChange={setHourlyRate}
+            onChange={handleRateChange}
             placeholder="Select hourly rate"
+            disabled={!rateEditStatus.canEdit || rateEditStatus.loading}
           />
+
+          {/* Rate editing status message */}
+          {!rateEditStatus.loading && (
+            <div className="mt-2">
+              {!rateEditStatus.canEdit ? (
+                <div className="text-sm text-amber-600 bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <div className="font-medium">Rate editing restricted</div>
+                  <div className="mt-1">
+                    {rateEditStatus.message}
+                    {rateEditStatus.daysRemaining > 0 && (
+                      <span className="block mt-1">
+                        {rateEditStatus.daysRemaining} day{rateEditStatus.daysRemaining !== 1 ? 's' : ''} remaining
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-sm text-green-600">
+                  ✓ You can edit your hourly rate
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Warning message when trying to edit during cooldown */}
+          {showRateWarning && (
+            <div className="mt-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-3">
+              <div className="font-medium">Cannot edit rate</div>
+              <div className="mt-1">
+                Note you won't be able to edit your hourly rate for the next {rateEditStatus.daysRemaining} days
+              </div>
+            </div>
+          )}
+
+          {/* Loading state */}
+          {rateEditStatus.loading && (
+            <div className="mt-2 text-sm text-gray-500">
+              Checking rate editing status...
+            </div>
+          )}
         </div>
       </div>
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4 pt-4">
-        <button className="bg-black text-white px-6 py-3 rounded-2xl font-medium hover:bg-gray-800 transition-colors">
-          Save Changes
+        <button
+          onClick={handleSaveRateChange}
+          disabled={isUpdatingRate || rateEditStatus.loading}
+          className={`px-6 py-3 rounded-2xl font-medium transition-colors ${
+            isUpdatingRate || rateEditStatus.loading
+              ? 'bg-gray-400 text-white cursor-not-allowed'
+              : 'bg-black text-white hover:bg-gray-800'
+          }`}
+        >
+          {isUpdatingRate ? 'Saving...' : 'Save Changes'}
         </button>
         <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-2xl font-medium hover:bg-gray-50 transition-colors">
           Cancel

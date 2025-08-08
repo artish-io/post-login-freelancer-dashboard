@@ -1,166 +1,195 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
-import path from 'path';
-import fs from 'fs/promises';
-import { getInvoiceByNumber, updateInvoice } from '@/lib/invoice-storage';
-import { readProject } from '@/lib/projects-utils';
-import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
-import { processMockPayment } from '../utils/test-gateway';
+import { getInvoiceByNumber, updateInvoice } from '@/app/api/payments/repos/invoices-repo';
+import { appendTransaction, listByInvoiceNumber } from '@/app/api/payments/repos/transactions-repo';
+import { getProjectById } from '@/app/api/payments/repos/projects-repo';
+import { processMockPayment } from '../utils/gateways/test-gateway';
+import { ok, err, RefreshHints, ErrorCodes, withErrorHandling } from '@/lib/http/envelope';
+import { logInvoiceTransition, Subsystems } from '@/lib/log/transitions';
+import { requireSession, assert, assertOwnership } from '@/lib/auth/session-guard';
+import { zTriggerBody } from '@/lib/validation/z';
+import { withRateLimit, RateLimiters } from '@/lib/security/rate-limiter';
+import { withRequestValidation, VALIDATION_CONFIGS } from '@/lib/security/request-validator';
+import { sanitizeApiInput } from '@/lib/security/input-sanitizer';
 
-const MOCK_PAYMENTS_PATH = path.join(process.cwd(), 'data', 'payments', 'mock-transactions.json');
 
-// Payment gateway environment flags
+// Optional env flags for future real gateways
 const useStripe = process.env.PAYMENT_GATEWAY_STRIPE === 'true';
 const usePaystack = process.env.PAYMENT_GATEWAY_PAYSTACK === 'true';
 const usePayPal = process.env.PAYMENT_GATEWAY_PAYPAL === 'true';
 
-export async function POST(req: Request) {
+// Feature flag for eligibility checks (can be disabled for tests)
+const requireEligibility = process.env.PAYMENTS_REQUIRE_ELIGIBILITY !== 'false';
+
+async function handleTriggerPayment(req: Request) {
   try {
-    // 🔒 SECURITY: Verify session authentication
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // 🔒 Auth - get session and validate
+    const { userId: actorId } = await requireSession(req);
 
-    const { invoiceNumber, freelancerId } = await req.json();
-    const sessionUserId = parseInt(session.user.id);
+    // 🔒 Parse, sanitize, and validate request body
+    const rawBody = await req.json();
+    const sanitizedBody = sanitizeApiInput(rawBody);
+    const body = zTriggerBody.parse(sanitizedBody) as { invoiceNumber: string };
+    const { invoiceNumber } = body;
 
-    // Validate required parameters
-    if (!invoiceNumber || !freelancerId) {
-      return NextResponse.json({ error: 'Missing invoiceNumber or freelancerId' }, { status: 400 });
-    }
-
-    // 🔒 SECURITY: Verify only the freelancer can trigger payment for their own invoices
-    if (freelancerId !== sessionUserId) {
-      return NextResponse.json({
-        error: 'Unauthorized: You can only trigger payments for your own invoices'
-      }, { status: 403 });
-    }
-
-    // Get invoice using hierarchical storage
+    // Load invoice first to validate ownership
     const invoice = await getInvoiceByNumber(invoiceNumber);
-    if (!invoice) {
-      return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
-    }
+    assert(invoice, ErrorCodes.INVOICE_NOT_FOUND, 404, 'Invoice not found');
 
-    // Validate freelancer authorization
-    if (invoice.freelancerId !== freelancerId) {
-      return NextResponse.json({ error: 'Unauthorized freelancer' }, { status: 403 });
-    }
+    // 🔒 Ensure invoice belongs to the session user (freelancer)
+    assertOwnership(actorId, invoice!.freelancerId, 'invoice');
 
-    // Check if invoice is already paid (prevent duplicate payment attempts)
-    if (invoice.status === 'paid') {
-      return NextResponse.json({ error: 'Invoice already paid' }, { status: 409 });
-    }
+    // Status guards - only allow sent → processing transition
+    assert(invoice!.status !== 'paid', ErrorCodes.PAYMENT_ALREADY_PROCESSED, 409, 'Invoice already paid');
+    assert(invoice!.status === 'sent', ErrorCodes.INVALID_STATUS_TRANSITION, 400, 'Invoice must be in "sent" status to trigger payment');
 
-    // Validate invoice status is "sent" before allowing trigger
-    if (invoice.status !== 'sent') {
-      return NextResponse.json({ error: 'Invoice must be in "sent" status to trigger payment' }, { status: 400 });
-    }
+    // Project lookup and validation
+    assert(invoice!.projectId, ErrorCodes.INVALID_INPUT, 400, 'Invoice has no associated project');
+    const projectRaw = await getProjectById(Number(invoice!.projectId));
+    assert(projectRaw, ErrorCodes.PROJECT_NOT_FOUND, 404, 'Project not found');
 
-    // Handle null projectId case
-    if (!invoice.projectId) {
-      return NextResponse.json({ error: 'Invoice has no associated project' }, { status: 400 });
-    }
+    // Project validation complete - we have a valid project
 
-    // Get project using hierarchical storage
-    const project = await readProject(invoice.projectId);
-    if (!project) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
-    }
+    // 🔎 Call payment-eligibility endpoint first to ensure UI can safely show "Pay now"
+    // Can be disabled via PAYMENTS_REQUIRE_ELIGIBILITY=false for tests
+    if (requireEligibility) {
+      try {
+        const proto = req.headers.get('x-forwarded-proto') ?? 'http';
+        const host = req.headers.get('host') ?? 'localhost:3000';
 
-    const invoicingMethod = project.invoicingMethod || 'milestone'; // fallback
-    const isCompletion = invoicingMethod === 'completion';
+        // Validate headers are present (important for production)
+        if (!proto || !host) {
+          console.warn('[payments.trigger] Missing forwarded headers, using defaults');
+        }
 
-    // For completion-based projects, validate task completion requirements
-    if (isCompletion && (invoice.milestoneNumber || 1) > 1) {
-      // Get all tasks using hierarchical storage
-      const hierarchicalTasks = await readAllTasks();
-      const allTasks = convertHierarchicalToLegacy(hierarchicalTasks);
+        const base = `${proto}://${host}`;
+        const eligRes = await fetch(`${base}/api/projects/payment-eligibility?projectId=${invoice!.projectId}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          // Add timeout to prevent hanging
+          signal: AbortSignal.timeout(5000)
+        });
 
-      // Find project tasks
-      const projectTaskData = allTasks.find((pt: any) => pt.projectId === project.projectId);
-      const projectTasks = projectTaskData?.tasks || [];
+        assert(eligRes.ok, ErrorCodes.SERVICE_UNAVAILABLE, 502, `Failed to verify payment eligibility (${eligRes.status})`);
 
-      // For final milestone in completion projects, ensure all tasks are complete
-      const allTasksComplete = projectTasks.every((t: any) => t.status === 'Approved' && t.completed === true);
-      if (!allTasksComplete) {
-        return NextResponse.json({
-          error: 'Not all tasks are approved and completed for final payment in completion-based project'
-        }, { status: 403 });
+        const eligibility = await eligRes.json();
+        assert(eligibility?.paymentEligible, ErrorCodes.INVALID_STATUS, 403, 'Project not eligible for payment yet');
+      } catch (e) {
+        console.warn('[payments.trigger] eligibility check failed', e);
+        throw Object.assign(new Error('Eligibility check failed'), {
+          code: ErrorCodes.SERVICE_UNAVAILABLE,
+          status: 502
+        });
       }
-    }
-
-    // Payment gateway integration placeholder
-    if (useStripe) {
-      // TODO: Replace with Stripe integration once live
-      // const paymentResult = await payWithStripe(invoice);
-      console.log('Stripe integration placeholder - would process payment here');
-    } else if (usePaystack) {
-      // TODO: Replace with Paystack integration when API keys are available
-      // const paymentResult = await payWithPaystack(invoice);
-      console.log('Paystack integration placeholder - would process payment here');
-    } else if (usePayPal) {
-      // TODO: Replace with PayPal SDK if selected
-      // const paymentResult = await payWithPayPal(invoice);
-      console.log('PayPal integration placeholder - would process payment here');
     } else {
-      // Fallback: mock payment
-      console.log('Using mock payment processing');
+      console.log('[payments.trigger] Eligibility check skipped (PAYMENTS_REQUIRE_ELIGIBILITY=false)');
     }
 
-    // Update invoice status to processing using hierarchical storage
-    const updateSuccess = await updateInvoice(invoiceNumber, {
-      status: 'sent', // Keep as sent since processing isn't in the type definition
-      updatedAt: new Date().toISOString()
-    });
-
-    if (!updateSuccess) {
-      return NextResponse.json({ error: 'Failed to update invoice status' }, { status: 500 });
+    // Prevent duplicate trigger by checking tx log first (idempotency)
+    const existing = await listByInvoiceNumber(invoiceNumber);
+    const hasOpenTx = existing.some(tx => tx.status === 'processing' || tx.status === 'paid');
+    if (hasOpenTx) {
+      // Return existing transaction for idempotency
+      return NextResponse.json(
+        ok({
+          entities: {
+            transaction: {
+              transactionId: existing[0]?.transactionId,
+              status: existing[0]?.status,
+            },
+          },
+          message: 'Payment already triggered for this invoice',
+        })
+      );
     }
 
+    // Gateway placeholders (real integrations later)
+    if (useStripe) {
+      console.log('[payments.trigger] Stripe placeholder');
+    } else if (usePaystack) {
+      console.log('[payments.trigger] Paystack placeholder');
+    } else if (usePayPal) {
+      console.log('[payments.trigger] PayPal placeholder');
+    } else {
+      console.log('[payments.trigger] Using mock gateway');
+    }
+
+    // Build transaction via mock gateway (processing)
     const paymentRecord = await processMockPayment({
-      invoiceNumber: invoice.invoiceNumber,
-      projectId: project.projectId ? Number(project.projectId) : 0,
-      freelancerId: Number(freelancerId),
-      commissionerId: Number(invoice.commissionerId),
-      totalAmount: invoice.totalAmount
+      invoiceNumber: invoice!.invoiceNumber,
+      projectId: Number(invoice!.projectId),
+      freelancerId: Number(invoice!.freelancerId),
+      commissionerId: Number(invoice!.commissionerId),
+      totalAmount: Number(invoice!.totalAmount)
     }, 'trigger');
 
-    // Log transaction to mock payments file
-    let payments = [];
-    try {
-      const paymentsRaw = await fs.readFile(MOCK_PAYMENTS_PATH, 'utf-8');
-      payments = JSON.parse(paymentsRaw);
-    } catch {
-      // File doesn't exist yet, start with empty array
-      payments = [];
-    }
-
-    // Check for duplicate transaction to prevent re-triggering
-    const existingTransaction = payments.find((p: any) => p.invoiceNumber === invoiceNumber);
-    if (existingTransaction) {
-      return NextResponse.json({
-        error: 'Payment already triggered for this invoice',
-        existingTransactionId: existingTransaction.transactionId
-      }, { status: 409 });
-    }
-
-    payments.push(paymentRecord);
-    await fs.writeFile(MOCK_PAYMENTS_PATH, JSON.stringify(payments, null, 2));
-
-    return NextResponse.json({
-      message: 'Payment request initiated successfully',
+    // Persist: set invoice → processing
+    const updateOk = await updateInvoice(invoiceNumber, {
       status: 'processing',
-      transactionId: paymentRecord.transactionId,
-      integration: paymentRecord.integration,
-      invoiceNumber: invoice.invoiceNumber,
-      amount: invoice.totalAmount,
-      projectId: project.projectId
+      updatedAt: new Date().toISOString()
     });
+    assert(updateOk, ErrorCodes.INTERNAL_ERROR, 500, 'Failed to update invoice status');
+
+    // Log the status transition
+    logInvoiceTransition(
+      invoiceNumber,
+      'sent',
+      'processing',
+      actorId,
+      Subsystems.PAYMENTS_TRIGGER,
+      {
+        projectId: Number(invoice!.projectId),
+        amount: Number(invoice!.totalAmount),
+        integration: 'mock',
+        transactionId: paymentRecord.transactionId,
+      }
+    );
+
+    // Persist: append transaction record
+    await appendTransaction({
+      ...paymentRecord,
+      type: 'invoice',
+      integration: 'mock'
+    } as any);
+
+    return NextResponse.json(
+      ok({
+        entities: {
+          invoice: {
+            invoiceNumber: invoice!.invoiceNumber,
+            status: 'processing',
+            amount: invoice!.totalAmount,
+            projectId: invoice!.projectId,
+          },
+          transaction: {
+            transactionId: paymentRecord.transactionId,
+            integration: paymentRecord.integration,
+            status: 'processing',
+          },
+        },
+        refreshHints: [
+          RefreshHints.INVOICES_LIST,
+          RefreshHints.INVOICE_DETAIL,
+          RefreshHints.TRANSACTIONS_LIST,
+          RefreshHints.DASHBOARD,
+        ],
+        notificationsQueued: false,
+        message: 'Payment request initiated successfully',
+      })
+    );
   } catch (error) {
     console.error('[PAYMENT_TRIGGER_ERROR]', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      err(ErrorCodes.INTERNAL_ERROR, 'Internal server error', 500),
+      { status: 500 }
+    );
   }
 }
+
+// Wrap the handler with security middleware
+export const POST = withRateLimit(
+  RateLimiters.payments,
+  withRequestValidation(
+    VALIDATION_CONFIGS.payments,
+    withErrorHandling(handleTriggerPayment)
+  )
+);

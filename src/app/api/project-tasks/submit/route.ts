@@ -1,187 +1,168 @@
 
+/**
+ * Unified Task Operations Endpoint
+ *
+ * Handles task submission, approval, and rejection using the unified task service.
+ * Replaces multiple inconsistent task endpoints with a single, standardized API.
+ */
 
 import { NextRequest, NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
-import { eventLogger } from '../../../../lib/events/event-logger';
-import { readTask, writeTask, readProjectTasks } from '../../../../lib/project-tasks/hierarchical-storage';
-import { readProject } from '../../../../lib/projects-utils';
+import { UnifiedTaskService } from '../../../../lib/services/unified-task-service';
+import { UnifiedStorageService } from '../../../../lib/storage/unified-storage-service';
+import { executeTaskApprovalTransaction } from '../../../../lib/transactions/transaction-service';
+import { eventLogger, NOTIFICATION_TYPES, ENTITY_TYPES } from '../../../../lib/events/event-logger';
+import { requireSession, assert } from '../../../../lib/auth/session-guard';
+import { ok, err, ErrorCodes, withErrorHandling } from '../../../../lib/http/envelope';
+import { logTaskTransition, Subsystems } from '../../../../lib/log/transitions';
 
-const usersFilePath = path.join(process.cwd(), 'data/users.json');
-
-export async function POST(request: NextRequest) {
+async function handleTaskOperation(request: NextRequest) {
   try {
-    const { projectId, taskId, action, freelancerId, commissionerId, referenceUrl } = await request.json();
+    // 🔒 Auth - get session and validate
+    const { userId: actorId } = await requireSession(request);
 
-    if (!projectId || !taskId || !action) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
+    const { taskId, action, referenceUrl, feedback } = await request.json();
+    assert(taskId && action, ErrorCodes.MISSING_REQUIRED_FIELD, 400, 'Missing required fields: taskId, action');
 
-    // Load project and user data
-    const [projectInfo, usersData] = await Promise.all([
-      readProject(projectId), // Use hierarchical storage for projects
-      readFile(usersFilePath, 'utf-8')
-    ]);
+    // Validate action type
+    const validActions = ['submit', 'approve', 'reject'];
+    assert(validActions.includes(action), ErrorCodes.INVALID_INPUT, 400, `Invalid action: ${action}. Must be one of: ${validActions.join(', ')}`);
 
-    const users = JSON.parse(usersData);
-
-    // Check if project exists
-    if (!projectInfo) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
-    }
-
-    // Read all tasks for this project to find the specific task
-    const projectTasks = await readProjectTasks(projectId);
-    const task = projectTasks.find(t => t.taskId === taskId);
-
-    if (!task) {
-      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
-    }
-
-    // Get user IDs from project info if not provided
-    const actualFreelancerId = freelancerId || projectInfo?.freelancerId;
-    const actualCommissionerId = commissionerId || projectInfo?.commissionerId;
-
+    let result;
     let eventType: string | null = null;
-    let targetUserId: number | null = null;
-
-    // Create updated task object
-    const updatedTask = { ...task };
 
     switch (action) {
       case 'submit':
-        // First submission: mark as in review but NOT completed (completed = true only when approved)
-        updatedTask.completed = false; // Keep false until approved by commissioner
-        updatedTask.status = 'In review';
-        updatedTask.submittedDate = new Date().toISOString();
-        // Update task link with submitted reference URL
-        if (referenceUrl) {
-          updatedTask.link = referenceUrl;
-        }
-        // Version stays the same (1) for first submission
-        if (!updatedTask.version) updatedTask.version = 1;
+        result = await UnifiedTaskService.submitTask(Number(taskId), actorId, {
+          referenceUrl
+        });
         eventType = 'task_submitted';
-        targetUserId = actualCommissionerId;
         break;
-      case 'resubmit':
-        // Resubmission after rejection: increment version and mark as in review but NOT completed
-        updatedTask.rejected = false;
-        updatedTask.completed = false; // Keep false until approved by commissioner
-        updatedTask.status = 'In review';
-        updatedTask.submittedDate = new Date().toISOString();
-        // Update task link with submitted reference URL
-        if (referenceUrl) {
-          updatedTask.link = referenceUrl;
+
+      case 'approve':
+        // Use transaction service for atomic task approval with invoice generation
+        const task = await UnifiedStorageService.getTaskById(Number(taskId));
+        const project = await UnifiedStorageService.getProjectById(task!.projectId);
+
+        const transactionParams = {
+          taskId: Number(taskId),
+          projectId: task!.projectId,
+          freelancerId: project!.freelancerId!,
+          commissionerId: project!.commissionerId!,
+          taskTitle: task!.title,
+          projectTitle: project!.title,
+          generateInvoice: project!.invoicingMethod === 'completion',
+          invoiceType: 'completion' as const
+        };
+
+        const transactionResult = await executeTaskApprovalTransaction(transactionParams);
+
+        if (!transactionResult.success) {
+          return NextResponse.json({
+            success: false,
+            error: 'Task approval transaction failed',
+            details: transactionResult.error,
+            transactionId: transactionResult.transactionId
+          }, { status: 500 });
         }
-        updatedTask.version = (updatedTask.version || 1) + 1;
-        eventType = 'task_submitted';
-        targetUserId = actualCommissionerId;
-        break;
-      case 'complete':
-        // Commissioner approves the task
-        updatedTask.completed = true;
-        updatedTask.status = 'Approved';
-        updatedTask.rejected = false;
-        updatedTask.approvedDate = new Date().toISOString();
+
+        result = {
+          success: true,
+          task: task,
+          shouldNotify: true,
+          notificationTarget: project!.freelancerId,
+          message: 'Task approved successfully with transaction integrity',
+          invoiceGenerated: transactionResult.results.generate_invoice?.success || false
+        };
         eventType = 'task_approved';
-        targetUserId = actualFreelancerId;
         break;
+
       case 'reject':
-        // Commissioner rejects the task - freelancer needs to work on it again
-        updatedTask.rejected = true;
-        updatedTask.completed = false;
-        updatedTask.status = 'Ongoing'; // Back to ongoing so freelancer can work on it
-        updatedTask.rejectedDate = new Date().toISOString();
-        updatedTask.feedbackCount = (updatedTask.feedbackCount || 0) + 1;
+        result = await UnifiedTaskService.rejectTask(Number(taskId), actorId, feedback);
         eventType = 'task_rejected';
-        targetUserId = actualFreelancerId;
         break;
+
       default:
-        return NextResponse.json({ error: 'Unknown action' }, { status: 400 });
+        throw new Error(`Unsupported action: ${action}`);
     }
 
-    // Write the updated task back to hierarchical storage
-    await writeTask(updatedTask);
-
-    // Log event for notification system
-    if (eventType && targetUserId) {
-      try {
-        // Validate commissioner ID for task submissions
-        if (eventType === 'task_submitted' && !actualCommissionerId) {
-          console.error('❌ Cannot send task submission notification: Commissioner ID is missing');
-          console.error('Project info:', { projectId, commissionerId: projectInfo?.commissionerId });
-          throw new Error('Commissioner ID is required for task submission notifications');
+    // Log the task transition
+    if (result.success && eventType) {
+      logTaskTransition(
+        Number(taskId),
+        'previous_status', // This would need to be tracked properly
+        result.task.status,
+        actorId,
+        Subsystems.TASKS_SUBMIT,
+        {
+          projectId: result.task.projectId,
+          taskTitle: result.task.title,
+          action: action
         }
+      );
+    }
 
-        // Get freelancer and commissioner names for notification
-        const freelancer = users.find((u: any) => u.id === actualFreelancerId);
-        const commissioner = users.find((u: any) => u.id === actualCommissionerId);
+    // Log event for notifications
+    if (result.success && result.shouldNotify && eventType) {
+      try {
+        const notificationTypeMap: Record<string, number> = {
+          'task_submitted': NOTIFICATION_TYPES.TASK_SUBMITTED,
+          'task_approved': NOTIFICATION_TYPES.TASK_APPROVED,
+          'task_rejected': NOTIFICATION_TYPES.TASK_REJECTED
+        };
 
         await eventLogger.logEvent({
           id: `${eventType}_${taskId}_${Date.now()}`,
           timestamp: new Date().toISOString(),
-          type: eventType as any,
-          notificationType: eventType === 'task_submitted' ? 10 : eventType === 'task_approved' ? 11 : 12, // NOTIFICATION_TYPES
-          actorId: action === 'complete' || action === 'reject' ? actualCommissionerId : actualFreelancerId,
-          targetId: targetUserId,
-          entityType: 1, // ENTITY_TYPES.TASK
-          entityId: taskId,
+          type: eventType,
+          notificationType: notificationTypeMap[eventType],
+          actorId: actorId,
+          targetId: result.notificationTarget!,
+          entityType: ENTITY_TYPES.TASK,
+          entityId: Number(taskId),
           metadata: {
-            taskTitle: task.title,
-            projectTitle: projectInfo.title,
-            freelancerName: freelancer?.name || 'Unknown Freelancer',
-            commissionerName: commissioner?.name || 'Unknown Commissioner',
-            version: updatedTask.version || 1,
-            action: action
+            taskTitle: result.task.title,
+            projectTitle: result.task.projectTitle,
+            action: action,
+            invoiceGenerated: result.invoiceGenerated || false
           },
           context: {
-            projectId: projectId,
-            taskId: taskId
+            projectId: result.task.projectId,
+            taskId: Number(taskId)
           }
         });
-
-        console.log(`✅ Notification logged: ${eventType} for ${eventType === 'task_submitted' ? 'commissioner' : 'freelancer'}`);
-        console.log(`📧 Notification details: ${freelancer?.name} → ${commissioner?.name} (Task: "${task.title}")`);
       } catch (eventError) {
-        console.error('Failed to log event:', eventError);
+        console.error('Error logging event:', eventError);
         // Don't fail the main operation if event logging fails
       }
     }
 
-    // Auto-generate invoice for completion-based projects when task is approved
-    if (action === 'complete' && projectInfo?.invoicingMethod === 'completion') {
-      try {
-        const invoiceResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3001'}/api/invoices/auto-generate-completion`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            taskId,
-            projectId,
-            freelancerId: actualFreelancerId,
-            commissionerId: actualCommissionerId,
-            taskTitle: task.title,
-            projectTitle: projectInfo.title
-          })
-        });
+    // Return success response
+    return NextResponse.json(
+      ok({
+        entities: {
+          task: {
+            id: result.task.taskId,
+            title: result.task.title,
+            status: result.task.status,
+            completed: result.task.completed,
+            version: result.task.version,
+            projectId: result.task.projectId,
+          },
+        },
+        message: result.message,
+        notificationsQueued: result.shouldNotify,
+        invoiceGenerated: result.invoiceGenerated || false
+      })
+    );
 
-        if (invoiceResponse.ok) {
-          const invoiceResult = await invoiceResponse.json();
-          console.log('Auto-generated completion invoice:', invoiceResult);
-        }
-      } catch (invoiceError) {
-        console.error('Failed to auto-generate completion invoice:', invoiceError);
-        // Don't fail the main operation if invoice generation fails
-      }
-    }
-
-    return NextResponse.json({
-      success: true,
-      updatedTask: task,
-      action: action,
-      eventLogged: !!eventType
-    });
   } catch (error) {
-    console.error('Error updating task:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('Error in task operation:', error);
+    return NextResponse.json(
+      err(ErrorCodes.INTERNAL_ERROR, 'Failed to process task operation', 500),
+      { status: 500 }
+    );
   }
 }
+
+// Wrap the handler with error handling
+export const POST = withErrorHandling(handleTaskOperation);

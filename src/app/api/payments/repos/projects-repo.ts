@@ -1,0 +1,179 @@
+/**
+ * Projects Repository - Compatibility Wrapper
+ * 
+ * This file provides backward compatibility for the deprecated repository pattern.
+ * It wraps the new unified storage system to maintain API compatibility.
+ * 
+ * @deprecated Use UnifiedStorageService directly for new code
+ */
+
+import { readAllProjects as readProjectsFromStorage, readProject, saveProject, deleteProject } from '@/lib/projects-utils';
+import { UnifiedStorageService, UnifiedProject } from '@/lib/storage/unified-storage-service';
+
+// Legacy project record interface for backward compatibility
+export interface ProjectRecord {
+  projectId: number;
+  title: string;
+  description?: string;
+  organizationId?: number;
+  typeTags?: string[];
+  commissionerId: number;
+  freelancerId: number;
+  status: string;
+  dueDate?: string;
+  totalTasks?: number;
+  invoicingMethod?: string;
+  totalBudget?: number;
+  upfrontCommitment?: number;
+  paidToDate?: number;
+  currency?: string;
+  createdAt: string;
+  updatedAt: string;
+  manager?: {
+    name: string;
+    title: string;
+    avatar: string;
+    email: string;
+  };
+}
+
+/**
+ * Read all projects from hierarchical storage
+ * @deprecated Use UnifiedStorageService.getAllProjects() instead
+ */
+export async function readAllProjects(): Promise<ProjectRecord[]> {
+  try {
+    console.warn('⚠️ Using deprecated readAllProjects from projects-repo. Consider migrating to UnifiedStorageService.');
+    const projects = await readProjectsFromStorage();
+    
+    // Convert to legacy format for backward compatibility
+    return projects.map(project => ({
+      projectId: project.projectId,
+      title: project.title,
+      description: project.description,
+      organizationId: project.organizationId,
+      typeTags: project.typeTags || [],
+      commissionerId: project.commissionerId,
+      freelancerId: project.freelancerId,
+      status: project.status,
+      dueDate: project.dueDate,
+      totalTasks: project.totalTasks,
+      invoicingMethod: project.invoicingMethod,
+      totalBudget: project.totalBudget,
+      upfrontCommitment: project.upfrontCommitment,
+      paidToDate: project.paidToDate || 0,
+      currency: project.currency || 'USD',
+      createdAt: project.createdAt || new Date().toISOString(),
+      updatedAt: project.updatedAt || new Date().toISOString(),
+      manager: project.manager
+    }));
+  } catch (error) {
+    console.error('Error reading projects from storage:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get project by ID from hierarchical storage
+ * @deprecated Use UnifiedStorageService.getProjectById() instead
+ */
+export async function getProjectById(projectId: number): Promise<ProjectRecord | null> {
+  try {
+    console.warn('⚠️ Using deprecated getProjectById from projects-repo. Consider migrating to UnifiedStorageService.');
+    const project = await readProject(projectId);
+    
+    if (!project) {
+      return null;
+    }
+    
+    // Convert to legacy format for backward compatibility
+    return {
+      projectId: project.projectId,
+      title: project.title,
+      description: project.description,
+      organizationId: project.organizationId,
+      typeTags: project.typeTags || [],
+      commissionerId: project.commissionerId,
+      freelancerId: project.freelancerId,
+      status: project.status,
+      dueDate: project.dueDate,
+      totalTasks: project.totalTasks,
+      invoicingMethod: project.invoicingMethod,
+      totalBudget: project.totalBudget,
+      upfrontCommitment: project.upfrontCommitment,
+      paidToDate: project.paidToDate || 0,
+      currency: project.currency || 'USD',
+      createdAt: project.createdAt || new Date().toISOString(),
+      updatedAt: project.updatedAt || new Date().toISOString(),
+      manager: project.manager
+    };
+  } catch (error) {
+    console.error(`Error reading project ${projectId}:`, error);
+    return null;
+  }
+}
+
+/**
+ * Create a new project
+ * @deprecated Use UnifiedStorageService.saveProject() instead
+ */
+export async function createProject(project: Omit<ProjectRecord, 'createdAt' | 'updatedAt'>): Promise<ProjectRecord> {
+  try {
+    console.warn('⚠️ Using deprecated createProject from projects-repo. Consider migrating to UnifiedStorageService.');
+    
+    const now = new Date().toISOString();
+    const newProject = {
+      ...project,
+      createdAt: now,
+      updatedAt: now
+    };
+    
+    await saveProject(newProject);
+    return newProject;
+  } catch (error) {
+    console.error('Error creating project:', error);
+    throw error;
+  }
+}
+
+/**
+ * Update an existing project
+ * @deprecated Use UnifiedStorageService.saveProject() instead
+ */
+export async function updateProject(projectId: number, updates: Partial<ProjectRecord>): Promise<ProjectRecord | null> {
+  try {
+    console.warn('⚠️ Using deprecated updateProject from projects-repo. Consider migrating to UnifiedStorageService.');
+    
+    const existingProject = await getProjectById(projectId);
+    if (!existingProject) {
+      return null;
+    }
+    
+    const updatedProject = {
+      ...existingProject,
+      ...updates,
+      updatedAt: new Date().toISOString()
+    };
+    
+    await saveProject(updatedProject);
+    return updatedProject;
+  } catch (error) {
+    console.error(`Error updating project ${projectId}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Delete a project
+ * @deprecated Use UnifiedStorageService.deleteProject() instead
+ */
+export async function deleteProjectById(projectId: number): Promise<boolean> {
+  try {
+    console.warn('⚠️ Using deprecated deleteProjectById from projects-repo. Consider migrating to UnifiedStorageService.');
+    await deleteProject(projectId);
+    return true;
+  } catch (error) {
+    console.error(`Error deleting project ${projectId}:`, error);
+    return false;
+  }
+}

@@ -56,13 +56,13 @@ export async function PUT(
       task.status = 'In review';
       task.completed = true;
     } else if (newStatus === 'completed' || newStatus === 'approved') {
-      task.status = 'Approved';
+      task.status = 'approved';
       task.completed = true;
     }
 
     // Check if all tasks are completed and approved to update milestone status
     const allTasksApproved = projectTaskData.tasks.every((t: any) =>
-      t.completed && t.status === 'Approved'
+      t.completed && t.status === 'approved'
     );
 
     // Update milestone status in minimal file

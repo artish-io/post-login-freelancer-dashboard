@@ -10,6 +10,10 @@ import {
   generateUniqueProposalId,
   type Proposal
 } from '../../../../lib/proposals/hierarchical-storage';
+import {
+  generateEnrichedProposalMetadata,
+  saveEnrichedProposalMetadata
+} from '../../../../lib/proposals/enriched-metadata';
 
 const draftsPath = path.join(process.cwd(), 'data', 'proposals', 'proposal-drafts.json');
 const usersPath = path.join(process.cwd(), 'data', 'users.json');
@@ -84,6 +88,15 @@ export async function POST(request: Request) {
 
     // Save proposal using hierarchical storage
     await saveProposal(newProposal);
+
+    // Generate and save enriched metadata for email notifications
+    try {
+      const enrichedMetadata = await generateEnrichedProposalMetadata(newProposal);
+      await saveEnrichedProposalMetadata(newProposal.id, enrichedMetadata);
+    } catch (metadataError) {
+      console.error('Failed to generate enriched metadata:', metadataError);
+      // Don't fail the main operation if metadata generation fails
+    }
 
     // Remove from drafts if exists
     try {

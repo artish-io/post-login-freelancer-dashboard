@@ -50,11 +50,12 @@ async function matchOrganizations(projectType: string): Promise<any[]> {
   try {
     const [orgsResponse, gigsResponse] = await Promise.all([
       fetch('/data/organizations.json'),
-      fetch('/data/gigs/gigs.json')
+      fetch('/api/gigs/all') // ✅ Use API endpoint instead of direct file access
     ]);
 
     const organizations = await orgsResponse.json();
-    const gigs = await gigsResponse.json();
+    const gigsData = await gigsResponse.json();
+    const gigs = gigsData.gigs || gigsData; // Handle API response format
 
     // Find organizations that have posted similar gigs
     const relevantOrgIds = new Set();

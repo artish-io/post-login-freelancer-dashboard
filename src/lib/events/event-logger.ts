@@ -111,10 +111,10 @@ export type EventType =
   | 'task_created' | 'task_submitted' | 'task_approved' | 'task_rejected' | 'task_rejected_with_comment'
   | 'task_completed' | 'task_commented'
   // Project events
-  | 'project_created' | 'project_started' | 'project_paused' | 'project_resumed' | 'project_completed'
-  | 'project_pause_requested' | 'project_pause_accepted' | 'project_pause_denied'
+  | 'project_created' | 'project_started' | 'project_activated' | 'project_reactivated' | 'project_paused' | 'project_resumed' | 'project_completed'
+  | 'project_pause_requested' | 'project_pause_accepted' | 'project_pause_denied' | 'project_pause_refused'
   // Gig events
-  | 'gig_posted' | 'gig_applied' | 'gig_request_sent' | 'gig_request_accepted' | 'gig_request_declined'
+  | 'gig_posted' | 'gig_applied' | 'gig_rejected' | 'gig_request_sent' | 'gig_request_accepted' | 'gig_request_declined'
   // Message events
   | 'message_sent' | 'message_read'
   // Invoice events - More granular
@@ -159,9 +159,11 @@ function getNotificationTypeNumber(eventType: EventType): number {
     'project_created': NOTIFICATION_TYPES.PROJECT_CREATED,
     'project_started': NOTIFICATION_TYPES.PROJECT_STARTED,
     'project_activated': NOTIFICATION_TYPES.PROJECT_ACTIVATED,
+    'project_reactivated': NOTIFICATION_TYPES.PROJECT_STARTED, // Reuse started type
     'project_pause_requested': NOTIFICATION_TYPES.PROJECT_PAUSE_REQUESTED,
     'project_pause_accepted': NOTIFICATION_TYPES.PROJECT_PAUSE_ACCEPTED,
     'project_pause_refused': NOTIFICATION_TYPES.PROJECT_PAUSE_REFUSED,
+    'project_pause_denied': NOTIFICATION_TYPES.PROJECT_PAUSE_REFUSED, // Alias for refused
     'project_paused': NOTIFICATION_TYPES.PROJECT_PAUSED,
     'project_pause_reminder': NOTIFICATION_TYPES.PROJECT_PAUSE_REMINDER,
     'project_completed': NOTIFICATION_TYPES.PROJECT_COMPLETED,
@@ -174,6 +176,7 @@ function getNotificationTypeNumber(eventType: EventType): number {
 
     // Gig events
     'gig_applied': NOTIFICATION_TYPES.GIG_APPLICATION_RECEIVED,
+    'gig_rejected': NOTIFICATION_TYPES.GIG_APPLICATION_RECEIVED, // Reuse application type
     'gig_request_sent': NOTIFICATION_TYPES.GIG_REQUEST_SENT,
     'gig_request_accepted': NOTIFICATION_TYPES.GIG_REQUEST_ACCEPTED,
 
@@ -381,6 +384,27 @@ class EventLogger {
         iconType: 'avatar',
         priority: 'high',
         channels: ['in_app', 'email']
+      },
+      {
+        eventType: 'proposal_accepted',
+        targetUserTypes: ['actor'], // Notify the freelancer who sent the proposal
+        notificationType: 'proposal_accepted',
+        titleTemplate: 'Proposal accepted',
+        messageTemplate: 'Your proposal for {proposalTitle} has been accepted',
+        iconType: 'icon',
+        iconPath: '/icons/proposal-accepted.png',
+        priority: 'high',
+        channels: ['in_app', 'email']
+      },
+      {
+        eventType: 'proposal_rejected',
+        targetUserTypes: ['actor'], // Notify the freelancer who sent the proposal
+        notificationType: 'proposal_rejected',
+        titleTemplate: 'Proposal rejected',
+        messageTemplate: '{organizationName} has rejected your proposal for {proposalTitle}',
+        iconType: 'organization_logo',
+        priority: 'medium',
+        channels: ['in_app']
       }
 
       // NOTE: Message events are intentionally excluded from notifications

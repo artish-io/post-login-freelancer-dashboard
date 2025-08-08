@@ -3,8 +3,8 @@
 import { NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import path from 'path';
-import { readAllProjects } from '@/lib/projects-utils';
-import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
+import { readAllProjects } from '@/app/api/payments/repos/projects-repo';
+import { readAllTasks } from '@/app/api/payments/repos/tasks-repo';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -16,14 +16,11 @@ export async function GET(request: Request) {
   }
 
   try {
-    const [allProjects, hierarchicalTasks, invoicesData] = await Promise.all([
-      readAllProjects(), // Use hierarchical storage for projects
-      readAllTasks(), // Use hierarchical storage for project tasks
+    const [allProjects, allTasks, invoicesData] = await Promise.all([
+      readAllProjects(),
+      readAllTasks(),
       readFile(path.join(process.cwd(), 'data', 'invoices.json'), 'utf-8')
     ]);
-
-    // Convert hierarchical tasks to legacy format for compatibility
-    const allTasks = convertHierarchicalToLegacy(hierarchicalTasks);
     const allInvoices = JSON.parse(invoicesData);
 
     let filtered = allProjects.filter((p: any) => p.freelancerId === freelancerId);
@@ -35,8 +32,7 @@ export async function GET(request: Request) {
 
     const result = filtered.map((p: any) => {
       // Find project tasks
-      const projectTasks = allTasks.find((pt: any) => pt.projectId === p.projectId);
-      const tasks = projectTasks?.tasks || [];
+      const tasks = allTasks.filter((task: any) => task.projectId === p.projectId);
 
       // Check if project is completed (all tasks approved AND completed, and all invoices paid)
       const approvedAndCompletedTasks = tasks.filter((task: any) =>

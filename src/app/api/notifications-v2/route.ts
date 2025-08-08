@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import { EventData, EventType, NOTIFICATION_TYPES, USER_TYPE_FILTERS } from '../../../lib/events/event-logger';
+import { EventData, EventType, USER_TYPE_FILTERS } from '../../../lib/events/event-logger';
 import { NotificationStorage } from '../../../lib/notifications/notification-storage';
-import { readAllProjects } from '../../../lib/projects-utils';
-import { readAllTasks, convertHierarchicalToLegacy } from '../../../lib/project-tasks/hierarchical-storage';
+import { readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks } from '@/lib/project-tasks/hierarchical-storage';
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -36,18 +37,30 @@ export async function GET(request: NextRequest) {
       200 // limit - get up to 200 recent events
     );
 
-    // Load data from hierarchical storage and flat files
-    const [users, freelancers, projects, organizations, contacts, hierarchicalTasks] = await Promise.all([
-      fs.promises.readFile(usersPath, 'utf-8').then(data => JSON.parse(data)),
+    // Load data from repos and flat files
+    const { getAllUsers } = await import('@/lib/storage/unified-storage-service');
+    const [users, freelancers, projects, organizations, contacts, allTasks] = await Promise.all([
+      getAllUsers(), // Use hierarchical storage for users
       fs.promises.readFile(freelancersPath, 'utf-8').then(data => JSON.parse(data)),
-      readAllProjects(), // Use hierarchical storage for projects
+      readAllProjects(), // Use projects repo
       fs.promises.readFile(organizationsPath, 'utf-8').then(data => JSON.parse(data)),
       fs.promises.readFile(contactsPath, 'utf-8').then(data => JSON.parse(data)),
-      readAllTasks() // Use hierarchical storage for project tasks
+      readAllTasks() // Use tasks repo
     ]);
 
-    // Convert hierarchical tasks to legacy format for compatibility
-    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
+    // Group tasks by project for compatibility with existing logic
+    const projectTasks = allTasks.reduce((acc: any[], task) => {
+      const existingProject = acc.find(p => p.projectId === task.projectId);
+      if (existingProject) {
+        existingProject.tasks.push(task);
+      } else {
+        acc.push({
+          projectId: task.projectId,
+          tasks: [task]
+        });
+      }
+      return acc;
+    }, []);
 
     // Filter events relevant to this user with user-type filtering
     const userEvents = events.filter(event => {
@@ -70,7 +83,7 @@ export async function GET(request: NextRequest) {
       }
 
       // User is the target of the event AND not the actor (no self-notifications)
-      if (event.targetId === parseInt(userId) && parseInt(event.actorId) !== parseInt(userId)) return true;
+      if (event.targetId === parseInt(userId) && event.actorId !== parseInt(userId)) return true;
 
       // For certain notification types, only show to the specific target user
       const targetOnlyNotifications = [
@@ -87,7 +100,7 @@ export async function GET(request: NextRequest) {
       }
 
       // User is involved in the project (but not for self-initiated actions)
-      if (event.context?.projectId && parseInt(event.actorId) !== parseInt(userId)) {
+      if (event.context?.projectId && event.actorId !== parseInt(userId)) {
         const project = projects.find((p: any) => p.projectId === event.context?.projectId);
         if (project && (project.commissionerId === parseInt(userId) || project.freelancerId === parseInt(userId))) {
           return true;
@@ -138,14 +151,14 @@ export async function GET(request: NextRequest) {
         const project = projects.find((p: any) => p.projectId === event.context.projectId);
         if (project) {
           // If it's a commissioner viewing, check if the freelancer is in their network
-          if (userType === 'commissioner' && project.commissionerId === userId) {
+          if (userType === 'commissioner' && project.commissionerId === userId && project.freelancerId) {
             const freelancerInNetwork = isActorInNetwork(project.freelancerId, userId);
             if (freelancerInNetwork) {
               return true;
             }
           }
           // If it's a freelancer viewing, check if the commissioner is in their network
-          if (userType === 'freelancer' && project.freelancerId === userId) {
+          if (userType === 'freelancer' && project.freelancerId === userId && project.commissionerId) {
             const commissionerInNetwork = isActorInNetwork(project.commissionerId, userId);
             if (commissionerInNetwork) {
               return true;
@@ -163,11 +176,11 @@ export async function GET(request: NextRequest) {
       let actor;
       if (event.type === 'gig_applied' || event.type === 'gig_request_accepted') {
         // actorId is a freelancer ID, find the corresponding user
-        const freelancer = freelancers.find((f: any) => f.id === parseInt(event.actorId));
+        const freelancer = freelancers.find((f: any) => f.id === event.actorId);
         actor = freelancer ? users.find((u: any) => u.id === freelancer.userId) : null;
       } else {
         // actorId is a user ID
-        actor = users.find((u: any) => u.id === parseInt(event.actorId));
+        actor = users.find((u: any) => u.id === event.actorId);
       }
 
       const organization = event.context?.organizationId ?
@@ -235,8 +248,8 @@ export async function GET(request: NextRequest) {
           ['task_submission', 'task_approved', 'task_rejected', 'project_pause_requested', 'project_pause_accepted'].includes(n.type)
         );
       } else if (tab === 'gigs') {
-        filteredNotifications = notifications.filter(n => 
-          ['gig_request', 'gig_application', 'proposal_sent'].includes(n.type)
+        filteredNotifications = notifications.filter(n =>
+          ['gig_request', 'gig_application', 'proposal_sent', 'proposal_accepted', 'proposal_rejected'].includes(n.type)
         );
       }
     } else {
@@ -258,7 +271,7 @@ export async function GET(request: NextRequest) {
       ['task_submission', 'task_approved', 'task_rejected', 'project_pause_requested', 'project_pause_accepted'].includes(n.type)
     ).length;
     const gigsCount = unreadNotifications.filter(n =>
-      ['gig_request', 'gig_application', 'gig_rejected', 'proposal_sent'].includes(n.type)
+      ['gig_request', 'gig_application', 'gig_rejected', 'proposal_sent', 'proposal_accepted', 'proposal_rejected'].includes(n.type)
     ).length;
 
     return NextResponse.json({
@@ -319,21 +332,25 @@ export async function POST(request: NextRequest) {
 }
 
 function getNotificationType(eventType: EventType): string {
-  const typeMap: Record<EventType, string> = {
+  const typeMap: Partial<Record<EventType, string>> = {
     'task_submitted': 'task_submission',
     'task_approved': 'task_approved',
     'task_rejected': 'task_rejected',
+    'task_rejected_with_comment': 'task_rejected_with_comment',
+    'task_completed': 'task_completed',
     'task_created': 'task_created',
     'task_commented': 'task_comment',
     'project_created': 'project_created',
     'project_started': 'project_started',
     'project_activated': 'project_activated',
+    'project_reactivated': 'project_reactivated',
     'project_paused': 'project_pause',
     'project_resumed': 'project_resumed',
     'project_completed': 'project_completed',
     'project_pause_requested': 'project_pause',
     'project_pause_accepted': 'project_pause_accepted',
     'project_pause_denied': 'project_pause_denied',
+    'project_pause_refused': 'project_pause_refused',
     'gig_posted': 'gig_posted',
     'gig_applied': 'gig_application',
     'gig_request_sent': 'gig_request',
@@ -357,8 +374,6 @@ function getNotificationType(eventType: EventType): string {
     'user_login': 'user_login',
     'user_logout': 'user_logout',
     'profile_updated': 'profile_updated',
-    'task_completed': 'task_completed',
-    'task_rejected_with_comment': 'task_rejected_with_comment',
     'milestone_payment_received': 'milestone_payment_received',
     'product_approved': 'product_approved',
     'product_rejected': 'product_rejected'
@@ -430,7 +445,7 @@ function groupSimilarEvents(events: EventData[]): EventData[] {
 
   // Convert grouped events to single notifications with counts
   const groupedNotifications: EventData[] = [];
-  Object.entries(grouped).forEach(([key, groupEvents]) => {
+  Object.entries(grouped).forEach(([, groupEvents]) => {
     if (groupEvents.length > 1) {
       const latestEvent = groupEvents[0]; // Most recent
       groupedNotifications.push({
@@ -449,7 +464,7 @@ function groupSimilarEvents(events: EventData[]): EventData[] {
   return [...groupedNotifications, ...ungrouped];
 }
 
-function generateGranularTitle(event: EventData, actor: any, project?: any, projectTaskData?: any, task?: any): string {
+function generateGranularTitle(event: EventData, actor: any, _project?: any, projectTaskData?: any, task?: any): string {
   const actorName = actor?.name || 'Someone';
   const groupCount = event.metadata.groupCount;
 
@@ -503,6 +518,10 @@ function generateGranularTitle(event: EventData, actor: any, project?: any, proj
       return `New message from ${actorName}`;
     case 'proposal_sent':
       return `${actorName} sent you a proposal`;
+    case 'proposal_accepted':
+      return `Your proposal has been accepted`;
+    case 'proposal_rejected':
+      return `${event.metadata.organizationName || actorName} rejected your proposal`;
     case 'gig_rejected':
       return `${event.metadata.organizationName || actorName} rejected your application for "${event.metadata.gigTitle}"`;
     default:
@@ -511,7 +530,7 @@ function generateGranularTitle(event: EventData, actor: any, project?: any, proj
   }
 }
 
-function generateGranularMessage(event: EventData, actor: any, project?: any, projectTaskData?: any, task?: any): string {
+function generateGranularMessage(event: EventData, _actor: any, _project?: any, _projectTaskData?: any, task?: any): string {
   switch (event.type) {
     case 'task_submitted':
       return `"${event.metadata.taskTitle}" is awaiting your review`;
@@ -554,6 +573,10 @@ function generateGranularMessage(event: EventData, actor: any, project?: any, pr
       return event.metadata.messagePreview || 'New message';
     case 'proposal_sent':
       return `New project proposal for ${event.metadata.proposalTitle || 'project'}`;
+    case 'proposal_accepted':
+      return `Your proposal for "${event.metadata.proposalTitle}" has been accepted and a project has been created`;
+    case 'proposal_rejected':
+      return event.metadata.rejectionReason || 'No reason provided';
     case 'gig_rejected':
       return event.metadata.rejectionMessage || 'You will be able to re-apply if this gig listing is still active after 21 days.';
     default:
@@ -561,7 +584,7 @@ function generateGranularMessage(event: EventData, actor: any, project?: any, pr
   }
 }
 
-function generateNotificationLink(event: EventData, project?: any, task?: any): string {
+function generateNotificationLink(event: EventData, _project?: any, _task?: any): string {
   switch (event.type) {
     case 'task_approved':
     case 'task_rejected':

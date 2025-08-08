@@ -268,7 +268,7 @@ export async function POST(
         pushedBack: false,
         version: 1,
         description: milestone.description || `Work on ${milestone.title}`,
-        createdDate: new Date().toISOString(),
+        createdDate: newProject.createdAt, // Use project creation date for consistent storage
         lastModified: new Date().toISOString()
       }));
     } else {
@@ -293,7 +293,7 @@ export async function POST(
         pushedBack: false,
         version: 1,
         description: `Begin work on ${newProject.title} project`,
-        createdDate: new Date().toISOString(),
+        createdDate: newProject.createdAt, // Use project creation date for consistent storage
         lastModified: new Date().toISOString()
       }];
     }
@@ -304,14 +304,15 @@ export async function POST(
 
     // Save tasks to hierarchical structure
     try {
-      await Promise.all(tasksToCreate.map((task: any) => writeTask(task)));
+      // Pass project creation date for consistent storage location
+      await Promise.all(tasksToCreate.map((task: any) => writeTask(task, newProject.createdAt)));
 
       // Validate that tasks were created successfully
       if (tasksToCreate.length === 0) {
         throw new Error('No tasks were created for the project');
       }
 
-      console.log(`✅ Successfully created ${tasksToCreate.length} tasks for project ${newProjectId}`);
+      console.log(`✅ Successfully created ${tasksToCreate.length} tasks for project ${newProjectId} using project creation date`);
 
       // Verify tasks were written correctly by re-reading them
       const verificationTasks = await readAllTasks();

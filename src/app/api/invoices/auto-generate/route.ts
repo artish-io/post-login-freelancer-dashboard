@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { readAllTasks, convertHierarchicalToLegacy } from '../../../../lib/project-tasks/hierarchical-storage';
-import { readAllProjects } from '../../../../lib/projects-utils';
+import { readAllTasks } from '@/app/api/payments/repos/tasks-repo';
+import { readAllProjects } from '@/app/api/payments/repos/projects-repo';
 import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
 import { getInitialInvoiceStatus, AUTO_MILESTONE_CONFIG } from '../../../../lib/invoice-status-definitions';
 
@@ -42,24 +42,21 @@ export async function POST(request: Request) {
     }
 
     // Load all required data
-    const [projects, hierarchicalTasks, invoices, eventsData] = await Promise.all([
-      readAllProjects(), // Use hierarchical storage for projects
-      readAllTasks(), // Use hierarchical storage for project tasks
+    const [projects, allTasks, invoices, eventsData] = await Promise.all([
+      readAllProjects(), // Use projects repo
+      readAllTasks(), // Use tasks repo
       getAllInvoices(), // Use hierarchical storage for invoices
       fs.readFile(EVENTS_LOG_PATH, 'utf-8')
     ]);
 
-    // Convert hierarchical tasks to legacy format for compatibility
-    const projectTasks: ProjectTask[] = convertHierarchicalToLegacy(hierarchicalTasks);
     // invoices is already parsed from hierarchical storage
     const events = JSON.parse(eventsData);
 
     // Find the project and task
-    const projectTask = projectTasks.find(pt => pt.projectId === projectId);
-    const project = projects.find(p => p.projectId === projectId);
-    const task = projectTask?.tasks.find(t => t.id === taskId);
+    const project = projects.find(p => Number(p.projectId) === Number(projectId));
+    const task = allTasks.find(t => Number(t.id) === Number(taskId) && Number(t.projectId) === Number(projectId));
 
-    if (!projectTask || !project || !task) {
+    if (!project || !task) {
       return NextResponse.json({ error: 'Project or task not found' }, { status: 404 });
     }
 
@@ -71,7 +68,7 @@ export async function POST(request: Request) {
     }
 
     // 🔒 MILESTONE VALIDATION: Verify task is approved before generating invoice
-    if (task.status !== 'Approved') {
+    if (task.status !== 'approved') {
       return NextResponse.json({
         error: 'Invoice can only be generated for approved milestone tasks',
         taskStatus: task.status

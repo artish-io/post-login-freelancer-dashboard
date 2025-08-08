@@ -60,14 +60,15 @@ export interface LegacyTask {
 }
 
 /**
- * Generate file path for a task based on its due date
+ * Generate file path for a task based on project creation date (NOT due date)
+ * This ensures tasks are stored with their parent project
  */
-export function generateTaskFilePath(dueDate: string, projectId: number, taskId: number): string {
-  const date = new Date(dueDate);
+export function generateTaskFilePath(projectCreatedAt: string, projectId: number, taskId: number): string {
+  const date = new Date(projectCreatedAt);
   const year = format(date, 'yyyy');
   const month = format(date, 'MM');
   const day = format(date, 'dd');
-  
+
   return path.join(
     process.cwd(),
     'data',
@@ -81,14 +82,14 @@ export function generateTaskFilePath(dueDate: string, projectId: number, taskId:
 }
 
 /**
- * Generate directory path for a project's tasks on a specific date
+ * Generate directory path for a project's tasks based on project creation date
  */
-export function generateProjectTasksDir(dueDate: string, projectId: number): string {
-  const date = new Date(dueDate);
+export function generateProjectTasksDir(projectCreatedAt: string, projectId: number): string {
+  const date = new Date(projectCreatedAt);
   const year = format(date, 'yyyy');
   const month = format(date, 'MM');
   const day = format(date, 'dd');
-  
+
   return path.join(
     process.cwd(),
     'data',
@@ -97,6 +98,27 @@ export function generateProjectTasksDir(dueDate: string, projectId: number): str
     month,
     day,
     projectId.toString()
+  );
+}
+
+/**
+ * DEPRECATED: Legacy function that used due date - kept for migration purposes
+ */
+export function generateTaskFilePathByDueDate(dueDate: string, projectId: number, taskId: number): string {
+  const date = new Date(dueDate);
+  const year = format(date, 'yyyy');
+  const month = format(date, 'MM');
+  const day = format(date, 'dd');
+
+  return path.join(
+    process.cwd(),
+    'data',
+    'project-tasks',
+    year,
+    month,
+    day,
+    projectId.toString(),
+    `${taskId}-task.json`
   );
 }
 
@@ -155,9 +177,9 @@ async function findExistingTaskFile(projectId: number, taskId: number): Promise<
 
 /**
  * Write a single task to hierarchical storage
- * First tries to find the existing file location, then falls back to due date path
+ * Uses project creation date for consistent storage location
  */
-export async function writeTask(task: HierarchicalTask): Promise<void> {
+export async function writeTask(task: HierarchicalTask, projectCreatedAt?: string): Promise<void> {
   let filePath: string;
 
   // First, try to find the existing file location
@@ -168,9 +190,24 @@ export async function writeTask(task: HierarchicalTask): Promise<void> {
     filePath = existingFilePath;
     console.log(`📝 Updating existing task ${task.taskId} at: ${filePath}`);
   } else {
-    // Fall back to generating path based on due date (for new tasks)
-    filePath = generateTaskFilePath(task.dueDate, task.projectId, task.taskId);
-    console.log(`📝 Creating new task ${task.taskId} at: ${filePath}`);
+    // For new tasks, we need the project creation date
+    if (!projectCreatedAt) {
+      // Try to get project creation date from project storage
+      const { readProject } = await import('../projects-utils');
+      const project = await readProject(task.projectId);
+      projectCreatedAt = project?.createdAt;
+    }
+
+    if (projectCreatedAt) {
+      // Use project creation date for storage location
+      filePath = generateTaskFilePath(projectCreatedAt, task.projectId, task.taskId);
+      console.log(`📝 Creating new task ${task.taskId} using project creation date at: ${filePath}`);
+    } else {
+      // Fallback to due date if project creation date is not available
+      console.warn(`⚠️ Project creation date not found for project ${task.projectId}, falling back to due date`);
+      filePath = generateTaskFilePathByDueDate(task.dueDate, task.projectId, task.taskId);
+      console.log(`📝 Creating new task ${task.taskId} using due date fallback at: ${filePath}`);
+    }
   }
 
   const dirPath = path.dirname(filePath);
@@ -186,14 +223,43 @@ export async function writeTask(task: HierarchicalTask): Promise<void> {
 
 /**
  * Read a single task from hierarchical storage
+ * First tries to find by existing file location, then by project creation date
  */
-export async function readTask(dueDate: string, projectId: number, taskId: number): Promise<HierarchicalTask | null> {
+export async function readTask(projectCreatedAt: string, projectId: number, taskId: number): Promise<HierarchicalTask | null> {
   try {
-    const filePath = generateTaskFilePath(dueDate, projectId, taskId);
+    // First try to find the existing file location
+    const existingFilePath = await findExistingTaskFile(projectId, taskId);
+
+    if (existingFilePath) {
+      const content = await fs.readFile(existingFilePath, 'utf-8');
+      return JSON.parse(content) as HierarchicalTask;
+    }
+
+    // Try using project creation date
+    const filePath = generateTaskFilePath(projectCreatedAt, projectId, taskId);
     const content = await fs.readFile(filePath, 'utf-8');
     return JSON.parse(content) as HierarchicalTask;
   } catch (error) {
-    console.warn(`Task not found: ${dueDate}/${projectId}/${taskId}`, error);
+    console.warn(`Task not found: ${projectCreatedAt}/${projectId}/${taskId}`, error);
+    return null;
+  }
+}
+
+/**
+ * Read a single task by searching through all possible locations
+ */
+export async function readTaskById(projectId: number, taskId: number): Promise<HierarchicalTask | null> {
+  try {
+    const existingFilePath = await findExistingTaskFile(projectId, taskId);
+
+    if (existingFilePath) {
+      const content = await fs.readFile(existingFilePath, 'utf-8');
+      return JSON.parse(content) as HierarchicalTask;
+    }
+
+    return null;
+  } catch (error) {
+    console.warn(`Task not found: ${projectId}/${taskId}`, error);
     return null;
   }
 }
@@ -254,23 +320,47 @@ export async function readAllTasks(): Promise<HierarchicalTask[]> {
   
   try {
     const years = await fs.readdir(basePath);
-    
+
     for (const year of years) {
+      // Skip files, only process directories (years should be like "2025")
+      if (!year.match(/^\d{4}$/)) continue;
+
       const yearPath = path.join(basePath, year);
+      const yearStat = await fs.stat(yearPath);
+      if (!yearStat.isDirectory()) continue;
+
       const months = await fs.readdir(yearPath);
-      
+
       for (const month of months) {
+        // Skip files, only process directories (months should be like "01", "02", etc.)
+        if (!month.match(/^\d{2}$/)) continue;
+
         const monthPath = path.join(yearPath, month);
+        const monthStat = await fs.stat(monthPath);
+        if (!monthStat.isDirectory()) continue;
+
         const days = await fs.readdir(monthPath);
-        
+
         for (const day of days) {
+          // Skip files, only process directories (days should be like "01", "02", etc.)
+          if (!day.match(/^\d{2}$/)) continue;
+
           const dayPath = path.join(monthPath, day);
+          const dayStat = await fs.stat(dayPath);
+          if (!dayStat.isDirectory()) continue;
+
           const projects = await fs.readdir(dayPath);
           
           for (const project of projects) {
+            // Skip files, only process directories (projects should be numeric IDs)
+            if (!project.match(/^\d+$/)) continue;
+
             const projectPath = path.join(dayPath, project);
+            const projectStat = await fs.stat(projectPath);
+            if (!projectStat.isDirectory()) continue;
+
             const taskFiles = await fs.readdir(projectPath);
-            
+
             for (const taskFile of taskFiles) {
               if (taskFile.endsWith('-task.json')) {
                 const taskPath = path.join(projectPath, taskFile);

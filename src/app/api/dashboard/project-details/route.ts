@@ -3,8 +3,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
-import { readProjectTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
-import { readAllProjects } from '@/lib/projects-utils';
+import { listTasksByProject } from '@/app/api/payments/repos/tasks-repo';
+import { getProjectById } from '@/app/api/payments/repos/projects-repo';
 import { readProjectNotes } from '@/lib/project-notes-utils';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -42,23 +42,21 @@ export async function GET(request: Request) {
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
     const organizationsFile = await readFile(organizationsPath, 'utf-8');
 
-    // Read project tasks from hierarchical storage
-    const hierarchicalTasks = await readProjectTasks(projectId);
-    const allTasks = convertHierarchicalToLegacy(hierarchicalTasks);
+    // Read project tasks from tasks repo
+    const projectTasks = await listTasksByProject(projectId);
 
     // Read data from hierarchical structures
     const allNotes = await readProjectNotes(projectId);
     const allOrganizations = JSON.parse(organizationsFile);
 
-    const taskGroup = allTasks.find((t: any) => t.projectId === projectId);
-    if (!taskGroup) {
-      return NextResponse.json({ error: 'Project not found in tasks' }, { status: 404 });
+    if (!projectTasks || projectTasks.length === 0) {
+      return NextResponse.json({ error: 'No tasks found for project' }, { status: 404 });
     }
 
-    // Find the corresponding project in projects.json for business data
-    const projectInfo = allProjects.find((p: any) => p.projectId === projectId);
+    // Get project info from repo
+    const projectInfo = await getProjectById(projectId);
     if (!projectInfo) {
-      return NextResponse.json({ error: 'Project not found in projects' }, { status: 404 });
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
     // Find the organization for logo and additional info
@@ -75,16 +73,16 @@ export async function GET(request: Request) {
     }));
 
     // Use description from projects.json, fallback to generated summary
-    const totalTasks = taskGroup.tasks?.length || 0;
-    const completedTasks = taskGroup.tasks?.filter((task: any) => task.completed).length || 0;
-    const generatedSummary = `${taskGroup.typeTags?.join(' • ') || 'Project'} with ${totalTasks} tasks (${completedTasks} completed)`;
+    const totalTasks = projectTasks.length || 0;
+    const completedTasks = projectTasks.filter((task: any) => task.completed).length || 0;
+    const generatedSummary = `Project with ${totalTasks} tasks (${completedTasks} completed)`;
 
     return NextResponse.json({
       projectId,
-      title: taskGroup.title || 'Untitled Project',
-      summary: projectInfo.description || generatedSummary, // Use description from projects.json
-      logoUrl: organization?.logo || '/icons/default-logo.png', // Use organization logo
-      typeTags: taskGroup.typeTags || [],
+      title: projectInfo.title || 'Untitled Project',
+      summary: projectInfo.description || generatedSummary,
+      logoUrl: organization?.logo || '/icons/default-logo.png',
+      typeTags: projectInfo.tags || [],
       notes: transformedNotes,
       // Additional project info
       status: projectInfo.status,

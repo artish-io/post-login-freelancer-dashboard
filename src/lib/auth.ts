@@ -1,7 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import path from 'path';
-import fs from 'fs/promises';
+import { authenticateUser } from './storage/unified-storage-service';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -15,19 +14,18 @@ export const authOptions: NextAuthOptions = {
         console.log('🧪 Trying to authorize:', credentials);
 
         try {
-          const filePath = path.join(process.cwd(), 'data', 'users.json');
-          const file = await fs.readFile(filePath, 'utf-8');
-          const users = JSON.parse(file);
+          if (!credentials?.username || !credentials?.password) {
+            console.warn('❌ Missing username or password');
+            return null;
+          }
 
-          const user = users.find(
-            (u: any) =>
-              u.username === credentials?.username &&
-              u.password === credentials?.password
-          );
+          // Use unified storage service for authentication
+          const user = await authenticateUser(credentials.username, credentials.password);
 
           if (user) {
             const { id, name, email, avatar, type } = user;
 
+            console.log('✅ Authentication successful for user:', { id, name, type });
             return {
               id: String(id),
               name,
@@ -40,7 +38,7 @@ export const authOptions: NextAuthOptions = {
           console.warn('❌ No match found for credentials:', credentials);
           return null;
         } catch (err) {
-          console.error('🔥 Error reading users.json:', err);
+          console.error('🔥 Error during authentication:', err);
           return null;
         }
       },

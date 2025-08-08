@@ -1,17 +1,18 @@
 import fs from 'fs';
 import path from 'path';
+import { EventType } from '../events/event-logger';
 
 export interface NotificationEvent {
   id: string;
   timestamp: string;
-  type: string;
+  type: EventType;
   notificationType: number;
   actorId: number;
-  targetId: number;
+  targetId?: number;
   entityType: number;
-  entityId: string;
+  entityId: number | string;
   metadata: Record<string, any>;
-  context: Record<string, any>;
+  context?: Record<string, any>;
 }
 
 /**
@@ -224,57 +225,12 @@ export class NotificationStorage {
   }
 
   /**
-   * Migrate legacy notifications-log.json to partitioned structure
-   * This should be run once to migrate existing data
+   * Legacy migration method - no longer needed as legacy files have been removed
+   * @deprecated Legacy files have been removed. This method is kept for reference only.
    */
   static migrateLegacyFile(): void {
-    if (!fs.existsSync(this.LEGACY_FILE)) {
-      console.log('No legacy notifications file found, skipping migration');
-      return;
-    }
-
-    try {
-      const legacyContent = fs.readFileSync(this.LEGACY_FILE, 'utf-8');
-      const legacyEvents: NotificationEvent[] = JSON.parse(legacyContent);
-      
-      console.log(`🔄 Migrating ${legacyEvents.length} events from legacy file...`);
-      
-      // Group events by month/year
-      const eventsByPartition = new Map<string, NotificationEvent[]>();
-      
-      for (const event of legacyEvents) {
-        const eventDate = new Date(event.timestamp);
-        const partitionKey = this.getPartitionFilename(eventDate);
-        
-        if (!eventsByPartition.has(partitionKey)) {
-          eventsByPartition.set(partitionKey, []);
-        }
-        eventsByPartition.get(partitionKey)!.push(event);
-      }
-      
-      // Save each partition
-      this.ensureEventsDirectory();
-      for (const [partitionKey, events] of eventsByPartition) {
-        const partitionPath = path.join(this.EVENTS_DIR, partitionKey);
-        
-        // Sort events by timestamp (newest first)
-        events.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
-        
-        this.savePartition(partitionPath, events);
-        console.log(`✅ Migrated ${events.length} events to ${partitionKey}`);
-      }
-      
-      // Backup and remove legacy file
-      const backupPath = this.LEGACY_FILE + '.backup';
-      fs.copyFileSync(this.LEGACY_FILE, backupPath);
-      fs.unlinkSync(this.LEGACY_FILE);
-      
-      console.log(`🎉 Migration complete! Legacy file backed up to ${backupPath}`);
-      
-    } catch (error) {
-      console.error('Error migrating legacy notifications:', error);
-      throw error;
-    }
+    console.log('⚠️  Legacy migration no longer needed - legacy files have been removed');
+    console.log('✅ System is already using the new granular event storage');
   }
 
   /**

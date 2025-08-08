@@ -1,28 +1,46 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
-import { updateProject, readProject } from '@/lib/projects-utils';
+import { getProjectById, updateProject } from '@/app/api/payments/repos/projects-repo';
 import { NotificationStorage } from '@/lib/notifications/notification-storage';
 import { NOTIFICATION_TYPES, ENTITY_TYPES } from '@/lib/events/event-logger';
+import { requireSession, assert, assertProjectAccess } from '@/lib/auth/session-guard';
+import { ok, err, ErrorCodes, withErrorHandling } from '@/lib/http/envelope';
+import { logProjectTransition, Subsystems } from '@/lib/log/transitions';
 import fs from 'fs';
 import path from 'path';
 
 // Commissioner-initiated pause
-export async function POST(request: NextRequest) {
+async function handleProjectPause(request: NextRequest) {
   try {
-    const { projectId, commissionerId, projectTitle } = await request.json();
+    // 🔒 Auth - get session and validate
+    const { userId: actorId } = await requireSession(request);
 
-    if (!projectId || !commissionerId || !projectTitle) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-    }
+    const { projectId, projectTitle } = await request.json();
+    assert(projectId && projectTitle, ErrorCodes.MISSING_REQUIRED_FIELD, 400, 'Missing required fields: projectId, projectTitle');
 
-    // Get project details to find freelancer
-    const project = await readProject(projectId);
-    if (!project) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
-    }
+    // Get project details and validate commissioner access
+    const project = await getProjectById(Number(projectId));
+    assert(project, ErrorCodes.PROJECT_NOT_FOUND, 404, 'Project not found');
+
+    // 🔒 Ensure session user is the project commissioner
+    assertProjectAccess(actorId, project!, 'commissioner');
 
     // Update project status to paused
-    await updateProject(projectId, { status: 'paused' });
+    const updateSuccess = await updateProject(Number(projectId), { status: 'paused' });
+    assert(updateSuccess, ErrorCodes.INTERNAL_ERROR, 500, 'Failed to update project status');
+
+    // Log the transition
+    logProjectTransition(
+      Number(projectId),
+      project!.status,
+      'paused',
+      actorId,
+      Subsystems.PROJECTS_UPDATE,
+      {
+        reason: 'commissioner_initiated',
+        projectTitle: projectTitle,
+      }
+    );
 
     // Create notification event for freelancer
     const event = {
@@ -30,13 +48,13 @@ export async function POST(request: NextRequest) {
       timestamp: new Date().toISOString(),
       type: 'project_paused',
       notificationType: NOTIFICATION_TYPES.PROJECT_PAUSED,
-      actorId: commissionerId,
-      targetId: project.freelancerId,
+      actorId: actorId,
+      targetId: project!.freelancerId,
       entityType: ENTITY_TYPES.PROJECT,
       entityId: projectId.toString(),
       metadata: {
         projectTitle,
-        message: `${project.commissionerName || 'Commissioner'} has paused ${projectTitle}. But not to worry, you will receive an update when they unpause it for work to continue!`
+        message: `Commissioner has paused ${projectTitle}. But not to worry, you will receive an update when they unpause it for work to continue!`
       },
       context: {
         projectId
@@ -46,18 +64,33 @@ export async function POST(request: NextRequest) {
     // Store the event
     NotificationStorage.addEvent(event);
 
-    return NextResponse.json({
-      success: true,
-      message: 'Project paused successfully',
-      projectId,
-      status: 'paused'
-    });
+    return NextResponse.json(
+      ok({
+        entities: {
+          project: {
+            projectId: Number(projectId),
+            title: projectTitle,
+            status: 'paused',
+            freelancerId: project!.freelancerId,
+            commissionerId: project!.commissionerId,
+          },
+        },
+        message: 'Project paused successfully',
+        notificationsQueued: true,
+      })
+    );
 
   } catch (error) {
     console.error('Error pausing project:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json(
+      err(ErrorCodes.INTERNAL_ERROR, 'Failed to pause project', 500),
+      { status: 500 }
+    );
   }
 }
+
+// Wrap the handler with error handling
+export const POST = withErrorHandling(handleProjectPause);
 
 // Freelancer pause request
 export async function PUT(request: NextRequest) {
@@ -75,12 +108,10 @@ export async function PUT(request: NextRequest) {
     }
 
     // Get remaining milestone count
-    // Use hierarchical storage for project tasks
-    const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
-    const hierarchicalTasks = await readAllTasks();
-    const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
-    const projectTasks = projectTasksData.find((pt: any) => pt.projectId === projectId);
-    const remainingTasks = projectTasks?.tasks?.filter((task: any) => !task.completed).length || 0;
+    const { readAllTasks } = await import('@/app/api/payments/repos/tasks-repo');
+    const allTasks = await readAllTasks();
+    const projectTasks = allTasks.filter((task: any) => task.projectId === projectId);
+    const remainingTasks = projectTasks.filter((task: any) => !task.completed).length || 0;
 
     // Get freelancer name
     const usersPath = path.join(process.cwd(), 'data', 'users.json');

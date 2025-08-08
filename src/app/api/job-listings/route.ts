@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import path from 'path';
+import { ok, err, ErrorCodes, withErrorHandling } from '@/lib/http/envelope';
 
-export async function GET(request: NextRequest) {
-  try {
+async function handleJobListings(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const tab = searchParams.get('tab');
     const commissionerId = searchParams.get('commissionerId');
@@ -74,14 +74,19 @@ export async function GET(request: NextRequest) {
         filteredData = [...organizationApplications, ...commissionerGigRequests];
     }
 
-    return NextResponse.json({
-      data: filteredData,
-      tab,
-      count: filteredData.length
-    });
-
-  } catch (error) {
-    console.error('Error fetching job listings:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-  }
+    return NextResponse.json(
+      ok({
+        entities: {
+          jobListings: filteredData,
+          metadata: {
+            tab,
+            count: filteredData.length
+          }
+        },
+        message: 'Job listings retrieved successfully'
+      })
+    );
 }
+
+// Wrap the handler with error handling
+export const GET = withErrorHandling(handleJobListings);

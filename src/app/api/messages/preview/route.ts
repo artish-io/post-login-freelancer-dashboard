@@ -15,8 +15,8 @@ export async function GET(req: Request) {
   const userId = Number(userIdParam);
 
   try {
-    const usersPath = path.join(process.cwd(), 'data/users.json');
-    const users = JSON.parse(await fs.readFile(usersPath, 'utf-8'));
+    const { getAllUsers } = await import('@/lib/storage/unified-storage-service');
+    const users = await getAllUsers();
 
     const messagePreviews = await getMessagesPreview(userId);
 

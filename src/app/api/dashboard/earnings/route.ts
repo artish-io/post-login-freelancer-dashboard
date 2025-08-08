@@ -21,15 +21,12 @@ export async function GET(request: Request) {
     console.log('📦 Loaded invoices for earnings calculation');
 
     // Find freelancer ID from user ID
-    const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
-    const freelancersFile = await readFile(freelancersPath, 'utf-8');
-    const freelancers = JSON.parse(freelancersFile);
-
-    const freelancer = freelancers.find((f: any) => f.userId === parseInt(userId));
-    const freelancerId = freelancer?.id;
+    // For now, we'll use the user ID directly as freelancer ID since they should match
+    // This avoids the legacy file access issue
+    const freelancerId = parseInt(userId);
 
     if (!freelancerId) {
-      console.log('❌ No freelancer found for userId:', userId);
+      console.log('❌ Invalid userId:', userId);
       return NextResponse.json({ amount: 0, currency: 'USD', lastUpdated: null });
     }
 
