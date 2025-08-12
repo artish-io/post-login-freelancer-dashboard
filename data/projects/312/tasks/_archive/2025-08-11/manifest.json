@@ -1,0 +1,48 @@
+{
+  "archivedAt": "2025-08-11T16:40:01.781Z",
+  "projectId": 312,
+  "taskCount": 8,
+  "reason": "Migration to canonical tasks.json",
+  "originalFiles": [
+    {
+      "taskId": 101,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/08/14/312/101-task.json",
+      "mtime": "2025-08-03T15:57:39.551Z"
+    },
+    {
+      "taskId": 102,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/08/17/312/102-task.json",
+      "mtime": "2025-08-03T15:57:39.551Z"
+    },
+    {
+      "taskId": 103,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/08/19/312/103-task.json",
+      "mtime": "2025-08-03T15:57:39.551Z"
+    },
+    {
+      "taskId": 104,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/08/21/312/104-task.json",
+      "mtime": "2025-08-03T15:57:39.551Z"
+    },
+    {
+      "taskId": 105,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/08/24/312/105-task.json",
+      "mtime": "2025-08-03T15:57:39.551Z"
+    },
+    {
+      "taskId": 106,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/08/27/312/106-task.json",
+      "mtime": "2025-08-03T15:57:39.552Z"
+    },
+    {
+      "taskId": 107,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/08/29/312/107-task.json",
+      "mtime": "2025-08-03T15:57:39.552Z"
+    },
+    {
+      "taskId": 108,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/09/01/312/108-task.json",
+      "mtime": "2025-08-03T15:57:39.552Z"
+    }
+  ]
+}

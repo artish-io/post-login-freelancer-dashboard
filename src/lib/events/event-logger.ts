@@ -53,9 +53,12 @@ export const NOTIFICATION_TYPES = {
   PRODUCT_APPROVED: 102,
   PRODUCT_REJECTED: 103,
 
-  // System notifications (120-139)
-  SYSTEM_MAINTENANCE: 120,
-  ACCOUNT_VERIFIED: 121
+  // Rating notifications (120-139)
+  PROJECT_RATING_RECEIVED: 120,
+
+  // System notifications (140-159)
+  SYSTEM_MAINTENANCE: 140,
+  ACCOUNT_VERIFIED: 141
 } as const;
 
 // User type targeting for notifications
@@ -103,7 +106,8 @@ export const ENTITY_TYPES = {
   PROPOSAL: 7,
   USER: 8,
   ORGANIZATION: 9,
-  MILESTONE: 10
+  MILESTONE: 10,
+  RATING: 11
 } as const;
 
 export type EventType =
@@ -125,11 +129,13 @@ export type EventType =
   | 'proposal_sent' | 'proposal_accepted' | 'proposal_rejected'
   // Network events
   | 'contact_added' | 'contact_removed'
+  // Rating events
+  | 'project_rating_submitted'
   // System events
   | 'user_login' | 'user_logout' | 'profile_updated';
 
 export type EntityType =
-  | 'task' | 'project' | 'gig' | 'message' | 'invoice' | 'product' | 'proposal' | 'user' | 'organization' | 'milestone';
+  | 'task' | 'project' | 'gig' | 'message' | 'invoice' | 'product' | 'proposal' | 'user' | 'organization' | 'milestone' | 'rating';
 
 export interface NotificationRule {
   eventType: EventType;
@@ -202,6 +208,7 @@ function getNotificationTypeNumber(eventType: EventType): number {
     'review_posted': NOTIFICATION_TYPES.PRODUCT_PURCHASED,
     'contact_added': 0,
     'contact_removed': 0,
+    'project_rating_submitted': NOTIFICATION_TYPES.PROJECT_RATING_RECEIVED,
     'user_login': 0,
     'user_logout': 0,
     'profile_updated': 0
@@ -222,7 +229,8 @@ function getEntityTypeNumber(entityType: EntityType): number {
     'proposal': ENTITY_TYPES.PROPOSAL,
     'user': ENTITY_TYPES.USER,
     'organization': ENTITY_TYPES.ORGANIZATION,
-    'milestone': ENTITY_TYPES.MILESTONE
+    'milestone': ENTITY_TYPES.MILESTONE,
+    'rating': ENTITY_TYPES.RATING
   };
 
   return mapping[entityType] || 0;

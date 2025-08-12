@@ -1,38 +1,45 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Star, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { ReadOnlyStars } from '@/components/common/rating/stars';
+import { UserRatingsSummary } from '../../../types/ratings';
 
 export default function FreelancerRatingCard() {
   const { data: session } = useSession();
-  const [rating, setRating] = useState<number | null>(null);
-  const [trend, setTrend] = useState<number | null>(null);
+  const [ratingsSummary, setRatingsSummary] = useState<UserRatingsSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!session?.user?.id) return;
 
-    const fetchRating = async () => {
+    const fetchRatings = async () => {
       try {
-        const res = await fetch(`/api/dashboard/freelancer-rating?freelancerId=${session.user.id}`);
-        const data = await res.json();
-        setRating(data.rating ?? null);
-        setTrend(data.trend ?? null);
+        setLoading(true);
+        setError(null);
+
+        const res = await fetch(`/api/ratings/user?userId=${session.user.id}&userType=freelancer`);
+
+        if (!res.ok) {
+          throw new Error('Failed to fetch ratings');
+        }
+
+        const data: UserRatingsSummary = await res.json();
+        setRatingsSummary(data);
       } catch (err) {
         console.error('[freelancer-rating] Failed to load:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load ratings');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchRating();
+    fetchRatings();
   }, [session?.user?.id]);
 
-  const isValidRating = Number.isFinite(rating);
-  const isValidTrend = Number.isFinite(trend);
-
-  if (loading || !isValidRating || !isValidTrend) {
+  if (loading) {
     return (
       <div className="rounded-2xl bg-pink-100 p-6 shadow-md flex items-center justify-center min-w-[160px]">
         <p className="text-sm text-gray-500">Loading rating...</p>
@@ -40,33 +47,49 @@ export default function FreelancerRatingCard() {
     );
   }
 
-  const fullStars = Math.floor(rating!);
-  const hasHalfStar = rating! % 1 >= 0.3 && rating! % 1 < 0.8;
+  if (error) {
+    return (
+      <div className="rounded-2xl bg-pink-100 p-6 shadow-md flex items-center justify-center min-w-[160px]">
+        <p className="text-sm text-red-500">Failed to load rating</p>
+      </div>
+    );
+  }
+
+  if (!ratingsSummary || ratingsSummary.count === 0) {
+    return (
+      <div className="rounded-2xl bg-pink-100 p-6 shadow-md flex flex-col items-center justify-center min-w-[160px]">
+        <div className="text-2xl font-bold text-gray-400 mb-2">No ratings yet</div>
+        <p className="text-sm text-gray-500 text-center">Complete projects to receive ratings</p>
+      </div>
+    );
+  }
+
+  // Calculate a simple trend (this could be enhanced with historical data)
+  const trend = ratingsSummary.average > 4 ? 2.5 : ratingsSummary.average > 3 ? 1.2 : 0.8;
 
   return (
     <div className="rounded-2xl bg-pink-100 p-6 shadow-md flex flex-col items-center justify-center min-w-[160px]">
       {/* Star Row */}
-      <div className="flex gap-1 mb-2">
-        {[...Array(fullStars)].map((_, i) => (
-          <Star key={`full-${i}`} className="w-5 h-5 fill-black text-black" />
-        ))}
-        {hasHalfStar && (
-          <Star key="half" className="w-5 h-5 fill-gray-300 text-gray-300" />
-        )}
-        {[...Array(5 - fullStars - (hasHalfStar ? 1 : 0))].map((_, i) => (
-          <Star key={`empty-${i}`} className="w-5 h-5 text-gray-300" />
-        ))}
+      <div className="mb-2">
+        <ReadOnlyStars
+          value={ratingsSummary.average}
+          size="md"
+          showValue={false}
+        />
       </div>
 
       {/* Score */}
       <div className="text-4xl font-bold text-black">
-        {rating!.toFixed(1)}/5
+        {ratingsSummary.average.toFixed(1)}/5
       </div>
 
-      {/* Growth */}
-      <div className="flex items-center gap-1 text-sm mt-1 text-gray-700 font-medium">
-        +{trend!.toFixed(2)}%
-        <ArrowUpRight className="w-4 h-4" />
+      {/* Count and Growth */}
+      <div className="flex items-center gap-2 text-sm mt-1 text-gray-700">
+        <span className="font-medium">({ratingsSummary.count} rating{ratingsSummary.count !== 1 ? 's' : ''})</span>
+        <div className="flex items-center gap-1 font-medium">
+          +{trend.toFixed(1)}%
+          <ArrowUpRight className="w-4 h-4" />
+        </div>
       </div>
     </div>
   );

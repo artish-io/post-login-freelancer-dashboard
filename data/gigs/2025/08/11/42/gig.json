@@ -1,0 +1,36 @@
+{
+  "id": 42,
+  "title": "Health Check Gig",
+  "organizationId": 1,
+  "commissionerId": 999,
+  "category": "development",
+  "subcategory": "",
+  "tags": [],
+  "hourlyRateMin": 25,
+  "hourlyRateMax": 25,
+  "description": "",
+  "deliveryTimeWeeks": 4,
+  "estimatedHours": 40,
+  "status": "Available",
+  "toolsRequired": [],
+  "executionMethod": "milestone",
+  "invoicingMethod": "milestone",
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Health Check Milestone",
+      "description": "Test milestone for health check",
+      "startDate": "2025-08-12T01:14:56.294Z",
+      "endDate": "2025-08-19T01:14:56.294Z"
+    }
+  ],
+  "startType": "Immediately",
+  "lowerBudget": 1000,
+  "upperBudget": 1000,
+  "postedDate": "2025-08-12",
+  "notes": "Budget: $1,000",
+  "isPublic": true,
+  "isTargetedRequest": false,
+  "targetFreelancerId": null,
+  "createdAt": "2025-08-12T01:14:56.296Z"
+}

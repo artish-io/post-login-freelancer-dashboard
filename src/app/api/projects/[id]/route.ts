@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getProjectById } from '@/app/api/payments/repos/projects-repo';
+import { readProject, ProjectStorageError } from '@/lib/storage/normalize-project';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { validateFreelancerProjectAccess } from '@/lib/freelancer-access-control';
@@ -37,15 +37,36 @@ export async function GET(
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
-    const project = await getProjectById(projectId);
+    let project;
+    try {
+      project = await readProject(projectId);
+    } catch (error) {
+      if (error instanceof ProjectStorageError) {
+        if (error.code === 'PROJECT_NOT_FOUND') {
+          return NextResponse.json({
+            error: 'Project not found',
+            code: 'PROJECT_NOT_FOUND'
+          }, { status: 404 });
+        }
+        if (error.code === 'MIGRATION_REQUIRED') {
+          return NextResponse.json({
+            error: 'Project requires migration to hierarchical storage',
+            code: 'MIGRATION_REQUIRED',
+            details: 'Please run the storage normalization migration'
+          }, { status: 409 });
+        }
+      }
 
-    if (!project) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+      console.error('Error reading project data:', error);
+      return NextResponse.json({
+        error: 'Failed to read project',
+        code: 'STORAGE_IO_ERROR'
+      }, { status: 500 });
     }
 
     return NextResponse.json(project);
   } catch (error) {
-    console.error('Error reading project data:', error);
+    console.error('Error in project API:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

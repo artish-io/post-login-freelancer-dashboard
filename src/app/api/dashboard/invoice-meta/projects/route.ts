@@ -1,10 +1,9 @@
 // src/app/api/dashboard/invoice-meta/projects/route.ts
 
 import { NextResponse } from 'next/server';
-import { readFile } from 'fs/promises';
-import path from 'path';
-import { readAllProjects } from '@/app/api/payments/repos/projects-repo';
-import { readAllTasks } from '@/app/api/payments/repos/tasks-repo';
+import { readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks } from '@/lib/project-tasks/hierarchical-storage';
+import { getAllInvoices } from '@/lib/invoice-storage';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -16,12 +15,11 @@ export async function GET(request: Request) {
   }
 
   try {
-    const [allProjects, allTasks, invoicesData] = await Promise.all([
+    const [allProjects, allTasks, allInvoices] = await Promise.all([
       readAllProjects(),
       readAllTasks(),
-      readFile(path.join(process.cwd(), 'data', 'invoices.json'), 'utf-8')
+      getAllInvoices() // Use hierarchical storage for invoices
     ]);
-    const allInvoices = JSON.parse(invoicesData);
 
     let filtered = allProjects.filter((p: any) => p.freelancerId === freelancerId);
 

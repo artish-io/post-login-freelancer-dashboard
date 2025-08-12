@@ -1,0 +1,33 @@
+{
+  "id": 44,
+  "title": "Test Milestone Gig",
+  "organizationId": 1,
+  "commissionerId": 32,
+  "category": "development",
+  "subcategory": "",
+  "tags": [],
+  "hourlyRateMin": 25,
+  "hourlyRateMax": 25,
+  "description": "",
+  "deliveryTimeWeeks": 4,
+  "estimatedHours": 40,
+  "status": "Available",
+  "toolsRequired": [],
+  "executionMethod": "milestone",
+  "invoicingMethod": "milestone",
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Test Milestone"
+    }
+  ],
+  "startType": "Immediately",
+  "lowerBudget": 1000,
+  "upperBudget": 1000,
+  "postedDate": "2025-08-12",
+  "notes": "Budget: $1,000",
+  "isPublic": true,
+  "isTargetedRequest": false,
+  "targetFreelancerId": null,
+  "createdAt": "2025-08-12T01:37:42.619Z"
+}

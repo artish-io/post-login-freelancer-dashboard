@@ -1,0 +1,13 @@
+{
+  "archivedAt": "2025-08-11T16:40:01.772Z",
+  "projectId": 322,
+  "taskCount": 1,
+  "reason": "Migration to canonical tasks.json",
+  "originalFiles": [
+    {
+      "taskId": 302,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/08/03/322/302-task.json",
+      "mtime": "2025-08-05T17:01:44.850Z"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "timestamp": "2025-08-11T19:25:04.137Z",
+  "config": {
+    "baseUrl": "http://localhost:3000",
+    "testCommissionerId": 31,
+    "testFreelancerId": 1,
+    "testBudget": 5000,
+    "testGigTitle": "Test Completion Invoicing Workflow",
+    "testProjectTasks": 3,
+    "timeout": 30000
+  },
+  "state": {
+    "gigId": 8,
+    "projectId": null,
+    "applicationId": null,
+    "upfrontInvoiceNumber": null,
+    "completionInvoiceNumber": null,
+    "taskIds": [],
+    "errors": [
+      "Application creation failed: This gig is no longer accepting applications (Gig Status: Unavailable)",
+      "Cannot test matching - missing gig ID or application ID",
+      "Cannot test upfront invoice - no project ID available",
+      "Cannot test upfront payment - no upfront invoice available",
+      "Cannot test task approval - no tasks or project ID available",
+      "Cannot test completion invoice - no project ID available"
+    ],
+    "warnings": [],
+    "testResults": {
+      "gigCreation": {
+        "status": "PASS",
+        "gigId": 8,
+        "message": "Gig created successfully with completion invoicing"
+      },
+      "freelancerApplication": {
+        "status": "FAIL",
+        "error": "This gig is no longer accepting applications (Gig Status: Unavailable)",
+        "gigStatus": "Unavailable"
+      },
+      "dataIntegrity": {
+        "status": "PASS",
+        "checks": [
+          {
+            "check": "invoice_amounts_total",
+            "expected": 5000,
+            "actual": 5000,
+            "pass": true
+          },
+          {
+            "check": "gig_status_unavailable",
+            "expected": "Unavailable",
+            "actual": "Unavailable",
+            "pass": true
+          }
+        ],
+        "message": "2/2 integrity checks passed"
+      }
+    }
+  },
+  "summary": {
+    "totalTests": 3,
+    "passedTests": 2,
+    "failedTests": 1,
+    "warnings": 0,
+    "errors": 6,
+    "success": false
+  }
+}

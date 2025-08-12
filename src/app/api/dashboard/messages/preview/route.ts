@@ -1,8 +1,6 @@
 // src/app/api/dashboard/messages/preview/route.ts
 
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { promises as fs } from 'fs';
 import { getMessagesPreview } from '@/lib/messages-utils';
 
 export async function GET(req: Request) {
@@ -16,19 +14,12 @@ export async function GET(req: Request) {
   const sessionUserId = Number(userIdParam);
 
   try {
-    const [usersData, contactsData] = await Promise.all([
-      fs.readFile(path.join(process.cwd(), 'data/users.json'), 'utf-8'),
-      fs.readFile(path.join(process.cwd(), 'data/contacts.json'), 'utf-8'),
-    ]);
-
-    const users = JSON.parse(usersData);
-    const contacts = JSON.parse(contactsData);
+    // Use hierarchical storage instead of direct file access
+    const { getAllUsers } = await import('@/lib/storage/unified-storage-service');
+    const users = await getAllUsers();
 
     // Get message previews using the updated hierarchical structure
     const messagePreviews = await getMessagesPreview(sessionUserId);
-
-    const userContacts =
-      contacts.find((c: { userId: number }) => c.userId === sessionUserId)?.contacts || [];
 
     const previews = messagePreviews
       .map((preview: any) => {

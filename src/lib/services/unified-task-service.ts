@@ -119,7 +119,46 @@ export class UnifiedTaskService {
 
     // Check if invoice should be generated
     let invoiceGenerated = false;
-    if (generateInvoice && project.invoicingMethod === 'completion') {
+    let generatedInvoiceId: string | null = null;
+
+    if (project.invoicingMethod === 'milestone') {
+      // For milestone invoicing, generate invoice for each approved task
+      try {
+        const invoiceId = `MILESTONE-${project.projectId}-${task.taskId}`;
+        console.log(`📄 Generating milestone invoice: ${invoiceId}`);
+
+        // Calculate invoice amount (total budget divided by number of tasks)
+        const projectTasks = await UnifiedStorageService.getTasksByProject(project.projectId);
+        const taskCount = projectTasks.length;
+        const invoiceAmount = taskCount > 0 ? (project.budget?.upper || project.budget?.lower || 1000) / taskCount : 1000;
+
+        // Create invoice data
+        const invoiceData = {
+          invoiceId,
+          projectId: project.projectId,
+          taskId: task.taskId,
+          freelancerId: project.freelancerId,
+          commissionerId: project.commissionerId,
+          amount: Math.round(invoiceAmount * 100) / 100, // Round to 2 decimal places
+          currency: 'USD',
+          status: 'sent',
+          type: 'milestone',
+          description: `Milestone payment for: ${task.title}`,
+          createdAt: new Date().toISOString(),
+          dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString() // 30 days from now
+        };
+
+        // Save invoice using hierarchical storage
+        await this.saveInvoice(invoiceData);
+        invoiceGenerated = true;
+        generatedInvoiceId = invoiceId;
+        console.log(`✅ Generated milestone invoice: ${invoiceId} for $${invoiceAmount}`);
+
+      } catch (invoiceError) {
+        console.error('Failed to generate milestone invoice:', invoiceError);
+        // Don't fail the task approval if invoice generation fails
+      }
+    } else if (generateInvoice && project.invoicingMethod === 'completion') {
       // Invoice generation will be handled by transaction service
       invoiceGenerated = true;
     }
@@ -130,7 +169,8 @@ export class UnifiedTaskService {
       shouldNotify: true,
       notificationTarget: project.freelancerId,
       message: `Task "${task.title}" approved successfully`,
-      invoiceGenerated
+      invoiceGenerated,
+      invoiceId: generatedInvoiceId
     };
   }
 
@@ -182,6 +222,38 @@ export class UnifiedTaskService {
       notificationTarget: project.freelancerId,
       message: `Task "${task.title}" rejected and returned for revision`
     };
+  }
+
+  /**
+   * Save invoice to hierarchical storage
+   */
+  private static async saveInvoice(invoiceData: any): Promise<void> {
+    const { promises: fs } = await import('fs');
+    const path = await import('path');
+
+    // Create hierarchical path based on creation date
+    const createdDate = new Date(invoiceData.createdAt);
+    const year = createdDate.getFullYear();
+    const month = String(createdDate.getMonth() + 1).padStart(2, '0');
+    const day = String(createdDate.getDate()).padStart(2, '0');
+
+    const invoiceDir = path.join(
+      process.cwd(),
+      'data',
+      'invoices',
+      year.toString(),
+      month,
+      day
+    );
+
+    // Ensure directory exists
+    await fs.mkdir(invoiceDir, { recursive: true });
+
+    // Save invoice file
+    const invoiceFile = path.join(invoiceDir, `${invoiceData.invoiceId}.json`);
+    await fs.writeFile(invoiceFile, JSON.stringify(invoiceData, null, 2));
+
+    console.log(`💾 Saved invoice to: ${invoiceFile}`);
   }
 
   /**

@@ -23,6 +23,7 @@ type Props = {
 };
 
 export default function ProposalClientSelector({ selectedContact, onSelect }: Props) {
+  // Force recompilation - using commissioners-v2 API
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [query, setQuery] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
@@ -30,24 +31,41 @@ export default function ProposalClientSelector({ selectedContact, onSelect }: Pr
   useEffect(() => {
     const fetchContacts = async () => {
       try {
-        const res = await fetch('/api/user/commissioners');
+        console.log('[ProposalClientSelector] Fetching contacts from commissioners-v2 API...');
+        const res = await fetch('/api/user/commissioners-v2');
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+
         const data = await res.json();
+        console.log('[ProposalClientSelector] Received data:', data);
+
+        // Check if the response is an error or not an array
+        if (!Array.isArray(data)) {
+          console.error('[ProposalClientSelector] API returned non-array response:', data);
+          setContacts([]);
+          return;
+        }
+
         setContacts(data);
+        console.log('[ProposalClientSelector] Set contacts:', data.length);
       } catch (err) {
-        console.error('Failed to load contacts', err);
+        console.error('[ProposalClientSelector] Failed to load contacts:', err);
+        setContacts([]);
       }
     };
     fetchContacts();
   }, []);
 
-  const filtered = contacts.filter((contact) => {
+  const filtered = Array.isArray(contacts) ? contacts.filter((contact) => {
     const q = query.toLowerCase();
     return (
       contact.name.toLowerCase().includes(q) ||
       contact.email.toLowerCase().includes(q) ||
       contact.organization?.name.toLowerCase().includes(q)
     );
-  });
+  }) : [];
 
   const isEmail = (text: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text.trim());

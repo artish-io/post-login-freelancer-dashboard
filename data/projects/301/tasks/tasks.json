@@ -1,0 +1,78 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Develop colour palette",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.547Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/color-palette-link"
+      },
+      "projectId": 301,
+      "description": "Create a fresh color scheme aligned with the brand’s visual identity.",
+      "dueDate": "2025-07-29T00:00:00.000Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.547Z",
+      "lastModified": "2025-08-03T15:57:39.547Z"
+    },
+    {
+      "id": 2,
+      "title": "Hero section design",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.547Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/hero-section-link"
+      },
+      "projectId": 301,
+      "description": "Design the landing page’s hero section with clear messaging and CTAs.",
+      "dueDate": "2025-07-15T00:00:00.000Z",
+      "order": 2,
+      "version": 2,
+      "createdDate": "2025-08-03T15:57:39.547Z",
+      "lastModified": "2025-08-03T15:57:39.547Z"
+    },
+    {
+      "id": 3,
+      "title": "10 year anniversary graphic assets",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.547Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/anniversary-assets"
+      },
+      "projectId": 301,
+      "description": "Create commemorative graphic assets for the 10-year anniversary celebration.",
+      "dueDate": "2025-08-27T00:00:00.000Z",
+      "order": 3,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.547Z",
+      "lastModified": "2025-08-03T15:57:39.547Z"
+    },
+    {
+      "id": 11,
+      "title": "Testimonial section design",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.548Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/testimonials"
+      },
+      "projectId": 301,
+      "description": "Design a testimonial section with 3–4 quotes and brand-aligned visuals.",
+      "dueDate": "2025-07-17T00:00:00.000Z",
+      "order": 4,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.547Z",
+      "lastModified": "2025-08-03T15:57:39.548Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.764Z",
+  "version": 1
+}

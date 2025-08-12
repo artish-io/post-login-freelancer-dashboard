@@ -1,0 +1,14 @@
+{
+  "invoiceId": "MILESTONE-1754959894053-1754959895820",
+  "projectId": 1754959894053,
+  "taskId": 1754959895820,
+  "freelancerId": 31,
+  "commissionerId": 32,
+  "amount": 3333.33,
+  "currency": "USD",
+  "status": "sent",
+  "type": "milestone",
+  "description": "Milestone payment for: Project Setup and Architecture",
+  "createdAt": "2025-08-12T00:51:29.933Z",
+  "dueDate": "2025-09-11T00:51:29.933Z"
+}

@@ -35,9 +35,20 @@ export default function ProjectSelectDropdown({ freelancerId, commissionerId, se
         const res = await fetch(url);
         const data = await res.json();
         console.log('✅ [Fetched Projects]:', data);
-        setProjects(data);
+
+        // Check if the response is an error object or an array
+        if (data && data.error) {
+          console.error('❌ [API Error]:', data.error);
+          setProjects([]); // Set empty array on error
+        } else if (Array.isArray(data)) {
+          setProjects(data);
+        } else {
+          console.error('❌ [Invalid Response] Expected array, got:', typeof data);
+          setProjects([]); // Set empty array for invalid response
+        }
       } catch (err) {
         console.error('❌ [Fetch Error] Failed to fetch projects:', err);
+        setProjects([]); // Set empty array on fetch error
       }
     };
     fetchProjects();

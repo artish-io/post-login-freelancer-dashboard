@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useErrorToast } from '../../../../../components/ui/toast';
 
 import InvoiceHeader from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-header';
 import InvoiceMetaSection from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-meta-section';
@@ -14,6 +15,7 @@ export default function CreateInvoicePage() {
   const { data: session } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const showErrorToast = useErrorToast();
 
   const resumeInvoiceNumber = searchParams.get('invoiceNumber');
   const isResumeMode = searchParams.get('pageState') === 'resume';
@@ -306,18 +308,36 @@ export default function CreateInvoicePage() {
       console.log(`🔍 Found ${availableTasks.length} available tasks for invoicing:`, availableTasks);
 
       if (availableTasks.length > 0) {
-        // Calculate rate per task based on project budget and invoicing method
+        // ✅ Enhanced rate calculation with edge case handling
         let ratePerTask = 0;
         if (projectInfo?.totalBudget && projectInfo?.totalTasks) {
           if (projectInfo.invoicingMethod === 'completion') {
-            // For completion-based projects: (totalBudget - upfrontCommitment) / totalTasks
+            // For completion-based projects: Handle edge cases where some tasks are already paid
             const upfrontCommitment = projectInfo.upfrontCommitment || 0;
             const milestonePool = projectInfo.totalBudget - upfrontCommitment;
-            ratePerTask = milestonePool / projectInfo.totalTasks;
 
-            console.log(`💰 Completion-based rate per task: $${ratePerTask} (Budget: $${projectInfo.totalBudget}, Upfront: $${upfrontCommitment}, Tasks: ${projectInfo.totalTasks})`);
+            // Check how many tasks have already been paid
+            const paidTasksCount = invoices
+              .filter((inv: any) => inv.projectId === selectedProject.projectId && inv.status === 'paid')
+              .reduce((count: number, inv: any) => count + (inv.milestones?.length || 0), 0);
+
+            const remainingTasks = Math.max(1, projectInfo.totalTasks - paidTasksCount);
+            const remainingBudget = milestonePool - (paidTasksCount * (milestonePool / projectInfo.totalTasks));
+
+            ratePerTask = remainingBudget / remainingTasks;
+
+            console.log(`💰 Completion-based rate calculation:`, {
+              totalBudget: projectInfo.totalBudget,
+              upfrontCommitment,
+              milestonePool,
+              totalTasks: projectInfo.totalTasks,
+              paidTasksCount,
+              remainingTasks,
+              remainingBudget,
+              ratePerTask
+            });
           } else {
-            // For milestone-based projects: totalBudget / totalTasks
+            // For milestone-based projects: totalBudget / totalTasks (no upfront payment)
             ratePerTask = projectInfo.totalBudget / projectInfo.totalTasks;
 
             console.log(`💰 Milestone-based rate per task: $${ratePerTask} (Budget: $${projectInfo.totalBudget}, Tasks: ${projectInfo.totalTasks})`);
@@ -508,7 +528,10 @@ export default function CreateInvoicePage() {
 
   const handlePreviewInvoice = async () => {
     if (!invoiceNumber) {
-      alert('Please wait — invoice number is still generating.');
+      showErrorToast(
+        'Invoice Not Ready',
+        'Please wait — invoice number is still generating.'
+      );
       return;
     }
 
@@ -582,6 +605,7 @@ export default function CreateInvoicePage() {
             onUpdate={updateMilestone}
             onRemove={removeMilestone}
             onAdd={addMilestone}
+            readOnly={selectedProject?.projectId ? true : false} // Read-only for project-based invoices
           />
         </div>
 

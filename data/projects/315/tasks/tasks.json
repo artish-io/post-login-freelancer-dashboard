@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {
+      "id": 203,
+      "title": "Initial setup for Interactive Park Map Web App",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": "2025-08-04T05:32:27.653Z",
+      "links": {
+        "brief": "",
+        "work": ""
+      },
+      "projectId": 315,
+      "description": "Begin work on Interactive Park Map Web App project",
+      "dueDate": "2025-07-28T00:00:00.000Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-04T05:32:27.653Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.771Z",
+  "version": 1
+}

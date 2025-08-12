@@ -1,129 +1,178 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs';
-import { differenceInWeeks } from 'date-fns';
-import { logGigRequestSent } from '../../../../lib/events/event-logger';
-import { saveGig, getNextGigId, type Gig } from '../../../../lib/gigs/hierarchical-storage';
+import { ensureDir, writeJsonAtomic } from '../../../../lib/fs-json';
+import { format } from 'date-fns';
+import { loadGigsIndex, saveGigsIndex, findRecentDuplicate, updateGigInIndex } from '../../../../lib/storage/gigs-index';
+import { getNextId } from '../../../../lib/ids';
+import { validateGigInput, type GigInput } from '../../../../lib/validate/gigs';
 
-const ORGANIZATIONS_PATH = path.join(process.cwd(), 'data', 'organizations.json');
+// Response types
+type ApiError = {
+  success: false;
+  code: 'INVALID_INPUT' | 'STORAGE_IO_ERROR';
+  message: string;
+  details?: unknown;
+};
 
-export async function POST(req: Request) {
+type ApiSuccess = {
+  success: true;
+  gigId: number;
+  message: string;
+};
+
+/**
+ * Create a gig object from validated input
+ */
+function createGigFromInput(gigId: number, input: GigInput, createdAt: string): GigObject {
+  return {
+    id: gigId,
+    title: input.title,
+    organizationId: input.organizationData?.id || 0, // Will be handled separately
+    commissionerId: input.commissionerId,
+    category: input.category || 'general',
+    subcategory: input.subcategory || '',
+    tags: input.skills || input.tags || [],
+    hourlyRateMin: Math.round((input.lowerBudget || input.budget) / (input.estimatedHours || 40)),
+    hourlyRateMax: Math.round((input.upperBudget || input.budget) / (input.estimatedHours || 40)),
+    description: input.description || '',
+    deliveryTimeWeeks: input.deliveryTimeWeeks || 4,
+    estimatedHours: input.estimatedHours || 40,
+    status: 'Available' as const,
+    toolsRequired: input.tools || [],
+    executionMethod: input.executionMethod,
+    invoicingMethod: input.invoicingMethod || input.executionMethod, // Use invoicingMethod if provided, fallback to executionMethod
+    milestones: input.milestones,
+    startType: input.startType,
+    customStartDate: input.customStartDate,
+    endDate: input.endDate,
+    lowerBudget: input.lowerBudget || input.budget,
+    upperBudget: input.upperBudget || input.budget,
+    postedDate: createdAt.split('T')[0],
+    notes: `Budget: $${input.budget.toLocaleString()}`,
+    isPublic: input.isPublic !== false,
+    isTargetedRequest: input.isTargetedRequest || false,
+    targetFreelancerId: input.targetFreelancerId || null
+  };
+}
+
+interface GigObject {
+  id: number;
+  title: string;
+  organizationId: number;
+  commissionerId: number;
+  category: string;
+  subcategory: string;
+  tags: string[];
+  hourlyRateMin: number;
+  hourlyRateMax: number;
+  description: string;
+  deliveryTimeWeeks: number;
+  estimatedHours: number;
+  status: 'Available' | 'Unavailable' | 'Closed';
+  toolsRequired: string[];
+  executionMethod: 'completion' | 'milestone';
+  invoicingMethod: 'completion' | 'milestone';
+  milestones?: Array<{
+    id: string;
+    title: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+  }>;
+  startType?: 'Immediately' | 'Custom';
+  customStartDate?: string;
+  endDate?: string;
+  lowerBudget: number;
+  upperBudget: number;
+  postedDate: string;
+  notes: string;
+  isPublic: boolean;
+  isTargetedRequest: boolean;
+  targetFreelancerId?: number | null;
+}
+
+export async function POST(req: Request): Promise<NextResponse<ApiSuccess | ApiError>> {
   try {
-    const gigData = await req.json();
-
-    // Get next available gig ID
-    const newGigId = await getNextGigId();
-
-    // Read existing organizations
-    const organizationsRaw = fs.readFileSync(ORGANIZATIONS_PATH, 'utf-8');
-    const organizations = JSON.parse(organizationsRaw);
-
-    // Handle organization data
-    let organizationId = gigData.organizationData.id;
-    
-    if (!organizationId) {
-      // Check if organization exists for this contact person
-      const existingOrg = organizations.find((org: any) => 
-        org.contactPersonId === gigData.commissionerId
-      );
-
-      if (existingOrg) {
-        // Update existing organization
-        Object.assign(existingOrg, {
-          ...gigData.organizationData,
-          contactPersonId: gigData.commissionerId,
-        });
-        organizationId = existingOrg.id;
-      } else {
-        // Create new organization
-        const newOrgId = Math.max(...organizations.map((org: any) => org.id), 0) + 1;
-        const newOrganization = {
-          id: newOrgId,
-          ...gigData.organizationData,
-          contactPersonId: gigData.commissionerId,
-        };
-        organizations.push(newOrganization);
-        organizationId = newOrgId;
-      }
-
-      // Write updated organizations back to file
-      fs.writeFileSync(ORGANIZATIONS_PATH, JSON.stringify(organizations, null, 2));
+    // Parse and validate request body
+    const body = await req.json().catch(() => null);
+    if (!body) {
+      return NextResponse.json({
+        success: false,
+        code: 'INVALID_INPUT',
+        message: 'Invalid JSON in request body'
+      }, { status: 400 });
     }
 
-    // Calculate project duration and hourly rate
-    const startDate = gigData.customStartDate ? new Date(gigData.customStartDate) : new Date();
-    const endDate = new Date(gigData.endDate);
-    const deliveryTimeWeeks = differenceInWeeks(endDate, startDate);
-    const estimatedHours = deliveryTimeWeeks * 40; // Assuming 40 hours per week
-    const hourlyRateMin = Math.round(gigData.lowerBudget / estimatedHours);
-    const hourlyRateMax = Math.round(gigData.upperBudget / estimatedHours);
-
-    // Create new gig
-    const newGig: Gig = {
-      id: newGigId,
-      title: `${gigData.subcategory} - ${gigData.organizationData.name}`,
-      organizationId,
-      commissionerId: gigData.commissionerId,
-      category: gigData.category,
-      subcategory: gigData.subcategory,
-      tags: gigData.skills,
-      hourlyRateMin,
-      hourlyRateMax,
-      description: gigData.description,
-      deliveryTimeWeeks,
-      estimatedHours,
-      status: 'Available',
-      toolsRequired: gigData.tools,
-      executionMethod: gigData.executionMethod,
-      milestones: gigData.milestones,
-      startType: gigData.startType,
-      customStartDate: gigData.customStartDate,
-      endDate: gigData.endDate,
-      lowerBudget: gigData.lowerBudget,
-      upperBudget: gigData.upperBudget,
-      postedDate: new Date().toISOString().split('T')[0],
-      notes: `Budget range: $${gigData.lowerBudget.toLocaleString()} - $${gigData.upperBudget.toLocaleString()}`,
-      // Add targeted request fields
-      isPublic: gigData.isPublic !== false, // Default to public unless explicitly set to false
-      targetFreelancerId: gigData.targetFreelancerId || null,
-      isTargetedRequest: gigData.isTargetedRequest || false,
-    };
-
-    // Save the gig using hierarchical storage
-    await saveGig(newGig);
-
-    // Log event for targeted gig requests
-    if (gigData.isTargetedRequest && gigData.targetFreelancerId) {
-      try {
-        await logGigRequestSent(
-          gigData.commissionerId,
-          gigData.targetFreelancerId,
-          newGigId,
-          newGig.title,
-          gigData.organizationData.name,
-          organizationId
-        );
-      } catch (error) {
-        console.error('Error logging gig request event:', error);
-        // Don't fail the request if event logging fails
-      }
+    const validation = validateGigInput(body);
+    if (!validation.isValid) {
+      return NextResponse.json({
+        success: false,
+        code: 'INVALID_INPUT',
+        message: validation.error!
+      }, { status: 400 });
     }
 
-    const message = gigData.isTargetedRequest
-      ? 'Gig request sent successfully'
-      : 'Gig posted successfully';
+    const gigData = validation.gigData!;
+    const createdAt = gigData.createdAt ?? new Date().toISOString();
+
+    // Generate hierarchical path components
+    const createdDate = new Date(createdAt);
+    const year = format(createdDate, 'yyyy');
+    const month = format(createdDate, 'MM');
+    const day = format(createdDate, 'dd');
+
+    // Load index and check for recent duplicates (idempotency)
+    const index = await loadGigsIndex();
+    const duplicateId = findRecentDuplicate(
+      gigData.commissionerId,
+      gigData.title,
+      createdAt,
+      index,
+      60 // 60 second window
+    );
+
+    if (duplicateId) {
+      return NextResponse.json({
+        success: true,
+        gigId: duplicateId,
+        message: 'Gig created successfully'
+      });
+    }
+
+    // Generate new gig ID
+    const gigId = await getNextId('gig');
+
+    // Create hierarchical directory structure
+    const hierarchicalPath = `${year}/${month}/${day}/${gigId}`;
+    const gigDir = `data/gigs/${hierarchicalPath}`;
+    await ensureDir(gigDir);
+
+    // Create gig object
+    const gig = createGigFromInput(gigId, gigData, createdAt);
+
+    // Write gig to hierarchical storage
+    await writeJsonAtomic(`${gigDir}/gig.json`, gig);
+
+    // Update gigs index
+    await updateGigInIndex(
+      gigId,
+      gig.title,
+      gig.commissionerId,
+      createdAt,
+      hierarchicalPath
+    );
 
     return NextResponse.json({
       success: true,
-      gigId: newGigId,
-      message,
-      isTargetedRequest: gigData.isTargetedRequest
+      gigId,
+      message: 'Gig created successfully'
     });
 
-  } catch (error) {
-    console.error('Error posting gig:', error);
-    return NextResponse.json({ 
-      error: 'Failed to post gig. Please try again.' 
+  } catch (err: any) {
+    console.error('Error creating gig:', err);
+    return NextResponse.json({
+      success: false,
+      code: 'STORAGE_IO_ERROR',
+      message: err?.message ?? 'Unknown error occurred while creating gig'
     }, { status: 500 });
   }
 }

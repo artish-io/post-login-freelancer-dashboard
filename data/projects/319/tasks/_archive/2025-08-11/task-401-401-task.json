@@ -1,0 +1,25 @@
+{
+  "taskId": 401,
+  "projectId": 319,
+  "projectTitle": "Interactive Park Map Web App",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Frontend",
+    "React",
+    "GIS"
+  ],
+  "title": "Design interactive map interface",
+  "status": "In review",
+  "completed": false,
+  "order": 1,
+  "link": "bit.ly/34234324234234243",
+  "dueDate": "2025-08-15T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Create the main interface for the interactive park map with zoom, pan, and layer controls.",
+  "createdDate": "2025-08-03T14:42:54.025Z",
+  "lastModified": "2025-08-07T17:39:04.283Z",
+  "submittedDate": "2025-08-07T17:39:04.283Z"
+}

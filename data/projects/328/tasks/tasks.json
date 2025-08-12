@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {
+      "id": 403,
+      "title": "Initial setup for UX Audit Walkthrough",
+      "status": "in_progress",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": ""
+      },
+      "projectId": 328,
+      "description": "Begin work on UX Audit Walkthrough project",
+      "dueDate": "2025-08-14T01:44:25.387Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-07T01:44:25.387Z",
+      "lastModified": "2025-08-07T01:44:25.388Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.778Z",
+  "version": 1
+}

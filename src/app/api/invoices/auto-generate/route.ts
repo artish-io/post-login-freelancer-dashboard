@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { readAllTasks } from '@/app/api/payments/repos/tasks-repo';
-import { readAllProjects } from '@/app/api/payments/repos/projects-repo';
+import { readAllTasks } from '@/lib/project-tasks/hierarchical-storage';
+import { readAllProjects } from '@/lib/projects-utils';
 import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
 import { getInitialInvoiceStatus, AUTO_MILESTONE_CONFIG } from '../../../../lib/invoice-status-definitions';
 
@@ -41,10 +41,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'No invoice generation needed' });
     }
 
-    // Load all required data
+    // Load all required data using hierarchical storage
     const [projects, allTasks, invoices, eventsData] = await Promise.all([
-      readAllProjects(), // Use projects repo
-      readAllTasks(), // Use tasks repo
+      readAllProjects(), // Use hierarchical storage
+      readAllTasks(), // Use hierarchical storage
       getAllInvoices(), // Use hierarchical storage for invoices
       fs.readFile(EVENTS_LOG_PATH, 'utf-8')
     ]);
@@ -54,7 +54,10 @@ export async function POST(request: Request) {
 
     // Find the project and task
     const project = projects.find(p => Number(p.projectId) === Number(projectId));
-    const task = allTasks.find(t => Number(t.id) === Number(taskId) && Number(t.projectId) === Number(projectId));
+    const task = allTasks.find(t =>
+      (Number(t.id) === Number(taskId) || Number(t.taskId) === Number(taskId)) &&
+      Number(t.projectId) === Number(projectId)
+    );
 
     if (!project || !task) {
       return NextResponse.json({ error: 'Project or task not found' }, { status: 404 });
@@ -68,10 +71,12 @@ export async function POST(request: Request) {
     }
 
     // 🔒 MILESTONE VALIDATION: Verify task is approved before generating invoice
-    if (task.status !== 'approved') {
+    const isApproved = task.status === 'approved' || task.status === 'Approved' || task.completed === true;
+    if (!isApproved) {
       return NextResponse.json({
         error: 'Invoice can only be generated for approved milestone tasks',
-        taskStatus: task.status
+        taskStatus: task.status,
+        taskCompleted: task.completed
       }, { status: 400 });
     }
 
@@ -124,7 +129,7 @@ export async function POST(request: Request) {
       invoicingMethod: 'milestone', // Explicitly set invoicing method
       milestones: [
         {
-          taskId: task.id,
+          taskId: task.taskId || task.id,
           description: task.title,
           rate: milestoneAmount, // Use calculated milestone amount
           approvedAt: new Date().toISOString()
@@ -139,9 +144,8 @@ export async function POST(request: Request) {
       sentDate: new Date().toISOString() // Auto-milestone invoices are immediately sent
     };
 
-    // Add to invoices
-    invoices.push(newInvoice);
-    await fs.writeFile(INVOICES_PATH, JSON.stringify(invoices, null, 2));
+    // Save invoice using hierarchical storage
+    await saveInvoice(newInvoice);
 
     // Create invoice generation event
     const invoiceEvent = {
@@ -156,12 +160,12 @@ export async function POST(request: Request) {
       metadata: {
         taskTitle: task.title,
         projectTitle: project.title,
-        amount: taskRate,
+        amount: milestoneAmount,
         invoiceNumber
       },
       context: {
         projectId: project.projectId,
-        taskId: task.id,
+        taskId: task.taskId || task.id,
         invoiceId: invoiceNumber
       }
     };

@@ -1,0 +1,23 @@
+{
+  "taskId": 26,
+  "projectId": 299,
+  "projectTitle": "UX Writing",
+  "organizationId": 7,
+  "projectTypeTags": [
+    "Content Strategy",
+    "UX Writing"
+  ],
+  "title": "Onboarding flow copy",
+  "status": "In review",
+  "completed": true,
+  "order": 3,
+  "link": "https://docs.google.com/document/onboarding-copy",
+  "dueDate": "2025-07-14T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Write engaging and clear copy for user onboarding experience.",
+  "createdDate": "2025-08-03T15:57:39.542Z",
+  "lastModified": "2025-08-03T15:57:39.544Z"
+}

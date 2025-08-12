@@ -1,0 +1,150 @@
+{
+  "tasks": [
+    {
+      "id": 101,
+      "title": "User authentication flow design",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.550Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/auth-flow-design"
+      },
+      "projectId": 312,
+      "description": "Design the complete user authentication and registration flow.",
+      "dueDate": "2025-08-15T00:00:00.000Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.550Z"
+    },
+    {
+      "id": 102,
+      "title": "Park booking interface mockups",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.550Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/booking-interface"
+      },
+      "projectId": 312,
+      "description": "Create mockups for the park facility booking interface.",
+      "dueDate": "2025-08-18T00:00:00.000Z",
+      "order": 2,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.550Z"
+    },
+    {
+      "id": 103,
+      "title": "Maintenance reporting feature",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.551Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/maintenance-reporting"
+      },
+      "projectId": 312,
+      "description": "Design the maintenance issue reporting feature with photo upload.",
+      "dueDate": "2025-08-20T00:00:00.000Z",
+      "order": 3,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.551Z"
+    },
+    {
+      "id": 104,
+      "title": "Navigation and menu structure",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.551Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/navigation-menu"
+      },
+      "projectId": 312,
+      "description": "Design the main navigation and menu structure for the mobile app.",
+      "dueDate": "2025-08-22T00:00:00.000Z",
+      "order": 4,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.551Z"
+    },
+    {
+      "id": 105,
+      "title": "Push notification system design",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.551Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/notification-system"
+      },
+      "projectId": 312,
+      "description": "Design the push notification system for booking confirmations and updates.",
+      "dueDate": "2025-08-25T00:00:00.000Z",
+      "order": 5,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.551Z"
+    },
+    {
+      "id": 106,
+      "title": "User profile and settings screens",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.551Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/user-profile-settings"
+      },
+      "projectId": 312,
+      "description": "Design user profile management and app settings screens.",
+      "dueDate": "2025-08-28T00:00:00.000Z",
+      "order": 6,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.551Z"
+    },
+    {
+      "id": 107,
+      "title": "Payment integration interface",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.551Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/payment-integration"
+      },
+      "projectId": 312,
+      "description": "Design the payment interface for park facility bookings.",
+      "dueDate": "2025-08-30T00:00:00.000Z",
+      "order": 7,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.551Z"
+    },
+    {
+      "id": 108,
+      "title": "Final app prototype and handoff",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.551Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/final-prototype"
+      },
+      "projectId": 312,
+      "description": "Complete final prototype with all screens and prepare developer handoff documentation.",
+      "dueDate": "2025-09-02T00:00:00.000Z",
+      "order": 8,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.551Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.780Z",
+  "version": 1
+}

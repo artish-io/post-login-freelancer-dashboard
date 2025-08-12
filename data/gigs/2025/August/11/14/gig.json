@@ -1,0 +1,32 @@
+{
+  "id": 14,
+  "title": "Web Development - Test Organization",
+  "organizationId": 1,
+  "commissionerId": 31,
+  "category": "development",
+  "subcategory": "Web Development",
+  "tags": [
+    "React",
+    "TypeScript"
+  ],
+  "hourlyRateMin": null,
+  "hourlyRateMax": null,
+  "description": "Test gig",
+  "deliveryTimeWeeks": null,
+  "estimatedHours": null,
+  "status": "Available",
+  "toolsRequired": [
+    "React",
+    "Jest"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "startType": "Immediately",
+  "lowerBudget": 5000,
+  "upperBudget": 5000,
+  "postedDate": "2025-08-11",
+  "notes": "Budget: $5,000",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

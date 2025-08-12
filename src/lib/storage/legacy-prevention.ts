@@ -30,68 +30,92 @@ const LEGACY_FILE_PATTERNS = [
  * Intercept and warn about legacy file access
  */
 export function interceptLegacyFileAccess() {
-  // Override fs.readFile and fs.readFileSync to detect legacy patterns
-  const originalReadFile = fs.promises.readFile;
-  const originalReadFileSync = fs.readFileSync;
+  // Store original functions to avoid recursion issues
+  const originalReadFile = fs.promises.readFile.bind(fs.promises);
+  const originalReadFileSync = fs.readFileSync.bind(fs);
+
+  // Flag to prevent recursive calls during interception
+  let isIntercepting = false;
 
   // @ts-ignore - Monkey patching for detection
   fs.promises.readFile = async function(filePath: any, options?: any) {
+    // Prevent recursive calls
+    if (isIntercepting) {
+      return originalReadFile(filePath, options);
+    }
+
     const normalizedPath = typeof filePath === 'string' ? filePath : filePath.toString();
 
     if (isLegacyFileAccess(normalizedPath)) {
-      const caller = getCaller();
-      const warning = {
-        file: normalizedPath,
-        caller,
-        timestamp: new Date().toISOString(),
-        stackTrace: new Error().stack || 'No stack trace available'
-      };
+      isIntercepting = true;
 
-      legacyAccessLog.push(warning);
+      try {
+        const caller = getCaller();
+        const warning = {
+          file: normalizedPath,
+          caller,
+          timestamp: new Date().toISOString(),
+          stackTrace: new Error().stack || 'No stack trace available'
+        };
 
-      console.warn(`🚨 LEGACY FILE ACCESS DETECTED:`);
-      console.warn(`   File: ${normalizedPath}`);
-      console.warn(`   Caller: ${caller}`);
-      console.warn(`   Use hierarchical storage instead!`);
-      console.warn(`   Stack trace:`, warning.stackTrace);
+        legacyAccessLog.push(warning);
 
-      // In development, throw an error to force fixes
-      if (process.env.NODE_ENV === 'development') {
-        throw new Error(`LEGACY FILE ACCESS BLOCKED: ${normalizedPath}. Use hierarchical storage functions instead.`);
+        console.warn(`🚨 LEGACY FILE ACCESS DETECTED:`);
+        console.warn(`   File: ${normalizedPath}`);
+        console.warn(`   Caller: ${caller}`);
+        console.warn(`   Use hierarchical storage instead!`);
+
+        // In development, throw an error to force fixes
+        if (process.env.NODE_ENV === 'development') {
+          throw new Error(`LEGACY FILE ACCESS BLOCKED: ${normalizedPath}. Use hierarchical storage functions instead.`);
+        }
+      } finally {
+        isIntercepting = false;
       }
     }
 
-    // Use the original function directly to avoid recursion
-    return originalReadFile.call(fs.promises, filePath, options);
+    // Use the original function to avoid recursion
+    return originalReadFile(filePath, options);
   };
 
   // @ts-ignore - Monkey patching for detection
   fs.readFileSync = function(filePath: any, options?: any) {
+    // Prevent recursive calls
+    if (isIntercepting) {
+      return originalReadFileSync(filePath, options);
+    }
+
     const normalizedPath = typeof filePath === 'string' ? filePath : filePath.toString();
-    
+
     if (isLegacyFileAccess(normalizedPath)) {
-      const caller = getCaller();
-      const warning = {
-        file: normalizedPath,
-        caller,
-        timestamp: new Date().toISOString(),
-        stackTrace: new Error().stack || 'No stack trace available'
-      };
-      
-      legacyAccessLog.push(warning);
-      
-      console.warn(`🚨 LEGACY FILE ACCESS DETECTED (SYNC):`);
-      console.warn(`   File: ${normalizedPath}`);
-      console.warn(`   Caller: ${caller}`);
-      console.warn(`   Use hierarchical storage instead!`);
-      
-      // In development, throw an error to force fixes
-      if (process.env.NODE_ENV === 'development') {
-        throw new Error(`LEGACY FILE ACCESS BLOCKED: ${normalizedPath}. Use hierarchical storage functions instead.`);
+      isIntercepting = true;
+
+      try {
+        const caller = getCaller();
+        const warning = {
+          file: normalizedPath,
+          caller,
+          timestamp: new Date().toISOString(),
+          stackTrace: new Error().stack || 'No stack trace available'
+        };
+
+        legacyAccessLog.push(warning);
+
+        console.warn(`🚨 LEGACY FILE ACCESS DETECTED (SYNC):`);
+        console.warn(`   File: ${normalizedPath}`);
+        console.warn(`   Caller: ${caller}`);
+        console.warn(`   Use hierarchical storage instead!`);
+
+        // In development, throw an error to force fixes
+        if (process.env.NODE_ENV === 'development') {
+          throw new Error(`LEGACY FILE ACCESS BLOCKED: ${normalizedPath}. Use hierarchical storage functions instead.`);
+        }
+      } finally {
+        isIntercepting = false;
       }
     }
-    
-    return originalReadFileSync.call(this, filePath, options);
+
+    return originalReadFileSync(filePath, options);
   };
 }
 
@@ -108,9 +132,9 @@ function isLegacyFileAccess(filePath: string): boolean {
     return false; // Allow this access
   }
 
-  // Temporarily allow freelancers.json access for critical APIs during migration
-  if (normalizedPath.includes('data/freelancers.json')) {
-    console.log('🔓 Allowing temporary legacy access for freelancers data:', normalizedPath);
+  // Allow controlled access for freelancers through the freelancers-utils service
+  if (caller.includes('freelancers-utils') && normalizedPath.includes('data/freelancers.json')) {
+    console.log('🔓 Allowing controlled legacy access for freelancers data:', normalizedPath);
     return false; // Allow this access
   }
 
@@ -240,11 +264,6 @@ export async function validateStorageUsage(): Promise<{
  * Initialize the legacy prevention system
  */
 export function initializeLegacyPrevention() {
-  console.log('🛡️ Legacy storage prevention system temporarily disabled');
-
-  // Temporarily disabled to fix monkey-patching issues
-  return;
-
   console.log('🛡️ Initializing legacy storage prevention system...');
 
   // Only intercept in development to avoid production performance impact

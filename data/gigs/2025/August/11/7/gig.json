@@ -1,0 +1,34 @@
+{
+  "id": 7,
+  "title": "Test Completion Invoicing Workflow 2025-08-11T19-22-59-910Z",
+  "organizationId": 1,
+  "commissionerId": 31,
+  "category": "development",
+  "subcategory": "Web Development",
+  "tags": [
+    "React",
+    "TypeScript",
+    "Testing"
+  ],
+  "hourlyRateMin": 50,
+  "hourlyRateMax": 50,
+  "description": "Test gig for completion invoicing workflow validation",
+  "deliveryTimeWeeks": 4,
+  "estimatedHours": 100,
+  "status": "Available",
+  "toolsRequired": [
+    "React",
+    "Jest",
+    "TypeScript"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "startType": "Immediately",
+  "lowerBudget": 5000,
+  "upperBudget": 5000,
+  "postedDate": "2025-08-11",
+  "notes": "Budget: $5,000",
+  "isPublic": true,
+  "isTargetedRequest": false,
+  "targetFreelancerId": null
+}

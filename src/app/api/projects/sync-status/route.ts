@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { getProjectById, updateProject, readAllProjects } from '@/app/api/payments/repos/projects-repo';
-import { readAllTasks } from '@/app/api/payments/repos/tasks-repo';
+import { readProject, saveProject, readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks } from '@/lib/project-tasks/hierarchical-storage';
 
 export async function POST(request: Request) {
   try {
@@ -55,10 +55,13 @@ export async function POST(request: Request) {
 
     if (shouldUpdate || taskCountNeedsUpdate) {
       // Update the project in hierarchical structure
-      await updateProject(projectId, {
+      const updatedProject = {
+        ...project,
         status: newStatus,
-        totalTasks: actualTotalTasks
-      });
+        totalTasks: actualTotalTasks,
+        updatedAt: new Date().toISOString()
+      };
+      await saveProject(updatedProject);
 
       return NextResponse.json({
         success: true,
@@ -148,10 +151,13 @@ export async function GET() {
         const oldTotalTasks = project.totalTasks;
 
         // Update project in hierarchical structure
-        await updateProject(project.projectId, {
+        const updatedProject = {
+          ...project,
           status: newStatus,
-          totalTasks: totalTasks
-        });
+          totalTasks: totalTasks,
+          updatedAt: new Date().toISOString()
+        };
+        await saveProject(updatedProject);
 
         updates.push({
           projectId: project.projectId,

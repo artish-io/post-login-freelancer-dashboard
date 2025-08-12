@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {
+      "id": 402,
+      "title": "Create storyboard and animation concepts",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-07T17:42:40.781Z",
+      "links": {
+        "brief": "",
+        "work": "bit.ly23213"
+      },
+      "projectId": 327,
+      "description": "Develop initial storyboard and animation concepts for the 90-second healthcare app explainer video.",
+      "dueDate": "2025-08-20T00:00:00.000Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-06T16:58:37.813Z",
+      "lastModified": "2025-08-07T17:42:40.781Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.777Z",
+  "version": 1
+}

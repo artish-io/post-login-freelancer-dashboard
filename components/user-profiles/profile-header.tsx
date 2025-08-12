@@ -1,10 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { MapPin, Star, MessageCircle } from 'lucide-react';
+import { MapPin, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { ReadOnlyStars } from '../common/rating/stars';
+import { UserRatingsSummary } from '../../types/ratings';
 
 interface Profile {
   id: string;
@@ -69,6 +71,8 @@ export default function ProfileHeader({
   const [canSendMessage, setCanSendMessage] = useState(true);
   const [messageBlockReason, setMessageBlockReason] = useState<string | null>(null);
   const [checkingPermission, setCheckingPermission] = useState(false);
+  const [ratingsSummary, setRatingsSummary] = useState<UserRatingsSummary | null>(null);
+  const [loadingRatings, setLoadingRatings] = useState(false);
 
   // Check message permissions for commissioners viewing freelancer profiles
   useEffect(() => {
@@ -107,6 +111,27 @@ export default function ProfileHeader({
 
     checkMessagePermission();
   }, [viewerUserType, profileType, isOwnProfile, session?.user?.id, profile.id]);
+
+  // Fetch ratings for the profile user
+  useEffect(() => {
+    const fetchRatings = async () => {
+      try {
+        setLoadingRatings(true);
+        const userType = profileType === 'freelancer' ? 'freelancer' : 'commissioner';
+        const response = await fetch(`/api/ratings/user?userId=${profile.id}&userType=${userType}`);
+        if (response.ok) {
+          const data: UserRatingsSummary = await response.json();
+          setRatingsSummary(data);
+        }
+      } catch (error) {
+        console.error('Error fetching ratings:', error);
+      } finally {
+        setLoadingRatings(false);
+      }
+    };
+
+    fetchRatings();
+  }, [profile.id, profileType]);
 
   const getMessageHref = () => {
     // For freelancers viewing commissioner profiles
@@ -199,24 +224,29 @@ export default function ProfileHeader({
           </div>
         )}
 
-        {/* Rating - Read-only stars */}
-        {profile.rating && (
-          <div className="flex items-center gap-2 mb-4">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`w-4 h-4 ${
-                    i < Math.floor(profile.rating!)
-                      ? 'text-yellow-400 fill-current'
-                      : 'text-gray-300'
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-sm text-gray-600 font-medium">{profile.rating}/5</span>
-          </div>
-        )}
+        {/* Rating - Fetched from API */}
+        {(() => {
+          const displayRating = ratingsSummary?.average ?? profile.rating ?? 0;
+          const ratingCount = ratingsSummary?.count ?? 0;
+
+          if (displayRating > 0) {
+            return (
+              <div className="flex items-center gap-2 mb-4">
+                <ReadOnlyStars value={displayRating} size="sm" showValue={false} />
+                <span className="text-sm text-gray-600 font-medium">
+                  {displayRating.toFixed(1)}/5 {ratingCount > 0 && `(${ratingCount} rating${ratingCount !== 1 ? 's' : ''})`}
+                </span>
+              </div>
+            );
+          } else if (!loadingRatings) {
+            return (
+              <div className="mb-4">
+                <span className="text-sm text-gray-500">No ratings yet</span>
+              </div>
+            );
+          }
+          return null;
+        })()}
 
         {/* Social Links */}
         {profile.socialLinks && profile.socialLinks.length > 0 && (

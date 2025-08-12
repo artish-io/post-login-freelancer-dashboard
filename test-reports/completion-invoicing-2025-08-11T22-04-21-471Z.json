@@ -1,0 +1,91 @@
+{
+  "timestamp": "2025-08-11T22:04:21.471Z",
+  "config": {
+    "baseUrl": "http://localhost:3000",
+    "testCommissionerId": 32,
+    "testFreelancerId": 1,
+    "testBudget": 5000,
+    "testGigTitle": "Test Completion Invoicing Workflow",
+    "testProjectTasks": 3,
+    "timeout": 30000,
+    "commissionerCredentials": {
+      "username": "neilsan",
+      "password": "testpass"
+    }
+  },
+  "state": {
+    "gigId": 11,
+    "projectId": 1754949864231,
+    "applicationId": 25,
+    "upfrontInvoiceNumber": null,
+    "completionInvoiceNumber": null,
+    "taskIds": [
+      null,
+      null,
+      null
+    ],
+    "errors": [
+      "Upfront invoice generation failed: Project 1754949864231 not found",
+      "Cannot test upfront payment - no upfront invoice available",
+      "Completion invoice generation failed: Project 1754949864231 not found"
+    ],
+    "warnings": [
+      "Task undefined submission failed: Failed to process task operation",
+      "Task undefined submission failed: Failed to process task operation",
+      "Task undefined submission failed: Failed to process task operation"
+    ],
+    "testResults": {
+      "gigCreation": {
+        "status": "PASS",
+        "gigId": 11,
+        "message": "Gig created successfully with completion invoicing"
+      },
+      "freelancerApplication": {
+        "status": "PASS",
+        "applicationId": 25,
+        "message": "Freelancer application submitted successfully"
+      },
+      "freelancerMatching": {
+        "status": "PASS",
+        "projectId": 1754949864231,
+        "message": "Freelancer matched and project activated successfully"
+      },
+      "upfrontInvoice": {
+        "status": "FAIL",
+        "error": "Project 1754949864231 not found"
+      },
+      "taskApproval": {
+        "status": "PASS",
+        "approvalResults": [],
+        "totalTasks": 3,
+        "approvedTasks": 0,
+        "message": "0/3 tasks approved"
+      },
+      "completionInvoice": {
+        "status": "FAIL",
+        "error": "Project 1754949864231 not found"
+      },
+      "dataIntegrity": {
+        "status": "PASS",
+        "checks": [
+          {
+            "check": "invoice_amounts_total",
+            "expected": 5000,
+            "actual": 5000,
+            "pass": true
+          }
+        ],
+        "message": "1/1 integrity checks passed"
+      }
+    },
+    "sessionCookie": null
+  },
+  "summary": {
+    "totalTests": 7,
+    "passedTests": 5,
+    "failedTests": 2,
+    "warnings": 3,
+    "errors": 3,
+    "success": false
+  }
+}

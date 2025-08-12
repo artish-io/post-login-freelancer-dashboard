@@ -1,0 +1,99 @@
+{
+  "timestamp": "2025-08-11T22:11:42.214Z",
+  "config": {
+    "baseUrl": "http://localhost:3000",
+    "testCommissionerId": 32,
+    "testFreelancerId": 1,
+    "testBudget": 5000,
+    "testGigTitle": "Test Completion Invoicing Workflow",
+    "testProjectTasks": 3,
+    "timeout": 30000,
+    "commissionerCredentials": {
+      "username": "neilsan",
+      "password": "testpass"
+    }
+  },
+  "state": {
+    "gigId": 13,
+    "projectId": 1754950308867,
+    "applicationId": 27,
+    "upfrontInvoiceNumber": "CMP1754950308867-UP",
+    "completionInvoiceNumber": "CMP1754950308867-COMP",
+    "taskIds": [
+      1754950309567,
+      1754950301551,
+      1754950300674
+    ],
+    "errors": [],
+    "warnings": [
+      "Task 1754950309567 submission failed: Task 1754950309567 not found",
+      "Task 1754950301551 submission failed: Task 1754950301551 not found",
+      "Task 1754950300674 submission failed: Task 1754950300674 not found"
+    ],
+    "testResults": {
+      "gigCreation": {
+        "status": "PASS",
+        "gigId": 13,
+        "message": "Gig created successfully with completion invoicing"
+      },
+      "freelancerApplication": {
+        "status": "PASS",
+        "applicationId": 27,
+        "message": "Freelancer application submitted successfully"
+      },
+      "freelancerMatching": {
+        "status": "PASS",
+        "projectId": 1754950308867,
+        "message": "Freelancer matched and project activated successfully"
+      },
+      "upfrontInvoice": {
+        "status": "PASS",
+        "invoiceNumber": "CMP1754950308867-UP",
+        "expectedAmount": 600,
+        "actualAmount": 600,
+        "message": "Upfront invoice generated: $600 (expected: $600)"
+      },
+      "upfrontPayment": {
+        "status": "PASS",
+        "paymentId": "pay_sim_1754950300915_305",
+        "amountPaid": 600,
+        "message": "Upfront payment processed successfully"
+      },
+      "taskApproval": {
+        "status": "PASS",
+        "approvalResults": [],
+        "totalTasks": 3,
+        "approvedTasks": 0,
+        "message": "0/3 tasks approved"
+      },
+      "completionInvoice": {
+        "status": "PASS",
+        "invoiceNumber": "CMP1754950308867-COMP",
+        "expectedAmount": 4400,
+        "actualAmount": 4400,
+        "message": "Completion invoice generated: $4400 (expected: $4400)"
+      },
+      "dataIntegrity": {
+        "status": "PASS",
+        "checks": [
+          {
+            "check": "invoice_amounts_total",
+            "expected": 5000,
+            "actual": 5000,
+            "pass": true
+          }
+        ],
+        "message": "1/1 integrity checks passed"
+      }
+    },
+    "sessionCookie": null
+  },
+  "summary": {
+    "totalTests": 8,
+    "passedTests": 8,
+    "failedTests": 0,
+    "warnings": 3,
+    "errors": 0,
+    "success": true
+  }
+}

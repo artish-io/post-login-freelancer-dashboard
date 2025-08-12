@@ -1,0 +1,23 @@
+{
+  "archivedAt": "2025-08-11T16:40:01.764Z",
+  "projectId": 300,
+  "taskCount": 3,
+  "reason": "Migration to canonical tasks.json",
+  "originalFiles": [
+    {
+      "taskId": 22,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/07/14/300/22-task.json",
+      "mtime": "2025-08-03T15:57:39.547Z"
+    },
+    {
+      "taskId": 23,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/08/21/300/23-task.json",
+      "mtime": "2025-08-03T15:57:39.547Z"
+    },
+    {
+      "taskId": 21,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/project-tasks/2025/08/28/300/21-task.json",
+      "mtime": "2025-08-03T15:57:39.547Z"
+    }
+  ]
+}

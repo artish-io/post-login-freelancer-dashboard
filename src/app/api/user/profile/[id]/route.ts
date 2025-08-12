@@ -7,6 +7,7 @@ import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/h
 import { readAllGigs } from '@/lib/gigs/hierarchical-storage';
 import { getAllInvoices } from '@/lib/invoice-storage';
 import { getAllUsers } from '@/lib/storage/unified-storage-service';
+import { readAllFreelancers } from '@/lib/freelancers-utils';
 
 export async function GET(
   _req: Request,
@@ -30,8 +31,8 @@ export async function GET(
     const gigToolsPath = path.join(root, 'data', 'gigs', 'gig-tools.json');
 
     // ---------- Read all files in parallel ----------
-    const [freelancersRaw, users, organizationsRaw, gigs, samplesRaw, categoriesRaw, toolsRaw, invoices, projects, hierarchicalTasks] = await Promise.all([
-      readFile(freelancersPath, 'utf-8'),
+    const [freelancers, users, organizationsRaw, gigs, samplesRaw, categoriesRaw, toolsRaw, invoices, projects, hierarchicalTasks] = await Promise.all([
+      readAllFreelancers(), // Use controlled freelancers utility
       getAllUsers(), // Use hierarchical storage for users
       readFile(organizationsPath, 'utf-8'),
       readAllGigs(), // Use hierarchical storage for gigs
@@ -43,11 +44,12 @@ export async function GET(
       readAllTasks() // Use hierarchical storage for project tasks
     ]);
 
-    const freelancers = JSON.parse(freelancersRaw);
+    // freelancers is already parsed from freelancers utility
     // users is already parsed from hierarchical storage
     const organizations = JSON.parse(organizationsRaw);
     // gigs, invoices, and projects are already parsed from hierarchical storage
     const workSamples = JSON.parse(samplesRaw);
+    const gigCategories = JSON.parse(categoriesRaw);
     const gigTools = JSON.parse(toolsRaw);
     // Convert hierarchical tasks to legacy format for compatibility
     const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);

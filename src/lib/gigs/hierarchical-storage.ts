@@ -1,5 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { writeJsonAtomic } from '../fs-json';
+import { loadGigsIndex, type GigsIndex } from '../storage/gigs-index';
 
 /**
  * Generate a simple sequential gig ID
@@ -41,9 +43,23 @@ export interface Gig {
 }
 
 /**
- * Get the hierarchical path for a gig based on its posted date
+ * Get the hierarchical path for a gig based on its hierarchical path from index
  */
-function getGigPath(gigId: number, postedDate: string): string {
+function getGigPath(hierarchicalPath: string): string {
+  return path.join(
+    process.cwd(),
+    'data',
+    'gigs',
+    hierarchicalPath,
+    'gig.json'
+  );
+}
+
+/**
+ * Legacy function: Get the hierarchical path for a gig based on its posted date
+ * This is kept for backward compatibility but should be phased out
+ */
+function getLegacyGigPath(gigId: number, postedDate: string): string {
   // Parse date more reliably to avoid timezone issues
   const dateParts = postedDate.split('-');
   const year = parseInt(dateParts[0]);
@@ -53,7 +69,7 @@ function getGigPath(gigId: number, postedDate: string): string {
   const date = new Date(year, monthNum - 1, dayNum); // Month is 0-indexed
   const month = date.toLocaleString('en-US', { month: 'long' });
   const day = dayNum.toString().padStart(2, '0');
-  
+
   return path.join(
     process.cwd(),
     'data',
@@ -67,10 +83,10 @@ function getGigPath(gigId: number, postedDate: string): string {
 }
 
 /**
- * Get the metadata index path for gigs
+ * Get the metadata index path for gigs (new unified system)
  */
 function getGigMetadataPath(): string {
-  return path.join(process.cwd(), 'data', 'gigs', 'gigs-index.json');
+  return path.join(process.cwd(), 'data', 'gigs-index.json');
 }
 
 /**
@@ -88,14 +104,14 @@ async function ensureDirectoryExists(dirPath: string): Promise<void> {
  * Save a gig to hierarchical storage
  */
 export async function saveGig(gig: Gig): Promise<void> {
-  const gigPath = getGigPath(gig.id, gig.postedDate);
+  const gigPath = getLegacyGigPath(gig.id, gig.postedDate);
   const gigDir = path.dirname(gigPath);
   
   // Ensure directory exists
   await ensureDirectoryExists(gigDir);
   
-  // Save the gig
-  await fs.writeFile(gigPath, JSON.stringify(gig, null, 2));
+  // Save the gig using atomic write
+  await writeJsonAtomic(gigPath, gig);
   
   // Update metadata index
   await updateGigIndex(gig.id, gig.postedDate);
@@ -106,27 +122,34 @@ export async function saveGig(gig: Gig): Promise<void> {
  */
 export async function readGig(gigId: number): Promise<Gig | null> {
   try {
-    // First, get the posted date from the index
-    const indexPath = getGigMetadataPath();
-    
-    if (!await fs.access(indexPath).then(() => true).catch(() => false)) {
+    // Use the new unified index system
+    const index = await loadGigsIndex();
+
+    const gigEntry = index[gigId.toString()];
+    if (!gigEntry) {
+      console.warn(`Gig ${gigId} not found in index`);
       return null;
     }
-    
-    const indexData = await fs.readFile(indexPath, 'utf-8');
-    const index = JSON.parse(indexData);
-    
-    const postedDate = index[gigId.toString()];
-    if (!postedDate) {
-      return null;
-    }
-    
-    // Read the gig file
-    const gigPath = getGigPath(gigId, postedDate);
+
+    // Read the gig file using the hierarchical path from index
+    const gigPath = getGigPath(gigEntry.path);
 
     // Check if file exists before attempting to read
     if (!await fs.access(gigPath).then(() => true).catch(() => false)) {
       console.warn(`Gig file not found: ${gigPath}`);
+
+      // Fallback: try legacy path format for backward compatibility
+      try {
+        const legacyPath = getLegacyGigPath(gigId, gigEntry.createdAt.split('T')[0]);
+        if (await fs.access(legacyPath).then(() => true).catch(() => false)) {
+          console.log(`Found gig at legacy path: ${legacyPath}`);
+          const gigData = await fs.readFile(legacyPath, 'utf-8');
+          return JSON.parse(gigData);
+        }
+      } catch (legacyError) {
+        console.warn(`Legacy path also failed for gig ${gigId}`);
+      }
+
       return null;
     }
 
@@ -144,16 +167,21 @@ export async function readGig(gigId: number): Promise<Gig | null> {
 }
 
 /**
- * Update the gig metadata index
+ * Update the gig metadata index (legacy function - now delegates to new system)
  */
 async function updateGigIndex(gigId: number, postedDate: string): Promise<void> {
-  const indexPath = getGigMetadataPath();
+  // This function is kept for backward compatibility but now delegates to the new system
+  // The new system should be used directly via updateGigInIndex from gigs-index.ts
+  console.warn('updateGigIndex is deprecated, use updateGigInIndex from gigs-index.ts instead');
+
+  // For now, we'll update the old index format to maintain compatibility
+  const indexPath = path.join(process.cwd(), 'data', 'gigs', 'gigs-index.json');
   const indexDir = path.dirname(indexPath);
-  
+
   await ensureDirectoryExists(indexDir);
-  
+
   let index: Record<string, string> = {};
-  
+
   try {
     if (await fs.access(indexPath).then(() => true).catch(() => false)) {
       const indexData = await fs.readFile(indexPath, 'utf-8');
@@ -163,9 +191,9 @@ async function updateGigIndex(gigId: number, postedDate: string): Promise<void> 
     // Index doesn't exist or is corrupted, start fresh
     index = {};
   }
-  
+
   index[gigId.toString()] = postedDate;
-  await fs.writeFile(indexPath, JSON.stringify(index, null, 2));
+  await writeJsonAtomic(indexPath, index);
 }
 
 /**
@@ -173,32 +201,25 @@ async function updateGigIndex(gigId: number, postedDate: string): Promise<void> 
  */
 export async function readAllGigs(): Promise<Gig[]> {
   const gigs: Gig[] = [];
-  
+
   try {
-    // Read the gigs index to get all gig locations
-    const indexPath = getGigMetadataPath();
-    
-    if (!await fs.access(indexPath).then(() => true).catch(() => false)) {
-      return [];
-    }
-    
-    const indexData = await fs.readFile(indexPath, 'utf-8');
-    const index = JSON.parse(indexData);
-    
+    // Use the new unified index system
+    const index = await loadGigsIndex();
+
     // Read each gig
-    for (const [gigIdStr, postedDate] of Object.entries(index)) {
+    for (const [gigIdStr, gigEntry] of Object.entries(index)) {
       const gigId = parseInt(gigIdStr);
       const gig = await readGig(gigId);
-      
+
       if (gig) {
         gigs.push(gig);
       }
     }
-    
-    // Sort gigs by posted date (newest first)
+
+    // Sort gigs by created date (newest first)
     return gigs.sort((a, b) => {
-      const dateA = new Date(a.postedDate).getTime();
-      const dateB = new Date(b.postedDate).getTime();
+      const dateA = new Date(a.postedDate || '1970-01-01').getTime();
+      const dateB = new Date(b.postedDate || '1970-01-01').getTime();
       return dateB - dateA;
     });
   } catch (error) {
@@ -212,13 +233,32 @@ export async function readAllGigs(): Promise<Gig[]> {
  */
 export async function updateGig(gigId: number, updates: Partial<Gig>): Promise<void> {
   const existingGig = await readGig(gigId);
-  
+
   if (!existingGig) {
     throw new Error(`Gig ${gigId} not found`);
   }
-  
+
   const updatedGig = { ...existingGig, ...updates };
-  await saveGig(updatedGig);
+
+  // Get the gig entry from index to determine the correct path
+  const index = await loadGigsIndex();
+  const gigEntry = index[gigId.toString()];
+
+  if (!gigEntry) {
+    throw new Error(`Gig ${gigId} not found in index`);
+  }
+
+  // Write to the same path where the gig was read from (indexed path)
+  const gigPath = getGigPath(gigEntry.path);
+  const gigDir = path.dirname(gigPath);
+
+  // Ensure directory exists
+  await ensureDirectoryExists(gigDir);
+
+  // Write the updated gig
+  await fs.writeFile(gigPath, JSON.stringify(updatedGig, null, 2));
+
+  console.log(`✅ Updated gig ${gigId} at ${gigPath}`);
 }
 
 /**
@@ -226,28 +266,27 @@ export async function updateGig(gigId: number, updates: Partial<Gig>): Promise<v
  */
 export async function deleteGig(gigId: number): Promise<void> {
   try {
-    // Get the posted date from the index
-    const indexPath = getGigMetadataPath();
+    // Use the new unified index system
+    const index = await loadGigsIndex();
 
-    if (!await fs.access(indexPath).then(() => true).catch(() => false)) {
-      return;
-    }
-
-    const indexData = await fs.readFile(indexPath, 'utf-8');
-    const index = JSON.parse(indexData);
-
-    const postedDate = index[gigId.toString()];
-    if (!postedDate) {
+    const gigEntry = index[gigId.toString()];
+    if (!gigEntry) {
+      console.warn(`Gig ${gigId} not found in index for deletion`);
       return;
     }
 
     // Delete the gig file
-    const gigPath = getGigPath(gigId, postedDate);
-    await fs.unlink(gigPath);
+    const gigPath = getGigPath(gigEntry.path);
 
-    // Remove from index
-    delete index[gigId.toString()];
-    await fs.writeFile(indexPath, JSON.stringify(index, null, 2));
+    try {
+      await fs.unlink(gigPath);
+    } catch (unlinkError) {
+      console.warn(`Could not delete gig file ${gigPath}:`, unlinkError);
+    }
+
+    // Remove from new index (delegate to gigs-index.ts)
+    const { removeGigFromIndex } = await import('../storage/gigs-index');
+    await removeGigFromIndex(gigId);
 
     // Try to clean up empty directories
     const gigDir = path.dirname(gigPath);
@@ -310,9 +349,9 @@ export async function getPublicGigs(): Promise<Gig[]> {
  * Get next available gig ID
  */
 export async function getNextGigId(): Promise<number> {
-  const allGigs = await readAllGigs();
-  const maxId = Math.max(...allGigs.map(gig => gig.id), 0);
-  return maxId + 1;
+  // Use the new index system for better performance
+  const { getNextGigIdFromIndex } = await import('../storage/gigs-index');
+  return await getNextGigIdFromIndex();
 }
 
 /**

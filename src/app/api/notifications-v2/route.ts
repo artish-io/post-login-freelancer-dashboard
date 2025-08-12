@@ -23,8 +23,6 @@ export async function GET(request: NextRequest) {
     }
 
     // Load data files
-    const usersPath = path.join(process.cwd(), 'data', 'users.json');
-    const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
     const contactsPath = path.join(process.cwd(), 'data', 'contacts.json');
 
@@ -37,11 +35,12 @@ export async function GET(request: NextRequest) {
       200 // limit - get up to 200 recent events
     );
 
-    // Load data from repos and flat files
+    // Load data from repos and controlled utilities
     const { getAllUsers } = await import('@/lib/storage/unified-storage-service');
+    const { readAllFreelancers } = await import('@/lib/freelancers-utils');
     const [users, freelancers, projects, organizations, contacts, allTasks] = await Promise.all([
       getAllUsers(), // Use hierarchical storage for users
-      fs.promises.readFile(freelancersPath, 'utf-8').then(data => JSON.parse(data)),
+      readAllFreelancers(), // Use controlled freelancers utility
       readAllProjects(), // Use projects repo
       fs.promises.readFile(organizationsPath, 'utf-8').then(data => JSON.parse(data)),
       fs.promises.readFile(contactsPath, 'utf-8').then(data => JSON.parse(data)),
@@ -206,10 +205,15 @@ export async function GET(request: NextRequest) {
       }
 
       const notificationId = `${event.id}-${userId}`;
+
+      // Check if this is a project completion notification for rating
+      const isProjectComplete = event.type === 'task_approved' &&
+        projectTaskData?.tasks?.filter((t: any) => t.status !== 'Approved' || !t.completed).length === 0;
+
       return {
         id: notificationId,
-        type: getNotificationType(event.type),
-        title: generateGranularTitle(event, actor, project, projectTaskData, task),
+        type: isProjectComplete ? 'project_complete_rating' : getNotificationType(event.type),
+        title: generateGranularTitle(event, actor, project, projectTaskData, task, userType),
         message: generateGranularMessage(event, actor, project, projectTaskData, task),
         timestamp: event.timestamp,
         isRead: NotificationStorage.isRead(notificationId, parseInt(userId)),
@@ -229,7 +233,16 @@ export async function GET(request: NextRequest) {
           title: event.metadata.gigTitle || 'Unknown Gig'
         } : undefined,
         context: event.context, // Add the context field for navigation
-        metadata: event.metadata, // Add the metadata field for additional data
+        metadata: {
+          ...event.metadata,
+          // Add rating-specific metadata for project completion
+          ...(isProjectComplete && {
+            canRate: true,
+            subjectUserId: userType === 'freelancer' ? project?.commissionerId : project?.freelancerId,
+            subjectUserType: userType === 'freelancer' ? 'commissioner' : 'freelancer',
+            subjectName: userType === 'freelancer' ? actor?.name : users.find(u => u.id === project?.freelancerId)?.name
+          })
+        }, // Add the metadata field for additional data
         isFromNetwork: isFromNetwork(event, parseInt(userId)),
         priority: event.metadata.priority || 'medium',
         iconPath: iconPath,
@@ -376,7 +389,8 @@ function getNotificationType(eventType: EventType): string {
     'profile_updated': 'profile_updated',
     'milestone_payment_received': 'milestone_payment_received',
     'product_approved': 'product_approved',
-    'product_rejected': 'product_rejected'
+    'product_rejected': 'product_rejected',
+    'project_rating_submitted': 'project_rating_received'
   };
   
   return typeMap[eventType] || eventType;
@@ -464,7 +478,7 @@ function groupSimilarEvents(events: EventData[]): EventData[] {
   return [...groupedNotifications, ...ungrouped];
 }
 
-function generateGranularTitle(event: EventData, actor: any, _project?: any, projectTaskData?: any, task?: any): string {
+function generateGranularTitle(event: EventData, actor: any, _project?: any, projectTaskData?: any, _task?: any, userType?: string): string {
   const actorName = actor?.name || 'Someone';
   const groupCount = event.metadata.groupCount;
 
@@ -475,7 +489,16 @@ function generateGranularTitle(event: EventData, actor: any, _project?: any, pro
       // Calculate remaining milestones (only count tasks that are not approved)
       const remainingTasks = projectTaskData?.tasks?.filter((t: any) => t.status !== 'Approved' || !t.completed).length || 0;
       if (remainingTasks === 0) {
-        return `${actorName} approved "${event.metadata.taskTitle}". This project is now complete`;
+        // Project is complete - add rating prompt based on user type
+        const projectTitle = event.metadata.projectTitle || 'this project';
+        if (userType === 'freelancer') {
+          // Freelancer sees: Commissioner approved task, project complete, click to rate
+          return `${actorName} approved "${event.metadata.taskTitle}" for ${projectTitle}. This project is now complete. Click here to rate`;
+        } else {
+          // Commissioner sees: You approved all milestones, click to rate freelancer
+          const freelancerName = event.metadata.freelancerName || 'the freelancer';
+          return `You have approved all task milestones for ${projectTitle}. Click here to rate ${freelancerName} for their work on this project. Your rating improves the experience of other project managers on ARTISH`;
+        }
       } else {
         return `${actorName} approved "${event.metadata.taskTitle}". Only ${remainingTasks} milestone${remainingTasks !== 1 ? 's' : ''} remain${remainingTasks === 1 ? 's' : ''} for this project`;
       }
@@ -507,9 +530,9 @@ function generateGranularTitle(event: EventData, actor: any, _project?: any, pro
     case 'invoice_sent':
       return `${actorName} sent you a new invoice`;
     case 'invoice_paid':
-      return `Your invoice for "${event.metadata.projectTitle || event.metadata.taskTitle || task?.title || 'project work'}" has been paid by ${actorName}`;
+      return `Your invoice for "${event.metadata.projectTitle || event.metadata.taskTitle || _task?.title || 'project work'}" has been paid by ${actorName}`;
     case 'milestone_payment_received':
-      return `Your invoice for "${event.context?.milestoneTitle || task?.title || 'milestone'}" has been paid by ${actorName}`;
+      return `Your invoice for "${event.context?.milestoneTitle || _task?.title || 'milestone'}" has been paid by ${actorName}`;
     case 'product_purchased':
       return `You just made a new sale of "${event.metadata.productTitle}"`;
     case 'invoice_created':
@@ -524,13 +547,17 @@ function generateGranularTitle(event: EventData, actor: any, _project?: any, pro
       return `${event.metadata.organizationName || actorName} rejected your proposal`;
     case 'gig_rejected':
       return `${event.metadata.organizationName || actorName} rejected your application for "${event.metadata.gigTitle}"`;
+    case 'project_rating_submitted':
+      const stars = event.metadata.stars || 0;
+      const projectTitle = event.metadata.projectTitle || 'project';
+      return `${actorName} rated you ${stars}/5 stars for your work on ${projectTitle}`;
     default:
       // Skip generic events - they shouldn't reach here if properly filtered
       return `Activity update`;
   }
 }
 
-function generateGranularMessage(event: EventData, _actor: any, _project?: any, _projectTaskData?: any, task?: any): string {
+function generateGranularMessage(event: EventData, _actor: any, _project?: any, _projectTaskData?: any, _task?: any): string {
   switch (event.type) {
     case 'task_submitted':
       return `"${event.metadata.taskTitle}" is awaiting your review`;
@@ -579,6 +606,10 @@ function generateGranularMessage(event: EventData, _actor: any, _project?: any, 
       return event.metadata.rejectionReason || 'No reason provided';
     case 'gig_rejected':
       return event.metadata.rejectionMessage || 'You will be able to re-apply if this gig listing is still active after 21 days.';
+    case 'project_rating_submitted':
+      const stars = event.metadata.stars || 0;
+      const projectTitle = event.metadata.projectTitle || 'project';
+      return `${stars}/5 stars for your collaboration on ${projectTitle}`;
     default:
       return 'Activity update';
   }

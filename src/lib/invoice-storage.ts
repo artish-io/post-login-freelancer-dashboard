@@ -69,11 +69,11 @@ function getDateParts(date: Date): { year: string; month: string; day: string } 
   if (!date || isNaN(date.getTime())) {
     date = new Date();
   }
-  
+
   const year = date.getFullYear().toString();
-  const month = date.toLocaleString('en-US', { month: 'long' }); // e.g., "July"
-  const day = date.getDate().toString().padStart(2, '0'); // e.g., "01"
-  
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // e.g., "08"
+  const day = String(date.getDate()).padStart(2, '0'); // e.g., "12"
+
   return { year, month, day };
 }
 
@@ -91,8 +91,7 @@ async function ensureDir(dirPath: string): Promise<void> {
 function getInvoiceFilePath(invoice: Invoice): string {
   const issueDate = parseInvoiceDate(invoice.issueDate);
   const { year, month, day } = getDateParts(issueDate);
-  const projectId = invoice.projectId ? invoice.projectId.toString() : 'custom';
-  
+
   return path.join(
     process.cwd(),
     'data',
@@ -100,8 +99,7 @@ function getInvoiceFilePath(invoice: Invoice): string {
     year,
     month,
     day,
-    projectId,
-    'invoice.json'
+    `${invoice.invoiceNumber}.json`
   );
 }
 
@@ -109,16 +107,14 @@ function getInvoiceFilePath(invoice: Invoice): string {
 function getInvoiceDirectoryPath(invoice: Invoice): string {
   const issueDate = parseInvoiceDate(invoice.issueDate);
   const { year, month, day } = getDateParts(issueDate);
-  const projectId = invoice.projectId ? invoice.projectId.toString() : 'custom';
-  
+
   return path.join(
     process.cwd(),
     'data',
     'invoices',
     year,
     month,
-    day,
-    projectId
+    day
   );
 }
 
@@ -126,40 +122,11 @@ function getInvoiceDirectoryPath(invoice: Invoice): string {
 export async function saveInvoice(invoice: Invoice): Promise<void> {
   const dirPath = getInvoiceDirectoryPath(invoice);
   await ensureDir(dirPath);
-  
-  // Check if invoice already exists
+
   const filePath = getInvoiceFilePath(invoice);
-  let filename = 'invoice.json';
-  
-  try {
-    const existingData = await readFile(filePath, 'utf-8');
-    const existingInvoice = JSON.parse(existingData);
-    
-    if (existingInvoice.invoiceNumber !== invoice.invoiceNumber) {
-      // Different invoice, create unique filename
-      let counter = 1;
-      while (true) {
-        filename = `invoice-${counter}.json`;
-        const newFilePath = path.join(dirPath, filename);
-        try {
-          const data = await readFile(newFilePath, 'utf-8');
-          const existing = JSON.parse(data);
-          if (existing.invoiceNumber === invoice.invoiceNumber) {
-            filename = `invoice-${counter}.json`;
-            break;
-          }
-          counter++;
-        } catch {
-          break;
-        }
-      }
-    }
-  } catch {
-    // File doesn't exist, use default filename
-  }
-  
-  const finalPath = path.join(dirPath, filename);
-  await writeFile(finalPath, JSON.stringify(invoice, null, 2));
+  await writeFile(filePath, JSON.stringify(invoice, null, 2));
+
+  console.log(`💾 Saved invoice to: ${filePath}`);
 }
 
 // Get all invoices (with optional filters)

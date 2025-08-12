@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {
+      "id": 405,
+      "title": "Initial setup for Corporate Event Photography Package",
+      "status": "in_progress",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": ""
+      },
+      "projectId": 331,
+      "description": "Begin work on Corporate Event Photography Package project",
+      "dueDate": "2025-08-14T17:49:37.346Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-07T17:49:37.346Z",
+      "lastModified": "2025-08-07T17:49:37.348Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.782Z",
+  "version": 1
+}

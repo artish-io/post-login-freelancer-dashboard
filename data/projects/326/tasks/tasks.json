@@ -1,0 +1,78 @@
+{
+  "tasks": [
+    {
+      "id": 305,
+      "title": "Creative Concept Development",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-05T18:20:26.724Z",
+      "links": {
+        "brief": "",
+        "work": "bit.ly234234324314"
+      },
+      "projectId": 326,
+      "description": "Brainstorm and finalize visual direction, messaging tone, and key campaign themes aligned with the fundraiser's goals.",
+      "dueDate": "2025-08-08T04:00:00.000Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-05T14:47:18.291Z",
+      "lastModified": "2025-08-05T18:20:26.724Z"
+    },
+    {
+      "id": 306,
+      "title": "Asset Design & Production",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-05T18:18:12.266Z",
+      "links": {
+        "brief": "",
+        "work": "bil.lyweurwerwere"
+      },
+      "projectId": 326,
+      "description": "Design core advertising materials including posters, social media banners, t-shirts, stage backdrops, and signage.",
+      "dueDate": "2025-08-15T04:00:00.000Z",
+      "order": 2,
+      "version": 1,
+      "createdDate": "2025-08-05T14:47:18.291Z",
+      "lastModified": "2025-08-05T18:18:12.266Z"
+    },
+    {
+      "id": 307,
+      "title": "Stakeholder Review & Revisions",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-05T18:32:12.290Z",
+      "links": {
+        "brief": "",
+        "work": ""
+      },
+      "projectId": 326,
+      "description": "Present drafts to Lagos Parks Services and event partners for feedback and iterate based on approvals.",
+      "dueDate": "2025-08-22T04:00:00.000Z",
+      "order": 3,
+      "version": 1,
+      "createdDate": "2025-08-05T14:47:18.291Z",
+      "lastModified": "2025-08-05T18:32:12.290Z"
+    },
+    {
+      "id": 308,
+      "title": "Final Delivery & Print Prep",
+      "status": "in_progress",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": ""
+      },
+      "projectId": 326,
+      "description": "Package all approved assets in print-ready and digital formats, optimized for event deployment across channels.",
+      "dueDate": "2025-08-29T04:00:00.000Z",
+      "order": 4,
+      "version": 1,
+      "createdDate": "2025-08-05T14:47:18.291Z",
+      "lastModified": "2025-08-05T18:32:12.637Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.776Z",
+  "version": 1
+}

@@ -1,0 +1,24 @@
+{
+  "taskId": 25,
+  "projectId": 299,
+  "projectTitle": "UX Writing",
+  "organizationId": 7,
+  "projectTypeTags": [
+    "Content Strategy",
+    "UX Writing"
+  ],
+  "title": "Error message redesign",
+  "status": "In review",
+  "completed": true,
+  "order": 2,
+  "link": "https://docs.google.com/document/error-messages",
+  "dueDate": "2025-07-14T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 1,
+  "pushedBack": false,
+  "version": 2,
+  "description": "Rewrite all error messages for clarity and user-friendliness.",
+  "createdDate": "2025-08-03T15:57:39.542Z",
+  "lastModified": "2025-08-04T05:10:33.267Z",
+  "submittedDate": "2025-08-04T05:10:33.266Z"
+}

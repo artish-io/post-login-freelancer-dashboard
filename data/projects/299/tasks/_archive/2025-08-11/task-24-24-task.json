@@ -1,0 +1,24 @@
+{
+  "taskId": 24,
+  "projectId": 299,
+  "projectTitle": "UX Writing",
+  "organizationId": 7,
+  "projectTypeTags": [
+    "Content Strategy",
+    "UX Writing"
+  ],
+  "title": "Accessibility microcopy audit",
+  "status": "In review",
+  "completed": true,
+  "order": 1,
+  "link": "https://docs.google.com/document/accessibility-audit",
+  "dueDate": "2025-07-26T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Comprehensive audit of existing microcopy for accessibility compliance.",
+  "createdDate": "2025-08-03T15:57:39.542Z",
+  "lastModified": "2025-08-04T05:11:22.918Z",
+  "submittedDate": "2025-08-04T05:11:22.918Z"
+}

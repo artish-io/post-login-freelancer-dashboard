@@ -41,17 +41,47 @@ export default function BillToInput({
 
   // Fetch available contacts for this freelancer
   useEffect(() => {
-    if (readOnly) return;
+    console.log('🚀 [BillToInput] useEffect triggered with freelancerId:', freelancerId, 'readOnly:', readOnly);
+    if (readOnly) {
+      console.log('⏭️ [BillToInput] Skipping fetch - component is readOnly');
+      return;
+    }
 
     const fetchContacts = async () => {
       try {
-        const res = await fetch(`/api/user/contacts/${freelancerId}`);
+        console.log('🔍 [BillToInput] Fetching contacts for freelancerId:', freelancerId);
+        const url = `/api/user/contacts/${freelancerId}`;
+        console.log('🌐 [BillToInput] API URL:', url);
+
+        const res = await fetch(url);
+        console.log('📡 [BillToInput] Response status:', res.status, res.statusText);
+
+        if (!res.ok) {
+          console.error('❌ [BillToInput] HTTP error:', res.status, res.statusText);
+          setContacts([]);
+          return;
+        }
+
         const data = await res.json();
+        console.log('📋 [BillToInput] API response:', data);
+
+        if (data.error) {
+          console.error('❌ [BillToInput] API error:', data.error);
+          setContacts([]);
+          return;
+        }
+
         if (Array.isArray(data.contacts)) {
+          console.log('✅ [BillToInput] Setting contacts:', data.contacts.length, 'contacts found');
+          console.log('👥 [BillToInput] Contact details:', data.contacts.map((c: any) => ({ id: c.id, name: c.name, email: c.email })));
           setContacts(data.contacts);
+        } else {
+          console.warn('⚠️ [BillToInput] Expected contacts array, got:', typeof data.contacts, data.contacts);
+          setContacts([]);
         }
       } catch (err) {
-        console.error('Failed to fetch contacts:', err);
+        console.error('❌ [BillToInput] Failed to fetch contacts:', err);
+        setContacts([]);
       }
     };
 
@@ -63,14 +93,20 @@ export default function BillToInput({
     if (readOnly) return;
 
     const query = value.toLowerCase().trim();
+    console.log('🔍 [BillToInput] Filtering with query:', query, 'from', contacts.length, 'contacts');
+
     if (!query) {
-      setFiltered([]);
+      // Show all contacts when input is empty (up to 5)
+      const allContacts = contacts.slice(0, 5);
+      console.log('📋 [BillToInput] Showing all contacts (empty query):', allContacts.length);
+      setFiltered(allContacts);
       return;
     }
 
     const matches = contacts.filter(
       (c) => c.name.toLowerCase().includes(query) || c.email.toLowerCase().includes(query)
     );
+    console.log('🎯 [BillToInput] Found matches for query "' + query + '":', matches.length);
     setFiltered(matches.slice(0, 5));
   }, [value, contacts, readOnly]);
 
@@ -102,7 +138,8 @@ export default function BillToInput({
         className="w-full border border-gray-300 rounded-md px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-pink-500 disabled:opacity-60"
         onFocus={() => {
           if (readOnly) return;
-          if (value.trim()) setShowDropdown(true);
+          // Show dropdown on focus if we have contacts to show
+          if (contacts.length > 0) setShowDropdown(true);
         }}
         disabled={readOnly}
       />

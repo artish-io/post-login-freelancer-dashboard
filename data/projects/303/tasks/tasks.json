@@ -1,0 +1,60 @@
+{
+  "tasks": [
+    {
+      "id": 6,
+      "title": "Login & onboarding flow",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-05T20:32:41.290Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/login-onboarding"
+      },
+      "projectId": 303,
+      "description": "Design intuitive login and onboarding flows for the iOS app.",
+      "dueDate": "2025-07-14T00:00:00.000Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.544Z",
+      "lastModified": "2025-08-05T20:32:41.290Z"
+    },
+    {
+      "id": 7,
+      "title": "iOS testing & deployment",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-05T20:32:46.280Z",
+      "links": {
+        "brief": "",
+        "work": "https://testflight.apple.com/app-build"
+      },
+      "projectId": 303,
+      "description": "Test app functionality and deploy to App Store for review.",
+      "dueDate": "2025-07-15T00:00:00.000Z",
+      "order": 2,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.544Z",
+      "lastModified": "2025-08-05T20:32:46.280Z"
+    },
+    {
+      "id": 16,
+      "title": "Scroll gestures & microinteractions",
+      "status": "todo",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/scroll-gestures"
+      },
+      "projectId": 303,
+      "description": "Prototype scroll interactions and subtle animations for mobile UI.",
+      "dueDate": "2025-07-16T00:00:00.000Z",
+      "order": 3,
+      "version": 3,
+      "createdDate": "2025-08-03T15:57:39.544Z",
+      "lastModified": "2025-08-03T15:57:39.544Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.760Z",
+  "version": 1
+}

@@ -1,0 +1,23 @@
+{
+  "taskId": 29,
+  "projectId": 306,
+  "projectTitle": "Nebula CMS landing redesign",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Web Design",
+    "UX Strategy"
+  ],
+  "title": "URGENT: Footer contact form",
+  "status": "In review",
+  "completed": true,
+  "order": 12,
+  "link": "https://figma.com/file/footer-form",
+  "dueDate": "2025-08-26T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 3,
+  "pushedBack": true,
+  "version": 3,
+  "description": "Add contact form to footer section - high priority.",
+  "createdDate": "2025-08-03T15:57:39.545Z",
+  "lastModified": "2025-08-03T15:57:39.546Z"
+}

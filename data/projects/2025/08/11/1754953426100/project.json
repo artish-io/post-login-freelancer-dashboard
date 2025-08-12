@@ -1,0 +1,24 @@
+{
+  "projectId": 1754953426100,
+  "gigId": 28,
+  "commissionerId": 32,
+  "freelancerId": 31,
+  "title": "Test Milestone-Based Gig for Invoicing Validation",
+  "description": "Test gig for milestone-based invoicing workflow validation",
+  "budget": {
+    "lower": 10000,
+    "upper": 10000,
+    "currency": "USD"
+  },
+  "status": "ongoing",
+  "invoicingMethod": "milestone",
+  "executionMethod": "milestone",
+  "createdAt": "2025-08-11T23:03:44.932Z",
+  "updatedAt": "2025-08-11T23:03:44.932Z",
+  "organizationId": 1,
+  "typeTags": [
+    "React",
+    "TypeScript",
+    "Node.js"
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "tasks": [
+    {
+      "id": 101,
+      "title": "User authentication flow design",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.550Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/auth-flow-design"
+      },
+      "projectId": 311,
+      "description": "Design the complete user authentication and registration flow.",
+      "dueDate": "2025-08-15T00:00:00.000Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.550Z"
+    },
+    {
+      "id": 102,
+      "title": "Park booking interface mockups",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.550Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/booking-interface"
+      },
+      "projectId": 311,
+      "description": "Create mockups for the park facility booking interface.",
+      "dueDate": "2025-08-18T00:00:00.000Z",
+      "order": 2,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.550Z"
+    },
+    {
+      "id": 103,
+      "title": "Maintenance reporting feature",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.550Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/maintenance-reporting"
+      },
+      "projectId": 311,
+      "description": "Design the maintenance issue reporting feature with photo upload.",
+      "dueDate": "2025-08-20T00:00:00.000Z",
+      "order": 3,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.550Z"
+    },
+    {
+      "id": 104,
+      "title": "Navigation and menu structure",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.550Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/navigation-menu"
+      },
+      "projectId": 311,
+      "description": "Design the main navigation and menu structure for the mobile app.",
+      "dueDate": "2025-08-22T00:00:00.000Z",
+      "order": 4,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.550Z"
+    },
+    {
+      "id": 105,
+      "title": "Push notification system design",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.550Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/notification-system"
+      },
+      "projectId": 311,
+      "description": "Design the push notification system for booking confirmations and updates.",
+      "dueDate": "2025-08-25T00:00:00.000Z",
+      "order": 5,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.550Z",
+      "lastModified": "2025-08-03T15:57:39.550Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.778Z",
+  "version": 1
+}

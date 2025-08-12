@@ -36,11 +36,13 @@ export async function GET(
     );
 
     const fullBillTo = {
+      id: user.id, // Include user ID for commissioner identification
       name: user.name || '',
       email: user.email || '',
       avatar: user.avatar || '/default-avatar.png',
       address: user.address || '',
       organization: organization?.name || '',
+      logo: organization?.logo || '', // Add logo field for consistency
     };
 
     return NextResponse.json(fullBillTo);

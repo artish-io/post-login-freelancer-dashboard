@@ -1,0 +1,44 @@
+{
+  "summary": {
+    "totalTests": 1,
+    "passed": 0,
+    "failed": 0,
+    "errors": 1,
+    "totalDuration": 12
+  },
+  "results": [
+    {
+      "testName": "Milestone-Based Gig Creation",
+      "status": "ERROR",
+      "duration": 12,
+      "details": {
+        "error": "Request is not defined"
+      },
+      "breakages": [
+        "Unexpected error during gig creation: Request is not defined"
+      ],
+      "recommendations": [
+        "Review gig creation endpoint implementation and error handling"
+      ],
+      "dataIntegrity": {
+        "filesCreated": [],
+        "filesModified": [],
+        "inconsistencies": []
+      }
+    }
+  ],
+  "criticalBreakages": [
+    "Unexpected error during gig creation: Request is not defined"
+  ],
+  "systemRecommendations": [
+    "Review gig creation endpoint implementation and error handling"
+  ],
+  "prognosis": {
+    "overallHealth": "CRITICAL",
+    "readinessForProduction": false,
+    "priorityFixes": [
+      "Unexpected error during gig creation: Request is not defined",
+      "Review gig creation endpoint implementation and error handling"
+    ]
+  }
+}

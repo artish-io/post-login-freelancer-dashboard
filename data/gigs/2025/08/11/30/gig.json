@@ -1,0 +1,57 @@
+{
+  "id": 30,
+  "title": "Test Milestone-Based Gig for Invoicing Validation",
+  "organizationId": 1,
+  "commissionerId": 32,
+  "category": "development",
+  "subcategory": "Web Development",
+  "tags": [
+    "React",
+    "TypeScript",
+    "Node.js"
+  ],
+  "hourlyRateMin": 50,
+  "hourlyRateMax": 50,
+  "description": "Test gig for milestone-based invoicing workflow validation",
+  "deliveryTimeWeeks": 8,
+  "estimatedHours": 200,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "React",
+    "Jest",
+    "TypeScript"
+  ],
+  "executionMethod": "milestone",
+  "invoicingMethod": "milestone",
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Project Setup and Architecture",
+      "description": "Initial project setup, architecture design, and development environment",
+      "startDate": "2025-08-11T23:11:15.785Z",
+      "endDate": "2025-08-25T23:11:15.786Z"
+    },
+    {
+      "id": "M2",
+      "title": "Core Feature Development",
+      "description": "Implementation of core features and functionality",
+      "startDate": "2025-08-25T23:11:15.786Z",
+      "endDate": "2025-09-15T23:11:15.786Z"
+    },
+    {
+      "id": "M3",
+      "title": "Testing and Deployment",
+      "description": "Comprehensive testing, bug fixes, and deployment",
+      "startDate": "2025-09-15T23:11:15.786Z",
+      "endDate": "2025-10-06T23:11:15.786Z"
+    }
+  ],
+  "startType": "Immediately",
+  "lowerBudget": 10000,
+  "upperBudget": 10000,
+  "postedDate": "2025-08-11",
+  "notes": "Budget: $10,000",
+  "isPublic": true,
+  "isTargetedRequest": false,
+  "targetFreelancerId": null
+}

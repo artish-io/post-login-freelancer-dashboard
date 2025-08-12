@@ -1,0 +1,26 @@
+{
+  "taskId": 1754954016257,
+  "projectId": 1754954012877,
+  "projectTitle": "Test Milestone-Based Gig for Invoicing Validation",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "React",
+    "TypeScript",
+    "Node.js"
+  ],
+  "title": "Project Setup and Architecture",
+  "description": "Initial project setup, architecture design, and development environment",
+  "status": "Approved",
+  "completed": true,
+  "order": 1,
+  "link": "https://github.com/test/milestone-task-1",
+  "dueDate": "2025-08-25T23:13:26.399Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 2,
+  "createdDate": "2025-08-11T23:13:26.436Z",
+  "lastModified": "2025-08-11T23:13:27.784Z",
+  "submittedDate": "2025-08-11T23:13:26.488Z",
+  "approvedDate": "2025-08-11T23:13:27.784Z"
+}

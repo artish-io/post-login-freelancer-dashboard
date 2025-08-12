@@ -1,0 +1,96 @@
+{
+  "tasks": [
+    {
+      "id": 4,
+      "title": "Brand concept iteration",
+      "status": "todo",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/brand-concept"
+      },
+      "projectId": 302,
+      "description": "Iterate on brand concept direction based on client feedback.",
+      "dueDate": "2025-07-16T00:00:00.000Z",
+      "order": 1,
+      "version": 3,
+      "createdDate": "2025-08-03T15:57:39.548Z",
+      "lastModified": "2025-08-03T15:57:39.548Z"
+    },
+    {
+      "id": 5,
+      "title": "Motion intro animation",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.549Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/motion-intro"
+      },
+      "projectId": 302,
+      "description": "Animate a branded motion intro for Urbana’s digital presence.",
+      "dueDate": "2025-08-24T00:00:00.000Z",
+      "order": 2,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.548Z",
+      "lastModified": "2025-08-03T15:57:39.549Z"
+    },
+    {
+      "id": 13,
+      "title": "Client review deck",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.549Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/client-deck"
+      },
+      "projectId": 302,
+      "description": "Prepare a presentation deck to walk the client through the updated design system.",
+      "dueDate": "2025-08-15T00:00:00.000Z",
+      "order": 4,
+      "version": 2,
+      "createdDate": "2025-08-03T15:57:39.548Z",
+      "lastModified": "2025-08-03T15:57:39.549Z"
+    },
+    {
+      "id": 14,
+      "title": "Visual identity lockup",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "bitly.cowewee"
+      },
+      "projectId": 302,
+      "description": "Consolidate logo and visual identity assets into a consistent lockup.",
+      "dueDate": "2025-07-26T00:00:00.000Z",
+      "order": 3,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.548Z",
+      "lastModified": "2025-08-05T17:00:45.566Z"
+    },
+    {
+      "id": 15,
+      "title": "Finalize brand icons",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.549Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/brand-icons"
+      },
+      "projectId": 302,
+      "description": "Refine and finalize the brand's primary and secondary icon set.",
+      "dueDate": "2025-08-23T00:00:00.000Z",
+      "order": 4,
+      "version": 2,
+      "createdDate": "2025-08-03T15:57:39.548Z",
+      "lastModified": "2025-08-03T15:57:39.549Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.767Z",
+  "version": 1
+}

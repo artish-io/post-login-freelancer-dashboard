@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-08-11T18:33:26.613Z",
+  "config": {
+    "baseUrl": "http://localhost:3000",
+    "testCommissionerId": 31,
+    "testFreelancerId": 1,
+    "testBudget": 5000,
+    "testGigTitle": "Test Completion Invoicing Workflow",
+    "testProjectTasks": 3,
+    "timeout": 30000
+  },
+  "state": {
+    "gigId": null,
+    "projectId": null,
+    "applicationId": null,
+    "upfrontInvoiceNumber": null,
+    "completionInvoiceNumber": null,
+    "taskIds": [],
+    "errors": [
+      "Gig creation failed: Missing or invalid required fields: title (string), budget (positive number), executionMethod (completion|milestone), commissionerId (positive number)",
+      "Cannot test application - no gig ID available",
+      "Cannot test matching - missing gig ID or application ID",
+      "Cannot test upfront invoice - no project ID available",
+      "Cannot test upfront payment - no upfront invoice available",
+      "Cannot test task approval - no tasks or project ID available",
+      "Cannot test completion invoice - no project ID available"
+    ],
+    "warnings": [],
+    "testResults": {
+      "gigCreation": {
+        "status": "FAIL",
+        "error": "Missing or invalid required fields: title (string), budget (positive number), executionMethod (completion|milestone), commissionerId (positive number)"
+      },
+      "dataIntegrity": {
+        "status": "PASS",
+        "checks": [
+          {
+            "check": "invoice_amounts_total",
+            "expected": 5000,
+            "actual": 5000,
+            "pass": true
+          }
+        ],
+        "message": "1/1 integrity checks passed"
+      }
+    }
+  },
+  "summary": {
+    "totalTests": 2,
+    "passedTests": 1,
+    "failedTests": 1,
+    "warnings": 0,
+    "errors": 7,
+    "success": false
+  }
+}

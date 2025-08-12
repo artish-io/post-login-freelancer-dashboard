@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {
+      "id": 401,
+      "title": "Design interactive map interface",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "bit.ly/34234324234234243"
+      },
+      "projectId": 319,
+      "description": "Create the main interface for the interactive park map with zoom, pan, and layer controls.",
+      "dueDate": "2025-08-15T00:00:00.000Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-03T14:42:54.025Z",
+      "lastModified": "2025-08-07T17:39:04.283Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.771Z",
+  "version": 1
+}

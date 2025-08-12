@@ -1,0 +1,24 @@
+{
+  "taskId": 202,
+  "projectId": 314,
+  "projectTitle": "E-commerce Platform UI Redesign",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "UI/UX Design",
+    "E-commerce"
+  ],
+  "title": "High-fidelity UI design and prototyping",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 2,
+  "link": "https://figma.com/file/ecommerce-ui-design",
+  "dueDate": "2025-07-28T00:00:00.000Z",
+  "rejected": true,
+  "feedbackCount": 1,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Create high-fidelity UI designs and interactive prototypes for the e-commerce platform.",
+  "submittedDate": "2025-07-21T16:45:00.000Z",
+  "createdDate": "2025-08-03T15:57:39.549Z",
+  "lastModified": "2025-08-03T15:57:39.549Z"
+}

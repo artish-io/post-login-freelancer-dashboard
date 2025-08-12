@@ -1,0 +1,107 @@
+[
+  {
+    "id": "evt_1754959570565_invoice_auto",
+    "timestamp": "2025-08-12T00:46:10.565Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 5,
+    "entityId": "AUTO-1754959570559-1754959575208-1754959572550",
+    "metadata": {
+      "taskTitle": "Project Setup and Architecture",
+      "projectTitle": "Test Milestone-Based Gig for Invoicing Validation",
+      "amount": 10000,
+      "invoiceNumber": "AUTO-1754959570559-1754959575208-1754959572550"
+    },
+    "context": {
+      "projectId": 1754959575208,
+      "taskId": 1754959572550,
+      "invoiceId": "AUTO-1754959570559-1754959575208-1754959572550"
+    }
+  },
+  {
+    "id": "evt_1754959726369_invoice_auto",
+    "timestamp": "2025-08-12T00:48:46.369Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 5,
+    "entityId": "AUTO-1754959726363-1754959730304-1754959728605",
+    "metadata": {
+      "taskTitle": "Project Setup and Architecture",
+      "projectTitle": "Test Milestone-Based Gig for Invoicing Validation",
+      "amount": 10000,
+      "invoiceNumber": "AUTO-1754959726363-1754959730304-1754959728605"
+    },
+    "context": {
+      "projectId": 1754959730304,
+      "taskId": 1754959728605,
+      "invoiceId": "AUTO-1754959726363-1754959730304-1754959728605"
+    }
+  },
+  {
+    "id": "evt_1754959835741_invoice_auto",
+    "timestamp": "2025-08-12T00:50:35.741Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 5,
+    "entityId": "AUTO-1754959835740-1754959840098-1754959840073",
+    "metadata": {
+      "taskTitle": "Project Setup and Architecture",
+      "projectTitle": "Test Milestone-Based Gig for Invoicing Validation",
+      "amount": 10000,
+      "invoiceNumber": "AUTO-1754959835740-1754959840098-1754959840073"
+    },
+    "context": {
+      "projectId": 1754959840098,
+      "taskId": 1754959840073,
+      "invoiceId": "AUTO-1754959835740-1754959840098-1754959840073"
+    }
+  },
+  {
+    "id": "evt_1754959890101_invoice_auto",
+    "timestamp": "2025-08-12T00:51:30.101Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 5,
+    "entityId": "AUTO-1754959890100-1754959894053-1754959895820",
+    "metadata": {
+      "taskTitle": "Project Setup and Architecture",
+      "projectTitle": "Test Milestone-Based Gig for Invoicing Validation",
+      "amount": 10000,
+      "invoiceNumber": "AUTO-1754959890100-1754959894053-1754959895820"
+    },
+    "context": {
+      "projectId": 1754959894053,
+      "taskId": 1754959895820,
+      "invoiceId": "AUTO-1754959890100-1754959894053-1754959895820"
+    }
+  },
+  {
+    "id": "evt_1754960020187_invoice_auto",
+    "timestamp": "2025-08-12T00:53:40.187Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 5,
+    "entityId": "AUTO-1754960020186-1754960018663-1754960020958",
+    "metadata": {
+      "taskTitle": "Project Setup and Architecture",
+      "projectTitle": "Test Milestone-Based Gig for Invoicing Validation",
+      "amount": 10000,
+      "invoiceNumber": "AUTO-1754960020186-1754960018663-1754960020958"
+    },
+    "context": {
+      "projectId": 1754960018663,
+      "taskId": 1754960020958,
+      "invoiceId": "AUTO-1754960020186-1754960018663-1754960020958"
+    }
+  }
+]

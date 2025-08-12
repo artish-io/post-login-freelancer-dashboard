@@ -1,0 +1,42 @@
+{
+  "tasks": [
+    {
+      "id": 201,
+      "title": "User research and wireframing",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.549Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/ecommerce-wireframes"
+      },
+      "projectId": 314,
+      "description": "Conduct user research and create wireframes for the new e-commerce interface.",
+      "dueDate": "2025-08-15T00:00:00.000Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.549Z",
+      "lastModified": "2025-08-03T15:57:39.549Z"
+    },
+    {
+      "id": 202,
+      "title": "High-fidelity UI design and prototyping",
+      "status": "in_progress",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/ecommerce-ui-design"
+      },
+      "projectId": 314,
+      "description": "Create high-fidelity UI designs and interactive prototypes for the e-commerce platform.",
+      "dueDate": "2025-07-28T00:00:00.000Z",
+      "order": 2,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.549Z",
+      "lastModified": "2025-08-03T15:57:39.549Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.769Z",
+  "version": 1
+}

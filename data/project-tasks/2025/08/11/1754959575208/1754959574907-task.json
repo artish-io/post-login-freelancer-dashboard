@@ -1,0 +1,24 @@
+{
+  "taskId": 1754959574907,
+  "projectId": 1754959575208,
+  "projectTitle": "Test Milestone-Based Gig for Invoicing Validation",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "React",
+    "TypeScript",
+    "Node.js"
+  ],
+  "title": "Core Feature Development",
+  "description": "Implementation of core features and functionality",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 2,
+  "link": "",
+  "dueDate": "2025-09-16T00:46:08.313Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "createdDate": "2025-08-12T00:46:08.374Z",
+  "lastModified": "2025-08-12T00:46:08.375Z"
+}

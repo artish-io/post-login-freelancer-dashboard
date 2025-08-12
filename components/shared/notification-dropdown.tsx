@@ -86,16 +86,28 @@ export default function NotificationDropdown({ dashboardType }: Props) {
       // Use v2 API for both user types for consistent filtering
       const endpoint = `/api/notifications-v2?userId=${session.user.id}&userType=${dashboardType}&tab=all`;
 
+      console.log('[notification-dropdown] Fetching unread count from:', endpoint);
       const res = await fetch(endpoint);
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
       const data = await res.json();
+      console.log('[notification-dropdown] Received data:', data);
 
       if (data.notifications) {
         // Count unread notifications
         const unreadNotifications = data.notifications.filter((n: NotificationItem) => !n.isRead);
         setUnreadCount(unreadNotifications.length);
+        console.log('[notification-dropdown] Set unread count to:', unreadNotifications.length);
       }
     } catch (error) {
-      console.error('Failed to fetch unread count:', error);
+      console.error('[notification-dropdown] Failed to fetch unread count:', error);
+      console.error('[notification-dropdown] Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
+      });
     }
   };
 

@@ -9,6 +9,7 @@ import CommissionerProjectTimeline from '../../../../../components/commissioner-
 import CommissionerProjectActionButtons from '../../../../../components/commissioner-dashboard/projects-and-invoices/project-details/project-action-buttons';
 import PauseRequestHandler from '../../../../../components/commissioner-dashboard/projects-and-invoices/project-details/pause-request-handler';
 import ProjectNotesExpansion from '../../../../../components/freelancer-dashboard/project-notes-expansion';
+import RatingModal from '../../../../../components/common/rating/rating-modal';
 
 export default function CommissionerProjectTrackingPage() {
   const searchParams = useSearchParams();
@@ -24,21 +25,56 @@ export default function CommissionerProjectTrackingPage() {
 
   const [showNotesModal, setShowNotesModal] = useState(false);
   const [pauseRequestKey, setPauseRequestKey] = useState(0); // Force re-render of pause request handler
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [projectCompleted, setProjectCompleted] = useState(false);
+  const [freelancerInfo, setFreelancerInfo] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
 
   const handleShowNotes = () => setShowNotesModal(true);
   const handleCloseNotes = () => setShowNotesModal(false);
 
   useEffect(() => {
     async function fetchProjectDetails() {
-      const res = await fetch(`/api/dashboard/project-details?projectId=${projectId}`);
-      const json = await res.json();
-      setProjectDetails({
-        title: json.title,
-        summary: json.summary,
-        logoUrl: json.logoUrl,
-        tags: json.typeTags,
-        status: json.status,
-      });
+      try {
+        // Fetch project details
+        const res = await fetch(`/api/dashboard/project-details?projectId=${projectId}`);
+        const json = await res.json();
+        setProjectDetails({
+          title: json.title,
+          summary: json.summary,
+          logoUrl: json.logoUrl,
+          tags: json.typeTags,
+          status: json.status,
+        });
+
+        // Check if project is completed by fetching project tasks
+        const tasksRes = await fetch(`/api/projects/${projectId}`);
+        if (tasksRes.ok) {
+          const projectData = await tasksRes.json();
+          const tasks = projectData.tasks || [];
+          const allTasksCompleted = tasks.length > 0 && tasks.every((task: any) => task.status === 'Approved' && task.completed);
+          setProjectCompleted(allTasksCompleted);
+
+          // Get freelancer info for rating
+          if (allTasksCompleted && projectData.freelancerId) {
+            const usersRes = await fetch('/api/users');
+            if (usersRes.ok) {
+              const users = await usersRes.json();
+              const freelancer = users.find((user: any) => user.id === projectData.freelancerId && user.type === 'freelancer');
+              if (freelancer) {
+                setFreelancerInfo({
+                  id: freelancer.id,
+                  name: freelancer.name
+                });
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching project details:', error);
+      }
     }
     fetchProjectDetails();
   }, [projectId]);
@@ -77,8 +113,18 @@ export default function CommissionerProjectTrackingPage() {
 
         {/* Action Buttons - Below timeline on mobile, sidebar on desktop */}
         <div className="w-full lg:w-[280px] shrink-0 order-2 lg:order-2">
-          <div className="lg:sticky lg:top-[200px] flex justify-center lg:justify-start">
+          <div className="lg:sticky lg:top-[200px] flex flex-col gap-4 justify-center lg:justify-start">
             <CommissionerProjectActionButtons projectId={projectId} onNotesClick={handleShowNotes} />
+
+            {/* Rating Button for Completed Projects */}
+            {projectCompleted && freelancerInfo && (
+              <button
+                onClick={() => setShowRatingModal(true)}
+                className="w-full bg-[#eb1966] text-white px-4 py-2 rounded-lg hover:bg-[#d1175a] transition-colors font-medium"
+              >
+                Rate Freelancer
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -86,6 +132,23 @@ export default function CommissionerProjectTrackingPage() {
       {/* Notes Modal */}
       {showNotesModal && (
         <ProjectNotesExpansion projectId={projectId} onClose={handleCloseNotes} />
+      )}
+
+      {/* Rating Modal */}
+      {showRatingModal && freelancerInfo && (
+        <RatingModal
+          isOpen={showRatingModal}
+          onClose={() => setShowRatingModal(false)}
+          projectId={projectId}
+          projectTitle={title}
+          subjectUserId={freelancerInfo.id}
+          subjectUserType="freelancer"
+          subjectName={freelancerInfo.name}
+          onRatingSubmitted={() => {
+            setShowRatingModal(false);
+            // Optionally show success message
+          }}
+        />
       )}
     </main>
   );

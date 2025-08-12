@@ -453,5 +453,152 @@
     ],
     "submittedAt": "2025-08-07T17:48:13.387Z",
     "status": "accepted"
+  },
+  {
+    "id": 22,
+    "gigId": 7,
+    "freelancerId": 1,
+    "pitch": "Test application for completion invoicing workflow validation",
+    "sampleLinks": [
+      "https://example.com/portfolio1",
+      "https://example.com/portfolio2"
+    ],
+    "skills": [
+      "React",
+      "TypeScript",
+      "Testing"
+    ],
+    "tools": [
+      "React",
+      "Jest",
+      "TypeScript"
+    ],
+    "submittedAt": "2025-08-11T19:24:33.401Z"
+  },
+  {
+    "id": 23,
+    "gigId": 9,
+    "freelancerId": 1,
+    "pitch": "Test application for completion invoicing workflow validation",
+    "sampleLinks": [
+      "https://example.com/portfolio1",
+      "https://example.com/portfolio2"
+    ],
+    "skills": [
+      "React",
+      "TypeScript",
+      "Testing"
+    ],
+    "tools": [
+      "React",
+      "Jest",
+      "TypeScript"
+    ],
+    "submittedAt": "2025-08-11T21:56:13.597Z"
+  },
+  {
+    "id": 24,
+    "gigId": 10,
+    "freelancerId": 1,
+    "pitch": "Test application for completion invoicing workflow validation",
+    "sampleLinks": [
+      "https://example.com/portfolio1",
+      "https://example.com/portfolio2"
+    ],
+    "skills": [
+      "React",
+      "TypeScript",
+      "Testing"
+    ],
+    "tools": [
+      "React",
+      "Jest",
+      "TypeScript"
+    ],
+    "submittedAt": "2025-08-11T22:00:18.523Z"
+  },
+  {
+    "id": 25,
+    "gigId": 11,
+    "freelancerId": 1,
+    "pitch": "Test application for completion invoicing workflow validation",
+    "sampleLinks": [
+      "https://example.com/portfolio1",
+      "https://example.com/portfolio2"
+    ],
+    "skills": [
+      "React",
+      "TypeScript",
+      "Testing"
+    ],
+    "tools": [
+      "React",
+      "Jest",
+      "TypeScript"
+    ],
+    "submittedAt": "2025-08-11T22:04:19.141Z"
+  },
+  {
+    "id": 26,
+    "gigId": 12,
+    "freelancerId": 1,
+    "pitch": "Test application for completion invoicing workflow validation",
+    "sampleLinks": [
+      "https://example.com/portfolio1",
+      "https://example.com/portfolio2"
+    ],
+    "skills": [
+      "React",
+      "TypeScript",
+      "Testing"
+    ],
+    "tools": [
+      "React",
+      "Jest",
+      "TypeScript"
+    ],
+    "submittedAt": "2025-08-11T22:09:06.984Z"
+  },
+  {
+    "id": 27,
+    "gigId": 13,
+    "freelancerId": 1,
+    "pitch": "Test application for completion invoicing workflow validation",
+    "sampleLinks": [
+      "https://example.com/portfolio1",
+      "https://example.com/portfolio2"
+    ],
+    "skills": [
+      "React",
+      "TypeScript",
+      "Testing"
+    ],
+    "tools": [
+      "React",
+      "Jest",
+      "TypeScript"
+    ],
+    "submittedAt": "2025-08-11T22:11:39.612Z"
+  },
+  {
+    "id": 28,
+    "gigId": 46,
+    "freelancerId": 31,
+    "pitch": "Test application for milestone-based project validation",
+    "sampleLinks": [
+      "https://example.com/portfolio1",
+      "https://example.com/portfolio2"
+    ],
+    "skills": [
+      "React",
+      "TypeScript",
+      "Node.js"
+    ],
+    "tools": [
+      "React",
+      "Jest",
+      "TypeScript"
+    ],
+    "submittedAt": "2025-08-12T01:49:40.923Z"
   }
 ]

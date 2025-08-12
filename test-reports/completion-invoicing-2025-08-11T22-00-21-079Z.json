@@ -1,0 +1,69 @@
+{
+  "timestamp": "2025-08-11T22:00:21.079Z",
+  "config": {
+    "baseUrl": "http://localhost:3000",
+    "testCommissionerId": 32,
+    "testFreelancerId": 1,
+    "testBudget": 5000,
+    "testGigTitle": "Test Completion Invoicing Workflow",
+    "testProjectTasks": 3,
+    "timeout": 30000,
+    "commissionerCredentials": {
+      "username": "neilsan",
+      "password": "testpass"
+    }
+  },
+  "state": {
+    "gigId": 10,
+    "projectId": null,
+    "applicationId": 24,
+    "upfrontInvoiceNumber": null,
+    "completionInvoiceNumber": null,
+    "taskIds": [],
+    "errors": [
+      "Freelancer matching failed: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+      "Cannot test upfront invoice - no project ID available",
+      "Cannot test upfront payment - no upfront invoice available",
+      "Cannot test task approval - no tasks or project ID available",
+      "Cannot test completion invoice - no project ID available"
+    ],
+    "warnings": [],
+    "testResults": {
+      "gigCreation": {
+        "status": "PASS",
+        "gigId": 10,
+        "message": "Gig created successfully with completion invoicing"
+      },
+      "freelancerApplication": {
+        "status": "PASS",
+        "applicationId": 24,
+        "message": "Freelancer application submitted successfully"
+      },
+      "freelancerMatching": {
+        "status": "FAIL",
+        "error": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+      },
+      "dataIntegrity": {
+        "status": "PASS",
+        "checks": [
+          {
+            "check": "invoice_amounts_total",
+            "expected": 5000,
+            "actual": 5000,
+            "pass": true
+          }
+        ],
+        "message": "1/1 integrity checks passed"
+      }
+    },
+    "sessionCookie": null
+  },
+  "summary": {
+    "totalTests": 4,
+    "passedTests": 3,
+    "failedTests": 1,
+    "warnings": 0,
+    "errors": 5,
+    "success": false
+  }
+}

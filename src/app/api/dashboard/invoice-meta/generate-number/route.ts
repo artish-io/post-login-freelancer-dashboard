@@ -5,6 +5,7 @@ import { readFile, writeFile } from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { getAllInvoices } from '@/lib/invoice-storage';
 
 // Rate limiting for invoice number generation
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -31,8 +32,8 @@ async function generateUniqueInvoiceNumber(freelancerName: string): Promise<stri
   let isUnique = false;
   const prefix = getInitials(freelancerName);
 
-  const existingData = await readFile(INVOICES_PATH, 'utf-8');
-  const invoices = JSON.parse(existingData);
+  // Use hierarchical storage instead of flat file
+  const invoices = await getAllInvoices();
   const existingNumbers = new Set(invoices.map((inv: any) => inv.invoiceNumber));
 
   while (!isUnique) {

@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {
+      "id": 406,
+      "title": "Initial setup for NFT Asset Created Update",
+      "status": "in_progress",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": ""
+      },
+      "projectId": 332,
+      "description": "Begin work on NFT Asset Created Update project",
+      "dueDate": "2025-08-14T18:19:17.707Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-07T18:19:17.707Z",
+      "lastModified": "2025-08-07T18:19:17.709Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.783Z",
+  "version": 1
+}

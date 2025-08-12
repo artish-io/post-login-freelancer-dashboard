@@ -1,0 +1,135 @@
+[
+  {
+    "id": "gig_applied_46_31_1754963381025",
+    "timestamp": "2025-08-12T01:49:41.025Z",
+    "type": "gig_applied",
+    "notificationType": 60,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 3,
+    "entityId": "46",
+    "metadata": {
+      "gigTitle": "Test Milestone-Based Project for Comprehensive Validation",
+      "applicationMessage": "Application submitted",
+      "freelancerName": "Margsate Flether"
+    },
+    "context": {
+      "gigId": 46,
+      "applicationId": 28
+    }
+  },
+  {
+    "id": "gig_applied_13_1_1754950299960",
+    "timestamp": "2025-08-11T22:11:39.960Z",
+    "type": "gig_applied",
+    "notificationType": 60,
+    "actorId": 1,
+    "targetId": 32,
+    "entityType": 3,
+    "entityId": "13",
+    "metadata": {
+      "gigTitle": "Test Completion Invoicing Workflow 2025-08-11T22-11-38-994Z",
+      "applicationMessage": "Application submitted",
+      "freelancerName": "Tobi Philly"
+    },
+    "context": {
+      "gigId": 13,
+      "applicationId": 27
+    }
+  },
+  {
+    "id": "gig_applied_12_1_1754950147372",
+    "timestamp": "2025-08-11T22:09:07.372Z",
+    "type": "gig_applied",
+    "notificationType": 60,
+    "actorId": 1,
+    "targetId": 32,
+    "entityType": 3,
+    "entityId": "12",
+    "metadata": {
+      "gigTitle": "Test Completion Invoicing Workflow 2025-08-11T22-09-06-323Z",
+      "applicationMessage": "Application submitted",
+      "freelancerName": "Tobi Philly"
+    },
+    "context": {
+      "gigId": 12,
+      "applicationId": 26
+    }
+  },
+  {
+    "id": "gig_applied_11_1_1754949859425",
+    "timestamp": "2025-08-11T22:04:19.425Z",
+    "type": "gig_applied",
+    "notificationType": 60,
+    "actorId": 1,
+    "targetId": 32,
+    "entityType": 3,
+    "entityId": "11",
+    "metadata": {
+      "gigTitle": "Test Completion Invoicing Workflow 2025-08-11T22-04-18-569Z",
+      "applicationMessage": "Application submitted",
+      "freelancerName": "Tobi Philly"
+    },
+    "context": {
+      "gigId": 11,
+      "applicationId": 25
+    }
+  },
+  {
+    "id": "gig_applied_10_1_1754949618611",
+    "timestamp": "2025-08-11T22:00:18.611Z",
+    "type": "gig_applied",
+    "notificationType": 60,
+    "actorId": 1,
+    "targetId": 32,
+    "entityType": 3,
+    "entityId": "10",
+    "metadata": {
+      "gigTitle": "Test Completion Invoicing Workflow 2025-08-11T22-00-17-575Z",
+      "applicationMessage": "Application submitted",
+      "freelancerName": "Tobi Philly"
+    },
+    "context": {
+      "gigId": 10,
+      "applicationId": 24
+    }
+  },
+  {
+    "id": "gig_applied_9_1_1754949373685",
+    "timestamp": "2025-08-11T21:56:13.685Z",
+    "type": "gig_applied",
+    "notificationType": 60,
+    "actorId": 1,
+    "targetId": 31,
+    "entityType": 3,
+    "entityId": "9",
+    "metadata": {
+      "gigTitle": "Test Completion Invoicing Workflow 2025-08-11T21-56-11-931Z",
+      "applicationMessage": "Application submitted",
+      "freelancerName": "Tobi Philly"
+    },
+    "context": {
+      "gigId": 9,
+      "applicationId": 23
+    }
+  },
+  {
+    "id": "gig_applied_7_1_1754940273429",
+    "timestamp": "2025-08-11T19:24:33.429Z",
+    "type": "gig_applied",
+    "notificationType": 60,
+    "actorId": 1,
+    "targetId": 31,
+    "entityType": 3,
+    "entityId": "7",
+    "metadata": {
+      "gigTitle": "Test Completion Invoicing Workflow 2025-08-11T19-22-59-910Z",
+      "applicationMessage": "Application submitted",
+      "freelancerName": "Tobi Philly"
+    },
+    "context": {
+      "gigId": 7,
+      "applicationId": 22
+    }
+  }
+]

@@ -136,7 +136,7 @@ export async function ensureDirectoryExists(dirPath: string): Promise<void> {
 /**
  * Find existing task file location by searching through the hierarchical structure
  */
-async function findExistingTaskFile(projectId: number, taskId: number): Promise<string | null> {
+export async function findExistingTaskFile(projectId: number, taskId: number): Promise<string | null> {
   const basePath = path.join(process.cwd(), 'data', 'project-tasks');
 
   try {

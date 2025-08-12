@@ -1,9 +1,8 @@
 // src/app/api/dashboard/invoices/route.ts
 
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { promises as fs } from 'fs';
 import { getAllInvoices } from '../../../../lib/invoice-storage';
+import { UnifiedStorageService } from '../../../../lib/storage/unified-storage-service';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -16,13 +15,12 @@ export async function GET(req: Request) {
   const userId = Number(userIdParam);
 
   try {
-    const [invoices, userData] = await Promise.all([
+    const [invoices, users] = await Promise.all([
       getAllInvoices(), // Use hierarchical storage for invoices
-      fs.readFile(path.join(process.cwd(), 'data/users.json'), 'utf-8')
+      UnifiedStorageService.getAllUsers() // Use unified storage for users
     ]);
 
-    // invoices is already parsed from hierarchical storage
-    const users = JSON.parse(userData);
+    // Both invoices and users are already parsed from hierarchical storage
 
     // Filter by freelancerId
     const userInvoices = invoices

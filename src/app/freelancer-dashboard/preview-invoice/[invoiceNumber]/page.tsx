@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useSuccessToast, useErrorToast } from '../../../../../components/ui/toast';
 
 import FreelancerHeader from '../../../../../components/freelancer-dashboard/freelancer-header';
 import FreelancerInfoBox from '../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-preview/freelancer-info-box';
@@ -20,6 +21,8 @@ export default function PreviewInvoicePage() {
   const [billToDetails, setBillToDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const showSuccessToast = useSuccessToast();
+  const showErrorToast = useErrorToast();
 
   useEffect(() => {
     const fetchInvoice = async () => {
@@ -33,6 +36,7 @@ export default function PreviewInvoicePage() {
         if (res.ok && data.invoiceNumber) {
           setInvoiceData(data);
 
+          // Enhanced bill-to information enrichment
           if (typeof data.billTo === 'string') {
             const billToRes = await fetch(
               `/api/invoices/preview-meta/bill-to-details/email/${encodeURIComponent(data.billTo)}`
@@ -41,6 +45,7 @@ export default function PreviewInvoicePage() {
 
             if (billToRes.ok) {
               setBillToDetails({
+                id: billToData.id,
                 name: billToData.name,
                 email: billToData.email,
                 organization: billToData.organization,
@@ -49,6 +54,25 @@ export default function PreviewInvoicePage() {
               });
             } else {
               console.warn('⚠️ Could not fetch bill-to details:', billToData.error);
+            }
+          } else if (data.commissionerId) {
+            // Fallback: use commissionerId to get commissioner details
+            const commissionerRes = await fetch(
+              `/api/invoices/preview-meta/bill-to-details/${data.commissionerId}`
+            );
+            const commissionerData = await commissionerRes.json();
+
+            if (commissionerRes.ok) {
+              setBillToDetails({
+                id: data.commissionerId,
+                name: commissionerData.name,
+                email: commissionerData.email,
+                organization: commissionerData.organization,
+                organizationLogo: commissionerData.logo,
+                address: commissionerData.address,
+              });
+            } else {
+              console.warn('⚠️ Could not fetch commissioner details:', commissionerData.error);
             }
           }
         } else {
@@ -115,14 +139,17 @@ export default function PreviewInvoicePage() {
       const sendResult = await sendRes.json();
 
       if (sendRes.ok) {
-        alert('Invoice sent successfully!');
+        showSuccessToast('Invoice Sent', 'Invoice sent successfully!');
         router.push('/freelancer-dashboard/projects-and-invoices/invoices');
       } else {
         throw new Error(sendResult.error || 'Failed to send invoice');
       }
     } catch (error) {
       console.error('Error sending invoice:', error);
-      alert(`Failed to send invoice: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      showErrorToast(
+        'Failed to Send Invoice',
+        error instanceof Error ? error.message : 'Unknown error'
+      );
     } finally {
       setSending(false);
     }

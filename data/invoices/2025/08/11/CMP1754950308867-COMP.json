@@ -1,0 +1,9 @@
+{
+  "invoiceNumber": "CMP1754950308867-COMP",
+  "projectId": 1754950308867,
+  "method": "completion",
+  "type": "completion",
+  "amount": 4400,
+  "status": "unpaid",
+  "issuedAt": "2025-08-11T22:11:41.263Z"
+}

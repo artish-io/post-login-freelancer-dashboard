@@ -211,9 +211,11 @@ export class UnifiedStorageService {
    * Get task by ID
    */
   static async getTaskById(taskId: number): Promise<UnifiedTask | null> {
-    const task = await readTaskById(0, taskId); // projectId not needed for search
+    // Search across all tasks since we don't know the project ID
+    const allTasks = await readAllTasks();
+    const task = allTasks.find(t => t.taskId === taskId);
     if (!task) return null;
-    
+
     return {
       ...task,
       status: this.normalizeTaskStatus(task.status)

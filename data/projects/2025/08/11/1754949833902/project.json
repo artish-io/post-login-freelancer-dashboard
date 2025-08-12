@@ -1,0 +1,16 @@
+{
+  "projectId": 1754949833902,
+  "gigId": 10,
+  "commissionerId": 32,
+  "freelancerId": 1,
+  "title": "Test Completion Invoicing Workflow 2025-08-11T22-00-17-575Z",
+  "description": "Test gig for completion invoicing workflow validation",
+  "budget": {
+    "lower": 5000,
+    "upper": 5000
+  },
+  "status": "ongoing",
+  "invoicingMethod": "completion",
+  "createdAt": "2025-08-11T22:03:46.504Z",
+  "updatedAt": "2025-08-11T22:03:46.504Z"
+}

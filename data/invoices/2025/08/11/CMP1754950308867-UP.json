@@ -1,0 +1,18 @@
+{
+  "invoiceNumber": "CMP1754950308867-UP",
+  "projectId": 1754950308867,
+  "method": "completion",
+  "type": "upfront",
+  "amount": 600,
+  "status": "paid",
+  "issuedAt": "2025-08-11T22:11:40.664Z",
+  "paidDate": "2025-08-11",
+  "paymentDetails": {
+    "paymentId": "pay_sim_1754950300915_305",
+    "paymentMethod": "simulation",
+    "platformFee": 30,
+    "freelancerAmount": 570,
+    "currency": "USD",
+    "processedAt": "2025-08-11T22:11:40.915Z"
+  }
+}

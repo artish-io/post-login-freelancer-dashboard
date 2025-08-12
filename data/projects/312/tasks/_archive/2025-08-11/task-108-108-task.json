@@ -1,0 +1,24 @@
+{
+  "taskId": 108,
+  "projectId": 312,
+  "projectTitle": "Lagos Parks Mobile App Development",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Mobile Development",
+    "UI/UX Design"
+  ],
+  "title": "Final app prototype and handoff",
+  "status": "Approved",
+  "completed": true,
+  "order": 8,
+  "link": "https://figma.com/file/final-prototype",
+  "dueDate": "2025-09-02T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Complete final prototype with all screens and prepare developer handoff documentation.",
+  "submittedDate": "2025-07-20T16:15:00.000Z",
+  "createdDate": "2025-08-03T15:57:39.550Z",
+  "lastModified": "2025-08-03T15:57:39.551Z"
+}

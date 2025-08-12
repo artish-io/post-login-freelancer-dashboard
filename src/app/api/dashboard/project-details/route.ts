@@ -3,8 +3,8 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
-import { listTasksByProject } from '@/app/api/payments/repos/tasks-repo';
-import { getProjectById } from '@/app/api/payments/repos/projects-repo';
+import { readProjectTasks } from '@/lib/project-tasks/hierarchical-storage';
+import { readProject, readAllProjects } from '@/lib/projects-utils';
 import { readProjectNotes } from '@/lib/project-notes-utils';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -42,8 +42,8 @@ export async function GET(request: Request) {
     const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
     const organizationsFile = await readFile(organizationsPath, 'utf-8');
 
-    // Read project tasks from tasks repo
-    const projectTasks = await listTasksByProject(projectId);
+    // Read project tasks from hierarchical storage
+    const projectTasks = await readProjectTasks(projectId);
 
     // Read data from hierarchical structures
     const allNotes = await readProjectNotes(projectId);
@@ -53,8 +53,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'No tasks found for project' }, { status: 404 });
     }
 
-    // Get project info from repo
-    const projectInfo = await getProjectById(projectId);
+    // Get project info from hierarchical storage
+    const projectInfo = await readProject(projectId);
     if (!projectInfo) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }

@@ -9,30 +9,41 @@ export function useUnreadMessages() {
 
   const fetchUnreadCount = useCallback(async () => {
     if (!session?.user?.id) {
+      console.log('[useUnreadMessages] No session or user ID available:', { session: !!session, userId: session?.user?.id });
       setUnreadCount(0);
       setIsLoading(false);
       return;
     }
 
+    setIsLoading(true);
+
     try {
-      const res = await fetch(
-        `/api/dashboard/messages/count?userId=${session.user.id}&t=${Date.now()}`
-      );
+      const endpoint = `/api/dashboard/messages/count?userId=${session.user.id}&t=${Date.now()}`;
+      console.log('[useUnreadMessages] Fetching unread count from:', endpoint);
+      console.log('[useUnreadMessages] Session info:', { userId: session.user.id, userEmail: session.user.email });
+
+      const res = await fetch(endpoint);
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+
       const data = await res.json();
-      
+      console.log('[useUnreadMessages] Received data:', data);
+
       if (typeof data.unreadCount === "number") {
         const newCount = data.unreadCount;
-        
+
         // Only update if count actually changed to avoid unnecessary re-renders
         setUnreadCount(prevCount => {
           if (prevCount !== newCount) {
             console.log(`📧 Unread count updated: ${prevCount} → ${newCount}`);
-            
+
             // Dispatch custom event for other components
             window.dispatchEvent(new CustomEvent('unreadCountChanged', {
               detail: { count: newCount, previousCount: prevCount }
             }));
-            
+
             return newCount;
           }
           return prevCount;
@@ -40,6 +51,14 @@ export function useUnreadMessages() {
       }
     } catch (err) {
       console.error("[useUnreadMessages] Failed to fetch unread count:", err);
+      console.error('[useUnreadMessages] Error details:', {
+        message: err instanceof Error ? err.message : 'Unknown error',
+        stack: err instanceof Error ? err.stack : undefined,
+        name: err instanceof Error ? err.name : undefined
+      });
+
+      // Set count to 0 on error to prevent UI issues
+      setUnreadCount(0);
     } finally {
       setIsLoading(false);
     }

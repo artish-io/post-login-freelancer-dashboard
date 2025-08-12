@@ -1,0 +1,193 @@
+{
+  "summary": {
+    "totalTests": 2,
+    "passed": 1,
+    "failed": 1,
+    "errors": 0,
+    "totalDuration": 39,
+    "overallScore": 50,
+    "performanceScore": 100,
+    "reliabilityScore": 100,
+    "dataIntegrityScore": 50
+  },
+  "results": [
+    {
+      "testName": "Enhanced Milestone-Based Gig Creation",
+      "status": "PASS",
+      "duration": 34,
+      "details": {
+        "gigId": 47,
+        "gigData": {
+          "title": "Test Milestone-Based Project for Comprehensive Validation",
+          "commissionerId": 32,
+          "organizationId": 1,
+          "category": "development",
+          "subcategory": "Web Development",
+          "skills": [
+            "React",
+            "TypeScript",
+            "Node.js"
+          ],
+          "tools": [
+            "React",
+            "Jest",
+            "TypeScript"
+          ],
+          "description": "Comprehensive test project for milestone-based invoicing workflow validation",
+          "executionMethod": "milestone",
+          "invoicingMethod": "milestone",
+          "budget": 15000,
+          "lowerBudget": 15000,
+          "upperBudget": 15000,
+          "deliveryTimeWeeks": 12,
+          "estimatedHours": 300,
+          "startType": "Immediately",
+          "isPublic": true,
+          "isTargetedRequest": false,
+          "milestones": [
+            {
+              "id": "M1",
+              "title": "Project Setup and Architecture",
+              "description": "Initial project setup, architecture design, and development environment",
+              "startDate": "2025-08-12T01:53:32.132Z",
+              "endDate": "2025-09-09T01:53:32.132Z"
+            },
+            {
+              "id": "M2",
+              "title": "Core Development and Implementation",
+              "description": "Main feature development, API integration, and core functionality implementation",
+              "startDate": "2025-09-09T01:53:32.132Z",
+              "endDate": "2025-10-07T01:53:32.132Z"
+            },
+            {
+              "id": "M3",
+              "title": "Testing, Optimization and Deployment",
+              "description": "Comprehensive testing, performance optimization, and production deployment",
+              "startDate": "2025-10-07T01:53:32.132Z",
+              "endDate": "2025-11-04T01:53:32.132Z"
+            }
+          ]
+        },
+        "response": {
+          "success": true,
+          "gigId": 47,
+          "message": "Gig created successfully"
+        }
+      },
+      "breakages": [],
+      "recommendations": [],
+      "dataIntegrity": {
+        "filesCreated": [
+          "/Users/toyesokunbi/artish-web/data/gigs/2025/08/11/47/gig.json"
+        ],
+        "filesModified": [],
+        "inconsistencies": []
+      },
+      "performanceScore": 100,
+      "criticalityLevel": "LOW",
+      "bottlenecks": [],
+      "apiEndpointsUsed": [
+        "/api/gigs/create (fetch)"
+      ],
+      "dataFlowValidation": {
+        "inputValidation": true,
+        "outputValidation": 47,
+        "stateConsistency": true
+      }
+    },
+    {
+      "testName": "Enhanced Freelancer Matching and Project Activation",
+      "status": "FAIL",
+      "duration": 5,
+      "details": {
+        "projectId": 1754963612166,
+        "applicationId": 1754963612166,
+        "matchingResult": {
+          "success": true,
+          "entities": {
+            "project": {
+              "projectId": 1754963612166
+            }
+          },
+          "message": "Mock project created for testing"
+        },
+        "projectValidation": {
+          "projectId": 1754963612166
+        }
+      },
+      "breakages": [
+        "Cannot reach gig application API: fetch is not defined",
+        "Cannot reach freelancer matching API: fetch is not defined",
+        "Project file not found for ID 1754963612166"
+      ],
+      "recommendations": [
+        "Ensure development server is running or implement proper API mocking",
+        "Ensure development server is running or implement proper API mocking",
+        "Verify project creation and storage"
+      ],
+      "dataIntegrity": {
+        "filesCreated": [],
+        "filesModified": [],
+        "inconsistencies": []
+      },
+      "performanceScore": 100,
+      "criticalityLevel": "HIGH",
+      "bottlenecks": [],
+      "apiEndpointsUsed": [
+        "/api/gigs/gig-applications",
+        "/api/gigs/match-freelancer"
+      ],
+      "dataFlowValidation": {
+        "inputValidation": {
+          "applicationId": 1754963612166,
+          "gigId": 47,
+          "freelancerId": 31
+        },
+        "outputValidation": 1754963612166,
+        "stateConsistency": false
+      }
+    }
+  ],
+  "criticalBreakages": [],
+  "systemRecommendations": [
+    "Ensure development server is running or implement proper API mocking",
+    "Verify project creation and storage"
+  ],
+  "prognosis": {
+    "overallHealth": "DEGRADED",
+    "readinessForProduction": false,
+    "priorityFixes": [
+      "Ensure development server is running or implement proper API mocking",
+      "Verify project creation and storage"
+    ],
+    "productionReadinessScore": 75,
+    "riskAssessment": {
+      "dataLoss": "MEDIUM",
+      "userExperience": "LOW",
+      "businessImpact": "LOW"
+    },
+    "recommendedActions": {
+      "immediate": [],
+      "shortTerm": [],
+      "longTerm": [
+        "Ensure development server is running or implement proper API mocking"
+      ]
+    }
+  },
+  "performanceAnalysis": {
+    "slowestOperations": [],
+    "bottleneckAnalysis": [],
+    "scalabilityAssessment": "EXCELLENT - System can handle production load"
+  },
+  "dataFlowAnalysis": {
+    "criticalPaths": [
+      "Gig Creation → Project Activation → Task Creation",
+      "Task Approval → Invoice Generation → Payment Execution",
+      "Data Storage → Validation → Consistency Check"
+    ],
+    "dataConsistencyIssues": [
+      "Enhanced Freelancer Matching and Project Activation: State consistency failed"
+    ],
+    "storageEfficiency": "NEEDS_IMPROVEMENT"
+  }
+}

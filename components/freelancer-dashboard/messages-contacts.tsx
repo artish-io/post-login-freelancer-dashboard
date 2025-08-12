@@ -46,28 +46,35 @@ export default function MessagesContacts({
       // Fetch from messages preview API to get contacts sorted by last message timestamp
       const res = await fetch(`/api/dashboard/messages/preview?userId=${userId}&t=${Date.now()}`);
       const data = await res.json();
-      if (Array.isArray(data)) {
-        // Filter out threads with no messages and convert preview data to contact format
-        const contactsFromPreviews = data
-          .filter((preview: any) => preview.lastMessageText && preview.lastMessageText !== 'No messages yet')
-          .map((preview: any) => ({
-            id: preview.contactId,
-            name: preview.name,
-            title: preview.title,
-            avatar: preview.avatar,
-            lastMessageTime: preview.lastMessageTime
-          }));
 
-        // Sort by last message timestamp DESC (most recent first)
-        const sortedContacts = contactsFromPreviews.sort((a: any, b: any) =>
-          new Date(b.lastMessageTime || 0).getTime() - new Date(a.lastMessageTime || 0).getTime()
-        );
-
-        console.log('[messages-contacts] Sorted contacts by timestamp:', sortedContacts.map(c => ({ name: c.name, lastMessageTime: c.lastMessageTime })));
-        setContacts(sortedContacts);
+      // Check if the response is an error or not an array
+      if (!Array.isArray(data)) {
+        console.error('[messages-contacts] API returned non-array response:', data);
+        setContacts([]);
+        return;
       }
+
+      // Filter out threads with no messages and convert preview data to contact format
+      const contactsFromPreviews = data
+        .filter((preview: any) => preview.lastMessageText && preview.lastMessageText !== 'No messages yet')
+        .map((preview: any) => ({
+          id: preview.contactId,
+          name: preview.name,
+          title: preview.title,
+          avatar: preview.avatar,
+          lastMessageTime: preview.lastMessageTime
+        }));
+
+      // Sort by last message timestamp DESC (most recent first)
+      const sortedContacts = contactsFromPreviews.sort((a: any, b: any) =>
+        new Date(b.lastMessageTime || 0).getTime() - new Date(a.lastMessageTime || 0).getTime()
+      );
+
+      console.log('[messages-contacts] Sorted contacts by timestamp:', sortedContacts.map(c => ({ name: c.name, lastMessageTime: c.lastMessageTime })));
+      setContacts(sortedContacts);
     } catch (err) {
       console.error('[messages-contacts] Failed to load contacts:', err);
+      setContacts([]);
     }
   };
 
@@ -78,10 +85,24 @@ export default function MessagesContacts({
   useEffect(() => {
     const fetchUnreadThreads = async () => {
       try {
-        const res = await fetch(`/api/dashboard/messages/preview?userId=${userId}`);
-        const previews = await res.json();
+        const endpoint = `/api/dashboard/messages/preview?userId=${userId}`;
+        console.log('[messages-contacts] Fetching unread threads from:', endpoint);
 
+        const res = await fetch(endpoint);
+
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+
+        const previews = await res.json();
         console.log('[messages-contacts] previews:', previews);
+
+        // Check if the response is an error or not an array
+        if (!Array.isArray(previews)) {
+          console.error('[messages-contacts] API returned non-array response:', previews);
+          setUnreadThreads([]);
+          return;
+        }
 
         // Use corrected unread logic: only count as unread if user is recipient and read status is false
         const unread = previews
@@ -97,6 +118,10 @@ export default function MessagesContacts({
         console.log('[messages-contacts] unreadThreads:', unread);
       } catch (err) {
         console.error('[messages-contacts] Error loading unread status:', err);
+        console.error('[messages-contacts] Error details:', {
+          message: err instanceof Error ? err.message : 'Unknown error',
+          stack: err instanceof Error ? err.stack : undefined
+        });
       }
     };
 

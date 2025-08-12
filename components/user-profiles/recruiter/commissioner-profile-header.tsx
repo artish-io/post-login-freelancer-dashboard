@@ -2,7 +2,10 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, MapPin, Linkedin, TrendingUp, TrendingDown, MessageCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { MapPin, TrendingUp, TrendingDown, MessageCircle, ExternalLink } from 'lucide-react';
+import { ReadOnlyStars } from '../../common/rating/stars';
+import { UserRatingsSummary } from '../../../types/ratings';
 
 interface SocialLink {
   platform: string;
@@ -32,6 +35,32 @@ export default function CommissionerProfileHeader({
   isOwnProfile = false
 }: CommissionerProfileHeaderProps) {
   const { name, avatar, location, lifetimeValue, rating, quarterlyChange, isActivelyCommissioning, socialLinks } = profile;
+  const [ratingsSummary, setRatingsSummary] = useState<UserRatingsSummary | null>(null);
+  const [loadingRatings, setLoadingRatings] = useState(false);
+
+  // Fetch ratings for the commissioner
+  useEffect(() => {
+    const fetchRatings = async () => {
+      try {
+        setLoadingRatings(true);
+        const response = await fetch(`/api/ratings/user?userId=${profile.id}&userType=commissioner`);
+        if (response.ok) {
+          const data: UserRatingsSummary = await response.json();
+          setRatingsSummary(data);
+        }
+      } catch (error) {
+        console.error('Error fetching ratings:', error);
+      } finally {
+        setLoadingRatings(false);
+      }
+    };
+
+    fetchRatings();
+  }, [profile.id]);
+
+  // Use fetched rating if available, otherwise fall back to prop
+  const displayRating = ratingsSummary?.average ?? rating ?? 0;
+  const ratingCount = ratingsSummary?.count ?? 0;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -42,37 +71,7 @@ export default function CommissionerProfileHeader({
     }).format(amount);
   };
 
-  const renderStars = (rating: number) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
 
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(
-        <Star key={i} size={16} className="fill-yellow-400 text-yellow-400" />
-      );
-    }
-
-    if (hasHalfStar) {
-      stars.push(
-        <div key="half" className="relative">
-          <Star size={16} className="text-gray-300" />
-          <div className="absolute inset-0 overflow-hidden w-1/2">
-            <Star size={16} className="fill-yellow-400 text-yellow-400" />
-          </div>
-        </div>
-      );
-    }
-
-    const remainingStars = 5 - Math.ceil(rating);
-    for (let i = 0; i < remainingStars; i++) {
-      stars.push(
-        <Star key={`empty-${i}`} size={16} className="text-gray-300" />
-      );
-    }
-
-    return stars;
-  };
 
   const linkedinLink = socialLinks.find(link => link.platform === 'linkedin');
 
@@ -144,14 +143,17 @@ export default function CommissionerProfileHeader({
         </div>
 
         {/* Rating */}
-        {rating && (
+        {displayRating > 0 && (
           <div className="flex items-center gap-2 mb-4">
-            <div className="flex items-center gap-1">
-              {renderStars(rating)}
-            </div>
+            <ReadOnlyStars value={displayRating} size="md" showValue={false} />
             <span className="text-sm text-gray-600 ml-1">
-              {rating.toFixed(1)}/5
+              {displayRating.toFixed(1)}/5 {ratingCount > 0 && `(${ratingCount} rating${ratingCount !== 1 ? 's' : ''})`}
             </span>
+          </div>
+        )}
+        {displayRating === 0 && !loadingRatings && (
+          <div className="mb-4">
+            <span className="text-sm text-gray-500">No ratings yet</span>
           </div>
         )}
 
@@ -164,7 +166,7 @@ export default function CommissionerProfileHeader({
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors"
             >
-              <Linkedin size={20} />
+              <ExternalLink size={20} />
               <span className="text-sm font-medium">LinkedIn</span>
             </a>
           </div>

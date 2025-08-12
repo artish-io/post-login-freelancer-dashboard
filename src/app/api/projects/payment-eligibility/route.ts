@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getProjectById } from '@/app/api/payments/repos/projects-repo';
-import { listTasksByProject } from '@/app/api/payments/repos/tasks-repo';
-import { listInvoicesByProject } from '@/app/api/payments/repos/invoices-repo';
+import { readProject } from '@/lib/projects-utils';
+import { readProjectTasks } from '@/lib/project-tasks/hierarchical-storage';
+import { getAllInvoices } from '@/lib/invoice-storage';
 import { normalizeTaskStatus } from '@/app/api/payments/domain/types';
 
 export async function GET(request: Request) {
@@ -15,12 +15,15 @@ export async function GET(request: Request) {
 
     const projectId = Number(projectIdParam);
 
-    // Load via repos (single source of truth)
-    const [project, tasks, invoices] = await Promise.all([
-      getProjectById(projectId),
-      listTasksByProject(projectId),
-      listInvoicesByProject(projectId),
+    // Load via hierarchical storage
+    const [project, tasks, allInvoices] = await Promise.all([
+      readProject(projectId),
+      readProjectTasks(projectId),
+      getAllInvoices(),
     ]);
+
+    // Filter invoices for this project
+    const invoices = allInvoices.filter((inv: any) => inv.projectId === projectId);
 
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
@@ -61,7 +64,7 @@ export async function GET(request: Request) {
         if (match) {
           eligibleInvoices.push({
             invoiceNumber: String(match.invoiceNumber),
-            taskId: task.id,
+            taskId: task.taskId,
             taskTitle: (task as any).title,
             taskOrder,
             amount: Number(match.totalAmount ?? 0),

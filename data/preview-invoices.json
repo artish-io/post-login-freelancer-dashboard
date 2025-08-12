@@ -130,5 +130,42 @@
     "total": 0,
     "notes": "",
     "freelancerId": "31"
+  },
+  {
+    "invoiceNumber": "MF-TIFOM",
+    "issueDate": "2025-08-11",
+    "dueDate": null,
+    "executionTiming": "Upon completion",
+    "billTo": "matte.hannery@example.com",
+    "project": {
+      "projectId": 303,
+      "title": "Corlax iOS app UX"
+    },
+    "milestones": [
+      {
+        "id": 1754917506400,
+        "title": "CTA Button States",
+        "description": "Design various hover and active states for CTAs.",
+        "rate": 5000,
+        "taskId": 21
+      },
+      {
+        "id": 1754917506401,
+        "title": "Mobile nav menu prototype",
+        "description": "Build interactive prototype of mobile navigation.",
+        "rate": 2000,
+        "taskId": 23
+      },
+      {
+        "id": 1754917506402,
+        "title": "Carousel animation mock",
+        "description": "Design a looping carousel animation for the homepage.",
+        "rate": 3000,
+        "taskId": 24
+      }
+    ],
+    "total": 10000,
+    "notes": "",
+    "freelancerId": "31"
   }
 ]

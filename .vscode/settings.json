@@ -1,0 +1,18 @@
+{
+  "jest.jestCommandLine": "npm test",
+  "jest.autoRun": {
+    "watch": false,
+    "onStartup": ["all-tests"]
+  },
+  "jest.showCoverageOnLoad": true,
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "files.associations": {
+    "*.test.ts": "typescript",
+    "*.test.tsx": "typescriptreact",
+    "*.spec.ts": "typescript",
+    "*.spec.tsx": "typescriptreact"
+  }
+}

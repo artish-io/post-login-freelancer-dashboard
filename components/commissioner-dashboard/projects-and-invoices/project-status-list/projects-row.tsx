@@ -1,7 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import RatingModal from '../../../common/rating/rating-modal';
+import { ReadOnlyStars } from '../../../common/rating/stars';
+import { ProjectRating } from '../../../../types/ratings';
 
 type Project = {
   projectId: number;
@@ -28,6 +32,10 @@ type Props = {
 
 export default function CommissionerProjectsRow({ projects, users, filterStatus }: Props) {
   const router = useRouter();
+  const { data: session } = useSession();
+  const [ratingModalOpen, setRatingModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [projectRatings, setProjectRatings] = useState<Record<number, ProjectRating | null>>({});
   const filteredProjects = projects
     .filter((project) => project.status === filterStatus)
     .sort((a, b) => {
@@ -37,6 +45,39 @@ export default function CommissionerProjectsRow({ projects, users, filterStatus 
       if (!b.dueDate) return -1;
       return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
     });
+
+  // Load existing ratings for completed projects
+  useEffect(() => {
+    if (filterStatus === 'completed' && session?.user?.id) {
+      const loadRatings = async () => {
+        // For completed tab, check if projects are actually rateable (all tasks completed)
+        const ratings: Record<number, ProjectRating | null> = {};
+
+        for (const project of filteredProjects) {
+          try {
+            // Find the freelancer for this project
+            const freelancer = users.find(user => user.id === project.freelancerId && user.type === 'freelancer');
+            if (freelancer) {
+              const response = await fetch(
+                `/api/ratings/exists?projectId=${project.projectId}&subjectUserId=${freelancer.id}&subjectUserType=freelancer`
+              );
+              if (response.ok) {
+                const data = await response.json();
+                ratings[project.projectId] = data.exists ? data.rating : null;
+              }
+            }
+          } catch (error) {
+            console.error(`Error loading rating for project ${project.projectId}:`, error);
+            ratings[project.projectId] = null;
+          }
+        }
+
+        setProjectRatings(ratings);
+      };
+
+      loadRatings();
+    }
+  }, [filterStatus, filteredProjects, session?.user?.id, users]);
 
   const handleProjectClick = (projectId: number) => {
     router.push(`/commissioner-dashboard/projects-and-invoices/project-tracking/${projectId}`);
@@ -138,27 +179,51 @@ export default function CommissionerProjectsRow({ projects, users, filterStatus 
         <div className="w-1/5">{getDateColumnHeader()}</div>
         <div className="w-1/10 text-center">Total Tasks</div>
         <div className="w-1/10 text-center">% Completion</div>
+        {filterStatus === 'completed' && <div className="w-1/10 text-center">Rating</div>}
       </div>
       <div className="max-h-[480px] overflow-y-auto custom-scrollbar w-full">
         {filteredProjects.length > 0 ? (
-          filteredProjects.map((project) => (
+          filteredProjects.map((project) => {
+            const freelancer = users.find(user => user.id === project.freelancerId && user.type === 'freelancer');
+            const existingRating = projectRatings[project.projectId];
+            const canRate = filterStatus === 'completed' && freelancer && !existingRating;
+
+            return (
             <div
               key={project.projectId}
-              onClick={() => handleProjectClick(project.projectId)}
-              className="w-full flex items-center justify-between py-2 border-b border-gray-200 text-[10px] md:text-[12px] cursor-pointer hover:bg-gray-50 transition-colors duration-200"
+              className="w-full flex items-center justify-between py-2 border-b border-gray-200 text-[10px] md:text-[12px] hover:bg-gray-50 transition-colors duration-200"
             >
-              <div className="w-1/5 font-medium text-gray-800 flex flex-col">
+              <div
+                className="w-1/5 font-medium text-gray-800 flex flex-col cursor-pointer"
+                onClick={() => handleProjectClick(project.projectId)}
+              >
                 <span className="text-gray-800 font-semibold text-[11px] md:text-[13px]">
                   #{project.projectId}
                 </span>
                 <span className="text-gray-800 text-[13px] md:text-[15px] leading-tight">{project.title}</span>
               </div>
-              <div className="w-1/5 text-gray-600">{getFreelancerName(project.freelancerId)}</div>
-              <div className="w-1/5 text-gray-600">
+              <div
+                className="w-1/5 text-gray-600 cursor-pointer"
+                onClick={() => handleProjectClick(project.projectId)}
+              >
+                {getFreelancerName(project.freelancerId)}
+              </div>
+              <div
+                className="w-1/5 text-gray-600 cursor-pointer"
+                onClick={() => handleProjectClick(project.projectId)}
+              >
                 {getDisplayDate(project)}
               </div>
-              <div className="w-1/10 text-center text-gray-600">{project.totalTasks}</div>
-              <div className="w-1/10 text-center">
+              <div
+                className="w-1/10 text-center text-gray-600 cursor-pointer"
+                onClick={() => handleProjectClick(project.projectId)}
+              >
+                {project.totalTasks}
+              </div>
+              <div
+                className="w-1/10 text-center cursor-pointer"
+                onClick={() => handleProjectClick(project.projectId)}
+              >
                 <div className="relative flex items-center justify-center">
                   {(() => {
                     const ringStyles = getRingStyles(project.progress);
@@ -198,8 +263,40 @@ export default function CommissionerProjectsRow({ projects, users, filterStatus 
                   })()}
                 </div>
               </div>
+
+              {/* Rating Column for Completed Projects */}
+              {filterStatus === 'completed' && (
+                <div className="w-1/10 text-center">
+                  {existingRating ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedProject(project);
+                        setRatingModalOpen(true);
+                      }}
+                      className="flex items-center justify-center"
+                    >
+                      <ReadOnlyStars value={existingRating.stars} size="sm" showValue={false} />
+                    </button>
+                  ) : canRate ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedProject(project);
+                        setRatingModalOpen(true);
+                      }}
+                      className="px-2 py-1 text-xs bg-pink-100 text-pink-700 rounded-full hover:bg-pink-200 transition-colors"
+                    >
+                      Rate
+                    </button>
+                  ) : (
+                    <span className="text-xs text-gray-400">-</span>
+                  )}
+                </div>
+              )}
             </div>
-          ))
+            );
+          })
         ) : (
           <div className="flex items-center justify-center py-8 text-gray-500">
             <div className="text-center">
@@ -209,6 +306,31 @@ export default function CommissionerProjectsRow({ projects, users, filterStatus 
           </div>
         )}
       </div>
+
+      {/* Rating Modal */}
+      {ratingModalOpen && selectedProject && (
+        <RatingModal
+          isOpen={ratingModalOpen}
+          onClose={() => {
+            setRatingModalOpen(false);
+            setSelectedProject(null);
+          }}
+          projectId={selectedProject.projectId}
+          projectTitle={selectedProject.title}
+          subjectUserId={selectedProject.freelancerId}
+          subjectUserType="freelancer"
+          subjectName={getFreelancerName(selectedProject.freelancerId)}
+          onRatingSubmitted={(rating) => {
+            // Update the local ratings state
+            setProjectRatings(prev => ({
+              ...prev,
+              [selectedProject.projectId]: rating
+            }));
+            setRatingModalOpen(false);
+            setSelectedProject(null);
+          }}
+        />
+      )}
     </div>
   );
 }

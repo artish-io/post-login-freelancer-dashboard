@@ -1,0 +1,23 @@
+{
+  "taskId": 406,
+  "projectId": 332,
+  "projectTitle": "NFT Asset Created Update",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Web Development"
+  ],
+  "freelancerId": 1,
+  "title": "Initial setup for NFT Asset Created Update",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "link": "",
+  "dueDate": "2025-08-14T18:19:17.707Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Begin work on NFT Asset Created Update project",
+  "createdDate": "2025-08-07T18:19:17.707Z",
+  "lastModified": "2025-08-07T18:19:17.709Z"
+}

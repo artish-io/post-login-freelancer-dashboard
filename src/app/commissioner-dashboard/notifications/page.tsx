@@ -1,15 +1,25 @@
 'use client';
 
+import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import CommissionerHeader from '../../../../components/commissioner-dashboard/commissioner-header';
 import NotificationsPageLayout from '../../../../components/notifications/notifications-page-layout';
 import MessagesPreview from '../../../../components/freelancer-dashboard/messages-preview';
 import { NotificationData } from '../../../../components/notifications/notification-item';
+import RatingModal from '../../../../components/common/rating/rating-modal';
 
 export default function NotificationsPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const [ratingModal, setRatingModal] = useState<{
+    isOpen: boolean;
+    projectId: number;
+    projectTitle: string;
+    subjectUserId: number;
+    subjectUserType: 'freelancer' | 'commissioner';
+    subjectName: string;
+  } | null>(null);
 
   if (!session?.user?.id) {
     return (
@@ -98,6 +108,27 @@ export default function NotificationsPage() {
         }
         break;
 
+      case 'project_complete_rating':
+        // Open rating modal for project completion
+        if (notification.metadata?.canRate && context?.projectId) {
+          setRatingModal({
+            isOpen: true,
+            projectId: context.projectId,
+            projectTitle: notification.metadata.projectTitle || 'Unknown Project',
+            subjectUserId: notification.metadata.subjectUserId,
+            subjectUserType: notification.metadata.subjectUserType,
+            subjectName: notification.metadata.subjectName || 'Unknown User'
+          });
+        } else {
+          // Fallback to project tracking page
+          if (context?.projectId) {
+            router.push(`/commissioner-dashboard/projects-and-invoices/project-tracking/${context.projectId}`);
+          } else {
+            router.push('/commissioner-dashboard/projects-and-invoices');
+          }
+        }
+        break;
+
       default:
         console.log('Unhandled notification type:', type);
         break;
@@ -132,6 +163,23 @@ export default function NotificationsPage() {
           </div>
         </div>
       </div>
+
+      {/* Rating Modal */}
+      {ratingModal && (
+        <RatingModal
+          isOpen={ratingModal.isOpen}
+          onClose={() => setRatingModal(null)}
+          projectId={ratingModal.projectId}
+          projectTitle={ratingModal.projectTitle}
+          subjectUserId={ratingModal.subjectUserId}
+          subjectUserType={ratingModal.subjectUserType}
+          subjectName={ratingModal.subjectName}
+          onRatingSubmitted={() => {
+            setRatingModal(null);
+            // Optionally refresh notifications or show success message
+          }}
+        />
+      )}
     </div>
   );
 }

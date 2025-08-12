@@ -32,6 +32,7 @@ export async function GET(
     );
 
     return NextResponse.json({
+      id: user.id, // Include user ID for commissioner identification
       name: user.name || '',
       email: user.email || '',
       avatar: user.image || null,

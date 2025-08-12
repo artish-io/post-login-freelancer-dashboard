@@ -1,0 +1,186 @@
+{
+  "tasks": [
+    {
+      "id": 21,
+      "title": "CTA Button States",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-05T20:33:45.025Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/cta-buttons"
+      },
+      "projectId": 306,
+      "description": "Design various hover and active states for CTAs.",
+      "dueDate": "2025-08-23T00:00:00.000Z",
+      "order": 4,
+      "version": 2,
+      "createdDate": "2025-08-03T15:57:39.545Z",
+      "lastModified": "2025-08-05T20:33:45.025Z"
+    },
+    {
+      "id": 22,
+      "title": "Analytics tag setup",
+      "status": "in_progress",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/analytics-tags"
+      },
+      "projectId": 306,
+      "description": "Configure tracking for scroll events and button clicks.",
+      "dueDate": "2025-07-15T00:00:00.000Z",
+      "order": 5,
+      "version": 2,
+      "createdDate": "2025-08-03T15:57:39.545Z",
+      "lastModified": "2025-08-05T20:34:07.045Z"
+    },
+    {
+      "id": 23,
+      "title": "Mobile nav menu prototype",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-05T20:34:10.638Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/mobile-nav"
+      },
+      "projectId": 306,
+      "description": "Build interactive prototype of mobile navigation.",
+      "dueDate": "2025-08-23T00:00:00.000Z",
+      "order": 6,
+      "version": 3,
+      "createdDate": "2025-08-03T15:57:39.545Z",
+      "lastModified": "2025-08-05T20:34:10.638Z"
+    },
+    {
+      "id": 24,
+      "title": "Carousel animation mock",
+      "status": "done",
+      "milestoneId": null,
+      "completedAt": "2025-08-05T20:36:00.024Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/carousel-animation"
+      },
+      "projectId": 306,
+      "description": "Design a looping carousel animation for the homepage.",
+      "dueDate": "2025-07-26T00:00:00.000Z",
+      "order": 7,
+      "version": 2,
+      "createdDate": "2025-08-03T15:57:39.545Z",
+      "lastModified": "2025-08-05T20:36:00.024Z"
+    },
+    {
+      "id": 25,
+      "title": "404 error page concept",
+      "status": "in_progress",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/404-concept"
+      },
+      "projectId": 306,
+      "description": "Create a playful and branded 404 error page.",
+      "dueDate": "2025-07-14T00:00:00.000Z",
+      "order": 8,
+      "version": 2,
+      "createdDate": "2025-08-03T15:57:39.545Z",
+      "lastModified": "2025-08-05T20:41:07.078Z"
+    },
+    {
+      "id": 26,
+      "title": "Global search UI wireframe",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": "2025-08-04T05:10:44.182Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/global-search"
+      },
+      "projectId": 306,
+      "description": "Wireframe layout for global site-wide search feature.",
+      "dueDate": "2025-07-14T00:00:00.000Z",
+      "order": 9,
+      "version": 2,
+      "createdDate": "2025-08-03T15:57:39.545Z",
+      "lastModified": "2025-08-04T05:10:44.182Z"
+    },
+    {
+      "id": 27,
+      "title": "Accessibility audit pass",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": "2025-08-04T05:10:47.661Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/a11y-check"
+      },
+      "projectId": 306,
+      "description": "Run final accessibility audit and implement fixes.",
+      "dueDate": "2025-07-17T00:00:00.000Z",
+      "order": 10,
+      "version": 2,
+      "createdDate": "2025-08-03T15:57:39.545Z",
+      "lastModified": "2025-08-04T05:10:47.661Z"
+    },
+    {
+      "id": 28,
+      "title": "URGENT: Header redesign",
+      "status": "todo",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/header-redesign"
+      },
+      "projectId": 306,
+      "description": "Redesign the main header with new navigation structure - URGENT.",
+      "dueDate": "2025-07-17T00:00:00.000Z",
+      "order": 11,
+      "version": 4,
+      "createdDate": "2025-08-03T15:57:39.545Z",
+      "lastModified": "2025-08-03T15:57:39.546Z"
+    },
+    {
+      "id": 29,
+      "title": "URGENT: Footer contact form",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.546Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/footer-form"
+      },
+      "projectId": 306,
+      "description": "Add contact form to footer section - high priority.",
+      "dueDate": "2025-08-26T00:00:00.000Z",
+      "order": 12,
+      "version": 3,
+      "createdDate": "2025-08-03T15:57:39.545Z",
+      "lastModified": "2025-08-03T15:57:39.546Z"
+    },
+    {
+      "id": 30,
+      "title": "Blog layout template",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": "2025-08-04T05:32:02.078Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/blog-template"
+      },
+      "projectId": 306,
+      "description": "Create reusable blog post layout template.",
+      "dueDate": "2025-07-18T00:00:00.000Z",
+      "order": 13,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.545Z",
+      "lastModified": "2025-08-04T05:32:02.078Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.761Z",
+  "version": 1
+}

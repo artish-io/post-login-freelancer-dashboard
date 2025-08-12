@@ -1,0 +1,60 @@
+{
+  "tasks": [
+    {
+      "id": 24,
+      "title": "Accessibility microcopy audit",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": "2025-08-04T05:11:22.918Z",
+      "links": {
+        "brief": "",
+        "work": "https://docs.google.com/document/accessibility-audit"
+      },
+      "projectId": 299,
+      "description": "Comprehensive audit of existing microcopy for accessibility compliance.",
+      "dueDate": "2025-07-26T00:00:00.000Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.542Z",
+      "lastModified": "2025-08-04T05:11:22.918Z"
+    },
+    {
+      "id": 25,
+      "title": "Error message redesign",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": "2025-08-04T05:10:33.267Z",
+      "links": {
+        "brief": "",
+        "work": "https://docs.google.com/document/error-messages"
+      },
+      "projectId": 299,
+      "description": "Rewrite all error messages for clarity and user-friendliness.",
+      "dueDate": "2025-07-14T00:00:00.000Z",
+      "order": 2,
+      "version": 2,
+      "createdDate": "2025-08-03T15:57:39.542Z",
+      "lastModified": "2025-08-04T05:10:33.267Z"
+    },
+    {
+      "id": 26,
+      "title": "Onboarding flow copy",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": "2025-08-03T15:57:39.544Z",
+      "links": {
+        "brief": "",
+        "work": "https://docs.google.com/document/onboarding-copy"
+      },
+      "projectId": 299,
+      "description": "Write engaging and clear copy for user onboarding experience.",
+      "dueDate": "2025-07-14T00:00:00.000Z",
+      "order": 3,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.542Z",
+      "lastModified": "2025-08-03T15:57:39.544Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.758Z",
+  "version": 1
+}

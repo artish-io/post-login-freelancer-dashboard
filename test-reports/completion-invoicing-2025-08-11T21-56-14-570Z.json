@@ -1,0 +1,70 @@
+{
+  "timestamp": "2025-08-11T21:56:14.570Z",
+  "config": {
+    "baseUrl": "http://localhost:3000",
+    "testCommissionerId": 31,
+    "testFreelancerId": 1,
+    "testBudget": 5000,
+    "testGigTitle": "Test Completion Invoicing Workflow",
+    "testProjectTasks": 3,
+    "timeout": 30000
+  },
+  "state": {
+    "gigId": 9,
+    "projectId": null,
+    "applicationId": 23,
+    "upfrontInvoiceNumber": null,
+    "completionInvoiceNumber": null,
+    "taskIds": [],
+    "errors": [
+      "Freelancer matching failed: Failed to match freelancer",
+      "Cannot test upfront invoice - no project ID available",
+      "Cannot test upfront payment - no upfront invoice available",
+      "Cannot test task approval - no tasks or project ID available",
+      "Cannot test completion invoice - no project ID available"
+    ],
+    "warnings": [],
+    "testResults": {
+      "gigCreation": {
+        "status": "PASS",
+        "gigId": 9,
+        "message": "Gig created successfully with completion invoicing"
+      },
+      "freelancerApplication": {
+        "status": "PASS",
+        "applicationId": 23,
+        "message": "Freelancer application submitted successfully"
+      },
+      "freelancerMatching": {
+        "status": "FAIL",
+        "error": "Failed to match freelancer"
+      },
+      "dataIntegrity": {
+        "status": "FAIL",
+        "checks": [
+          {
+            "check": "invoice_amounts_total",
+            "expected": 5000,
+            "actual": 5000,
+            "pass": true
+          },
+          {
+            "check": "gig_status_unavailable",
+            "expected": "Unavailable",
+            "actual": "Available",
+            "pass": false
+          }
+        ],
+        "message": "1/2 integrity checks passed"
+      }
+    }
+  },
+  "summary": {
+    "totalTests": 4,
+    "passedTests": 2,
+    "failedTests": 2,
+    "warnings": 0,
+    "errors": 5,
+    "success": false
+  }
+}

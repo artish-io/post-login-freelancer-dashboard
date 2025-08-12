@@ -1,0 +1,23 @@
+{
+  "invoiceId": "MILESTONE-1754954012877-1754954016257",
+  "projectId": 1754954012877,
+  "taskId": 1754954016257,
+  "freelancerId": 31,
+  "commissionerId": 32,
+  "amount": 3333.33,
+  "currency": "USD",
+  "status": "paid",
+  "type": "milestone",
+  "description": "Milestone payment for: Project Setup and Architecture",
+  "createdAt": "2025-08-11T23:13:27.785Z",
+  "dueDate": "2025-09-10T23:13:27.785Z",
+  "paidDate": "2025-08-11",
+  "paymentDetails": {
+    "paymentId": "pay_sim_1754954007815_2552",
+    "paymentMethod": "simulation",
+    "platformFee": 166.67,
+    "freelancerAmount": 3166.66,
+    "currency": "USD",
+    "processedAt": "2025-08-11T23:13:27.815Z"
+  }
+}

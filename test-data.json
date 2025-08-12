@@ -1,0 +1,43 @@
+{
+  "title": "Test Milestone-Based Project for Comprehensive Validation",
+  "commissionerId": 32,
+  "organizationId": 1,
+  "category": "development",
+  "subcategory": "Web Development",
+  "skills": ["React", "TypeScript", "Node.js"],
+  "tools": ["React", "Jest", "TypeScript"],
+  "description": "Comprehensive test project for milestone-based invoicing workflow validation",
+  "executionMethod": "milestone",
+  "invoicingMethod": "milestone",
+  "budget": 15000,
+  "lowerBudget": 15000,
+  "upperBudget": 15000,
+  "deliveryTimeWeeks": 12,
+  "estimatedHours": 300,
+  "startType": "Immediately",
+  "isPublic": true,
+  "isTargetedRequest": false,
+  "milestones": [
+    {
+      "id": "M1",
+      "title": "Project Setup and Architecture",
+      "description": "Initial project setup, architecture design, and development environment",
+      "startDate": "2025-01-12T20:00:00.000Z",
+      "endDate": "2025-02-09T20:00:00.000Z"
+    },
+    {
+      "id": "M2",
+      "title": "Core Development and Implementation",
+      "description": "Main feature development, API integration, and core functionality implementation",
+      "startDate": "2025-02-09T20:00:00.000Z",
+      "endDate": "2025-03-09T20:00:00.000Z"
+    },
+    {
+      "id": "M3",
+      "title": "Testing, Optimization and Deployment",
+      "description": "Comprehensive testing, performance optimization, and production deployment",
+      "startDate": "2025-03-09T20:00:00.000Z",
+      "endDate": "2025-04-06T20:00:00.000Z"
+    }
+  ]
+}

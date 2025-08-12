@@ -1,0 +1,9 @@
+{
+  "invoiceNumber": "CMP1754950149586-UP",
+  "projectId": 1754950149586,
+  "method": "completion",
+  "type": "upfront",
+  "amount": 600,
+  "status": "unpaid",
+  "issuedAt": "2025-08-11T22:09:07.973Z"
+}

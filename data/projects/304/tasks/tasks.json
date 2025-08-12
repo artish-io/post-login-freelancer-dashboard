@@ -1,0 +1,42 @@
+{
+  "tasks": [
+    {
+      "id": 7,
+      "title": "Design event templates",
+      "status": "todo",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/event-templates"
+      },
+      "projectId": 304,
+      "description": "Design reusable templates for event promotional materials.",
+      "dueDate": "2025-07-15T00:00:00.000Z",
+      "order": 1,
+      "version": 2,
+      "createdDate": "2025-08-03T15:57:39.548Z",
+      "lastModified": "2025-08-03T15:57:39.548Z"
+    },
+    {
+      "id": 8,
+      "title": "Print-ready social media assets",
+      "status": "review",
+      "milestoneId": null,
+      "completedAt": "2025-08-07T15:57:39.548Z",
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/social-assets"
+      },
+      "projectId": 304,
+      "description": "Prepare print-ready social assets optimized for various platforms.",
+      "dueDate": "2025-08-29T00:00:00.000Z",
+      "order": 2,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.548Z",
+      "lastModified": "2025-08-07T15:57:39.548Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.766Z",
+  "version": 1
+}

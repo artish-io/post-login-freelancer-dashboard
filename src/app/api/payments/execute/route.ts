@@ -13,6 +13,9 @@ import { withRateLimit, RateLimiters } from '@/lib/security/rate-limiter';
 import { withRequestValidation, VALIDATION_CONFIGS } from '@/lib/security/request-validator';
 import { sanitizeApiInput } from '@/lib/security/input-sanitizer';
 import type { InvoiceLike } from '@/app/api/payments/domain/types';
+import { getOrCreateWallet } from '@/lib/wallets/wallet-store';
+import { validateProjectTaskConsistency } from '@/lib/validators/project-task-consistency';
+import { getTasks } from '@/lib/tasks/task-store';
 
 
 
@@ -57,6 +60,41 @@ async function handleExecutePayment(req: Request) {
       dueDate: (invRaw as any)?.dueDate,
       paidDate: (invRaw as any)?.paidDate,
     };
+
+    // 📋 Validate project-task consistency if this is a milestone payment
+    if (invoice.projectId && invoice.method === 'milestone') {
+      try {
+        const validation = await validateProjectTaskConsistency(invoice.projectId, { logWarnings: true });
+        if (validation.warnings.length > 0) {
+          console.warn(`⚠️ Project ${invoice.projectId} has consistency issues:`, validation.warnings);
+        }
+
+        // Validate milestone eligibility
+        const projectTasks = await getTasks(invoice.projectId);
+        const eligibleTasks = projectTasks.filter(task =>
+          task.status === 'done' && task.milestoneId === invoice.milestoneNumber
+        );
+
+        if (eligibleTasks.length === 0) {
+          assert(false, ErrorCodes.INVALID_STATUS_TRANSITION, 422,
+            `No completed tasks found for milestone ${invoice.milestoneNumber}`);
+        }
+      } catch (error) {
+        console.warn(`⚠️ Could not validate tasks for project ${invoice.projectId}:`, error);
+        // Don't fail payment for validation errors, just log
+      }
+    }
+
+    // 💰 Auto-initialize wallets for both parties before payment
+    try {
+      await Promise.all([
+        getOrCreateWallet(invoice.freelancerId, invoice.currency || 'USD'),
+        getOrCreateWallet(invoice.commissionerId, invoice.currency || 'USD')
+      ]);
+    } catch (error) {
+      assert(false, ErrorCodes.INTERNAL_ERROR, 500,
+        `Failed to initialize wallets: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
 
     // ✅ Service-layer rule: execute requires 'processing' by default
     const canExec = PaymentsService.canExecutePayment(invoice, actorId);

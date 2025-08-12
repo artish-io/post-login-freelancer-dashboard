@@ -1,0 +1,20 @@
+{
+  "taskId": 1754949864447,
+  "projectId": 1754949864231,
+  "projectTitle": "Test Completion Invoicing Workflow 2025-08-11T22-04-18-569Z",
+  "organizationId": 0,
+  "projectTypeTags": [],
+  "title": "Task 3",
+  "description": "Task 3 for Test Completion Invoicing Workflow 2025-08-11T22-04-18-569Z",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 3,
+  "link": "",
+  "dueDate": "2025-08-18T22:04:19.893Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "createdDate": "2025-08-11T22:04:19.894Z",
+  "lastModified": "2025-08-11T22:04:19.895Z"
+}

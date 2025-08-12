@@ -1,0 +1,60 @@
+{
+  "tasks": [
+    {
+      "id": 21,
+      "title": "Event branding package",
+      "status": "in_progress",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/event-branding"
+      },
+      "projectId": 300,
+      "description": "Design comprehensive branding package for tech showcase event.",
+      "dueDate": "2025-08-29T00:00:00.000Z",
+      "order": 1,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.547Z",
+      "lastModified": "2025-08-03T15:57:39.547Z"
+    },
+    {
+      "id": 22,
+      "title": "Venue signage design",
+      "status": "in_progress",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/venue-signage"
+      },
+      "projectId": 300,
+      "description": "Create wayfinding and promotional signage for event venue.",
+      "dueDate": "2025-07-15T00:00:00.000Z",
+      "order": 2,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.547Z",
+      "lastModified": "2025-08-03T15:57:39.547Z"
+    },
+    {
+      "id": 23,
+      "title": "Speaker presentation templates",
+      "status": "in_progress",
+      "milestoneId": null,
+      "completedAt": null,
+      "links": {
+        "brief": "",
+        "work": "https://figma.com/file/speaker-templates"
+      },
+      "projectId": 300,
+      "description": "Design standardized presentation templates for all speakers.",
+      "dueDate": "2025-08-22T00:00:00.000Z",
+      "order": 3,
+      "version": 1,
+      "createdDate": "2025-08-03T15:57:39.547Z",
+      "lastModified": "2025-08-03T15:57:39.547Z"
+    }
+  ],
+  "updatedAt": "2025-08-11T16:40:01.763Z",
+  "version": 1
+}

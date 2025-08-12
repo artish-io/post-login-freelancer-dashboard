@@ -127,18 +127,23 @@ export default function InvoiceMetaSection({
           {/* Bill To */}
           <div>
             <label className="text-xs text-gray-700 mb-1 block">BILL TO:</label>
-            {session?.user?.id && (
-              <BillToInput
-                freelancerId={Number(session.user.id)}
-                value={billTo}
-                onChange={onBillToChange}
-                onSelect={(contact) => {
-                  onBillToChange(contact.email);
-                  if (onCommissionerSelect) {
-                    onCommissionerSelect(contact.commissionerId);
-                  }
-                }}
-              />
+            {session?.user?.id ? (
+              <>
+                {console.log('🔍 [InvoiceMetaSection] Session user ID:', session.user.id, 'Type:', typeof session.user.id)}
+                <BillToInput
+                  freelancerId={Number(session.user.id)}
+                  value={billTo}
+                  onChange={onBillToChange}
+                  onSelect={(contact) => {
+                    onBillToChange(contact.email);
+                    if (onCommissionerSelect) {
+                      onCommissionerSelect(contact.commissionerId);
+                    }
+                  }}
+                />
+              </>
+            ) : (
+              <div className="text-sm text-gray-500">Loading user session...</div>
             )}
           </div>
         </div>
