@@ -1,0 +1,11 @@
+{
+  "id": 11,
+  "name": "Riya Desai",
+  "title": "Frontend Developer",
+  "avatar": "/avatars/riya.png",
+  "type": "freelancer",
+  "email": "riya.desai@example.com",
+  "address": "11 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-08-03T14:53:43.061Z",
+  "updatedAt": "2025-08-12T15:46:25.199Z"
+}

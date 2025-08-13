@@ -1,0 +1,19 @@
+{
+  "id": 5,
+  "userId": 5,
+  "category": "Creative Writing",
+  "skills": [
+    "Songwriting",
+    "Poetry",
+    "Fiction"
+  ],
+  "rate": "35/hr",
+  "minRate": 35,
+  "maxRate": 35,
+  "location": "GH",
+  "rating": 3,
+  "availability": "Available",
+  "withdrawalMethod": "bank_transfer",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.348Z"
+}

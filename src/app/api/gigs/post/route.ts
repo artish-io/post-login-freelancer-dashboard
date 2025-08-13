@@ -4,8 +4,7 @@ import fs from 'fs';
 import { differenceInWeeks } from 'date-fns';
 import { logGigRequestSent } from '../../../../lib/events/event-logger';
 import { saveGig, getNextGigId, type Gig } from '../../../../lib/gigs/hierarchical-storage';
-
-const ORGANIZATIONS_PATH = path.join(process.cwd(), 'data', 'organizations.json');
+import { getAllOrganizations, writeOrganization } from '@/lib/storage/unified-storage-service';
 
 export async function POST(req: Request) {
   try {
@@ -15,8 +14,7 @@ export async function POST(req: Request) {
     const newGigId = await getNextGigId();
 
     // Read existing organizations
-    const organizationsRaw = fs.readFileSync(ORGANIZATIONS_PATH, 'utf-8');
-    const organizations = JSON.parse(organizationsRaw);
+    const organizations = await getAllOrganizations();
 
     // Handle organization data
     let organizationId = gigData.organizationData.id;
@@ -41,13 +39,16 @@ export async function POST(req: Request) {
           id: newOrgId,
           ...gigData.organizationData,
           contactPersonId: gigData.commissionerId,
+          firstCommissionerId: gigData.commissionerId,
+          associatedCommissioners: [gigData.commissionerId],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
         };
-        organizations.push(newOrganization);
+
+        // Write new organization using hierarchical storage
+        await writeOrganization(newOrganization);
         organizationId = newOrgId;
       }
-
-      // Write updated organizations back to file
-      fs.writeFileSync(ORGANIZATIONS_PATH, JSON.stringify(organizations, null, 2));
     }
 
     // Calculate project duration and hourly rate

@@ -1,0 +1,25 @@
+{
+  "taskId": 1754994215554,
+  "projectId": 1754994208232,
+  "projectTitle": "Event Venue 3D Visualization",
+  "organizationId": 4,
+  "projectTypeTags": [
+    "3D Modeling",
+    "Event Planning",
+    "Venue Design",
+    "Visualization"
+  ],
+  "title": "Interactive Walkthrough & Final Delivery",
+  "description": "Create interactive 3D walkthrough and deliver all final files with documentation.",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 3,
+  "link": "",
+  "dueDate": "2025-08-30T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "createdDate": "2025-08-12T10:12:35.844Z",
+  "lastModified": "2025-08-12T10:12:35.851Z"
+}

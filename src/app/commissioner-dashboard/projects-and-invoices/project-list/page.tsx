@@ -128,8 +128,9 @@ export default function CommissionerProjectListPage() {
             let dueDate = projectInfo?.dueDate || null;
             if (!dueDate) {
               const incompleteTasks = tasks.filter((task: any) => !task.completed);
-              dueDate = incompleteTasks.length > 0
-                ? incompleteTasks.map((task: any) => task.dueDate).sort()[0]
+              const tasksWithDueDates = incompleteTasks.filter((task: any) => task.dueDate);
+              dueDate = tasksWithDueDates.length > 0
+                ? tasksWithDueDates.map((task: any) => task.dueDate).sort()[0]
                 : null;
             }
 

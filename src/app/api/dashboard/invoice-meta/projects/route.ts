@@ -3,8 +3,7 @@
 import { NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import path from 'path';
-import { readAllProjects } from '@/app/api/payments/repos/projects-repo';
-import { readAllTasks } from '@/app/api/payments/repos/tasks-repo';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -16,11 +15,18 @@ export async function GET(request: Request) {
   }
 
   try {
-    const [allProjects, allTasks, invoicesData] = await Promise.all([
-      readAllProjects(),
-      readAllTasks(),
-      readFile(path.join(process.cwd(), 'data', 'invoices.json'), 'utf-8')
-    ]);
+    // Get all projects
+    const allProjects = await UnifiedStorageService.listProjects();
+
+    // Get all tasks across all projects
+    const allTasks = [];
+    for (const project of allProjects) {
+      const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
+      allTasks.push(...projectTasks);
+    }
+
+    // Read invoices (still from legacy file for now)
+    const invoicesData = await readFile(path.join(process.cwd(), 'data', 'invoices.json'), 'utf-8');
     const allInvoices = JSON.parse(invoicesData);
 
     let filtered = allProjects.filter((p: any) => p.freelancerId === freelancerId);

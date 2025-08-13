@@ -1,0 +1,19 @@
+{
+  "id": 25,
+  "userId": 25,
+  "category": "Software Development",
+  "skills": [
+    "Hardware",
+    "Embedded Systems",
+    "IoT"
+  ],
+  "rate": "80-130/hr",
+  "minRate": 80,
+  "maxRate": 130,
+  "location": "DE",
+  "rating": 5,
+  "availability": "Available",
+  "withdrawalMethod": "bank_transfer",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.368Z"
+}

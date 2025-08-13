@@ -1,0 +1,19 @@
+{
+  "id": 23,
+  "userId": 23,
+  "category": "Software Development",
+  "skills": [
+    "Python",
+    "Pandas",
+    "Django"
+  ],
+  "rate": "60-110/hr",
+  "minRate": 60,
+  "maxRate": 110,
+  "location": "NG",
+  "rating": 4,
+  "availability": "Available",
+  "withdrawalMethod": "bank_transfer",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.367Z"
+}

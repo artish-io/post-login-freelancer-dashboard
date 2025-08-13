@@ -2,11 +2,14 @@
 
 import { NextResponse } from 'next/server';
 import path from 'path';
-import { readFile, writeFile } from 'fs/promises';
+import { readFile } from 'fs/promises';
 import { readGig } from '@/lib/gigs/hierarchical-storage';
 import { NotificationStorage } from '@/lib/notifications/notification-storage';
-
-const APPLICATIONS_PATH = path.join(process.cwd(), 'data/gigs/gig-applications.json');
+import {
+  readAllGigApplications,
+  writeGigApplication,
+  GigApplication
+} from '@/lib/gigs/gig-applications-storage';
 
 export async function GET(req: Request) {
   try {
@@ -14,8 +17,8 @@ export async function GET(req: Request) {
     const gigId = searchParams.get('gigId');
     const freelancerId = searchParams.get('freelancerId');
 
-    const raw = await readFile(APPLICATIONS_PATH, 'utf-8');
-    const applications = JSON.parse(raw);
+    // Use hierarchical storage
+    const applications = await readAllGigApplications();
 
     let filteredApplications = applications;
 
@@ -68,8 +71,8 @@ export async function POST(req: Request) {
       }, { status: 409 });
     }
 
-    const raw = await readFile(APPLICATIONS_PATH, 'utf-8');
-    const applications = JSON.parse(raw);
+    // Use hierarchical storage
+    const applications = await readAllGigApplications();
 
     // Check for existing applications from this freelancer to this gig
     const existingApplications = applications.filter((app: any) =>
@@ -104,19 +107,23 @@ export async function POST(req: Request) {
       }
     }
 
-    const newApplication = {
-      id: applications.length + 1,
+    // Generate new application ID
+    const maxId = applications.length > 0 ? Math.max(...applications.map((app: any) => app.id)) : 0;
+
+    const newApplication: GigApplication = {
+      id: maxId + 1,
       gigId,
       freelancerId,
       pitch,
       sampleLinks,
       skills,
       tools,
-      submittedAt: new Date().toISOString()
+      submittedAt: new Date().toISOString(),
+      status: 'pending'
     };
 
-    applications.push(newApplication);
-    await writeFile(APPLICATIONS_PATH, JSON.stringify(applications, null, 2));
+    // Write to hierarchical storage
+    await writeGigApplication(newApplication);
 
     // Create notification for the commissioner
     try {

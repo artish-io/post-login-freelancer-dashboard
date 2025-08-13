@@ -1,0 +1,11 @@
+{
+  "id": 20,
+  "name": "Anika Rao",
+  "title": "Customer Success Manager",
+  "avatar": "/avatars/anika.png",
+  "type": "freelancer",
+  "email": "anika.rao@example.com",
+  "address": "20 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.217Z"
+}

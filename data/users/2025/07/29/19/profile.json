@@ -1,0 +1,11 @@
+{
+  "id": 19,
+  "name": "Markus Schulz",
+  "title": "Cloud Architect",
+  "avatar": "/avatars/markus.png",
+  "type": "freelancer",
+  "email": "markus.schulz@example.com",
+  "address": "19 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-07-29T14:26:40.168Z",
+  "updatedAt": "2025-08-12T15:46:25.216Z"
+}

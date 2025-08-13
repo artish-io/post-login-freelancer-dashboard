@@ -7,8 +7,8 @@
  * @deprecated Use UnifiedStorageService directly for new code
  */
 
-import { readAllTasks as readTasksFromStorage, writeTask } from '@/lib/project-tasks/hierarchical-storage';
-import { UnifiedStorageService, UnifiedTask } from '@/lib/storage/unified-storage-service';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
+import type { ProjectTask } from '@/lib/storage/schemas';
 
 // Legacy task record interface for backward compatibility
 export interface TaskRecord {
@@ -48,29 +48,78 @@ export interface TaskRecord {
 
 /**
  * Read all tasks from hierarchical storage
- * @deprecated Use UnifiedStorageService.getAllTasks() instead
+ * @deprecated Use UnifiedStorageService.listTasks() instead
  */
 export async function readAllTasks(): Promise<TaskRecord[]> {
   try {
     console.warn('⚠️ Using deprecated readAllTasks from tasks-repo. Consider migrating to UnifiedStorageService.');
-    const tasks = await readTasksFromStorage();
-    
-    // Convert to legacy format for backward compatibility
-    return tasks.map(task => ({
+
+    // Get all projects first, then get tasks for each project
+    const projects = await UnifiedStorageService.listProjects();
+    const allTasks: TaskRecord[] = [];
+
+    for (const project of projects) {
+      const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
+
+      // Convert to legacy format for backward compatibility
+      const legacyTasks = projectTasks.map((task: ProjectTask) => ({
+        id: task.taskId,
+        taskId: task.taskId,
+        projectId: task.projectId,
+        projectTitle: task.projectTitle,
+        organizationId: task.organizationId,
+        projectTypeTags: task.projectTypeTags,
+        title: task.title,
+        description: task.description,
+        status: task.status as any,
+        completed: task.completed,
+        order: task.order,
+        link: task.link,
+        dueDate: task.dueDate || new Date().toISOString(),
+        rejected: task.rejected,
+        feedbackCount: task.feedbackCount,
+        pushedBack: task.pushedBack,
+        version: task.version,
+        createdDate: task.createdDate,
+        lastModified: task.lastModified,
+        createdAt: task.createdDate,
+        updatedAt: task.lastModified
+      }));
+
+      allTasks.push(...legacyTasks);
+    }
+
+    return allTasks;
+  } catch (error) {
+    console.error('Error reading tasks from storage:', error);
+    throw error;
+  }
+}
+
+/**
+ * Get tasks by project ID
+ * @deprecated Use UnifiedStorageService.listTasks() instead
+ */
+export async function listTasksByProject(projectId: number): Promise<TaskRecord[]> {
+  try {
+    console.warn('⚠️ Using deprecated listTasksByProject from tasks-repo. Consider migrating to UnifiedStorageService.');
+    const projectTasks = await UnifiedStorageService.listTasks(projectId);
+
+    // Convert to legacy format
+    return projectTasks.map((task: ProjectTask) => ({
       id: task.taskId,
       taskId: task.taskId,
       projectId: task.projectId,
       projectTitle: task.projectTitle,
       organizationId: task.organizationId,
       projectTypeTags: task.projectTypeTags,
-      freelancerId: task.freelancerId,
       title: task.title,
       description: task.description,
       status: task.status as any,
       completed: task.completed,
       order: task.order,
       link: task.link,
-      dueDate: task.dueDate,
+      dueDate: task.dueDate || new Date().toISOString(),
       rejected: task.rejected,
       feedbackCount: task.feedbackCount,
       pushedBack: task.pushedBack,
@@ -81,21 +130,6 @@ export async function readAllTasks(): Promise<TaskRecord[]> {
       updatedAt: task.lastModified
     }));
   } catch (error) {
-    console.error('Error reading tasks from storage:', error);
-    throw error;
-  }
-}
-
-/**
- * Get tasks by project ID
- * @deprecated Use UnifiedStorageService.getTasksByProject() instead
- */
-export async function listTasksByProject(projectId: number): Promise<TaskRecord[]> {
-  try {
-    console.warn('⚠️ Using deprecated listTasksByProject from tasks-repo. Consider migrating to UnifiedStorageService.');
-    const allTasks = await readAllTasks();
-    return allTasks.filter(task => task.projectId === projectId);
-  } catch (error) {
     console.error(`Error reading tasks for project ${projectId}:`, error);
     throw error;
   }
@@ -103,13 +137,46 @@ export async function listTasksByProject(projectId: number): Promise<TaskRecord[
 
 /**
  * Get task by ID
- * @deprecated Use UnifiedStorageService.getTaskById() instead
+ * @deprecated Use UnifiedStorageService.readTask() instead
  */
 export async function getTaskById(taskId: number): Promise<TaskRecord | null> {
   try {
     console.warn('⚠️ Using deprecated getTaskById from tasks-repo. Consider migrating to UnifiedStorageService.');
-    const allTasks = await readAllTasks();
-    return allTasks.find(task => task.taskId === taskId) || null;
+
+    // We need to find the task across all projects since we only have taskId
+    const projects = await UnifiedStorageService.listProjects();
+
+    for (const project of projects) {
+      const task = await UnifiedStorageService.readTask(project.projectId, taskId);
+      if (task) {
+        // Convert to legacy format
+        return {
+          id: task.taskId,
+          taskId: task.taskId,
+          projectId: task.projectId,
+          projectTitle: task.projectTitle,
+          organizationId: task.organizationId,
+          projectTypeTags: task.projectTypeTags,
+          title: task.title,
+          description: task.description,
+          status: task.status as any,
+          completed: task.completed,
+          order: task.order,
+          link: task.link,
+          dueDate: task.dueDate || new Date().toISOString(),
+          rejected: task.rejected,
+          feedbackCount: task.feedbackCount,
+          pushedBack: task.pushedBack,
+          version: task.version,
+          createdDate: task.createdDate,
+          lastModified: task.lastModified,
+          createdAt: task.createdDate,
+          updatedAt: task.lastModified
+        };
+      }
+    }
+
+    return null;
   } catch (error) {
     console.error(`Error reading task ${taskId}:`, error);
     return null;
@@ -118,37 +185,39 @@ export async function getTaskById(taskId: number): Promise<TaskRecord | null> {
 
 /**
  * Create or update a task
- * @deprecated Use UnifiedStorageService.saveTask() instead
+ * @deprecated Use UnifiedStorageService.writeTask() instead
  */
 export async function saveTask(task: TaskRecord): Promise<TaskRecord> {
   try {
     console.warn('⚠️ Using deprecated saveTask from tasks-repo. Consider migrating to UnifiedStorageService.');
-    
+
     // Convert to unified format
-    const unifiedTask: UnifiedTask = {
+    const unifiedTask: ProjectTask = {
       taskId: task.taskId,
       projectId: task.projectId,
       projectTitle: task.projectTitle || '',
-      organizationId: task.organizationId || 0,
-      projectTypeTags: task.projectTypeTags || [],
-      freelancerId: task.freelancerId,
+      organizationId: task.organizationId,
+      projectTypeTags: task.projectTypeTags,
       title: task.title,
-      description: task.description || '',
+      description: task.description,
       status: task.status,
       completed: task.completed,
       order: task.order,
-      link: task.link || '',
+      link: task.link,
       dueDate: task.dueDate,
       rejected: task.rejected || false,
       feedbackCount: task.feedbackCount || 0,
       pushedBack: task.pushedBack || false,
       version: task.version || 1,
+      submittedDate: task.submittedAt,
+      approvedDate: task.approvedAt,
+      rejectedDate: task.rejectedAt,
       createdDate: task.createdDate || new Date().toISOString(),
       lastModified: new Date().toISOString()
     };
-    
-    await writeTask(unifiedTask);
-    
+
+    await UnifiedStorageService.writeTask(unifiedTask);
+
     // Return in legacy format
     return {
       ...task,

@@ -1,0 +1,20 @@
+{
+  "id": 12,
+  "gigId": 1,
+  "freelancerId": 31,
+  "pitch": "iuwehfcnodslnjerofvjesomcgssjemgoinrdesjnrafverhcjsnwihvgemcsjorfnheomsjgcirnhuesbfjvhdcmelf",
+  "sampleLinks": [
+    "https://uwaterloo.ca/the-centre/awards-and-financial-aid/student-bursaries"
+  ],
+  "skills": [
+    "marketing",
+    "design"
+  ],
+  "tools": [
+    "Figma",
+    "Adobe Illustrator"
+  ],
+  "submittedAt": "2025-08-03T22:35:52.696Z",
+  "migratedAt": "2025-08-12T15:22:41.891Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

@@ -5,8 +5,7 @@
  * with proper validation and state management
  */
 
-import { readProject, updateProject } from '../projects-utils';
-import { readProjectTasks } from '../project-tasks/hierarchical-storage';
+import { UnifiedStorageService } from '../storage/unified-storage-service';
 import { listTasksByProject } from '../../app/api/payments/repos/tasks-repo';
 import { getProjectById, updateProject as updateProjectRepo } from '../../app/api/payments/repos/projects-repo';
 import { normalizeTaskStatus } from '../../app/api/payments/domain/types';
@@ -140,18 +139,20 @@ export async function autoCompleteProject(projectId: number): Promise<ProjectCom
       };
     }
 
-    // Get current project status
-    const project = await readProject(projectId);
+    // Get current project status using unified storage
+    const project = await UnifiedStorageService.readProject(projectId);
     if (!project) {
       throw new Error('Project not found');
     }
 
     const previousStatus = project.status || 'unknown';
 
-    // Update project status to completed in hierarchical storage
-    await updateProject(projectId, { 
+    // Update project status to completed using unified storage
+    await UnifiedStorageService.writeProject({
+      ...project,
       status: 'completed',
-      completedAt: new Date().toISOString()
+      completedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     });
 
     // Also update in repo storage for consistency

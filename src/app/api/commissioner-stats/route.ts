@@ -18,16 +18,18 @@ export async function GET(request: NextRequest) {
 
     // Read data files using hierarchical storage
     const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
-    const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
+    const { getAllOrganizations } = await import('@/lib/storage/unified-storage-service');
 
     const projectsData = await readAllProjects(); // Use hierarchical storage for projects
     const hierarchicalTasks = await readAllTasks();
     const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
-    const organizationsData = JSON.parse(fs.readFileSync(organizationsPath, 'utf8'));
+    const organizationsData = await getAllOrganizations();
 
     // Find the organization for this commissioner
-    const organization = organizationsData.find((org: any) => 
-      org.contactPersonId === parseInt(commissionerId)
+    const organization = organizationsData.find((org: any) =>
+      org.contactPersonId === parseInt(commissionerId) ||
+      org.firstCommissionerId === parseInt(commissionerId) ||
+      org.associatedCommissioners?.includes(parseInt(commissionerId))
     );
 
     if (!organization) {

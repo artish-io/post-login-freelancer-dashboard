@@ -1,0 +1,27 @@
+{
+  "id": 8,
+  "gigId": 10,
+  "freelancerId": 11,
+  "pitch": "I'm a React Native specialist with 6+ years of experience building mobile apps for field operations. I've developed similar offline-first applications for maintenance teams and understand the challenges of poor connectivity environments. I can deliver a robust, user-friendly solution.",
+  "sampleLinks": [
+    "https://portfolio.example.com/maintenance-apps",
+    "https://github.com/freelancer11/offline-mobile-apps"
+  ],
+  "skills": [
+    "React Native",
+    "TypeScript",
+    "Offline-First Development",
+    "Mobile UI/UX"
+  ],
+  "tools": [
+    "React Native",
+    "TypeScript",
+    "SQLite",
+    "Redux Persist",
+    "React Navigation"
+  ],
+  "submittedAt": "2025-08-03T16:00:00Z",
+  "status": "accepted",
+  "migratedAt": "2025-08-12T15:22:41.890Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

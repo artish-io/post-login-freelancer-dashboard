@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
 import { readAllTasks, convertHierarchicalToLegacy } from '../../../../../../lib/project-tasks/hierarchical-storage';
-
-const USERS_PATH = path.join(process.cwd(), 'data', 'users.json');
-const ORGS_PATH = path.join(process.cwd(), 'data', 'organizations.json');
+import { getAllUsers, getAllOrganizations } from '@/lib/storage/unified-storage-service';
 
 interface User {
   id: number;
@@ -49,17 +45,14 @@ export async function GET(
   const freelancerId = Number(freelancerIdParam);
 
   try {
-    const [usersRaw, orgsRaw] = await Promise.all([
-      readFile(USERS_PATH, 'utf-8'),
-      readFile(ORGS_PATH, 'utf-8'),
+    const [users, orgs] = await Promise.all([
+      getAllUsers(),
+      getAllOrganizations(),
     ]);
 
     // Read project tasks from hierarchical storage
     const hierarchicalTasks = await readAllTasks();
     const projects: Project[] = convertHierarchicalToLegacy(hierarchicalTasks);
-
-    const users: User[] = JSON.parse(usersRaw);
-    const orgs: Organization[] = JSON.parse(orgsRaw);
 
     const freelancer = users.find(
       (u) => u.id === freelancerId && u.type === 'freelancer'

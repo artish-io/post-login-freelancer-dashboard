@@ -1,0 +1,18 @@
+{
+  "id": 27,
+  "userId": 27,
+  "category": "Event Production",
+  "skills": [
+    "Stage Design",
+    "Security"
+  ],
+  "rate": "70-95/hr",
+  "minRate": 70,
+  "maxRate": 95,
+  "location": "NG",
+  "rating": 4,
+  "availability": "Available",
+  "withdrawalMethod": "bank_transfer",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.371Z"
+}

@@ -1,0 +1,29 @@
+{
+  "id": 38,
+  "name": "Dr. Michael Torres",
+  "title": "Research Director",
+  "avatar": "/avatars/michael.png",
+  "type": "commissioner",
+  "email": "m.torres@accessfirst.com",
+  "address": "Austin, USA",
+  "organizationId": 7,
+  "bio": "Research director with a PhD in Human-Computer Interaction, specializing in accessibility and inclusive design. Committed to making technology work for people with disabilities.",
+  "rating": 4.9,
+  "responsibilities": [
+    "Research Leadership",
+    "Grant Management",
+    "Academic Partnerships",
+    "Publication Oversight",
+    "Team Development",
+    "Policy Advocacy",
+    "Technology Assessment"
+  ],
+  "socialLinks": [
+    {
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/dr-michael-torres"
+    }
+  ],
+  "createdAt": "2025-07-29T14:26:40.167Z",
+  "updatedAt": "2025-08-12T15:46:25.253Z"
+}

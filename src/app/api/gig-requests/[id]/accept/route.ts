@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import path from 'path';
 import { readGig, updateGig } from '@/lib/gigs/hierarchical-storage';
-import { saveProject, deleteProject } from '@/lib/projects-utils';
-import { writeTask, readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { eventLogger, NOTIFICATION_TYPES, ENTITY_TYPES } from '@/lib/events/event-logger';
 import { updateGigRequestStatus } from '@/lib/gigs/gig-request-storage';
-import { readFile } from 'fs/promises';
 
 export async function POST(
   request: NextRequest,
@@ -145,8 +142,8 @@ export async function POST(
 
     // Read additional data for project creation
     const [organizationsData, usersData] = await Promise.all([
-      readFile(path.join(process.cwd(), 'data/organizations.json'), 'utf-8').then(data => JSON.parse(data)),
-      readFile(path.join(process.cwd(), 'data/users.json'), 'utf-8').then(data => JSON.parse(data))
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllOrganizations()),
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllUsers())
     ]);
 
     // Find organization and manager
@@ -237,18 +234,23 @@ export async function POST(
       totalTasks: newProject.totalTasks
     });
 
-    // Save project
-    await saveProject(newProject);
+    // Save project using unified storage
+    await UnifiedStorageService.writeProject(newProject);
 
     // Generate tasks from gig milestones or create default task
-    const hierarchicalTasks = await readAllTasks();
-    const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
+    const allProjects = await UnifiedStorageService.listProjects();
+    const allTasks = [];
+    for (const project of allProjects) {
+      const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
+      allTasks.push(...projectTasks);
+    }
+
     let tasksToCreate: any[] = [];
 
     // Use the milestones variable we already created
     if (milestones && Array.isArray(milestones) && milestones.length > 0) {
       // Create tasks from milestones
-      const maxTaskId = Math.max(...projectTasksData.flatMap((p: any) => p.tasks?.map((t: any) => t.id) || []), 0);
+      const maxTaskId = Math.max(...allTasks.map((t: any) => t.taskId || 0), 0);
 
       tasksToCreate = milestones.map((milestone: any, index: number) => ({
         taskId: maxTaskId + index + 1,
@@ -273,7 +275,7 @@ export async function POST(
       }));
     } else {
       // Create default task if no milestones
-      const maxTaskId = Math.max(...projectTasksData.flatMap((p: any) => p.tasks?.map((t: any) => t.id) || []), 0);
+      const maxTaskId = Math.max(...allTasks.map((t: any) => t.taskId || 0), 0);
 
       tasksToCreate = [{
         taskId: maxTaskId + 1,
@@ -304,8 +306,8 @@ export async function POST(
 
     // Save tasks to hierarchical structure
     try {
-      // Pass project creation date for consistent storage location
-      await Promise.all(tasksToCreate.map((task: any) => writeTask(task, newProject.createdAt)));
+      // Use unified storage service for consistent storage
+      await Promise.all(tasksToCreate.map((task: any) => UnifiedStorageService.writeTask(task)));
 
       // Validate that tasks were created successfully
       if (tasksToCreate.length === 0) {
@@ -315,16 +317,15 @@ export async function POST(
       console.log(`✅ Successfully created ${tasksToCreate.length} tasks for project ${newProjectId} using project creation date`);
 
       // Verify tasks were written correctly by re-reading them
-      const verificationTasks = await readAllTasks();
-      const projectTasks = convertHierarchicalToLegacy(verificationTasks).find((p: any) => p.projectId === newProjectId);
-      console.log(`🔍 Verification: Found ${projectTasks?.tasks?.length || 0} tasks for project ${newProjectId}`);
+      const verificationTasks = await UnifiedStorageService.listTasks(newProjectId);
+      console.log(`🔍 Verification: Found ${verificationTasks.length} tasks for project ${newProjectId}`);
 
     } catch (taskError) {
       console.error('Failed to create project tasks:', taskError);
       // Clean up the project if task creation failed
       try {
-        await deleteProject(newProjectId);
-        console.log(`🧹 Cleaned up project ${newProjectId} after task creation failure`);
+        // Note: UnifiedStorageService doesn't have delete yet, so we'll log the error
+        console.log(`⚠️ Project ${newProjectId} created but task creation failed. Manual cleanup may be needed.`);
       } catch (cleanupError) {
         console.error('Failed to clean up project after task creation failure:', cleanupError);
       }

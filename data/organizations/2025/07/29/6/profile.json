@@ -1,0 +1,15 @@
+{
+  "id": 6,
+  "name": "TechShowcase Productions",
+  "email": "sarah.c@techshowcase.com",
+  "logo": "/logos/techshowcase-logo.png",
+  "address": "45 Innovation Drive, San Francisco, CA, USA",
+  "contactPersonId": 37,
+  "bio": "TechShowcase Productions is a marketing and content creation company specializing in tech product launches and developer community building. We create authentic connections between cutting-edge technology and the people who use it, helping innovative companies tell their stories and build engaged communities.",
+  "firstCommissionerId": 37,
+  "associatedCommissioners": [
+    37
+  ],
+  "createdAt": "2025-07-29T14:26:40.167Z",
+  "updatedAt": "2025-08-12T16:58:35.051Z"
+}

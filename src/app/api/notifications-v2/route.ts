@@ -4,8 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { EventData, EventType, USER_TYPE_FILTERS } from '../../../lib/events/event-logger';
 import { NotificationStorage } from '../../../lib/notifications/notification-storage';
-import { readAllProjects } from '@/lib/projects-utils';
-import { readAllTasks } from '@/lib/project-tasks/hierarchical-storage';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 
 export async function GET(request: NextRequest) {
@@ -23,9 +22,6 @@ export async function GET(request: NextRequest) {
     }
 
     // Load data files
-    const usersPath = path.join(process.cwd(), 'data', 'users.json');
-    const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
-    const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
     const contactsPath = path.join(process.cwd(), 'data', 'contacts.json');
 
     // Get events using the new partitioned storage system
@@ -37,19 +33,24 @@ export async function GET(request: NextRequest) {
       200 // limit - get up to 200 recent events
     );
 
-    // Load data from repos and flat files
-    const { getAllUsers } = await import('@/lib/storage/unified-storage-service');
-    const [users, freelancers, projects, organizations, contacts, allTasks] = await Promise.all([
-      getAllUsers(), // Use hierarchical storage for users
-      fs.promises.readFile(freelancersPath, 'utf-8').then(data => JSON.parse(data)),
-      readAllProjects(), // Use projects repo
-      fs.promises.readFile(organizationsPath, 'utf-8').then(data => JSON.parse(data)),
-      fs.promises.readFile(contactsPath, 'utf-8').then(data => JSON.parse(data)),
-      readAllTasks() // Use tasks repo
+    // Load data from unified storage and flat files
+    const [users, freelancers, projects, organizations, contacts] = await Promise.all([
+      UnifiedStorageService.getAllUsers(), // Use hierarchical storage for users
+      UnifiedStorageService.getAllFreelancers(), // Use hierarchical storage for freelancers
+      UnifiedStorageService.listProjects(), // Use unified storage for projects
+      UnifiedStorageService.getAllOrganizations(), // Use hierarchical storage for organizations
+      fs.promises.readFile(contactsPath, 'utf-8').then(data => JSON.parse(data))
     ]);
 
+    // Get all tasks across all projects
+    const allTasks: any[] = [];
+    for (const project of projects) {
+      const tasks = await UnifiedStorageService.listTasks(project.projectId);
+      allTasks.push(...tasks);
+    }
+
     // Group tasks by project for compatibility with existing logic
-    const projectTasks = allTasks.reduce((acc: any[], task) => {
+    const projectTasks = allTasks.reduce((acc: any[], task: any) => {
       const existingProject = acc.find(p => p.projectId === task.projectId);
       if (existingProject) {
         existingProject.tasks.push(task);

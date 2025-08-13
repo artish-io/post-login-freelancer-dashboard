@@ -1,0 +1,23 @@
+{
+  "id": 19,
+  "gigId": 13,
+  "freelancerId": 1,
+  "pitch": "I am well-suited for projects that require this level of detail.",
+  "sampleLinks": [
+    "https://substack.com/@thewavng?utm_source=about-page"
+  ],
+  "skills": [
+    "deisgn",
+    "animation"
+  ],
+  "tools": [
+    "Blender",
+    "SketchUp",
+    "AutoCAD",
+    "Adobe Creative Suite"
+  ],
+  "submittedAt": "2025-08-07T00:23:19.110Z",
+  "status": "rejected",
+  "migratedAt": "2025-08-12T15:22:41.893Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

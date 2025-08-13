@@ -3,6 +3,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 export async function PUT(
   request: NextRequest,
@@ -16,19 +17,13 @@ export async function PUT(
       return NextResponse.json({ error: 'Missing or invalid fields' }, { status: 400 });
     }
 
-    // Use hierarchical storage for project tasks
-    const { readAllTasks, convertHierarchicalToLegacy } = await import('@/lib/project-tasks/hierarchical-storage');
+    // Use unified storage for project tasks
     const milestonesMinimalPath = path.join(process.cwd(), 'data', 'milestones-minimal.json');
 
-    const [hierarchicalTasks, milestonesFile] = await Promise.all([
-      readAllTasks(),
+    const [milestonesFile] = await Promise.all([
       readFile(milestonesMinimalPath, 'utf-8')
     ]);
 
-    // Convert to legacy format for compatibility
-    const projectTasksData = convertHierarchicalToLegacy(hierarchicalTasks);
-
-    const projectTasks = projectTasksData;
     const milestones = JSON.parse(milestonesFile);
 
     // Extract milestone ID number and find milestone
@@ -39,30 +34,32 @@ export async function PUT(
       return NextResponse.json({ error: 'Milestone not found' }, { status: 404 });
     }
 
-    // Find the project tasks for this milestone
-    const projectTaskData = projectTasks.find((pt: any) => pt.projectId === milestone.projectId);
-    if (!projectTaskData) {
-      return NextResponse.json({ error: 'Project tasks not found' }, { status: 404 });
-    }
+    // Get project tasks using unified storage
+    const projectTasks = await UnifiedStorageService.listTasks(milestone.projectId);
 
     // Find the specific task
-    const task = projectTaskData.tasks.find((t: any) => t.id === parseInt(taskId));
+    const task = projectTasks.find((t: any) => t.taskId === parseInt(taskId));
     if (!task) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
 
-    // Update task based on new status using your business logic
+    // Update task based on new status using unified storage
+    const updatedTask = { ...task };
     if (newStatus === 'submitted') {
-      task.status = 'In review';
-      task.completed = true;
+      updatedTask.status = 'In review';
+      updatedTask.completed = true;
     } else if (newStatus === 'completed' || newStatus === 'approved') {
-      task.status = 'approved';
-      task.completed = true;
+      updatedTask.status = 'Approved';
+      updatedTask.completed = true;
     }
 
+    // Write updated task using unified storage
+    await UnifiedStorageService.writeTask(updatedTask);
+
     // Check if all tasks are completed and approved to update milestone status
-    const allTasksApproved = projectTaskData.tasks.every((t: any) =>
-      t.completed && t.status === 'approved'
+    const allProjectTasks = await UnifiedStorageService.listTasks(milestone.projectId);
+    const allTasksApproved = allProjectTasks.every((t: any) =>
+      t.completed && t.status === 'Approved'
     );
 
     // Update milestone status in minimal file
@@ -71,20 +68,17 @@ export async function PUT(
       milestoneToUpdate.status = allTasksApproved ? 1 : 0; // 1 = pending payment, 0 = in progress
     }
 
-    // Write back to files
-    await Promise.all([
-      writeFile(projectTasksPath, JSON.stringify(projectTasks, null, 2)),
-      writeFile(milestonesMinimalPath, JSON.stringify(milestones, null, 2))
-    ]);
+    // Write back milestone file only (tasks are handled by UnifiedStorageService)
+    await writeFile(milestonesMinimalPath, JSON.stringify(milestones, null, 2));
 
     return NextResponse.json(
       {
         message: `Task ${newStatus}`,
         updatedTask: {
-          id: task.id,
-          title: task.title,
-          status: task.status,
-          completed: task.completed
+          id: updatedTask.taskId,
+          title: updatedTask.title,
+          status: updatedTask.status,
+          completed: updatedTask.completed
         }
       },
       { status: 200 }

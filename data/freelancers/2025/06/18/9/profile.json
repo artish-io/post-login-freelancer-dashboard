@@ -1,0 +1,19 @@
+{
+  "id": 9,
+  "userId": 9,
+  "category": "Event Production",
+  "skills": [
+    "Stage Design",
+    "Security",
+    "Catering"
+  ],
+  "rate": "60/hr",
+  "minRate": 60,
+  "maxRate": 60,
+  "location": "NG",
+  "rating": 5,
+  "availability": "Available",
+  "withdrawalMethod": "bank_transfer",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.354Z"
+}

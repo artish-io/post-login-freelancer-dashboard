@@ -1,0 +1,11 @@
+{
+  "id": 30,
+  "name": "Grace Smith",
+  "title": "Admin Support Specialist",
+  "avatar": "/avatars/grace.png",
+  "type": "freelancer",
+  "email": "grace.smith@example.com",
+  "address": "30 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.237Z"
+}

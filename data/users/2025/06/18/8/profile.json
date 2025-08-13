@@ -1,0 +1,11 @@
+{
+  "id": 8,
+  "name": "Kwame Sefa",
+  "title": "Fashion Designer",
+  "avatar": "/avatars/kwame.png",
+  "type": "freelancer",
+  "email": "kwame.sefa@example.com",
+  "address": "8 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.192Z"
+}

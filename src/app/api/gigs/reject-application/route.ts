@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
-import { readFile, writeFile } from 'fs/promises';
+import { readFile } from 'fs/promises';
 import path from 'path';
 import { NotificationStorage } from '@/lib/notifications/notification-storage';
-
-const APPLICATIONS_PATH = path.join(process.cwd(), 'data/gigs/gig-applications.json');
+import { readGigApplication, writeGigApplication } from '@/lib/gigs/gig-applications-storage';
 
 export async function POST(req: Request) {
   try {
@@ -16,34 +15,29 @@ export async function POST(req: Request) {
       );
     }
 
-    // Read applications data
-    const applicationsData = await readFile(APPLICATIONS_PATH, 'utf-8');
-    const applications = JSON.parse(applicationsData);
+    // Read application using hierarchical storage
+    const application = await readGigApplication(applicationId);
 
-    // Find and update the application
-    const applicationIndex = applications.findIndex((app: any) => app.id === applicationId);
-    
-    if (applicationIndex === -1) {
+    if (!application) {
       return NextResponse.json(
         { error: 'Application not found' },
         { status: 404 }
       );
     }
 
-    const application = applications[applicationIndex];
-
     // Update application status to rejected with timestamp
-    applications[applicationIndex].status = 'rejected';
-    applications[applicationIndex].rejectedAt = new Date().toISOString();
+    application.status = 'rejected';
+    application.rejectedAt = new Date().toISOString();
 
-    // Save updated applications
-    await writeFile(APPLICATIONS_PATH, JSON.stringify(applications, null, 2));
+    // Save updated application using hierarchical storage
+    await writeGigApplication(application);
 
     // Send rejection notification to freelancer
     try {
       // Get gig and organization data for notification
       const gigsResponse = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3001'}/api/gigs/all`);
-      const gigs = await gigsResponse.json();
+      const gigsData = await gigsResponse.json();
+      const gigs = gigsData.entities?.gigs || gigsData;
       const gig = gigs.find((g: any) => g.id === application.gigId);
 
       if (gig) {
@@ -85,7 +79,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       success: true,
       message: 'Application rejected successfully',
-      rejectedAt: applications[applicationIndex].rejectedAt
+      rejectedAt: application.rejectedAt
     });
 
   } catch (error) {

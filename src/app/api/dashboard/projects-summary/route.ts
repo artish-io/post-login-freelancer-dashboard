@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
-import { readAllProjects } from '@/lib/projects-utils';
-import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -16,20 +15,11 @@ export async function GET(request: Request) {
 
   try {
     // Use hierarchical storage for projects and tasks
-    const usersPath = path.join(process.cwd(), 'data', 'users.json');
-    const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
-
-    const [projects, hierarchicalTasks, usersFile, organizationsFile] = await Promise.all([
-      readAllProjects(), // Use hierarchical storage for projects
-      readAllTasks(), // Use hierarchical storage for project tasks
-      readFile(usersPath, 'utf-8'),
-      readFile(organizationsPath, 'utf-8')
+    const [projects, users, organizations] = await Promise.all([
+      UnifiedStorageService.listProjects(), // Use hierarchical storage for projects
+      UnifiedStorageService.getAllUsers(), // Use hierarchical storage for users
+      UnifiedStorageService.getAllOrganizations() // Use hierarchical storage for organizations
     ]);
-
-    // Convert hierarchical tasks to legacy format for compatibility
-    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
-    const users = JSON.parse(usersFile);
-    const organizations = JSON.parse(organizationsFile);
 
     const freelancerId = parseInt(userId);
 
@@ -37,14 +27,14 @@ export async function GET(request: Request) {
     const freelancerProjects = projects.filter((p: any) => p.freelancerId === freelancerId);
 
     // Calculate project summaries dynamically
-    const projectSummaries = freelancerProjects.map((project: any) => {
+    const projectSummaries = await Promise.all(freelancerProjects.map(async (project: any) => {
       // Get project tasks to calculate progress
-      const projectTaskData = projectTasks.find((pt: any) => pt.projectId === project.projectId);
+      const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
 
       let progress = 0;
-      if (projectTaskData && projectTaskData.tasks.length > 0) {
-        const completedTasks = projectTaskData.tasks.filter((t: any) => t.completed).length;
-        progress = Math.round((completedTasks / projectTaskData.tasks.length) * 100);
+      if (projectTasks.length > 0) {
+        const completedTasks = projectTasks.filter((t: any) => t.completed).length;
+        progress = Math.round((completedTasks / projectTasks.length) * 100);
       }
 
       // Get manager/commissioner info
@@ -70,7 +60,7 @@ export async function GET(request: Request) {
         status: project.status,
         progress
       };
-    });
+    }));
 
     console.log('✅ Projects returned:', projectSummaries.length);
 

@@ -1,13 +1,9 @@
 import { NextResponse } from 'next/server';
-import { readFile } from 'fs/promises';
-import path from 'path';
+import { getAllUsers } from '@/lib/storage/unified-storage-service';
 
 export async function GET() {
   try {
-    const filePath = path.join(process.cwd(), 'data', 'users.json');
-    const data = await readFile(filePath, 'utf-8');
-    const users = JSON.parse(data);
-
+    const users = await getAllUsers(); // Use hierarchical storage
     const commissioners = users.filter((user: any) => user.type === 'commissioner');
 
     return NextResponse.json(commissioners);

@@ -1,0 +1,11 @@
+{
+  "id": 25,
+  "name": "Lucas Meyer",
+  "title": "Hardware Engineer",
+  "avatar": "/avatars/lucas.png",
+  "type": "freelancer",
+  "email": "lucas.meyer@example.com",
+  "address": "25 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.227Z"
+}

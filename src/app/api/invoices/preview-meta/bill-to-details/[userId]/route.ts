@@ -1,11 +1,7 @@
 // src/app/api/invoices/preview-meta/bill-to-details/[userId]/route.ts
 
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
-
-const USERS_PATH = path.join(process.cwd(), 'data', 'users.json');
-const ORGS_PATH = path.join(process.cwd(), 'data', 'organizations.json');
+import { getAllUsers, getAllOrganizations } from '@/lib/storage/unified-storage-service';
 
 export async function GET(
   _req: Request,
@@ -18,13 +14,10 @@ export async function GET(
       return NextResponse.json({ error: 'Invalid userId' }, { status: 400 });
     }
 
-    const [usersRaw, orgsRaw] = await Promise.all([
-      readFile(USERS_PATH, 'utf-8'),
-      readFile(ORGS_PATH, 'utf-8'),
+    const [users, organizations] = await Promise.all([
+      getAllUsers(),
+      getAllOrganizations(),
     ]);
-
-    const users = JSON.parse(usersRaw);
-    const organizations = JSON.parse(orgsRaw);
 
     const user = users.find((u: any) => u.id === userId);
     if (!user) {

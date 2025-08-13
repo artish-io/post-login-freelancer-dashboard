@@ -1,21 +1,22 @@
 
+import { getAllUsers as getUnifiedUsers, getUserById as getUnifiedUserById, getUserByEmail as getUnifiedUserByEmail } from '../storage/unified-storage-service';
 
-import path from 'path';
-import fs from 'fs';
+/**
+ * @deprecated Use unified storage service functions instead
+ * These functions are kept for backward compatibility but will be removed in a future version
+ */
 
-const USERS_PATH = path.join(process.cwd(), 'data', 'users.json');
-
-export function getAllUsers() {
-  const file = fs.readFileSync(USERS_PATH, 'utf-8');
-  return JSON.parse(file);
+export async function getAllUsers() {
+  console.warn('⚠️ [DEPRECATED] src/lib/users/index.ts getAllUsers() is deprecated. Use getAllUsers from unified-storage-service instead.');
+  return await getUnifiedUsers();
 }
 
-export function getUserById(id: number) {
-  const users = getAllUsers();
-  return users.find((user: any) => user.id === id);
+export async function getUserById(id: number) {
+  console.warn('⚠️ [DEPRECATED] src/lib/users/index.ts getUserById() is deprecated. Use getUserById from unified-storage-service instead.');
+  return await getUnifiedUserById(id);
 }
 
-export function getUserByEmail(email: string) {
-  const users = getAllUsers();
-  return users.find((user: any) => user.email?.toLowerCase() === email.toLowerCase());
+export async function getUserByEmail(email: string) {
+  console.warn('⚠️ [DEPRECATED] src/lib/users/index.ts getUserByEmail() is deprecated. Use getUserByEmail from unified-storage-service instead.');
+  return await getUnifiedUserByEmail(email);
 }

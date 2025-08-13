@@ -16,13 +16,12 @@ export async function GET(req: Request) {
   const userId = Number(userIdParam);
 
   try {
-    const [invoices, userData] = await Promise.all([
+    const [invoices, users] = await Promise.all([
       getAllInvoices(), // Use hierarchical storage for invoices
-      fs.readFile(path.join(process.cwd(), 'data/users.json'), 'utf-8')
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllUsers())
     ]);
 
-    // invoices is already parsed from hierarchical storage
-    const users = JSON.parse(userData);
+    // invoices and users are already parsed from hierarchical storage
 
     // Filter by freelancerId
     const userInvoices = invoices

@@ -1,0 +1,13 @@
+{
+  "id": 1,
+  "name": "Tobi Philly",
+  "title": "Web3 Engineer",
+  "avatar": "/avatars/tobi.png",
+  "type": "freelancer",
+  "email": "tobi.philly@example.com",
+  "address": "1 Remote Lane, Virtual City, Country",
+  "username": "tobi",
+  "password": "testpass",
+  "createdAt": "2025-08-03T14:42:54.025Z",
+  "updatedAt": "2025-08-12T15:56:46.339Z"
+}

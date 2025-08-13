@@ -1,0 +1,19 @@
+{
+  "id": 30,
+  "userId": 30,
+  "category": "Marketing",
+  "skills": [
+    "Admin Support",
+    "Calendar Management",
+    "Client Onboarding"
+  ],
+  "rate": "20-30/hr",
+  "minRate": 20,
+  "maxRate": 30,
+  "location": "UK",
+  "rating": 2,
+  "availability": "Available",
+  "withdrawalMethod": "paypal",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.374Z"
+}

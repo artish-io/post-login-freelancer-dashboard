@@ -1,0 +1,11 @@
+{
+  "id": 14,
+  "name": "Liam Chai",
+  "title": "DevOps Engineer",
+  "avatar": "/avatars/liam.png",
+  "type": "freelancer",
+  "email": "liam.chai@example.com",
+  "address": "14 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-08-12T10:12:35.844Z",
+  "updatedAt": "2025-08-12T15:46:25.205Z"
+}

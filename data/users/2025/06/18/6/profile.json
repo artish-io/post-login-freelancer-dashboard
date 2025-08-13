@@ -1,0 +1,11 @@
+{
+  "id": 6,
+  "name": "Kore De",
+  "title": "Video Editor",
+  "avatar": "/avatars/kore.png",
+  "type": "freelancer",
+  "email": "kore.de@example.com",
+  "address": "6 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.188Z"
+}

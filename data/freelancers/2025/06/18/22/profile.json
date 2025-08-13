@@ -1,0 +1,19 @@
+{
+  "id": 22,
+  "userId": 22,
+  "category": "Software Development",
+  "skills": [
+    "App Development",
+    "Flutter",
+    "Dart"
+  ],
+  "rate": "75-120/hr",
+  "minRate": 75,
+  "maxRate": 120,
+  "location": "MX",
+  "rating": 4,
+  "availability": "Available",
+  "withdrawalMethod": "paypal",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.366Z"
+}

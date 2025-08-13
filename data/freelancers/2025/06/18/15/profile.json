@@ -1,0 +1,19 @@
+{
+  "id": 15,
+  "userId": 15,
+  "category": "Marketing",
+  "skills": [
+    "Surveys",
+    "Data Visualization",
+    "Qualitative Research"
+  ],
+  "rate": "40/hr",
+  "minRate": 40,
+  "maxRate": 40,
+  "location": "RW",
+  "rating": 3,
+  "availability": "Available",
+  "withdrawalMethod": "bank_transfer",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.359Z"
+}

@@ -9,23 +9,18 @@ export async function GET(request: Request) {
   const id = url.searchParams.get('id');
 
   try {
-    const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
-    const usersPath = path.join(process.cwd(), 'data', 'users.json');
-
-    const [freelancersData, usersData] = await Promise.all([
-      readFile(freelancersPath, 'utf-8'),
-      readFile(usersPath, 'utf-8')
+    const [freelancer, user] = await Promise.all([
+      import('@/lib/storage/unified-storage-service').then(m => m.getFreelancerById(id)),
+      import('@/lib/storage/unified-storage-service').then(async m => {
+        const freelancerData = await m.getFreelancerById(id);
+        return freelancerData ? await m.getUserById(freelancerData.userId) : null;
+      })
     ]);
 
-    const freelancers = JSON.parse(freelancersData);
-    const users = JSON.parse(usersData);
-
-    const freelancer = freelancers.find((f: any) => String(f.id) === id);
     if (!freelancer) {
       return NextResponse.json({ error: 'Freelancer not found' }, { status: 404 });
     }
 
-    const user = users.find((u: any) => u.id === freelancer.userId);
     if (!user) {
       return NextResponse.json({ error: 'User data not found' }, { status: 404 });
     }

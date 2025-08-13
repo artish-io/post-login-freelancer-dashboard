@@ -1,0 +1,19 @@
+{
+  "id": 13,
+  "gigId": 10,
+  "freelancerId": 31,
+  "pitch": "I can ensure my design fixes ensures both the commissioner’s notification panel and review modal are functionally complete and aligned with ARTISH’s task submission flow. Let me know if you’d like to batch unread notifications or add timestampse",
+  "sampleLinks": [
+    "https://x.com/"
+  ],
+  "skills": [
+    "marketing,"
+  ],
+  "tools": [
+    "Figma"
+  ],
+  "submittedAt": "2025-08-04T20:35:35.161Z",
+  "status": "accepted",
+  "migratedAt": "2025-08-12T15:22:41.891Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

@@ -1,0 +1,15 @@
+{
+  "id": 3,
+  "name": "Corlax Wellness",
+  "email": "matte.hannery@example.com",
+  "logo": "/logos/corlax-ios-logo.png",
+  "address": "100 Mindful Road, Toronto, ON, Canada",
+  "contactPersonId": 34,
+  "bio": "Corlax Wellness is a health and wellness technology company dedicated to making mental health support accessible and sustainable for everyone. We develop innovative digital solutions that combine evidence-based therapeutic approaches with cutting-edge technology to support individuals on their wellness journey.",
+  "firstCommissionerId": 34,
+  "associatedCommissioners": [
+    34
+  ],
+  "createdAt": "2025-07-29T14:26:40.166Z",
+  "updatedAt": "2025-08-12T16:58:35.042Z"
+}

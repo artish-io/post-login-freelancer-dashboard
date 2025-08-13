@@ -83,15 +83,14 @@ export async function generateEnrichedProposalMetadata(
   proposal: Proposal,
   baseUrl: string = 'https://artish.app'
 ): Promise<EnrichedProposalMetadata> {
-  // Load user data
-  const usersPath = path.join(process.cwd(), 'data', 'users.json');
-  const usersData = await readFile(usersPath, 'utf-8');
-  const users = JSON.parse(usersData);
-  
+  // Load user data from hierarchical storage
+  const { getAllUsers } = await import('../storage/unified-storage-service');
+  const users = await getAllUsers();
+
   // Find freelancer and commissioner
   const freelancer = users.find((u: any) => u.id === proposal.freelancerId);
   const commissioner = users.find((u: any) => u.id === proposal.commissionerId);
-  
+
   if (!freelancer || !commissioner) {
     throw new Error('Freelancer or commissioner not found');
   }

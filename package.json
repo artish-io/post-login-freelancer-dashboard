@@ -9,7 +9,21 @@
     "lint": "next lint",
     "check-storage": "node scripts/check-deprecated-file-usage.js",
     "health-check": "curl -s http://localhost:3000/api/health/storage | jq .",
-    "test:smoke": "node scripts/smoke-tests.js"
+    "test": "NODE_ENV=test jest",
+    "test:watch": "NODE_ENV=test jest --watch",
+    "test:coverage": "NODE_ENV=test jest --coverage",
+    "test:storage": "NODE_ENV=test jest src/__tests__/storage --runInBand",
+    "test:storage:verbose": "NODE_ENV=test JEST_VERBOSE=1 jest src/__tests__/storage --runInBand --verbose",
+    "test:smoke": "node scripts/smoke-tests.js",
+    "migrate:storage": "tsx scripts/migrate-flat-to-hierarchical.ts",
+    "migrate:storage:dry-run": "tsx scripts/migrate-flat-to-hierarchical.ts --dry-run",
+    "migrate:storage:verbose": "tsx scripts/migrate-flat-to-hierarchical.ts --verbose --dry-run",
+    "migrate:users": "tsx scripts/migrate-users-to-hierarchical.ts",
+    "migrate:users:dry": "tsx scripts/migrate-users-to-hierarchical.ts --dry-run",
+    "migrate:freelancers": "tsx scripts/migrate-freelancers-to-hierarchical.ts",
+    "migrate:freelancers:dry": "tsx scripts/migrate-freelancers-to-hierarchical.ts --dry-run",
+    "migrate:organizations": "tsx scripts/migrate-organizations-to-hierarchical.ts",
+    "migrate:organizations:dry": "tsx scripts/migrate-organizations-to-hierarchical.ts --dry-run"
   },
   "dependencies": {
     "@continuum-ai/avatars": "^1.0.3",

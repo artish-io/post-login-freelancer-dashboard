@@ -1,0 +1,21 @@
+{
+  "id": 14,
+  "gigId": 2,
+  "freelancerId": 1,
+  "pitch": "I am the smartest and fastes graphic designer for work relating to Cinema 4D which can considerably bring designs to life.",
+  "sampleLinks": [
+    "https://substack.com/@thewavng?utm_source=about-page"
+  ],
+  "skills": [
+    "marketing",
+    "design"
+  ],
+  "tools": [
+    "Adobe After Effects",
+    "Illustrator"
+  ],
+  "submittedAt": "2025-08-06T16:58:01.797Z",
+  "status": "accepted",
+  "migratedAt": "2025-08-12T15:22:41.892Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

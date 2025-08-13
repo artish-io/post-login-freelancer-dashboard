@@ -1,12 +1,8 @@
 
 
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
 import { readGig } from '../../../../../lib/gigs/hierarchical-storage';
-
-const ORGS_PATH = path.join(process.cwd(), 'data', 'organizations.json');
-const USERS_PATH = path.join(process.cwd(), 'data', 'users.json');
+import { getAllOrganizations, getAllUsers } from '@/lib/storage/unified-storage-service';
 
 export async function GET(
   _req: Request,
@@ -16,13 +12,10 @@ export async function GET(
   const gigId = Number(id);
 
   try {
-    const [orgsRaw, usersRaw] = await Promise.all([
-      readFile(ORGS_PATH, 'utf-8'),
-      readFile(USERS_PATH, 'utf-8'),
+    const [orgs, users] = await Promise.all([
+      getAllOrganizations(),
+      getAllUsers(),
     ]);
-
-    const orgs = JSON.parse(orgsRaw);
-    const users = JSON.parse(usersRaw);
 
     const gig = await readGig(gigId);
     if (!gig) {

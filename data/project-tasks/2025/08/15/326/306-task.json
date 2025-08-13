@@ -1,0 +1,20 @@
+{
+  "taskId": 306,
+  "projectId": 326,
+  "projectTitle": "Project 326",
+  "organizationId": 0,
+  "projectTypeTags": [],
+  "title": "Asset Design & Production",
+  "status": "done",
+  "completed": false,
+  "order": 2,
+  "link": "bil.lyweurwerwere",
+  "dueDate": "2025-08-15T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Design core advertising materials including posters, social media banners, t-shirts, stage backdrops, and signage.",
+  "createdDate": "2025-08-05T14:47:18.291Z",
+  "lastModified": "2025-08-05T18:18:12.266Z"
+}

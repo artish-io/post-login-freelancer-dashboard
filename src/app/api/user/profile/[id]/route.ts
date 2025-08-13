@@ -2,11 +2,9 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
 import { getCommissionedTotalSync } from '@/lib/utils/getCommissionedTotal';
-import { readAllProjects } from '@/lib/projects-utils';
-import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { readAllGigs } from '@/lib/gigs/hierarchical-storage';
 import { getAllInvoices } from '@/lib/invoice-storage';
-import { getAllUsers } from '@/lib/storage/unified-storage-service';
 
 export async function GET(
   _req: Request,
@@ -17,9 +15,6 @@ export async function GET(
   try {
     // ---------- File paths ----------
     const root = process.cwd();
-    const freelancersPath = path.join(root, 'data', 'freelancers.json');
-    const usersPath = path.join(root, 'data', 'users.json');
-    const organizationsPath = path.join(root, 'data', 'organizations.json');
     const workSamplesPath = path.join(
       root,
       'data',
@@ -30,27 +25,35 @@ export async function GET(
     const gigToolsPath = path.join(root, 'data', 'gigs', 'gig-tools.json');
 
     // ---------- Read all files in parallel ----------
-    const [freelancersRaw, users, organizationsRaw, gigs, samplesRaw, categoriesRaw, toolsRaw, invoices, projects, hierarchicalTasks] = await Promise.all([
-      readFile(freelancersPath, 'utf-8'),
-      getAllUsers(), // Use hierarchical storage for users
-      readFile(organizationsPath, 'utf-8'),
+    const [freelancers, users, organizations, gigs, samplesRaw, categoriesRaw, toolsRaw, invoices, projects] = await Promise.all([
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllFreelancers()),
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllUsers()),
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllOrganizations()),
       readAllGigs(), // Use hierarchical storage for gigs
       readFile(workSamplesPath, 'utf-8'),
       readFile(gigCategoriesPath, 'utf-8'),
       readFile(gigToolsPath, 'utf-8'),
       getAllInvoices(), // Use hierarchical storage for invoices
-      readAllProjects(), // Use hierarchical storage for projects
-      readAllTasks() // Use hierarchical storage for project tasks
+      UnifiedStorageService.listProjects() // Use unified storage for projects
     ]);
 
-    const freelancers = JSON.parse(freelancersRaw);
-    // users is already parsed from hierarchical storage
-    const organizations = JSON.parse(organizationsRaw);
-    // gigs, invoices, and projects are already parsed from hierarchical storage
+    // Get all tasks across all projects
+    const allTasks: any[] = [];
+    for (const project of projects) {
+      const tasks = await UnifiedStorageService.listTasks(project.projectId);
+      allTasks.push(...tasks);
+    }
+
+    // freelancers, users, and organizations are already parsed from hierarchical storage
     const workSamples = JSON.parse(samplesRaw);
+    const categories = JSON.parse(categoriesRaw);
     const gigTools = JSON.parse(toolsRaw);
-    // Convert hierarchical tasks to legacy format for compatibility
-    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
+
+    // Convert tasks to legacy format for compatibility
+    const projectTasks = projects.map(project => ({
+      projectId: project.projectId,
+      tasks: allTasks.filter(task => task.projectId === project.projectId)
+    }));
 
     // ---------- Look‑ups ----------
     const user = users.find((u: any) => String(u.id) === id);

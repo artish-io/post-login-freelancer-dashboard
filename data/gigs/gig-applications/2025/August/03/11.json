@@ -1,0 +1,20 @@
+{
+  "id": 11,
+  "gigId": 9,
+  "freelancerId": 31,
+  "pitch": "E don cast, last last, na everybody go chop breakfast.",
+  "sampleLinks": [
+    "https://platform.openai.com/settings/organization/billing/overview"
+  ],
+  "skills": [
+    "marketing",
+    "ui design"
+  ],
+  "tools": [
+    "Figma"
+  ],
+  "submittedAt": "2025-08-03T22:19:53.645Z",
+  "status": "accepted",
+  "migratedAt": "2025-08-12T15:22:41.891Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

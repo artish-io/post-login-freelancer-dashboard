@@ -143,11 +143,13 @@ export async function executeTaskApprovalTransaction(
       rollback: async () => {
         // If project was auto-completed, revert it
         console.log(`🔙 Rolling back project completion check...`);
-        const project = await readProject(params.projectId);
+        const project = await UnifiedStorageService.readProject(params.projectId);
         if (project && project.status === 'completed') {
-          await updateProject(params.projectId, { 
+          await UnifiedStorageService.writeProject({
+            ...project,
             status: 'ongoing',
-            completedAt: undefined
+            completedAt: undefined,
+            updatedAt: new Date().toISOString()
           });
         }
       },
@@ -399,19 +401,23 @@ export async function executeProjectCompletionTransaction(
       id: 'complete_project',
       type: 'project_update',
       operation: async () => {
-        await updateProject(projectId, {
+        await UnifiedStorageService.writeProject({
+          ...originalProject,
           status: 'completed',
           completedAt: new Date().toISOString(),
-          completedBy
+          completedBy,
+          updatedAt: new Date().toISOString()
         });
         return { projectId, status: 'completed' };
       },
       rollback: async () => {
         console.log(`🔙 Rolling back project ${projectId} completion...`);
-        await updateProject(projectId, {
+        await UnifiedStorageService.writeProject({
+          ...originalProject,
           status: originalProjectState.status,
           completedAt: undefined,
-          completedBy: undefined
+          completedBy: undefined,
+          updatedAt: new Date().toISOString()
         });
       },
       description: `Complete project ${projectId}`,

@@ -1,0 +1,19 @@
+{
+  "id": 17,
+  "userId": 17,
+  "category": "Marketing",
+  "skills": [
+    "Calendar Management",
+    "Email Handling",
+    "Admin Support"
+  ],
+  "rate": "15/hr",
+  "minRate": 15,
+  "maxRate": 15,
+  "location": "ID",
+  "rating": 3,
+  "availability": "Available",
+  "withdrawalMethod": "bank_transfer",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.361Z"
+}

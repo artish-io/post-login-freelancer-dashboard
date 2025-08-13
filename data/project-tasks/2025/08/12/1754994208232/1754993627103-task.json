@@ -1,0 +1,25 @@
+{
+  "taskId": 1754993627103,
+  "projectId": 1754994208232,
+  "projectTitle": "Event Venue 3D Visualization",
+  "organizationId": 4,
+  "projectTypeTags": [
+    "3D Modeling",
+    "Event Planning",
+    "Venue Design",
+    "Visualization"
+  ],
+  "title": "Initial Venue Measurements & Planning",
+  "description": "Site visit, measurements, and initial 3D model creation for primary venue spaces.",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "link": "",
+  "dueDate": "2025-08-14T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "createdDate": "2025-08-12T10:12:35.844Z",
+  "lastModified": "2025-08-12T10:12:35.849Z"
+}

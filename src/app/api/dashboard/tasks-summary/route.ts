@@ -5,8 +5,7 @@ import path from 'path';
 import { readFile } from 'fs/promises';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { readAllProjects } from '@/lib/projects-utils';
-import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { filterFreelancerProjects } from '@/lib/freelancer-access-control';
 
 export async function GET(request: Request) {
@@ -29,18 +28,25 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Read data from hierarchical storage and flat files
-    const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
-
-    const [projects, hierarchicalTasks, organizationsFile] = await Promise.all([
-      readAllProjects(), // Use hierarchical storage for projects
-      readAllTasks(), // Use hierarchical storage for project tasks
-      readFile(organizationsPath, 'utf-8')
+    // Read data from hierarchical storage
+    const [projects, organizations] = await Promise.all([
+      UnifiedStorageService.listProjects(), // Use unified storage for projects
+      UnifiedStorageService.getAllOrganizations() // Use hierarchical storage for organizations
     ]);
 
-    // Convert hierarchical tasks to legacy format for compatibility
-    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
-    const organizations = JSON.parse(organizationsFile);
+    // Get all tasks across all projects
+    const allTasks = [];
+    for (const project of projects) {
+      const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
+      allTasks.push(...projectTasks);
+    }
+
+    // Convert to legacy format for compatibility
+    const projectTasks = projects.map(project => ({
+      projectId: project.projectId,
+      tasks: allTasks.filter(task => task.projectId === project.projectId)
+    }));
+    // organizations already loaded from hierarchical storage above
 
     const freelancerId = parseInt(userId);
 

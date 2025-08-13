@@ -1,0 +1,19 @@
+{
+  "id": 20,
+  "userId": 20,
+  "category": "Marketing",
+  "skills": [
+    "CRM",
+    "Retention Strategy",
+    "Client Onboarding"
+  ],
+  "rate": "50/hr",
+  "minRate": 50,
+  "maxRate": 50,
+  "location": "IN",
+  "rating": 4,
+  "availability": "Available",
+  "withdrawalMethod": "paypal",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.364Z"
+}

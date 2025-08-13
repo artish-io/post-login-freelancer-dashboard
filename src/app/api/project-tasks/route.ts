@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { readAllProjects } from '@/app/api/payments/repos/projects-repo';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { filterFreelancerProjects, isValidFreelancerTask } from '@/lib/freelancer-access-control';
-import { readAllTasks as readAllTasksHier, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 
 export async function GET() {
   try {
@@ -21,16 +20,30 @@ export async function GET() {
       });
     }
 
-    // Read all tasks from hierarchical storage and convert to legacy grouped format
-    const hierarchicalTasks = await readAllTasksHier();
-    const allProjects = convertHierarchicalToLegacy(hierarchicalTasks);
+    // Get all projects and their tasks
+    const allProjectsInfo = await UnifiedStorageService.listProjects();
+    const allProjects = [];
+
+    // Get tasks for each project and format them
+    for (const project of allProjectsInfo) {
+      const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
+      if (projectTasks.length > 0) {
+        allProjects.push({
+          projectId: project.projectId,
+          title: project.title || 'Untitled Project',
+          organizationId: project.organizationId || 0,
+          typeTags: project.typeTags || [],
+          tasks: projectTasks
+        });
+      }
+    }
 
     // For freelancers, filter to only show their assigned projects and tasks
     const userType = (session.user as any)?.userType || (session.user as any)?.type;
 
     if (userType === 'freelancer') {
       // Get project information for filtering
-      const projectsInfo = await readAllProjects();
+      const projectsInfo = allProjectsInfo;
 
       // Filter projects to only include those assigned to this freelancer
       const freelancerProjects = filterFreelancerProjects(projectsInfo, session.user as any);

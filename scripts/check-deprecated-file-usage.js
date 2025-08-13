@@ -30,6 +30,21 @@ const DEPRECATED_PATTERNS = [
     pattern: /data\/invoices\.json/g,
     replacement: 'getAllInvoices() from @/lib/invoice-storage',
     description: 'Invoices should use hierarchical storage'
+  },
+  {
+    pattern: /data\/users\.json/g,
+    replacement: 'getAllUsers() from @/lib/storage/unified-storage-service',
+    description: 'Users should use hierarchical storage (data/users.json has been deprecated)'
+  },
+  {
+    pattern: /data\/freelancers\.json/g,
+    replacement: 'getAllFreelancers() from @/lib/storage/unified-storage-service',
+    description: 'Freelancers should use hierarchical storage (data/freelancers.json has been deprecated)'
+  },
+  {
+    pattern: /data\/organizations\.json/g,
+    replacement: 'getAllOrganizations() from @/lib/storage/unified-storage-service',
+    description: 'Organizations should use hierarchical storage (data/organizations.json has been deprecated)'
   }
 ];
 

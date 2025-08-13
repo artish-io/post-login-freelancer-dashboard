@@ -1,0 +1,20 @@
+{
+  "taskId": 402,
+  "projectId": 327,
+  "projectTitle": "Project 327",
+  "organizationId": 0,
+  "projectTypeTags": [],
+  "title": "Create storyboard and animation concepts",
+  "status": "done",
+  "completed": false,
+  "order": 1,
+  "link": "bit.ly23213",
+  "dueDate": "2025-08-20T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Develop initial storyboard and animation concepts for the 90-second healthcare app explainer video.",
+  "createdDate": "2025-08-06T16:58:37.813Z",
+  "lastModified": "2025-08-07T17:42:40.781Z"
+}

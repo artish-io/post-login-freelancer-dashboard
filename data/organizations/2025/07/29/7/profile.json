@@ -1,0 +1,15 @@
+{
+  "id": 7,
+  "name": "Access UX Consultancy",
+  "email": "m.torres@accessfirst.com",
+  "logo": "/logos/accessfirst-logo.png",
+  "address": "88 Inclusive Way, Austin, TX, USA",
+  "contactPersonId": 38,
+  "bio": "Access UX Consultancy is a research and design firm specializing in accessibility and inclusive design solutions. Led by experts with PhDs in Human-Computer Interaction, we are committed to making technology work for people with disabilities through evidence-based research and innovative design methodologies.",
+  "firstCommissionerId": 38,
+  "associatedCommissioners": [
+    38
+  ],
+  "createdAt": "2025-07-29T14:26:40.167Z",
+  "updatedAt": "2025-08-12T16:58:35.054Z"
+}

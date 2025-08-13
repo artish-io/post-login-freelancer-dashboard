@@ -1,0 +1,15 @@
+{
+  "id": 1,
+  "name": "Lagos State Parks Services",
+  "email": "neilsan.mando@example.com",
+  "logo": "/logos/lagos-parks-logo.png",
+  "address": "3471 Hirurzen Avenue, Hidden Leaf, Land of Fire",
+  "contactPersonId": 32,
+  "bio": "Lagos State Parks Services is responsible for the creation, maintenance, and regulation of public green spaces across Hidden Leaf, Land of Fire. Our mission is to promote environmental sustainability, improve urban aesthetics, and enhance quality of life for residents through innovative park design and community engagement programs.",
+  "firstCommissionerId": 32,
+  "associatedCommissioners": [
+    32
+  ],
+  "createdAt": "2025-07-29T14:26:40.165Z",
+  "updatedAt": "2025-08-12T16:58:35.034Z"
+}

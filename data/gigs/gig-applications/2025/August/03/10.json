@@ -1,0 +1,12 @@
+{
+  "id": 10,
+  "gigId": 1,
+  "freelancerId": 31,
+  "pitch": "Test application",
+  "sampleLinks": [],
+  "skills": [],
+  "tools": [],
+  "submittedAt": "2025-08-03T20:31:20.862Z",
+  "migratedAt": "2025-08-12T15:22:41.891Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

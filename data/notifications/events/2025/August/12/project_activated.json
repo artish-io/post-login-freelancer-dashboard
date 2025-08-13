@@ -1,0 +1,24 @@
+[
+  {
+    "id": "project_activated_1754994208232_1754993555852",
+    "timestamp": "2025-08-12T10:12:35.852Z",
+    "type": "project_activated",
+    "notificationType": 22,
+    "actorId": 35,
+    "targetId": 14,
+    "entityType": 2,
+    "entityId": 1754994208232,
+    "metadata": {
+      "projectTitle": "Event Venue 3D Visualization",
+      "gigTitle": "Event Venue 3D Visualization",
+      "taskCount": 3,
+      "commissionerName": "Tilly Burzinsky",
+      "organizationName": "Zynate Events Group"
+    },
+    "context": {
+      "projectId": 1754994208232,
+      "gigId": 13,
+      "applicationId": 103
+    }
+  }
+]

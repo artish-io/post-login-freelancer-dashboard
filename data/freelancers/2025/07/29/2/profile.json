@@ -1,0 +1,22 @@
+{
+  "id": 2,
+  "userId": 2,
+  "category": "Design",
+  "skills": [
+    "Adobe Photoshop",
+    "Adobe Illustrator",
+    "Canva"
+  ],
+  "rate": "50-70/hr",
+  "minRate": 50,
+  "maxRate": 70,
+  "location": "US",
+  "rating": 4,
+  "availability": "Available",
+  "withdrawalMethod": "paypal",
+  "specializations": [
+    "Brand Design"
+  ],
+  "createdAt": "2025-07-29T14:26:40.168Z",
+  "updatedAt": "2025-08-12T16:37:30.344Z"
+}

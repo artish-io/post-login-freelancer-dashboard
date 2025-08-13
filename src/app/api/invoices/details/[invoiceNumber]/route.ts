@@ -10,18 +10,13 @@ export async function GET(
   const { invoiceNumber } = await params;
 
   try {
-    const usersPath = path.join(process.cwd(), 'data/users.json');
-    const organizationsPath = path.join(process.cwd(), 'data/organizations.json');
-
-    const [invoices, usersData, organizationsData] = await Promise.all([
+    const [invoices, users, organizations] = await Promise.all([
       getAllInvoices(), // Use hierarchical storage for invoices
-      fs.readFile(usersPath, 'utf-8'),
-      fs.readFile(organizationsPath, 'utf-8')
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllUsers()),
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllOrganizations())
     ]);
 
-    // invoices is already parsed from hierarchical storage
-    const users = JSON.parse(usersData);
-    const organizations = JSON.parse(organizationsData);
+    // invoices, users, and organizations are already parsed from hierarchical storage
 
     // Find the invoice by invoice number
     const invoice = invoices.find((inv: any) => inv.invoiceNumber === invoiceNumber);

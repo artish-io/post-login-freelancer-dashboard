@@ -1,0 +1,25 @@
+{
+  "id": 7,
+  "gigId": 4,
+  "freelancerId": 5,
+  "pitch": "I have extensive experience in voice data annotation and machine learning datasets. I've worked on similar projects for accent recognition systems and can ensure high accuracy in timestamp precision.",
+  "sampleLinks": [
+    "https://portfolio.example.com/voice-annotation",
+    "https://github.com/shadecee/ml-datasets"
+  ],
+  "skills": [
+    "Data Annotation",
+    "Voice Processing",
+    "Machine Learning",
+    "Quality Assurance"
+  ],
+  "tools": [
+    "Audacity",
+    "Excel",
+    "Python",
+    "Praat"
+  ],
+  "submittedAt": "2025-08-03T15:30:00Z",
+  "migratedAt": "2025-08-12T15:22:41.890Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

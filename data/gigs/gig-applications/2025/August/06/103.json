@@ -1,0 +1,27 @@
+{
+  "id": 103,
+  "gigId": 13,
+  "freelancerId": 14,
+  "pitch": "3D visualization specialist with extensive experience in architectural and event space modeling. I've created detailed venue visualizations for major conferences and corporate events. My work helps clients optimize space utilization and plan logistics effectively.",
+  "sampleLinks": [
+    "https://portfolio.example.com/3d-venues",
+    "https://behance.net/liam-3d-design"
+  ],
+  "skills": [
+    "3D Modeling",
+    "Architectural Visualization",
+    "Event Planning",
+    "Space Design"
+  ],
+  "tools": [
+    "Blender",
+    "SketchUp",
+    "AutoCAD",
+    "V-Ray",
+    "Adobe After Effects"
+  ],
+  "submittedAt": "2025-08-06T17:03:20.000Z",
+  "status": "accepted",
+  "migratedAt": "2025-08-12T15:22:41.893Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

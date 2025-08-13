@@ -105,14 +105,20 @@ export default function ProjectListPage() {
             let dueDate = projectInfo?.dueDate || null;
             if (!dueDate) {
               const incompleteTasks = tasks.filter((task: any) => !task.completed);
-              dueDate = incompleteTasks.length > 0
-                ? incompleteTasks.map((task: any) => task.dueDate).sort()[0]
+              const tasksWithDueDates = incompleteTasks.filter((task: any) => task.dueDate);
+              dueDate = tasksWithDueDates.length > 0
+                ? tasksWithDueDates.map((task: any) => task.dueDate).sort()[0]
                 : null;
             }
 
             // Find the organization and its contact person (commissioner)
             const organization = organizations.find((org: any) => org.id === projectTasks.organizationId);
-            const managerId = organization?.contactPersonId || null;
+            const managerId = organization?.contactPersonId || projectInfo?.commissionerId || null;
+
+            // Find the commissioner/manager
+            const commissioner = users.find((user: any) =>
+              user.id === managerId && user.type === 'commissioner'
+            );
 
             // Calculate completion date for completed projects
             // Use actual status from projects.json if available, otherwise calculate it
@@ -150,11 +156,14 @@ export default function ProjectListPage() {
               if (approvedTasks.length > 0) {
                 // Use the latest task approval as project completion
                 // For now, we'll estimate it as the latest due date of approved tasks
-                const latestApprovedDate = approvedTasks
-                  .map((task: any) => task.dueDate)
-                  .sort()
-                  .pop();
-                completionDate = latestApprovedDate;
+                const approvedTasksWithDueDates = approvedTasks.filter((task: any) => task.dueDate);
+                if (approvedTasksWithDueDates.length > 0) {
+                  const latestApprovedDate = approvedTasksWithDueDates
+                    .map((task: any) => task.dueDate)
+                    .sort()
+                    .pop();
+                  completionDate = latestApprovedDate;
+                }
               }
             }
 
@@ -169,7 +178,7 @@ export default function ProjectListPage() {
               completionDate: completionDate ? new Date(completionDate).toLocaleDateString() : null,
               managerId, // Add the managerId for commissioner lookup
               manager: {
-                name: (projectInfo as any)?.typeTags?.join(', ') || projectTasks.typeTags?.join(', ') || 'No manager assigned'
+                name: commissioner ? commissioner.name : 'Unknown'
               }
             };
           });
@@ -202,12 +211,18 @@ export default function ProjectListPage() {
 
             // Get due date from earliest incomplete task
             const incompleteTasks = tasks.filter((task: any) => !task.completed);
-            const dueDate = incompleteTasks.length > 0
-              ? incompleteTasks.map((task: any) => task.dueDate).sort()[0]
+            const tasksWithDueDates = incompleteTasks.filter((task: any) => task.dueDate);
+            const dueDate = tasksWithDueDates.length > 0
+              ? tasksWithDueDates.map((task: any) => task.dueDate).sort()[0]
               : null;
 
             const organization = organizations.find((org: any) => org.id === projectTasks.organizationId);
             const managerId = organization?.contactPersonId || null;
+
+            // Find the commissioner/manager
+            const commissioner = users.find((user: any) =>
+              user.id === managerId && user.type === 'commissioner'
+            );
 
             // Use calculated status since projects.json is not available
             const projectStatus = calculateProjectStatus(tasks);
@@ -217,10 +232,13 @@ export default function ProjectListPage() {
             if (projectStatus === 'completed') {
               const approvedTasks = tasks.filter((task: any) => task.status === 'Approved');
               if (approvedTasks.length > 0) {
-                const latestApprovalDate = approvedTasks
-                  .map((task: any) => new Date(task.dueDate))
-                  .sort((a: Date, b: Date) => b.getTime() - a.getTime())[0];
-                completionDate = latestApprovalDate.toISOString();
+                const approvedTasksWithDueDates = approvedTasks.filter((task: any) => task.dueDate);
+                if (approvedTasksWithDueDates.length > 0) {
+                  const latestApprovalDate = approvedTasksWithDueDates
+                    .map((task: any) => new Date(task.dueDate))
+                    .sort((a: Date, b: Date) => b.getTime() - a.getTime())[0];
+                  completionDate = latestApprovalDate.toISOString();
+                }
               }
             }
 
@@ -233,7 +251,7 @@ export default function ProjectListPage() {
               completionDate: completionDate ? new Date(completionDate).toLocaleDateString() : null,
               managerId,
               manager: {
-                name: projectTasks.typeTags?.join(', ') || 'No manager assigned'
+                name: commissioner ? commissioner.name : 'Unknown'
               }
             };
           });

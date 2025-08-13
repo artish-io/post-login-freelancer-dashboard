@@ -1,28 +1,20 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { getProjectById, updateProject, readAllProjects } from '@/app/api/payments/repos/projects-repo';
-import { readAllTasks } from '@/app/api/payments/repos/tasks-repo';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 export async function POST(request: Request) {
   try {
     const { projectId } = await request.json();
 
     // Load project from hierarchical structure
-    const project = await readProject(projectId);
+    const project = await UnifiedStorageService.readProject(projectId);
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
     // Load project tasks from hierarchical structure
-    const hierarchicalTasks = await readAllTasks();
-    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
-
-    const projectTaskData = projectTasks.find((pt: any) => pt.projectId === projectId);
-    if (!projectTaskData) {
-      return NextResponse.json({ error: 'Project tasks not found' }, { status: 404 });
-    }
-    const tasks = projectTaskData.tasks || [];
+    const tasks = await UnifiedStorageService.listTasks(projectId);
 
     // Calculate task statistics
     const totalTasks = tasks.length;
@@ -55,10 +47,14 @@ export async function POST(request: Request) {
 
     if (shouldUpdate || taskCountNeedsUpdate) {
       // Update the project in hierarchical structure
-      await updateProject(projectId, {
-        status: newStatus,
-        totalTasks: actualTotalTasks
-      });
+      // Update project with new status and task count
+      const updatedProject = {
+        ...project,
+        status: newStatus as any,
+        totalTasks: actualTotalTasks,
+        updatedAt: new Date().toISOString()
+      };
+      await UnifiedStorageService.writeProject(updatedProject);
 
       return NextResponse.json({
         success: true,
@@ -105,22 +101,14 @@ export async function POST(request: Request) {
 // GET endpoint to sync all projects
 export async function GET() {
   try {
-    // Load data from hierarchical structures
-    const hierarchicalTasks = await readAllTasks();
-    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
-
     // Load all projects from hierarchical structure
-    const projects = await readAllProjects();
+    const projects = await UnifiedStorageService.listProjects();
 
     const updates: any[] = [];
 
     // Process each project
     for (const project of projects) {
-      const projectTaskData = projectTasks.find((pt: any) => pt.projectId === project.projectId);
-      
-      if (!projectTaskData) continue;
-
-      const tasks = projectTaskData.tasks || [];
+      const tasks = await UnifiedStorageService.listTasks(project.projectId);
       const totalTasks = tasks.length;
       const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
       const completedTasks = tasks.filter((task: any) => task.completed).length;
@@ -147,10 +135,12 @@ export async function GET() {
         const oldStatus = project.status;
         const oldTotalTasks = project.totalTasks;
 
-        // Update project in hierarchical structure
-        await updateProject(project.projectId, {
+        // Update project using unified storage
+        await UnifiedStorageService.writeProject({
+          ...project,
           status: newStatus,
-          totalTasks: totalTasks
+          totalTasks: totalTasks,
+          updatedAt: new Date().toISOString()
         });
 
         updates.push({

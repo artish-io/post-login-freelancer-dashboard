@@ -1,0 +1,11 @@
+{
+  "id": 28,
+  "name": "Sofia Rossi",
+  "title": "Poet",
+  "avatar": "/avatars/sofia.png",
+  "type": "freelancer",
+  "email": "sofia.rossi@example.com",
+  "address": "28 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.234Z"
+}

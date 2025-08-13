@@ -1,0 +1,11 @@
+{
+  "id": 5,
+  "name": "Shade Cee",
+  "title": "Creative Writer",
+  "avatar": "/avatars/shade.png",
+  "type": "freelancer",
+  "email": "shade.cee@example.com",
+  "address": "5 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.187Z"
+}

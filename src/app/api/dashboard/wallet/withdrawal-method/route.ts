@@ -1,10 +1,7 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile, writeFile } from 'fs/promises';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-
-const FREELANCERS_PATH = path.join(process.cwd(), 'data/freelancers.json');
+import { getFreelancerByUserId, writeFreelancer } from '@/lib/storage/unified-storage-service';
 
 // GET: Fetch user's withdrawal method from freelancer record
 export async function GET() {
@@ -15,9 +12,7 @@ export async function GET() {
     }
 
     const userId = parseInt(session.user.id);
-    const raw = await readFile(FREELANCERS_PATH, 'utf-8');
-    const freelancers = JSON.parse(raw);
-    const user = freelancers.find((f: any) => f.userId === userId);
+    const user = await getFreelancerByUserId(userId);
 
     if (!user) {
       return NextResponse.json({ error: 'Freelancer not found' }, { status: 404 });
@@ -51,17 +46,14 @@ export async function POST(req: Request) {
     }
 
     const userId = parseInt(session.user.id);
-    const raw = await readFile(FREELANCERS_PATH, 'utf-8');
-    const freelancers = JSON.parse(raw);
+    const freelancer = await getFreelancerByUserId(userId);
 
-    const index = freelancers.findIndex((f: any) => f.userId === userId);
-    if (index === -1) {
+    if (!freelancer) {
       return NextResponse.json({ error: 'Freelancer not found' }, { status: 404 });
     }
 
-    freelancers[index].withdrawalMethod = method;
-
-    await writeFile(FREELANCERS_PATH, JSON.stringify(freelancers, null, 2), 'utf-8');
+    freelancer.withdrawalMethod = method;
+    await writeFreelancer(freelancer);
     return NextResponse.json({ success: true, method });
   } catch (err) {
     return NextResponse.json(

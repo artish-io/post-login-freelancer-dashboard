@@ -1,12 +1,9 @@
 
 
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
 import { readAllGigs } from '../../../../../lib/gigs/hierarchical-storage';
 import { readGigRequestsForFreelancer } from '../../../../../lib/gigs/gig-request-storage';
-
-const ORGANIZATIONS_PATH = path.join(process.cwd(), 'data/organizations.json');
+import { getAllOrganizations } from '@/lib/storage/unified-storage-service';
 
 export async function GET(
   _req: Request,
@@ -23,8 +20,7 @@ export async function GET(
     const gigs = await readAllGigs();
 
     // Read organizations for enrichment
-    const organizationsRaw = await readFile(ORGANIZATIONS_PATH, 'utf-8');
-    const organizations = JSON.parse(organizationsRaw);
+    const organizations = await getAllOrganizations();
 
     // Find targeted gig requests for this freelancer
     const targetedGigs = gigs.filter((gig: any) =>

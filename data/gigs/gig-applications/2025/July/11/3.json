@@ -1,0 +1,26 @@
+{
+  "id": 3,
+  "gigId": 5,
+  "freelancerId": 3,
+  "pitch": "Specialized in interactive web applications and geospatial data visualization. I have a strong background in creating user-friendly interfaces for complex mapping systems. I'd love to contribute to this Lagos Parks project.",
+  "sampleLinks": [
+    "https://portfolio.example.com/gis-projects",
+    "https://interactive-maps.example.com"
+  ],
+  "skills": [
+    "UI/UX Design",
+    "Frontend Development",
+    "Data Visualization",
+    "GIS"
+  ],
+  "tools": [
+    "React",
+    "D3.js",
+    "Mapbox",
+    "Figma"
+  ],
+  "submittedAt": "2025-07-11T16:45:00Z",
+  "status": "accepted",
+  "migratedAt": "2025-08-12T15:22:41.889Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

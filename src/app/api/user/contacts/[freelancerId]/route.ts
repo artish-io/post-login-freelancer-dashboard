@@ -11,15 +11,13 @@ export async function GET(
     const freelancerIdNum = Number(freelancerId);
 
     const contactsPath = path.join(process.cwd(), 'data', 'contacts.json');
-    const usersPath = path.join(process.cwd(), 'data', 'users.json');
 
-    const [contactsRaw, usersRaw] = await Promise.all([
+    const [contactsRaw, allUsers] = await Promise.all([
       readFile(contactsPath, 'utf-8'),
-      readFile(usersPath, 'utf-8'),
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllUsers()),
     ]);
 
     const contactMap = JSON.parse(contactsRaw);
-    const allUsers = JSON.parse(usersRaw);
 
     // Get contact ID list for this freelancer
     const entry = contactMap.find((item: any) => item.userId === freelancerIdNum);

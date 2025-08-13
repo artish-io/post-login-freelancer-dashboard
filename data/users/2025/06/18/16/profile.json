@@ -1,0 +1,11 @@
+{
+  "id": 16,
+  "name": "Daniel Okoth",
+  "title": "Backend Developer",
+  "avatar": "/avatars/daniel.png",
+  "type": "freelancer",
+  "email": "daniel.okoth@example.com",
+  "address": "16 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.209Z"
+}

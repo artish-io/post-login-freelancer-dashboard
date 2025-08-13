@@ -1,0 +1,11 @@
+{
+  "id": 12,
+  "name": "Pierre Dubois",
+  "title": "Brand Strategist",
+  "avatar": "/avatars/pierre.png",
+  "type": "freelancer",
+  "email": "pierre.dubois@example.com",
+  "address": "12 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.201Z"
+}

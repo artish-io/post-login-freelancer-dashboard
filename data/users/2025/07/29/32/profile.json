@@ -1,0 +1,32 @@
+{
+  "id": 32,
+  "name": "Neilsan Mando",
+  "title": "Product Manager",
+  "avatar": "/avatars/neilsan.png",
+  "type": "commissioner",
+  "email": "neilsan.mando@example.com",
+  "address": "Hidden Leaf, Land of Fire",
+  "organizationId": 1,
+  "username": "neilsan",
+  "password": "testpass",
+  "bio": "Experienced product manager with over 8 years in public sector digital transformation. Passionate about creating user-centered solutions that improve community services and enhance citizen engagement.",
+  "rating": 4.8,
+  "responsibilities": [
+    "Project Management",
+    "Budget Oversight",
+    "Stakeholder Communication",
+    "Quality Assurance",
+    "Timeline Management",
+    "Resource Allocation",
+    "Risk Assessment",
+    "Team Coordination"
+  ],
+  "socialLinks": [
+    {
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/neilsan-mando"
+    }
+  ],
+  "createdAt": "2025-07-29T14:26:40.165Z",
+  "updatedAt": "2025-08-12T15:46:25.241Z"
+}

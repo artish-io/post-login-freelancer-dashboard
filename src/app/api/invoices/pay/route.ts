@@ -60,9 +60,8 @@ export async function POST(request: Request) {
     }
 
     // Load data files
-    const usersPath = path.join(process.cwd(), 'data/users.json');
-    const usersData = await fs.readFile(usersPath, 'utf-8');
-    const users = JSON.parse(usersData);
+    const { getAllUsers } = await import('@/lib/storage/unified-storage-service');
+    const users = await getAllUsers();
 
     // Find the invoice
     const invoice = await getInvoiceByNumber(invoiceNumber);

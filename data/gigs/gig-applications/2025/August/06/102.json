@@ -1,0 +1,26 @@
+{
+  "id": 102,
+  "gigId": 12,
+  "freelancerId": 8,
+  "pitch": "Award-winning event photographer with expertise in corporate conferences and networking events. I have a keen eye for candid moments and professional headshots. My work has been featured in several business publications.",
+  "sampleLinks": [
+    "https://portfolio.example.com/business-events",
+    "https://instagram.com/kemi_photography"
+  ],
+  "skills": [
+    "Event Photography",
+    "Portrait Photography",
+    "Business Photography",
+    "Photo Retouching"
+  ],
+  "tools": [
+    "Nikon D850",
+    "Adobe Creative Suite",
+    "Capture One",
+    "Professional Flash Equipment"
+  ],
+  "submittedAt": "2025-08-06T17:01:40.000Z",
+  "status": "pending",
+  "migratedAt": "2025-08-12T15:22:41.892Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

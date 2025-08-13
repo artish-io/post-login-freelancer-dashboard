@@ -1,0 +1,31 @@
+{
+  "id": 35,
+  "name": "Tilly Burzinsky",
+  "title": "Events Lead",
+  "avatar": "/avatars/tilly.png",
+  "type": "commissioner",
+  "email": "tilly.burzinsky@example.com",
+  "username": "tilly",
+  "password": "password123",
+  "address": "Ottawa, Canada",
+  "organizationId": 4,
+  "bio": "Dynamic events professional specializing in large-scale corporate and cultural events. Expert in creating memorable experiences that bring communities together.",
+  "rating": 4.7,
+  "responsibilities": [
+    "Event Planning",
+    "Vendor Coordination",
+    "Budget Management",
+    "Logistics Oversight",
+    "Client Relations",
+    "Risk Management",
+    "Team Supervision"
+  ],
+  "socialLinks": [
+    {
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/tilly-burzinsky"
+    }
+  ],
+  "createdAt": "2025-07-29T14:26:40.167Z",
+  "updatedAt": "2025-08-12T15:46:25.247Z"
+}

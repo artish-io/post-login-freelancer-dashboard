@@ -1,30 +1,19 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs';
-
-const filePath = path.join(process.cwd(), 'data', 'organizations.json');
+import { getAllOrganizations, getOrganizationByCommissionerId } from '@/lib/storage/unified-storage-service';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const contactPersonId = searchParams.get('contactPersonId');
 
   try {
-    const data = fs.readFileSync(filePath, 'utf-8');
-    const organizations = JSON.parse(data);
-
     if (contactPersonId) {
-      // Find organization by contact person ID
-      const organization = organizations.find((org: any) =>
-        org.contactPersonId === parseInt(contactPersonId)
-      );
-
-      if (organization) {
-        return NextResponse.json(organization);
-      } else {
-        return NextResponse.json(null);
-      }
+      // Find organization by contact person ID (now commissioner ID)
+      const organization = await getOrganizationByCommissionerId(parseInt(contactPersonId));
+      return NextResponse.json(organization);
     }
 
+    // Return all organizations
+    const organizations = await getAllOrganizations();
     return NextResponse.json(organizations);
   } catch (error) {
     console.error('Error reading organizations:', error);

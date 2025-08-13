@@ -35,18 +35,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
     }
 
-    const filePath = path.join(process.cwd(), 'data', 'freelancers.json');
-    const data = await readFile(filePath, 'utf-8');
-    const freelancers = JSON.parse(data);
+    const { getFreelancerByUserId, writeFreelancer } = await import('@/lib/storage/unified-storage-service');
 
-    const index = freelancers.findIndex((f: any) => String(f.userId) === body.id);
-    if (index === -1) {
+    const freelancer = await getFreelancerByUserId(parseInt(body.id));
+    if (!freelancer) {
       return NextResponse.json({ error: 'Freelancer not found' }, { status: 404 });
     }
 
-    freelancers[index].availability = body.status;
-
-    await writeFile(filePath, JSON.stringify(freelancers, null, 2), 'utf-8');
+    freelancer.availability = body.status;
+    await writeFreelancer(freelancer);
 
     return NextResponse.json({ message: 'Availability updated successfully' });
   } catch (error) {

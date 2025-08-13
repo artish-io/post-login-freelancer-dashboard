@@ -7,7 +7,6 @@ import { getAllInvoices } from '@/lib/invoice-storage';
 
 const HISTORY_PATH = path.join(process.cwd(), 'data/wallet/wallet-history.json');
 const PURCHASES_PATH = path.join(process.cwd(), 'data/storefront/purchases.json');
-const FREELANCERS_PATH = path.join(process.cwd(), 'data/freelancers.json');
 
 export async function GET(request: Request) {
   try {
@@ -21,9 +20,8 @@ export async function GET(request: Request) {
     const userIdNum = parseInt(userId);
 
     // Get freelancer ID from user ID
-    const freelancersData = await readFile(FREELANCERS_PATH, 'utf-8');
-    const freelancers = JSON.parse(freelancersData);
-    const freelancer = freelancers.find((f: any) => f.userId === userIdNum);
+    const { getFreelancerByUserId } = await import('@/lib/storage/unified-storage-service');
+    const freelancer = await getFreelancerByUserId(userIdNum);
     const freelancerId = freelancer?.id;
 
     if (!freelancerId) {

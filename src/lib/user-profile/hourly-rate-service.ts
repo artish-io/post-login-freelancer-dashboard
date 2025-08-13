@@ -219,22 +219,20 @@ async function updateUserRateInDatabase(userId: number, newRate: string, previou
       await writeFile(usersPath, JSON.stringify(users, null, 2));
     }
 
-    // Also update in freelancers.json if exists
+    // Also update in freelancer hierarchical storage if exists
     try {
-      const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
-      const freelancersData = await readFile(freelancersPath, 'utf-8');
-      const freelancers = JSON.parse(freelancersData);
-      
-      const freelancerIndex = freelancers.findIndex((f: any) => f.userId === userId);
-      if (freelancerIndex >= 0) {
-        freelancers[freelancerIndex].hourlyRate = newRate;
-        freelancers[freelancerIndex].minRate = extractMinRate(newRate);
-        freelancers[freelancerIndex].maxRate = extractMaxRate(newRate);
-        freelancers[freelancerIndex].updatedAt = new Date().toISOString();
-        await writeFile(freelancersPath, JSON.stringify(freelancers, null, 2));
+      const { getFreelancerByUserId, writeFreelancer } = await import('../storage/unified-storage-service');
+      const freelancer = await getFreelancerByUserId(userId);
+
+      if (freelancer) {
+        freelancer.hourlyRate = newRate;
+        freelancer.minRate = extractMinRate(newRate);
+        freelancer.maxRate = extractMaxRate(newRate);
+        freelancer.updatedAt = new Date().toISOString();
+        await writeFreelancer(freelancer);
       }
-    } catch {
-      // freelancers.json might not exist, that's okay
+    } catch (error) {
+      console.warn('Could not update freelancer hourly rate:', error);
     }
 
   } catch (error) {

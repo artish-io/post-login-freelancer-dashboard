@@ -1,0 +1,22 @@
+{
+  "id": 3,
+  "userId": 3,
+  "category": "Design",
+  "skills": [
+    "Figma",
+    "Adobe Photoshop",
+    "Adobe Illustrator"
+  ],
+  "rate": "80-100/hr",
+  "minRate": 80,
+  "maxRate": 100,
+  "location": "CA",
+  "rating": 4,
+  "availability": "Available",
+  "withdrawalMethod": "bank_transfer",
+  "specializations": [
+    "Interface Design"
+  ],
+  "createdAt": "2025-07-29T14:26:40.168Z",
+  "updatedAt": "2025-08-12T16:37:30.346Z"
+}

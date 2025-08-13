@@ -54,15 +54,13 @@ export async function POST(request: Request) {
 
     // Load data files
     const notificationsPath = path.join(process.cwd(), 'data/notifications/notifications-log.json');
-    const usersPath = path.join(process.cwd(), 'data/users.json');
 
-    const [notificationsData, usersData] = await Promise.all([
+    const [notificationsData, users] = await Promise.all([
       fs.readFile(notificationsPath, 'utf-8'),
-      fs.readFile(usersPath, 'utf-8')
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllUsers())
     ]);
 
     const notifications = JSON.parse(notificationsData);
-    const users = JSON.parse(usersData);
 
     // Find the invoice
     const invoice = await getInvoiceByNumber(invoiceNumber);

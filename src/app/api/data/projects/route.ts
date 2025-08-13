@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { readAllProjects } from '@/lib/projects-utils';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 export async function GET() {
   try {
-    const projects = await readAllProjects();
+    const projects = await UnifiedStorageService.listProjects();
     return NextResponse.json(projects);
   } catch (error) {
     console.error('Error loading projects:', error);

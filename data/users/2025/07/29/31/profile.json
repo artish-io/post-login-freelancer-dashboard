@@ -1,0 +1,63 @@
+{
+  "id": 31,
+  "name": "Margsate Flether",
+  "title": "Creative Producer",
+  "avatar": "/avatars/margsate-flether.png",
+  "type": "freelancer",
+  "email": "margsate.flether@example.com",
+  "address": "31 Remote Lane, Virtual City, Country",
+  "username": "margsate",
+  "password": "testpass",
+  "about": "I am a user interface designer with 5+ years of experience designing complex digital experiences with human-centered design for startups. I've worked inside design and programming teams which gives me a broader vision in a graphic and technological context. I am known for always creating products that customers love with excellent interface, interactions (Interaction Design), micro-interactions, sketching, prototyping (Figma) and construction of design systems.",
+  "socialLinks": [
+    {
+      "platform": "linkedin",
+      "url": "https://www.linkedin.com/in/margsate-flether"
+    },
+    {
+      "platform": "behance",
+      "url": "https://www.behance.net/margsate"
+    },
+    {
+      "platform": "dribbble",
+      "url": "https://dribbble.com/margsate"
+    },
+    {
+      "platform": "website",
+      "url": "https://margsate.com"
+    }
+  ],
+  "workSamples": [
+    {
+      "title": "Rotundo Agency / Web Design",
+      "skill": "UI",
+      "tool": "Figma",
+      "year": 2023,
+      "link": "https://margsate.com/projects/rotundo"
+    },
+    {
+      "title": "Real Time Palette Generator",
+      "skill": "UI",
+      "tool": "Figma",
+      "year": 2021,
+      "link": "https://margsate.com/projects/palette"
+    },
+    {
+      "title": "Spider-Man 2 / Hero Design",
+      "skill": "Branding",
+      "tool": "Adobe XD",
+      "year": 2023,
+      "link": "https://margsate.com/projects/spiderman"
+    },
+    {
+      "title": "Mavin Records / Web Design",
+      "skill": "UI",
+      "tool": "Figma",
+      "year": 2021,
+      "link": "https://margsate.com/projects/mavin"
+    }
+  ],
+  "trend": 1.78,
+  "createdAt": "2025-07-29T14:26:40.165Z",
+  "updatedAt": "2025-08-12T15:46:25.239Z"
+}

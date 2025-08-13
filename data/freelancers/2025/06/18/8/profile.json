@@ -1,0 +1,19 @@
+{
+  "id": 8,
+  "userId": 8,
+  "category": "Fashion",
+  "skills": [
+    "Sketching",
+    "Tech Packs",
+    "Trends"
+  ],
+  "rate": "45/hr",
+  "minRate": 45,
+  "maxRate": 45,
+  "location": "GH",
+  "rating": 4,
+  "availability": "Available",
+  "withdrawalMethod": "paypal",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.352Z"
+}

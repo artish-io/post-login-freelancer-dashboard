@@ -16,12 +16,11 @@ export async function GET(req: Request) {
   const sessionUserId = Number(userIdParam);
 
   try {
-    const [usersData, contactsData] = await Promise.all([
-      fs.readFile(path.join(process.cwd(), 'data/users.json'), 'utf-8'),
+    const [users, contactsData] = await Promise.all([
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllUsers()),
       fs.readFile(path.join(process.cwd(), 'data/contacts.json'), 'utf-8'),
     ]);
 
-    const users = JSON.parse(usersData);
     const contacts = JSON.parse(contactsData);
 
     // Get message previews using the updated hierarchical structure

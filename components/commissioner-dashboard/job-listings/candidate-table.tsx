@@ -117,7 +117,8 @@ export default function CandidateTable({ onCandidateSelect, viewMode = 'all', on
 
         // Fetch gigs (including all gigs, not just available ones)
         const gigsRes = await fetch('/api/gigs/all');
-        const gigs = await gigsRes.json();
+        const gigsResponse = await gigsRes.json();
+        const gigs = gigsResponse.entities?.gigs || [];
 
         // Filter gigs by organization and commissioner (handle both string and number types)
         const organizationGigs = gigs.filter((gig: any) =>

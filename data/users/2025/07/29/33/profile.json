@@ -1,0 +1,29 @@
+{
+  "id": 33,
+  "name": "Tiruvellly Priya",
+  "title": "Brand Director",
+  "avatar": "/avatars/priyaa.png",
+  "type": "commissioner",
+  "email": "tiruvellly.priya@example.com",
+  "address": "Lagos, Nigeria",
+  "organizationId": 2,
+  "bio": "Creative brand strategist with a focus on authentic storytelling and cultural representation. Leading brand initiatives that connect with diverse audiences across Africa and beyond.",
+  "rating": 4.6,
+  "responsibilities": [
+    "Brand Strategy",
+    "Creative Direction",
+    "Content Oversight",
+    "Campaign Management",
+    "Market Research",
+    "Vendor Relations",
+    "Budget Planning"
+  ],
+  "socialLinks": [
+    {
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/tiruvellly-priya"
+    }
+  ],
+  "createdAt": "2025-07-29T14:26:40.166Z",
+  "updatedAt": "2025-08-12T15:46:25.243Z"
+}

@@ -22,15 +22,13 @@ export async function GET(req: Request) {
   const userId = Number(userIdParam);
 
   try {
-    const usersFile = path.join(process.cwd(), 'data/users.json');
     const contactsFile = path.join(process.cwd(), 'data/contacts.json');
 
-    const [usersData, contactsData] = await Promise.all([
-      fs.readFile(usersFile, 'utf-8'),
+    const [users, contactsData] = await Promise.all([
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllUsers()),
       fs.readFile(contactsFile, 'utf-8'),
     ]);
 
-    const users = JSON.parse(usersData);
     const contacts = JSON.parse(contactsData);
 
     // Find user's contacts (works for both freelancers and commissioners)

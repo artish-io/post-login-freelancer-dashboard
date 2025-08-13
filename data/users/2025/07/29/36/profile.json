@@ -1,0 +1,29 @@
+{
+  "id": 36,
+  "name": "Felix Damini",
+  "title": "UX Research Lead",
+  "avatar": "/avatars/felix.png",
+  "type": "commissioner",
+  "email": "felix.damini@example.com",
+  "address": "Nairobi, Kenya",
+  "organizationId": 5,
+  "bio": "User experience researcher passionate about inclusive design and accessibility. Leading research initiatives that ensure digital products work for everyone, regardless of ability.",
+  "rating": 4.8,
+  "responsibilities": [
+    "Research Strategy",
+    "User Testing",
+    "Data Analysis",
+    "Stakeholder Reporting",
+    "Design Collaboration",
+    "Accessibility Audits",
+    "Team Mentoring"
+  ],
+  "socialLinks": [
+    {
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/felix-damini"
+    }
+  ],
+  "createdAt": "2025-07-29T14:26:40.167Z",
+  "updatedAt": "2025-08-12T15:46:25.249Z"
+}

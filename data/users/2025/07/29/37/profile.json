@@ -1,0 +1,29 @@
+{
+  "id": 37,
+  "name": "Sarah Chen",
+  "title": "Marketing Director",
+  "avatar": "/avatars/sarah.png",
+  "type": "commissioner",
+  "email": "sarah.c@techshowcase.com",
+  "address": "San Francisco, USA",
+  "organizationId": 6,
+  "bio": "Marketing leader with expertise in tech product launches and developer community building. Passionate about creating authentic connections between technology and the people who use it.",
+  "rating": 4.5,
+  "responsibilities": [
+    "Marketing Strategy",
+    "Campaign Development",
+    "Community Building",
+    "Content Strategy",
+    "Performance Analytics",
+    "Brand Management",
+    "Partnership Marketing"
+  ],
+  "socialLinks": [
+    {
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/sarah-chen-marketing"
+    }
+  ],
+  "createdAt": "2025-07-29T14:26:40.167Z",
+  "updatedAt": "2025-08-12T15:46:25.251Z"
+}

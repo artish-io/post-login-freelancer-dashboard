@@ -1,0 +1,19 @@
+{
+  "id": 7,
+  "userId": 7,
+  "category": "Film & Events",
+  "skills": [
+    "DOP",
+    "Lighting",
+    "Camera"
+  ],
+  "rate": "65/hr",
+  "minRate": 65,
+  "maxRate": 65,
+  "location": "UK",
+  "rating": 4,
+  "availability": "Available",
+  "withdrawalMethod": "bank_transfer",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.351Z"
+}

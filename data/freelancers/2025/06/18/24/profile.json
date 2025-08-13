@@ -1,0 +1,19 @@
+{
+  "id": 24,
+  "userId": 24,
+  "category": "Video Production",
+  "skills": [
+    "Shorts",
+    "TikTok",
+    "YouTube"
+  ],
+  "rate": "25-60/hr",
+  "minRate": 25,
+  "maxRate": 60,
+  "location": "KR",
+  "rating": 3,
+  "availability": "Available",
+  "withdrawalMethod": "paypal",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.367Z"
+}

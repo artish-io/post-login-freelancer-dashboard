@@ -13,12 +13,18 @@ async function handleJobListings(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
+    // Import hierarchical storage
+    const { readAllGigApplications } = await import('@/lib/gigs/gig-applications-storage');
+
+    // Import hierarchical storage for users
+    const { getAllUsers } = await import('@/lib/storage/unified-storage-service');
+
     // Read data files
     const [applicationsData, gigRequestsData, freelancersData, usersData, gigsData] = await Promise.all([
-      readFile(path.join(process.cwd(), 'data/gigs/gig-applications.json'), 'utf-8').then(data => JSON.parse(data)),
+      readAllGigApplications(),
       readFile(path.join(process.cwd(), 'data/gigs/gig-requests.json'), 'utf-8').then(data => JSON.parse(data)),
-      readFile(path.join(process.cwd(), 'data/freelancers.json'), 'utf-8').then(data => JSON.parse(data)),
-      readFile(path.join(process.cwd(), 'data/users.json'), 'utf-8').then(data => JSON.parse(data)),
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllFreelancers()),
+      getAllUsers(), // Use hierarchical storage
       readFile(path.join(process.cwd(), 'data/gigs/2025/July/05/1/gig.json'), 'utf-8').then(data => JSON.parse(data)).catch(() => null)
     ]);
 

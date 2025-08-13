@@ -1,0 +1,27 @@
+{
+  "id": 999,
+  "gigId": 11,
+  "freelancerId": 11,
+  "pitch": "I'm a UI/UX designer with 4+ years of experience creating conversion-focused landing pages. I specialize in modern, clean designs that drive results. I can deliver a mobile-first responsive design that aligns with your brand and business goals.",
+  "sampleLinks": [
+    "https://portfolio.example.com/landing-pages",
+    "https://dribbble.com/designer/landing-designs"
+  ],
+  "skills": [
+    "UI/UX Design",
+    "Web Design",
+    "Figma",
+    "Responsive Design",
+    "Conversion Optimization"
+  ],
+  "tools": [
+    "Figma",
+    "Adobe Creative Suite",
+    "HTML/CSS",
+    "Sketch"
+  ],
+  "submittedAt": "2025-08-03T17:00:00Z",
+  "status": "pending",
+  "migratedAt": "2025-08-12T15:22:41.891Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

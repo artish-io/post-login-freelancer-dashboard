@@ -1,0 +1,19 @@
+{
+  "id": 19,
+  "userId": 19,
+  "category": "Software Development",
+  "skills": [
+    "AWS",
+    "Hardware",
+    "Terraform"
+  ],
+  "rate": "100-150/hr",
+  "minRate": 100,
+  "maxRate": 150,
+  "location": "DE",
+  "rating": 5,
+  "availability": "Available",
+  "withdrawalMethod": "bank_transfer",
+  "createdAt": "2025-07-29T14:26:40.168Z",
+  "updatedAt": "2025-08-12T16:37:30.363Z"
+}

@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { readAllTasks } from '@/app/api/payments/repos/tasks-repo';
-import { readAllProjects } from '@/app/api/payments/repos/projects-repo';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
 import { getInitialInvoiceStatus, AUTO_MILESTONE_CONFIG } from '../../../../lib/invoice-status-definitions';
 
@@ -42,12 +41,26 @@ export async function POST(request: Request) {
     }
 
     // Load all required data
-    const [projects, allTasks, invoices, eventsData] = await Promise.all([
-      readAllProjects(), // Use projects repo
-      readAllTasks(), // Use tasks repo
+    const [projects, invoices, eventsData] = await Promise.all([
+      UnifiedStorageService.listProjects(),
       getAllInvoices(), // Use hierarchical storage for invoices
       fs.readFile(EVENTS_LOG_PATH, 'utf-8')
     ]);
+
+    // Get all tasks across all projects
+    const allTasks = [];
+    for (const project of projects) {
+      const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
+      allTasks.push(...projectTasks.map(task => ({
+        id: task.taskId,
+        projectId: task.projectId,
+        title: task.title,
+        status: task.status,
+        completed: task.completed,
+        order: task.order,
+        description: task.description
+      })));
+    }
 
     // invoices is already parsed from hierarchical storage
     const events = JSON.parse(eventsData);

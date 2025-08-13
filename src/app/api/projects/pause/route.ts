@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
-import { getProjectById, updateProject } from '@/app/api/payments/repos/projects-repo';
+import { getProjectById } from '@/app/api/payments/repos/projects-repo';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { NotificationStorage } from '@/lib/notifications/notification-storage';
 import { NOTIFICATION_TYPES, ENTITY_TYPES } from '@/lib/events/event-logger';
 import { requireSession, assert, assertProjectAccess } from '@/lib/auth/session-guard';
@@ -25,9 +26,15 @@ async function handleProjectPause(request: NextRequest) {
     // 🔒 Ensure session user is the project commissioner
     assertProjectAccess(actorId, project!, 'commissioner');
 
-    // Update project status to paused
-    const updateSuccess = await updateProject(Number(projectId), { status: 'paused' });
-    assert(updateSuccess, ErrorCodes.INTERNAL_ERROR, 500, 'Failed to update project status');
+    // Update project status to paused using unified storage
+    const unifiedProject = await UnifiedStorageService.readProject(Number(projectId));
+    assert(unifiedProject, ErrorCodes.PROJECT_NOT_FOUND, 404, 'Project not found in unified storage');
+
+    await UnifiedStorageService.writeProject({
+      ...unifiedProject,
+      status: 'paused',
+      updatedAt: new Date().toISOString()
+    });
 
     // Log the transition
     logProjectTransition(

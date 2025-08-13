@@ -17,9 +17,9 @@ type Props = {
 
 type Project = {
   projectId: number;
-  title: string;
-  organizationId: number;
-  typeTags: string[];
+  title?: string;
+  organizationId?: number;
+  typeTags?: string[];
   tasks: {
     id: number;
     title: string;
@@ -28,7 +28,7 @@ type Project = {
     completed: boolean;
     order: number;
     link: string;
-    dueDate: string;
+    dueDate?: string; // Make optional to match schema
     rejected: boolean;
     feedbackCount: number;
     pushedBack: boolean;
@@ -239,6 +239,12 @@ export default function TaskColumn({ columnId, title }: Props) {
         }
 
         // Extract just the date part from the UTC string and create a local date
+        // Handle cases where dueDate might be undefined
+        if (!task.dueDate) {
+          console.warn(`Task ${task.id} has no dueDate, skipping date-based filtering`);
+          return; // Skip tasks without due dates
+        }
+
         const dueDateString = task.dueDate.split('T')[0]; // Gets "2025-07-05"
         const localDueDate = new Date(dueDateString + 'T00:00:00'); // Creates local midnight
 
@@ -310,7 +316,7 @@ export default function TaskColumn({ columnId, title }: Props) {
 
         if (!shouldInclude) return;
 
-        let tag = project.typeTags[0] ?? 'General';
+        let tag = (project.typeTags && project.typeTags.length > 0) ? project.typeTags[0] : 'General';
         if (task.completed) tag = 'Completed';
         else if (task.rejected) tag = 'Rejected';
         else if (task.feedbackCount > 0) tag = `Feedback ×${task.feedbackCount}`;
@@ -378,7 +384,7 @@ export default function TaskColumn({ columnId, title }: Props) {
           if (task.status === 'Ongoing' && !task.completed) {
             const isPaused = isProjectPaused(project.projectId);
 
-            let tag = project.typeTags[0] ?? 'General';
+            let tag = (project.typeTags && project.typeTags.length > 0) ? project.typeTags[0] : 'General';
             if (task.rejected) tag = 'Rejected';
             else if (task.feedbackCount > 0) tag = `Feedback ×${task.feedbackCount}`;
             else if (task.pushedBack) tag = 'Delayed';

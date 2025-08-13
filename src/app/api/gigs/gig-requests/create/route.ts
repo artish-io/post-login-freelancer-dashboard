@@ -91,8 +91,8 @@ export async function POST(req: Request) {
     try {
       // Get organization and commissioner data for the notification
       const [organizationsData, usersData] = await Promise.all([
-        readFile(path.join(process.cwd(), 'data/organizations.json'), 'utf-8').then(data => JSON.parse(data)),
-        readFile(path.join(process.cwd(), 'data/users.json'), 'utf-8').then(data => JSON.parse(data))
+        import('@/lib/storage/unified-storage-service').then(m => m.getAllOrganizations()),
+        import('@/lib/storage/unified-storage-service').then(m => m.getAllUsers())
       ]);
 
       const commissioner = usersData.find((user: any) => user.id === payload.commissionerId);

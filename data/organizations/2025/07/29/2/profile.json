@@ -1,0 +1,15 @@
+{
+  "id": 2,
+  "name": "Urbana Channel Studios",
+  "email": "tiruvellly.priya@example.com",
+  "logo": "/logos/urbana-media.png",
+  "address": "78 Culture Drive, Lagos, Nigeria",
+  "contactPersonId": 33,
+  "bio": "Urbana Channel Studios is a creative media production company specializing in authentic African storytelling and cultural representation. We produce compelling content across multiple platforms, from documentaries to digital series, connecting diverse audiences through powerful narratives that celebrate African heritage and contemporary culture.",
+  "firstCommissionerId": 33,
+  "associatedCommissioners": [
+    33
+  ],
+  "createdAt": "2025-07-29T14:26:40.166Z",
+  "updatedAt": "2025-08-12T16:58:35.039Z"
+}

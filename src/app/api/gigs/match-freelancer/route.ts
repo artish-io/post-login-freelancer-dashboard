@@ -11,9 +11,8 @@ import { ok, err, ErrorCodes, withErrorHandling } from '@/lib/http/envelope';
 import { logProjectTransition, Subsystems } from '@/lib/log/transitions';
 
 // Using hierarchical storage for gigs and project tasks
-const APPLICATIONS_PATH = path.join(process.cwd(), 'data/gigs/gig-applications.json');
-const ORGANIZATIONS_PATH = path.join(process.cwd(), 'data/organizations.json');
-const USERS_PATH = path.join(process.cwd(), 'data/users.json');
+import { readAllGigApplications, writeGigApplication, readGigApplication } from '@/lib/gigs/gig-applications-storage';
+import { getAllUsers, getAllOrganizations } from '@/lib/storage/unified-storage-service';
 
 async function handleGigMatching(req: Request) {
   try {
@@ -25,9 +24,9 @@ async function handleGigMatching(req: Request) {
 
     // Read all necessary data files
     const [applicationsData, organizationsData, usersData] = await Promise.all([
-      readFile(APPLICATIONS_PATH, 'utf-8').then(data => JSON.parse(data)),
-      readFile(ORGANIZATIONS_PATH, 'utf-8').then(data => JSON.parse(data)),
-      readFile(USERS_PATH, 'utf-8').then(data => JSON.parse(data))
+      readAllGigApplications(),
+      getAllOrganizations(), // Use hierarchical storage
+      getAllUsers() // Use hierarchical storage
     ]);
 
     // Find the gig and application
@@ -68,13 +67,15 @@ async function handleGigMatching(req: Request) {
     // Update gig status using the service result
     await updateGig(gigId, acceptResult.gigUpdate);
 
-    // Update application status to accepted
-    const updatedApplications = applicationsData.map((a: any) =>
-      a.id === applicationId ? { ...a, status: 'accepted' } : a
-    );
+    // Update application status to accepted using hierarchical storage
+    const application = await readGigApplication(applicationId);
+    if (application) {
+      application.status = 'accepted';
+      await writeGigApplication(application);
+    }
 
     // Save project using unified storage
-    await UnifiedStorageService.saveProject({
+    await UnifiedStorageService.writeProject({
       ...acceptResult.project,
       status: 'ongoing',
       invoicingMethod: acceptResult.project.invoicingMethod || 'completion',
@@ -106,8 +107,7 @@ async function handleGigMatching(req: Request) {
       });
     }
 
-    // Save application status update
-    await writeFile(APPLICATIONS_PATH, JSON.stringify(updatedApplications, null, 2));
+    // Application status already saved via hierarchical storage above
 
     // Log project creation
     logProjectTransition(

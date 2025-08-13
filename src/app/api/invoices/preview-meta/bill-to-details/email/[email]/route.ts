@@ -1,11 +1,7 @@
 // src/app/api/invoices/preview-meta/bill-to-details/email/[email]/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
-
-const USERS_PATH = path.join(process.cwd(), 'data', 'users.json');
-const ORGS_PATH = path.join(process.cwd(), 'data', 'organizations.json');
+import { getAllUsers, getAllOrganizations } from '@/lib/storage/unified-storage-service';
 
 export async function GET(
   request: NextRequest
@@ -14,13 +10,10 @@ export async function GET(
     const emailParam = request.nextUrl.pathname.split('/').pop(); // gets the [email] segment
     const email = decodeURIComponent(emailParam ?? '').toLowerCase();
 
-    const [usersRaw, orgsRaw] = await Promise.all([
-      readFile(USERS_PATH, 'utf-8'),
-      readFile(ORGS_PATH, 'utf-8'),
+    const [users, organizations] = await Promise.all([
+      getAllUsers(),
+      getAllOrganizations(),
     ]);
-
-    const users = JSON.parse(usersRaw);
-    const organizations = JSON.parse(orgsRaw);
 
     const user = users.find((u: any) => u.email?.toLowerCase() === email);
     if (!user) {

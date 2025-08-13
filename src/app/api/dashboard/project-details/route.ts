@@ -1,14 +1,11 @@
 // File: src/app/api/dashboard/project-details/route.ts
 
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { readFile } from 'fs/promises';
-import { listTasksByProject } from '@/app/api/payments/repos/tasks-repo';
-import { getProjectById } from '@/app/api/payments/repos/projects-repo';
 import { readProjectNotes } from '@/lib/project-notes-utils';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { validateFreelancerProjectAccess } from '@/lib/freelancer-access-control';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -26,8 +23,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    // First, load all projects to validate access
-    const allProjects = await readAllProjects();
+    // Load all projects and validate access
+    const allProjects = await UnifiedStorageService.getAllProjects();
 
     // Validate that the user has access to this project
     const hasAccess = validateFreelancerProjectAccess(
@@ -39,25 +36,21 @@ export async function GET(request: Request) {
     if (!hasAccess) {
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
-    const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
-    const organizationsFile = await readFile(organizationsPath, 'utf-8');
 
-    // Read project tasks from tasks repo
-    const projectTasks = await listTasksByProject(projectId);
-
-    // Read data from hierarchical structures
-    const allNotes = await readProjectNotes(projectId);
-    const allOrganizations = JSON.parse(organizationsFile);
-
-    if (!projectTasks || projectTasks.length === 0) {
-      return NextResponse.json({ error: 'No tasks found for project' }, { status: 404 });
-    }
-
-    // Get project info from repo
-    const projectInfo = await getProjectById(projectId);
+    // Get project info
+    const projectInfo = allProjects.find((p: any) => p.projectId === projectId);
     if (!projectInfo) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
+
+    // Read project tasks and other data
+    const [projectTasksData, allNotes, allOrganizations] = await Promise.all([
+      UnifiedStorageService.readProjectTasks(projectInfo.projectId),
+      readProjectNotes(projectId),
+      UnifiedStorageService.getAllOrganizations()
+    ]);
+
+    const projectTasks = projectTasksData?.tasks || [];
 
     // Find the organization for logo and additional info
     const organization = allOrganizations.find((org: any) => org.id === projectInfo.organizationId);

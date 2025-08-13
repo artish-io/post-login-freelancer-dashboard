@@ -1,0 +1,11 @@
+{
+  "id": 21,
+  "name": "Sarah Lin",
+  "title": "Mobile Developer",
+  "avatar": "/avatars/sarah.png",
+  "type": "freelancer",
+  "email": "sarah.lin@example.com",
+  "address": "21 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.219Z"
+}

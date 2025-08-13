@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
+import { getFreelancerByUserId, writeFreelancer } from '@/lib/storage/unified-storage-service';
 
 export async function POST(request: Request) {
   try {
@@ -24,28 +21,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Read existing freelancers data
-    let freelancers = [];
-    try {
-      const data = fs.readFileSync(freelancersPath, 'utf-8');
-      freelancers = JSON.parse(data);
-    } catch (error) {
-      return NextResponse.json(
-        { error: 'Failed to read freelancers data' },
-        { status: 500 }
-      );
-    }
-
-    // Find the freelancer
-    const freelancerIndex = freelancers.findIndex((f: any) => f.userId === parseInt(userId));
-    if (freelancerIndex === -1) {
+    // Find the freelancer using hierarchical storage
+    const freelancer = await getFreelancerByUserId(parseInt(userId));
+    if (!freelancer) {
       return NextResponse.json(
         { error: 'Freelancer not found' },
         { status: 404 }
       );
     }
-
-    const freelancer = freelancers[freelancerIndex];
 
     // Add skill or tool
     if (type === 'skill') {
@@ -66,11 +49,8 @@ export async function POST(request: Request) {
       }
     }
 
-    // Update the freelancer in the array
-    freelancers[freelancerIndex] = freelancer;
-
-    // Write back to file
-    fs.writeFileSync(freelancersPath, JSON.stringify(freelancers, null, 2));
+    // Write back to hierarchical storage
+    await writeFreelancer(freelancer);
 
     return NextResponse.json({ 
       success: true, 
@@ -99,28 +79,14 @@ export async function DELETE(request: Request) {
       );
     }
 
-    // Read existing freelancers data
-    let freelancers = [];
-    try {
-      const data = fs.readFileSync(freelancersPath, 'utf-8');
-      freelancers = JSON.parse(data);
-    } catch (error) {
-      return NextResponse.json(
-        { error: 'Failed to read freelancers data' },
-        { status: 500 }
-      );
-    }
-
-    // Find the freelancer
-    const freelancerIndex = freelancers.findIndex((f: any) => f.userId === parseInt(userId));
-    if (freelancerIndex === -1) {
+    // Find the freelancer using hierarchical storage
+    const freelancer = await getFreelancerByUserId(parseInt(userId));
+    if (!freelancer) {
       return NextResponse.json(
         { error: 'Freelancer not found' },
         { status: 404 }
       );
     }
-
-    const freelancer = freelancers[freelancerIndex];
 
     // Remove skill or tool
     if (type === 'skill' && freelancer.skillCategories) {
@@ -129,11 +95,8 @@ export async function DELETE(request: Request) {
       freelancer.tools = freelancer.tools.filter((tool: string) => tool !== value);
     }
 
-    // Update the freelancer in the array
-    freelancers[freelancerIndex] = freelancer;
-
-    // Write back to file
-    fs.writeFileSync(freelancersPath, JSON.stringify(freelancers, null, 2));
+    // Write back to hierarchical storage
+    await writeFreelancer(freelancer);
 
     return NextResponse.json({ 
       success: true, 

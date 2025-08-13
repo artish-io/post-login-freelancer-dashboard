@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { readAllProjects } from '@/app/api/payments/repos/projects-repo';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 export async function GET() {
   try {
-    const projects = await readAllProjects();
+    const projects = await UnifiedStorageService.listProjects();
 
     return NextResponse.json(projects, {
       headers: {

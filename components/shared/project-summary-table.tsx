@@ -318,10 +318,15 @@ export default function ProjectSummaryTable({
                 // Use project status from projects.json
                 const projectStatus = project.status?.toLowerCase() || 'ongoing';
 
+                // Find the commissioner using the commissionerId from the project
+                const commissioner = users.find((user: any) =>
+                  user.id === project.commissionerId && user.type === 'commissioner'
+                );
+
                 return {
                   projectId: project.projectId,
                   name: project.title,
-                  person: 'Unknown', // No commissioner info without organizations
+                  person: commissioner ? commissioner.name : 'Unknown',
                   dueDate: project.dueDate ? new Date(project.dueDate).toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric',

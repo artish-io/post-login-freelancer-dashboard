@@ -524,14 +524,15 @@ export async function POST(req: Request) {
     }
 
     // Read data files
-    const freelancersPath = path.join(process.cwd(), 'data', 'freelancers.json');
-    const usersPath = path.join(process.cwd(), 'data', 'users.json');
     const categoriesPath = path.join(process.cwd(), 'data', 'gigs', 'gig-categories.json');
     const toolsPath = path.join(process.cwd(), 'data', 'gigs', 'gig-tools.json');
     const gigsPath = path.join(process.cwd(), 'data', 'gigs', 'gigs.json');
 
-    const freelancers = JSON.parse(fs.readFileSync(freelancersPath, 'utf-8'));
-    const users = JSON.parse(fs.readFileSync(usersPath, 'utf-8'));
+    const { getAllFreelancers, getAllUsers } = await import('@/lib/storage/unified-storage-service');
+    const [freelancers, users] = await Promise.all([
+      getAllFreelancers(),
+      getAllUsers()
+    ]);
     const categories = JSON.parse(fs.readFileSync(categoriesPath, 'utf-8'));
     const tools = JSON.parse(fs.readFileSync(toolsPath, 'utf-8'));
 

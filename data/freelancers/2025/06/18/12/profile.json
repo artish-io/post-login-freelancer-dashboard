@@ -1,0 +1,22 @@
+{
+  "id": 12,
+  "userId": 12,
+  "category": "Marketing",
+  "skills": [
+    "UX Marketing",
+    "Campaign Strategy",
+    "Copywriting"
+  ],
+  "rate": "70/hr",
+  "minRate": 70,
+  "maxRate": 70,
+  "location": "FR",
+  "rating": 5,
+  "availability": "Available",
+  "withdrawalMethod": "paypal",
+  "specializations": [
+    "Brand Voice"
+  ],
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T16:37:30.356Z"
+}

@@ -1,8 +1,7 @@
 // File: src/app/api/project-tasks/[projectId]/route.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import { readProjectTasks } from '@/lib/project-tasks/hierarchical-storage';
-import { readAllProjects } from '@/lib/projects-utils';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { validateFreelancerProjectAccess } from '@/lib/freelancer-access-control';
@@ -26,7 +25,7 @@ export async function GET(
     }
 
     // Load all projects to validate access
-    const allProjects = await readAllProjects();
+    const allProjects = await UnifiedStorageService.listProjects();
 
     // Validate that the user has access to this project
     const hasAccess = validateFreelancerProjectAccess(
@@ -40,14 +39,12 @@ export async function GET(
     }
 
     // Read tasks for this specific project from hierarchical storage
-    const hierarchicalTasks = await readProjectTasks(projectId);
+    const hierarchicalTasks = await UnifiedStorageService.listTasks(projectId);
+    const project = await UnifiedStorageService.readProject(projectId);
 
-    if (hierarchicalTasks.length === 0) {
+    if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
-
-    // Get project info from the first task (all tasks in a project share this info)
-    const firstTask = hierarchicalTasks[0];
 
     // Convert hierarchical tasks back to legacy task format
     const legacyTasks = hierarchicalTasks.map(task => ({
@@ -69,10 +66,10 @@ export async function GET(
     }));
 
     return NextResponse.json({
-      projectId: firstTask.projectId,
-      title: firstTask.projectTitle,
-      organizationId: firstTask.organizationId,
-      typeTags: firstTask.projectTypeTags,
+      projectId: project.projectId,
+      title: project.title,
+      organizationId: project.organizationId,
+      typeTags: project.typeTags,
       tasks: legacyTasks
     });
   } catch (error) {

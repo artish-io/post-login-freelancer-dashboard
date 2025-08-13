@@ -1,0 +1,24 @@
+{
+  "id": 20,
+  "gigId": 13,
+  "freelancerId": 1,
+  "pitch": "For years, Republicans’ attitudes towards Israel were dominated by evangelicals’ affection for Israel. Has that changed? Marjorie Taylor Greene used the word “genocide” in describing Israel’s assault on Gaza. And, in general, young Republicans are less willing to support the Jewish state unquestioningly, leading to a slow but steady decline in GOP support.",
+  "sampleLinks": [
+    "https://substack.com/@thewavng?utm_source=about-page"
+  ],
+  "skills": [
+    "animation",
+    "design"
+  ],
+  "tools": [
+    "Blender",
+    "SketchUp",
+    "AutoCAD",
+    "Adobe Creative Suite"
+  ],
+  "submittedAt": "2025-08-07T01:05:10.126Z",
+  "status": "rejected",
+  "rejectedAt": "2025-08-07T01:05:58.297Z",
+  "migratedAt": "2025-08-12T15:22:41.893Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

@@ -1,0 +1,22 @@
+{
+  "id": 6,
+  "gigId": 8,
+  "freelancerId": 31,
+  "pitch": "I am perfect for the required workflow",
+  "sampleLinks": [
+    "https://figma.com/jala"
+  ],
+  "skills": [
+    "Design"
+  ],
+  "tools": [
+    "React",
+    "D3.js",
+    "Python",
+    "SQL"
+  ],
+  "submittedAt": "2025-08-03T14:04:43.567Z",
+  "status": "accepted",
+  "migratedAt": "2025-08-12T15:22:41.890Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

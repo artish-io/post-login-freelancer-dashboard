@@ -1,0 +1,15 @@
+{
+  "id": 5,
+  "name": "HERO Research & Design",
+  "email": "felix.damini@example.com",
+  "logo": "/logos/hero-research.png",
+  "address": "22 Insights Blvd, Nairobi, Kenya",
+  "contactPersonId": 36,
+  "bio": "HERO Research & Design is a user experience research consultancy passionate about inclusive design and accessibility. We lead research initiatives that ensure digital products work for everyone, regardless of ability, combining rigorous methodology with human-centered design principles to create truly accessible experiences.",
+  "firstCommissionerId": 36,
+  "associatedCommissioners": [
+    36
+  ],
+  "createdAt": "2025-07-29T14:26:40.167Z",
+  "updatedAt": "2025-08-12T16:58:35.048Z"
+}

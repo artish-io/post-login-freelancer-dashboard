@@ -1,0 +1,26 @@
+{
+  "id": 2,
+  "gigId": 5,
+  "freelancerId": 1,
+  "pitch": "Frontend developer with 5+ years experience in React and mapping libraries. I specialize in creating responsive, accessible web applications with clean, maintainable code. I can deliver this project within your 5-week timeline.",
+  "sampleLinks": [
+    "https://portfolio.example.com/react-projects",
+    "https://demo.mapapp.example.com"
+  ],
+  "skills": [
+    "React",
+    "TypeScript",
+    "Web Development",
+    "API Integration"
+  ],
+  "tools": [
+    "React",
+    "TypeScript",
+    "Mapbox",
+    "Tailwind CSS"
+  ],
+  "submittedAt": "2025-07-12T14:15:00Z",
+  "status": "accepted",
+  "migratedAt": "2025-08-12T15:22:41.889Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

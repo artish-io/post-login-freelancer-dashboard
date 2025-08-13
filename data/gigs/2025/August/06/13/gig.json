@@ -16,7 +16,7 @@
   "description": "Create detailed 3D visualizations and floor plans for multiple event venues to help clients visualize their event setup. Include furniture placement, lighting design, and crowd flow analysis.",
   "deliveryTimeWeeks": 3,
   "estimatedHours": 40,
-  "status": "Available",
+  "status": "Unavailable",
   "toolsRequired": [
     "Blender",
     "SketchUp",

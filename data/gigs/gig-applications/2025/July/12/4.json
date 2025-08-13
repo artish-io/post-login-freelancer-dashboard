@@ -1,0 +1,26 @@
+{
+  "id": 4,
+  "gigId": 6,
+  "freelancerId": 11,
+  "pitch": "Mobile app developer with 4+ years experience in React Native. I've built several location-based apps and have experience with park management systems. I can deliver a user-friendly app that enhances the park visitor experience.",
+  "sampleLinks": [
+    "https://portfolio.example.com/mobile-apps",
+    "https://github.com/riya/park-finder-app"
+  ],
+  "skills": [
+    "React Native",
+    "Mobile Development",
+    "Firebase",
+    "Maps Integration"
+  ],
+  "tools": [
+    "React Native",
+    "Firebase",
+    "Google Maps API",
+    "Expo"
+  ],
+  "submittedAt": "2025-07-12T09:15:00Z",
+  "status": "accepted",
+  "migratedAt": "2025-08-12T15:22:41.889Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

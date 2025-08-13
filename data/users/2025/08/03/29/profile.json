@@ -1,0 +1,11 @@
+{
+  "id": 29,
+  "name": "Isaac Johnson",
+  "title": "Full Stack Developer",
+  "avatar": "/avatars/isaac.png",
+  "type": "freelancer",
+  "email": "isaac.johnson@example.com",
+  "address": "29 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-08-03T14:09:05.610Z",
+  "updatedAt": "2025-08-12T15:46:25.236Z"
+}

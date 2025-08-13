@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getProjectById, updateProject, readAllProjects } from '@/app/api/payments/repos/projects-repo';
-import { listTasksByProject } from '@/app/api/payments/repos/tasks-repo';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { normalizeTaskStatus } from '@/app/api/payments/domain/types';
 
 /**
@@ -15,14 +14,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing projectId' }, { status: 400 });
     }
 
-    // Read project from repo
-    const project = await getProjectById(Number(projectId));
+    // Read project from unified storage
+    const project = await UnifiedStorageService.readProject(Number(projectId));
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    // Read project tasks from repo
-    const projectTasks = await listTasksByProject(projectId);
+    // Read project tasks from unified storage
+    const projectTasks = await UnifiedStorageService.listTasks(projectId);
     if (!projectTasks || projectTasks.length === 0) {
       return NextResponse.json({ error: 'Project tasks not found' }, { status: 404 });
     }
@@ -48,7 +47,12 @@ export async function POST(request: Request) {
 
     if (statusChanged) {
       // Update project status in hierarchical structure
-      await updateProject(projectId, { status: newStatus });
+      const updatedProject = {
+        ...project,
+        status: newStatus as any,
+        updatedAt: new Date().toISOString()
+      };
+      await UnifiedStorageService.writeProject(updatedProject);
 
       console.log(`✅ Auto-completed: Project ${projectId} status updated from "${project.status}" to "${newStatus}"`);
 
@@ -88,14 +92,14 @@ export async function POST(request: Request) {
  */
 export async function GET() {
   try {
-    // Read data from repos
-    const projects = await readAllProjects();
+    // Read data from unified storage
+    const projects = await UnifiedStorageService.listProjects();
 
     const inconsistencies: any[] = [];
 
     // Loop through each project and get its tasks
     for (const project of projects) {
-      const projectTasks = await listTasksByProject(project.projectId);
+      const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
 
       if (projectTasks.length > 0) {
         const approvedTasks = projectTasks.filter((t: any) =>

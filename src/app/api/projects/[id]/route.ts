@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getProjectById } from '@/app/api/payments/repos/projects-repo';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { validateFreelancerProjectAccess } from '@/lib/freelancer-access-control';
-import { readAllProjects } from '@/lib/projects-utils';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 export async function GET(
   request: NextRequest,
@@ -24,7 +23,7 @@ export async function GET(
     }
 
     // Load all projects to validate access
-    const allProjects = await readAllProjects();
+    const allProjects = await UnifiedStorageService.listProjects();
 
     // Validate that the user has access to this project
     const hasAccess = validateFreelancerProjectAccess(
@@ -37,7 +36,7 @@ export async function GET(
       return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
-    const project = await getProjectById(projectId);
+    const project = await UnifiedStorageService.readProject(projectId);
 
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });

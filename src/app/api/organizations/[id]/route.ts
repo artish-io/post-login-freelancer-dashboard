@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs';
-
-const filePath = path.join(process.cwd(), 'data', 'organizations.json');
+import { getOrganizationById } from '@/lib/storage/unified-storage-service';
 
 export async function GET(
   _request: Request,
@@ -10,12 +7,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const data = fs.readFileSync(filePath, 'utf-8');
-    const organizations = JSON.parse(data);
-
-    const organization = organizations.find(
-      (org: any) => String(org.id) === id
-    );
+    const organization = await getOrganizationById(parseInt(id));
 
     if (!organization) {
       return NextResponse.json({ error: 'Organization not found' }, { status: 404 });

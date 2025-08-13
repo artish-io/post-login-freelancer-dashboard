@@ -1,0 +1,27 @@
+{
+  "id": 104,
+  "gigId": 12,
+  "freelancerId": 22,
+  "pitch": "Creative photographer specializing in corporate events and brand storytelling. I focus on capturing the energy and atmosphere of business gatherings while maintaining professional quality. My approach combines documentary-style photography with artistic composition.",
+  "sampleLinks": [
+    "https://portfolio.example.com/corporate-stories",
+    "https://500px.com/yuki-photography"
+  ],
+  "skills": [
+    "Event Photography",
+    "Brand Photography",
+    "Documentary Photography",
+    "Creative Composition"
+  ],
+  "tools": [
+    "Sony A7R IV",
+    "Adobe Lightroom",
+    "Adobe Photoshop",
+    "Drone Photography Equipment"
+  ],
+  "submittedAt": "2025-08-06T17:05:00.000Z",
+  "status": "rejected",
+  "rejectedAt": "2025-08-07T01:20:30.335Z",
+  "migratedAt": "2025-08-12T15:22:41.893Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

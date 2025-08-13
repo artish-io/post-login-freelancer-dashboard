@@ -1,0 +1,26 @@
+{
+  "id": 101,
+  "gigId": 12,
+  "freelancerId": 5,
+  "pitch": "Professional photographer with 8+ years of corporate event experience. I specialize in capturing key moments, networking sessions, and speaker presentations. My portfolio includes events for Fortune 500 companies and I'm comfortable working in various lighting conditions.",
+  "sampleLinks": [
+    "https://portfolio.example.com/corporate-events",
+    "https://flickr.com/photos/nia-events"
+  ],
+  "skills": [
+    "Event Photography",
+    "Corporate Photography",
+    "Low-Light Photography",
+    "Photo Editing"
+  ],
+  "tools": [
+    "Canon 5D Mark IV",
+    "Adobe Lightroom",
+    "Adobe Photoshop",
+    "Professional Lighting Equipment"
+  ],
+  "submittedAt": "2025-08-06T17:00:00.000Z",
+  "status": "rejected",
+  "migratedAt": "2025-08-12T15:22:41.892Z",
+  "originalSource": "data/gigs/gig-applications.json"
+}

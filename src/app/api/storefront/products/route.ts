@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
+import { getAllUsers } from '@/lib/storage/unified-storage-service';
 
 const FILE_PATH = path.join(process.cwd(), 'data', 'storefront', 'products.json');
 const CATEGORY_PATH = path.join(process.cwd(), 'data', 'storefront', 'categories.json');
 const UNIT_SALES_PATH = path.join(process.cwd(), 'data', 'storefront', 'unit-sales.json');
-const USERS_PATH = path.join(process.cwd(), 'data', 'users.json');
 
 export async function GET(req: NextRequest) {
   try {
@@ -14,17 +14,16 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get('search')?.toLowerCase() || '';
     const categoryFilter = searchParams.get('category')?.toLowerCase() || '';
 
-    const [productsRaw, categoriesRaw, salesRaw, usersRaw] = await Promise.all([
+    const [productsRaw, categoriesRaw, salesRaw, users] = await Promise.all([
       readFile(FILE_PATH, 'utf-8'),
       readFile(CATEGORY_PATH, 'utf-8'),
       readFile(UNIT_SALES_PATH, 'utf-8'),
-      readFile(USERS_PATH, 'utf-8'),
+      getAllUsers(),
     ]);
 
     const products = JSON.parse(productsRaw);
     const categories = JSON.parse(categoriesRaw);
     const sales = JSON.parse(salesRaw);
-    const users = JSON.parse(usersRaw);
 
     const filtered = products.filter((p: any) => {
       const matchesSearch = p.title.toLowerCase().includes(search);

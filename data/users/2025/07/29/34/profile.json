@@ -1,0 +1,30 @@
+{
+  "id": 34,
+  "name": "Matte Hannery",
+  "title": "Startup Founder",
+  "avatar": "/avatars/matte.png",
+  "type": "commissioner",
+  "email": "matte.hannery@example.com",
+  "address": "Toronto, Canada",
+  "organizationId": 3,
+  "username": "matte",
+  "password": "testpass",
+  "bio": "Serial entrepreneur focused on wellness technology and mental health solutions. Building products that make wellness accessible and sustainable for everyone.",
+  "rating": 4.9,
+  "responsibilities": [
+    "Product Vision",
+    "Strategic Planning",
+    "Investor Relations",
+    "Team Leadership",
+    "Market Validation",
+    "Partnership Development"
+  ],
+  "socialLinks": [
+    {
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/matte-hannery"
+    }
+  ],
+  "createdAt": "2025-07-29T14:26:40.166Z",
+  "updatedAt": "2025-08-12T15:46:25.245Z"
+}

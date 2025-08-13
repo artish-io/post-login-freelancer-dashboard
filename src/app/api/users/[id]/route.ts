@@ -1,11 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import fs from 'fs';
-import path from 'path';
-
-const usersFilePath = path.join(process.cwd(), 'data', 'users.json');
-const organizationsFilePath = path.join(process.cwd(), 'data', 'organizations.json');
+import { readUser, writeUser, UserProfile } from '@/lib/storage/normalize-user';
+import { getAllOrganizations } from '@/lib/storage/unified-storage-service';
 
 export async function GET(
   _request: Request,
@@ -13,14 +10,10 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const usersData = fs.readFileSync(usersFilePath, 'utf-8');
-    const organizationsData = fs.readFileSync(organizationsFilePath, 'utf-8');
 
-    const users = JSON.parse(usersData);
-    const organizations = JSON.parse(organizationsData);
-
-    // Find user by ID (support both string and number comparison)
-    const user = users.find((u: any) => String(u.id) === id || u.id === parseInt(id));
+    // Read user from hierarchical storage (with legacy fallback)
+    const userId = parseInt(id);
+    const user = await readUser(userId);
 
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -29,6 +22,7 @@ export async function GET(
     // If user has an organizationId, get organization details
     let organizationInfo = null;
     if (user.organizationId) {
+      const organizations = await getAllOrganizations();
       const organization = organizations.find((org: any) => org.id === user.organizationId);
       if (organization) {
         organizationInfo = {
@@ -72,19 +66,29 @@ export async function PUT(
 
     const updates = await request.json();
 
-    const data = fs.readFileSync(usersFilePath, 'utf-8');
-    const users = JSON.parse(data);
+    // Read user from hierarchical storage (with legacy fallback)
+    const userId = parseInt(id);
+    const existingUser = await readUser(userId);
 
-    const index = users.findIndex((u: any) => String(u.id) === id || u.id === parseInt(id));
-    if (index === -1) {
+    if (!existingUser) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    users[index] = { ...users[index], ...updates };
+    // Merge updates with existing user data
+    const updatedUser: UserProfile = {
+      ...existingUser,
+      ...updates,
+      id: userId, // Ensure ID doesn't change
+      updatedAt: new Date().toISOString()
+    };
 
-    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+    // Write to hierarchical storage
+    await writeUser(updatedUser);
 
-    return NextResponse.json({ message: 'User updated successfully', user: users[index] });
+    return NextResponse.json({
+      message: 'User updated successfully',
+      user: updatedUser
+    });
   } catch (error) {
     console.error('Error updating user data:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

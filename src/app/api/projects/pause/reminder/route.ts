@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
-import { updateProject, readProject } from '@/lib/projects-utils';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { NotificationStorage } from '@/lib/notifications/notification-storage';
 import { NOTIFICATION_TYPES, ENTITY_TYPES } from '@/lib/events/event-logger';
 import fs from 'fs';
@@ -67,8 +67,15 @@ export async function POST(request: NextRequest) {
     );
 
     if (recentReminders.length >= 3) {
-      // Auto-pause the project after 3rd reminder
-      await updateProject(projectId, { status: 'paused' });
+      // Auto-pause the project after 3rd reminder using unified storage
+      const project = await UnifiedStorageService.readProject(projectId);
+      if (project) {
+        await UnifiedStorageService.writeProject({
+          ...project,
+          status: 'paused',
+          updatedAt: new Date().toISOString()
+        });
+      }
 
       // Create auto-pause notification for freelancer
       const autoPauseEvent = {

@@ -9,11 +9,8 @@ export async function GET(
   const { id } = await params;
 
   try {
-    const filePath = path.join(process.cwd(), "data", "freelancers.json");
-    const data = await readFile(filePath, "utf-8");
-    const freelancers = JSON.parse(data);
-
-    const freelancer = freelancers.find((f: any) => String(f.userId) === id);
+    const { getFreelancerByUserId } = await import('@/lib/storage/unified-storage-service');
+    const freelancer = await getFreelancerByUserId(parseInt(id));
 
     if (!freelancer) {
       return NextResponse.json({ error: "Freelancer not found" }, { status: 404 });

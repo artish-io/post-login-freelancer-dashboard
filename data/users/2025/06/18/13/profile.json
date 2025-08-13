@@ -1,0 +1,11 @@
+{
+  "id": 13,
+  "name": "Hans Richter",
+  "title": "Motion Designer",
+  "avatar": "/avatars/hans.png",
+  "type": "freelancer",
+  "email": "hans.richter@example.com",
+  "address": "13 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.203Z"
+}

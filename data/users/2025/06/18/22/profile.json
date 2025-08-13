@@ -1,0 +1,11 @@
+{
+  "id": 22,
+  "name": "Miguel Torres",
+  "title": "App Developer",
+  "avatar": "/avatars/miguel.png",
+  "type": "freelancer",
+  "email": "miguel.torres@example.com",
+  "address": "22 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.221Z"
+}

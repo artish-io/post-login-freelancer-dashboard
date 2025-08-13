@@ -1,0 +1,11 @@
+{
+  "id": 2,
+  "name": "Jenny San",
+  "title": "Graphic Designer",
+  "avatar": "/avatars/jenny.png",
+  "type": "freelancer",
+  "email": "jenny.san@example.com",
+  "address": "2 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-07-29T14:26:40.168Z",
+  "updatedAt": "2025-08-12T15:46:25.180Z"
+}

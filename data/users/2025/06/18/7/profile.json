@@ -1,0 +1,11 @@
+{
+  "id": 7,
+  "name": "Amara Lee",
+  "title": "Director of Photography",
+  "avatar": "/avatars/amara.png",
+  "type": "freelancer",
+  "email": "amara.lee@example.com",
+  "address": "7 Remote Lane, Virtual City, Country",
+  "createdAt": "2025-06-18T17:38:37.775Z",
+  "updatedAt": "2025-08-12T15:46:25.190Z"
+}

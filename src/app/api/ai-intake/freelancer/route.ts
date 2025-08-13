@@ -39,11 +39,12 @@ export async function POST(req: Request) {
 
     const categoriesPath = path.join(process.cwd(), 'data', 'gigs', 'gig-categories.json');
     const toolsPath = path.join(process.cwd(), 'data', 'gigs', 'gig-tools.json');
-    const organizationsPath = path.join(process.cwd(), 'data', 'organizations.json');
 
-    const categories = JSON.parse(fs.readFileSync(categoriesPath, 'utf-8'));
-    const tools = JSON.parse(fs.readFileSync(toolsPath, 'utf-8'));
-    const organizations = JSON.parse(fs.readFileSync(organizationsPath, 'utf-8'));
+    const [categories, tools, organizations] = await Promise.all([
+      JSON.parse(fs.readFileSync(categoriesPath, 'utf-8')),
+      JSON.parse(fs.readFileSync(toolsPath, 'utf-8')),
+      import('@/lib/storage/unified-storage-service').then(m => m.getAllOrganizations())
+    ]);
 
     // Direct gig matching based on intent using fuzzy keywords
     const intentLower = intent.toLowerCase();

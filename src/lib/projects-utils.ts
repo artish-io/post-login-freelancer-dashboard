@@ -164,6 +164,7 @@ export async function readProject(projectId: number): Promise<Project | null> {
 
 /**
  * Read all projects from hierarchical structure
+ * @deprecated Use UnifiedStorageService.listProjects() instead of readAllProjects
  */
 export async function readAllProjects(): Promise<Project[]> {
   const projects: Project[] = [];
