@@ -1,0 +1,24 @@
+{
+  "taskId": 103,
+  "projectId": 312,
+  "projectTitle": "Lagos Parks Mobile App Development",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Mobile Development",
+    "UI/UX Design"
+  ],
+  "title": "Maintenance reporting feature",
+  "status": "Approved",
+  "completed": true,
+  "order": 3,
+  "link": "https://figma.com/file/maintenance-reporting",
+  "dueDate": "2025-08-20T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Design the maintenance issue reporting feature with photo upload.",
+  "submittedDate": "2025-07-15T16:30:00.000Z",
+  "createdDate": "2025-07-29T15:57:39.550Z",
+  "lastModified": "2025-08-13T04:39:11.690Z"
+}

@@ -1,0 +1,24 @@
+{
+  "taskId": 14,
+  "projectId": 302,
+  "projectTitle": "Urbana channel brand refresh",
+  "organizationId": 2,
+  "projectTypeTags": [
+    "Motion Design",
+    "Brand Strategy"
+  ],
+  "title": "Visual identity lockup",
+  "status": "In review",
+  "completed": false,
+  "order": 3,
+  "link": "bitly.cowewee",
+  "dueDate": "2025-07-26T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Consolidate logo and visual identity assets into a consistent lockup.",
+  "createdDate": "2025-07-29T15:57:39.548Z",
+  "lastModified": "2025-08-13T04:39:11.684Z",
+  "submittedDate": "2025-08-05T17:00:45.566Z"
+}

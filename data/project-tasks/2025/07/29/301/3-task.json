@@ -1,0 +1,23 @@
+{
+  "taskId": 3,
+  "projectId": 301,
+  "projectTitle": "Lagos Parks Services website re-design",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Brand Design",
+    "Content Design"
+  ],
+  "title": "10 year anniversary graphic assets",
+  "status": "Approved",
+  "completed": true,
+  "order": 3,
+  "link": "https://figma.com/file/anniversary-assets",
+  "dueDate": "2025-08-27T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 1,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Create commemorative graphic assets for the 10-year anniversary celebration.",
+  "createdDate": "2025-07-29T15:57:39.547Z",
+  "lastModified": "2025-08-13T04:39:11.695Z"
+}

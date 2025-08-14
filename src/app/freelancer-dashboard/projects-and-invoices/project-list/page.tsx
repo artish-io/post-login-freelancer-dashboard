@@ -93,11 +93,11 @@ export default function ProjectListPage() {
             freelancerProjectTasksCount: freelancerProjectTasks.length
           });
 
-          // Transform project-tasks data and merge with projects.json status
-          const transformedProjects = freelancerProjectTasks.map((projectTasks: any) => {
-            // Find the corresponding project from filtered freelancer projects
-            const projectInfo = freelancerProjects.find((p: any) => p.projectId === projectTasks.projectId);
-            const tasks = projectTasks.tasks || [];
+          // Transform ALL freelancer projects and merge with task data
+          const transformedProjects = freelancerProjects.map((projectInfo: any) => {
+            // Find the corresponding tasks for this project
+            const projectTasks = freelancerProjectTasks.find((pt: any) => pt.projectId === projectInfo.projectId);
+            const tasks = projectTasks?.tasks || [];
             const totalTasks = tasks.length;
             const progress = calculateProjectProgress(tasks);
 
@@ -112,7 +112,7 @@ export default function ProjectListPage() {
             }
 
             // Find the organization and its contact person (commissioner)
-            const organization = organizations.find((org: any) => org.id === projectTasks.organizationId);
+            const organization = organizations.find((org: any) => org.id === (projectTasks?.organizationId || projectInfo?.organizationId));
             const managerId = organization?.contactPersonId || projectInfo?.commissionerId || null;
 
             // Find the commissioner/manager
@@ -124,29 +124,26 @@ export default function ProjectListPage() {
             // Use actual status from projects.json if available, otherwise calculate it
             let projectStatus: 'ongoing' | 'paused' | 'completed';
             if (projectInfo?.status) {
-              // Map projects.json status to display status
+              // Normalize status to lowercase for consistency
               const normalizedStatus = projectInfo.status.toLowerCase();
-              console.log(`🔍 Project ${projectTasks.projectId}: Found status "${projectInfo.status}" -> normalized to "${normalizedStatus}"`);
+              console.log(`🔍 Project ${projectInfo.projectId}: Found status "${projectInfo.status}" -> normalized to "${normalizedStatus}"`);
 
-              // Simplified status mapping - only three statuses now
+              // Map to standard lowercase statuses
               if (normalizedStatus === 'ongoing') {
                 projectStatus = 'ongoing';
-                console.log(`✅ Using ongoing status from projects.json`);
               } else if (normalizedStatus === 'paused') {
                 projectStatus = 'paused';
-                console.log(`✅ Using paused status from projects.json`);
               } else if (normalizedStatus === 'completed') {
                 projectStatus = 'completed';
-                console.log(`✅ Using completed status from projects.json`);
               } else {
                 // Fallback to calculated status if status is not recognized
-                projectStatus = calculateProjectStatus(tasks);
-                console.log(`⚠️ Unrecognized status "${normalizedStatus}", calculated: ${projectStatus}`);
+                projectStatus = tasks.length > 0 ? calculateProjectStatus(tasks) : 'ongoing';
+                console.log(`⚠️ Unrecognized status "${normalizedStatus}", using fallback: ${projectStatus}`);
               }
             } else {
               // Fallback to calculated status if no status in projects.json
-              projectStatus = calculateProjectStatus(tasks);
-              console.log(`📊 No status in projects.json for project ${projectTasks.projectId}, calculated: ${projectStatus}`);
+              projectStatus = tasks.length > 0 ? calculateProjectStatus(tasks) : 'ongoing';
+              console.log(`📊 No status in projects.json for project ${projectInfo.projectId}, calculated: ${projectStatus}`);
             }
             let completionDate = null;
 
@@ -168,9 +165,10 @@ export default function ProjectListPage() {
             }
 
             return {
-              ...projectTasks,
-              // Override with data from projects.json if available
-              ...(projectInfo || {}),
+              // Start with project info as base
+              ...projectInfo,
+              // Add task-related data
+              tasks: tasks,
               status: projectStatus,
               totalTasks,
               progress,
@@ -179,7 +177,10 @@ export default function ProjectListPage() {
               managerId, // Add the managerId for commissioner lookup
               manager: {
                 name: commissioner ? commissioner.name : 'Unknown'
-              }
+              },
+              // Include organization info for compatibility
+              organizationId: projectInfo?.organizationId || projectTasks?.organizationId || 0,
+              typeTags: projectInfo?.typeTags || projectTasks?.typeTags || []
             };
           });
 

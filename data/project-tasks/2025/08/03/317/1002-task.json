@@ -1,0 +1,27 @@
+{
+  "taskId": 1002,
+  "projectId": 317,
+  "projectTitle": "Park Analytics Dashboard",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Analytics",
+    "Dashboard",
+    "Data Visualization"
+  ],
+  "title": "Dashboard UI Design & Implementation",
+  "status": "Approved",
+  "completed": true,
+  "order": 2,
+  "link": "bit.ly55",
+  "dueDate": "2025-08-13T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 1,
+  "pushedBack": false,
+  "version": 3,
+  "description": "Design and implement the user interface for the analytics dashboard with interactive charts and visualizations.",
+  "submittedDate": "2025-08-13T14:14:47.547Z",
+  "approvedDate": "2025-08-13T14:15:27.583Z",
+  "rejectedDate": "2025-08-13T07:03:08.433Z",
+  "createdDate": "2025-08-03T14:06:24.561Z",
+  "lastModified": "2025-08-13T14:15:27.584Z"
+}

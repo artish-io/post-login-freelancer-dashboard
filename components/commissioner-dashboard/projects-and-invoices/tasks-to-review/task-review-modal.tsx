@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Link2, X } from 'lucide-react';
@@ -28,6 +28,47 @@ type TaskToReview = {
   totalTasks?: number;
 };
 
+// Helper function for safe API calls with JSON parsing (no timeout for debugging)
+async function postTaskOp(payload: any) {
+  console.log('🚀 postTaskOp function called!');
+  console.log('🚀 Making API call with payload:', payload);
+
+  try {
+    // Simple fetch without timeout for debugging
+    const res = await fetch('/api/project-tasks/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    console.log('📡 API response status:', res.status);
+
+    const ct = res.headers.get('content-type') || '';
+    console.log('📄 Response content-type:', ct);
+
+    const data = ct.includes('application/json') ? await res.json().catch(() => null) : null;
+    console.log('📦 API response data:', data);
+
+    if (!res.ok) {
+      const msg = data?.message || data?.error || `Failed (${res.status})`;
+      console.error('❌ API response not ok:', { status: res.status, data, msg });
+      throw new Error(msg);
+    }
+
+    // Check if the response indicates success
+    if (data && data.success === false) {
+      console.error('❌ API returned success: false:', data);
+      throw new Error(data.message || data.error || 'API returned success: false');
+    }
+
+    console.log('✅ API call completed successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('❌ API call failed:', error);
+    throw error;
+  }
+}
+
 type Props = {
   isOpen: boolean;
   onClose: () => void;
@@ -39,6 +80,38 @@ export default function TaskReviewModal({ isOpen, onClose, task, onTaskReviewed 
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showForceClose, setShowForceClose] = useState(false);
+
+  // Debug: Log the task data when modal opens
+  console.log('TaskReviewModal received task:', task);
+  console.log('Task ID check:', {
+    'task.id': task.id,
+    'typeof task.id': typeof task.id,
+    'task object keys': Object.keys(task)
+  });
+
+  // Show force close button after 10 seconds of loading
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (loading) {
+      timer = setTimeout(() => {
+        setShowForceClose(true);
+      }, 10000);
+    } else {
+      setShowForceClose(false);
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [loading]);
+
+  const handleForceClose = () => {
+    console.log('🚨 Force closing modal due to timeout');
+    setLoading(false);
+    setError(null);
+    setShowForceClose(false);
+    onClose();
+  };
 
   const handleReject = async () => {
     if (!comment.trim()) {
@@ -46,68 +119,82 @@ export default function TaskReviewModal({ isOpen, onClose, task, onTaskReviewed 
       return;
     }
 
+    // Validate task ID before making API call
+    if (!task.id) {
+      setError('Task ID is missing. Cannot reject task.');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch('/api/project-tasks/review', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          projectId: task.projectId,
-          taskId: task.id,
-          action: 'reject',
-          comment: comment.trim(),
-          freelancerId: task.freelancer.id,
-          taskTitle: task.title
-        }),
+      await postTaskOp({
+        projectId: task.projectId,              // ✅ ensure present
+        taskId: task.id,                        // ✅ robust id
+        action: 'reject',
+        feedback: comment.trim() || undefined
       });
 
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.error || 'Failed to reject task');
-      }
-
+      // Reset loading state first, then close modal and trigger refresh
+      setLoading(false);
+      onClose();
       onTaskReviewed();
     } catch (err: any) {
+      console.error('Task rejection error:', err);
       setError(err.message);
-    } finally {
       setLoading(false);
     }
   };
 
   const handleApprove = async () => {
+    console.log('🔥 BUTTON CLICKED! handleApprove called');
+    console.log('🎯 Starting task approval process...');
     setLoading(true);
     setError(null);
 
+    // Validate task ID before making API call
+    if (!task.id) {
+      console.error('❌ Task ID is missing:', task);
+      setError('Task ID is missing. Cannot approve task.');
+      setLoading(false);
+      return;
+    }
+
+    console.log('📋 Task approval data:', {
+      taskId: task.id,
+      projectId: task.projectId,
+      action: 'approve'
+    });
+
     try {
-      const response = await fetch('/api/project-tasks/review', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          projectId: task.projectId,
-          taskId: task.id,
-          action: 'complete',
-          comment: comment.trim() || undefined,
-          freelancerId: task.freelancer.id,
-          taskTitle: task.title
-        }),
+      console.log('⏳ Calling API...');
+      const result = await postTaskOp({
+        projectId: task.projectId,              // ✅ ensure present
+        taskId: task.id,                        // ✅ robust id
+        action: 'approve'
       });
 
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(result.error || 'Failed to approve task');
-      }
+      console.log('✅ Task approved successfully:', result);
+      console.log('🔄 About to reset loading state and close modal...');
 
-      onTaskReviewed();
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
+      // Reset loading state first, then close modal and trigger refresh
+      console.log('🔄 Setting loading to false...');
       setLoading(false);
+
+      console.log('🔄 Calling onClose...');
+      onClose();
+
+      console.log('🔄 Calling onTaskReviewed...');
+      onTaskReviewed();
+
+      console.log('✅ All cleanup completed');
+    } catch (err: any) {
+      console.error('❌ Task approval error:', err);
+      console.log('🔄 Setting error and resetting loading state...');
+      setError(err.message || 'Failed to approve task');
+      setLoading(false);
+      console.log('❌ Error handling completed');
     }
   };
 
@@ -293,6 +380,21 @@ export default function TaskReviewModal({ isOpen, onClose, task, onTaskReviewed 
             {loading ? 'Processing...' : 'Mark As Completed'}
           </button>
         </div>
+
+        {/* Force Close Button - appears after 10 seconds of loading */}
+        {showForceClose && (
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-600 mb-2">
+              The request is taking longer than expected.
+            </p>
+            <button
+              onClick={handleForceClose}
+              className="px-4 py-2 bg-gray-500 text-white text-sm rounded-lg hover:bg-gray-600 transition-colors"
+            >
+              Cancel and Close
+            </button>
+          </div>
+        )}
       </motion.div>
     </div>
   );

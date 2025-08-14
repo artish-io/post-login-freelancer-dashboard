@@ -33,15 +33,9 @@ export default function ProjectTimeline({ projectId, title, logoUrl }: Props) {
   useEffect(() => {
     const fetchTimeline = async () => {
       try {
-        // Use the existing project-tasks API
-        const res = await fetch('/api/project-tasks');
-        const projectsResponse = await res.json();
-
-        // Ensure allProjects is always an array
-        const allProjects = Array.isArray(projectsResponse) ? projectsResponse : [];
-
-        // Find the specific project
-        const project = allProjects.find((p: any) => p.projectId === projectId);
+        // Use the specific project tasks API endpoint
+        const res = await fetch(`/api/project-tasks/${projectId}`);
+        const project = await res.json();
 
         if (project && Array.isArray(project.tasks)) {
           // Transform tasks to match the expected interface

@@ -1,11 +1,24 @@
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
+import { NextRequest } from 'next/server';
 
-export async function requireSession(req: Request) {
+export async function requireSession(req: NextRequest) {
+  // For NextAuth in API routes, we need to pass the request and response objects
   const session = await getServerSession(authOptions);
+
+  console.log('🔐 Session check:', {
+    hasSession: !!session,
+    hasUser: !!session?.user,
+    hasUserId: !!session?.user?.id,
+    userId: session?.user?.id
+  });
+
   if (!session?.user?.id) {
+    console.error('❌ No session or user ID found');
     throw Object.assign(new Error('UNAUTHORIZED'), { status: 401 });
   }
+
+  console.log('✅ Session validated for user:', session.user.id);
   return { session, userId: Number(session.user.id) };
 }
 

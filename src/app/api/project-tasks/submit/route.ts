@@ -10,38 +10,60 @@ import { NextRequest, NextResponse } from 'next/server';
 import { UnifiedTaskService } from '../../../../lib/services/unified-task-service';
 import { UnifiedStorageService } from '../../../../lib/storage/unified-storage-service';
 import { executeTaskApprovalTransaction } from '../../../../lib/transactions/transaction-service';
-import { eventLogger, NOTIFICATION_TYPES, ENTITY_TYPES } from '../../../../lib/events/event-logger';
+import { eventLogger, NOTIFICATION_TYPES, ENTITY_TYPES, EventType } from '../../../../lib/events/event-logger';
 import { requireSession, assert } from '../../../../lib/auth/session-guard';
 import { ok, err, ErrorCodes, withErrorHandling } from '../../../../lib/http/envelope';
 import { logTaskTransition, Subsystems } from '../../../../lib/log/transitions';
+import {
+  sendProjectCompletionRatingNotifications,
+  checkProjectCompletionForRating,
+  getUserNamesForRating
+} from '../../../../lib/notifications/rating-notifications';
 
 async function handleTaskOperation(request: NextRequest) {
   try {
     // 🔒 Auth - get session and validate
     const { userId: actorId } = await requireSession(request);
 
-    const { taskId, action, referenceUrl, feedback } = await request.json();
+    const { taskId, projectId, action, referenceUrl, feedback } = await request.json();
+
     assert(taskId && action, ErrorCodes.MISSING_REQUIRED_FIELD, 400, 'Missing required fields: taskId, action');
 
     // Validate action type
     const validActions = ['submit', 'approve', 'reject'];
     assert(validActions.includes(action), ErrorCodes.INVALID_INPUT, 400, `Invalid action: ${action}. Must be one of: ${validActions.join(', ')}`);
 
+    // Require projectId for submit and reject operations
+    if ((action === 'submit' || action === 'reject') && !projectId) {
+      return NextResponse.json(
+        err(ErrorCodes.MISSING_REQUIRED_FIELD, 'projectId is required for submit and reject actions', 400),
+        { status: 400 }
+      );
+    }
+
     let result;
-    let eventType: string | null = null;
+    let eventType: EventType | null = null;
 
     switch (action) {
       case 'submit':
         result = await UnifiedTaskService.submitTask(Number(taskId), actorId, {
+          projectId: Number(projectId),
           referenceUrl
         });
         eventType = 'task_submitted';
         break;
 
       case 'approve':
-        // Use transaction service for atomic task approval with invoice generation
+        // For approve, we can still use the legacy method since it doesn't require projectId in the request
+        // but we should migrate this to use composite lookup in the future
         const task = await UnifiedStorageService.getTaskById(Number(taskId));
-        const project = await UnifiedStorageService.getProjectById(task!.projectId);
+        if (!task) {
+          return NextResponse.json(
+            err(ErrorCodes.NOT_FOUND, `Task ${taskId} not found`, 404),
+            { status: 404 }
+          );
+        }
+        const project = await UnifiedStorageService.getProjectById(task.projectId);
 
         const transactionParams = {
           taskId: Number(taskId),
@@ -67,7 +89,7 @@ async function handleTaskOperation(request: NextRequest) {
 
         result = {
           success: true,
-          task: task,
+          task: transactionResult.results.update_task || task,
           shouldNotify: true,
           notificationTarget: project!.freelancerId,
           message: 'Task approved successfully with transaction integrity',
@@ -77,7 +99,10 @@ async function handleTaskOperation(request: NextRequest) {
         break;
 
       case 'reject':
-        result = await UnifiedTaskService.rejectTask(Number(taskId), actorId, feedback);
+        result = await UnifiedTaskService.rejectTask(Number(taskId), actorId, {
+          projectId: Number(projectId),
+          feedback
+        });
         eventType = 'task_rejected';
         break;
 
@@ -85,8 +110,16 @@ async function handleTaskOperation(request: NextRequest) {
         throw new Error(`Unsupported action: ${action}`);
     }
 
+    // Handle task service failures
+    if (!result.success) {
+      return NextResponse.json(
+        err(ErrorCodes.OPERATION_NOT_ALLOWED, result.message, 400),
+        { status: 400 }
+      );
+    }
+
     // Log the task transition
-    if (result.success && eventType) {
+    if (result.success && eventType && result.task) {
       logTaskTransition(
         Number(taskId),
         'previous_status', // This would need to be tracked properly
@@ -95,14 +128,13 @@ async function handleTaskOperation(request: NextRequest) {
         Subsystems.TASKS_SUBMIT,
         {
           projectId: result.task.projectId,
-          taskTitle: result.task.title,
-          action: action
+          taskTitle: result.task.title
         }
       );
     }
 
     // Log event for notifications
-    if (result.success && result.shouldNotify && eventType) {
+    if (result.success && result.shouldNotify && eventType && result.task) {
       try {
         const notificationTypeMap: Record<string, number> = {
           'task_submitted': NOTIFICATION_TYPES.TASK_SUBMITTED,
@@ -136,7 +168,47 @@ async function handleTaskOperation(request: NextRequest) {
       }
     }
 
+    // Check for project completion and send rating notifications (only for task approvals)
+    // Run this asynchronously to avoid blocking the response
+    if (result.success && action === 'approve' && eventType === 'task_approved' && result.task) {
+      const taskData = result.task; // Capture task data for async operation
+
+      // Fire and forget - don't await this to improve response time
+      setImmediate(async () => {
+        try {
+          const completionCheck = await checkProjectCompletionForRating(taskData.projectId);
+
+          if (completionCheck.isCompleted && completionCheck.allTasksApproved && completionCheck.projectData) {
+            const project = completionCheck.projectData;
+            const userNames = await getUserNamesForRating(project.freelancerId, project.commissionerId);
+
+            await sendProjectCompletionRatingNotifications({
+              projectId: project.projectId,
+              projectTitle: project.title || 'Untitled Project',
+              freelancerId: project.freelancerId,
+              freelancerName: userNames.freelancerName,
+              commissionerId: project.commissionerId,
+              commissionerName: userNames.commissionerName,
+              completedTaskTitle: taskData.title
+            });
+
+            console.log(`🌟 Project ${project.projectId} completed - rating notifications sent`);
+          }
+        } catch (ratingError) {
+          console.error('Error sending rating notifications:', ratingError);
+          // This is fire-and-forget, so errors don't affect the main response
+        }
+      });
+    }
+
     // Return success response
+    if (!result.task) {
+      return NextResponse.json(
+        err(ErrorCodes.INTERNAL_ERROR, 'Task data not available in result', 500),
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
       ok({
         entities: {
@@ -150,8 +222,7 @@ async function handleTaskOperation(request: NextRequest) {
           },
         },
         message: result.message,
-        notificationsQueued: result.shouldNotify,
-        invoiceGenerated: result.invoiceGenerated || false
+        notificationsQueued: result.shouldNotify
       })
     );
 

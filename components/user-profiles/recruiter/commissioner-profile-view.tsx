@@ -121,6 +121,7 @@ export default function CommissionerProfileView({
   // Transform profile data for components
   const profileHeaderData = profile ? {
     id: profile.id.toString(),
+    userId: profile.id, // Add userId for rating fetching
     name: profile.name,
     avatar: profile.avatar,
     location: profile.location || '',

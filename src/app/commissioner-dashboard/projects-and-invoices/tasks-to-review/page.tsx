@@ -38,20 +38,13 @@ export default function TasksToReviewPage() {
   const [selectedTask, setSelectedTask] = useState<TaskToReview | null>(null);
   const [commissionerId, setCommissionerId] = useState<number | null>(null);
 
-  // Initial fetch and setup polling
-  useEffect(() => {
-    if (status === 'loading') return;
-
-    if (!session) {
-      router.push('/login-commissioner');
+  const fetchTasksToReview = async () => {
+    if (!session?.user?.id) {
+      console.error('No session or user ID found');
       return;
     }
 
-    const fetchTasksToReview = async () => {
-      try {
-        if (!session.user?.id) {
-          throw new Error('No user ID found in session');
-        }
+    try {
         const currentCommissionerId = parseInt(session.user.id);
         setCommissionerId(currentCommissionerId);
 
@@ -95,9 +88,16 @@ export default function TasksToReviewPage() {
             if (!freelancer) return;
 
             project.tasks?.forEach((task: any, index: number) => {
+              console.log('🔍 Checking task:', { taskId: task.taskId, id: task.id, title: task.title, status: task.status });
               if (task.status === 'In review') {
+                console.log('✅ Task qualifies for review:', { taskId: task.taskId, id: task.id, title: task.title, status: task.status });
+                const taskId = task.taskId || task.id; // Get the actual task ID
+                if (!taskId) {
+                  console.error('Task missing both taskId and id:', task);
+                  return; // Skip this task if no ID is available
+                }
                 reviewTasks.push({
-                  id: task.id,
+                  id: taskId, // Use the resolved task ID
                   title: task.title,
                   projectId: project.projectId,
                   projectTitle: project.title,
@@ -131,16 +131,25 @@ export default function TasksToReviewPage() {
       }
     };
 
-    // Initial fetch
+  // Initial fetch and setup polling
+  useEffect(() => {
+    if (status === 'loading') return;
+
+    if (!session) {
+      router.push('/login-commissioner');
+      return;
+    }
+
+    // Initial fetch - ONLY ONCE, NO POLLING
     fetchTasksToReview();
 
-    // Set up polling every 30 seconds to check for new submissions
-    const pollInterval = setInterval(() => {
-      console.log('🔄 Commissioner polling for new task submissions...');
-      fetchTasksToReview();
-    }, 30000);
+    // POLLING DISABLED FOR DEBUGGING
+    // const pollInterval = setInterval(() => {
+    //   console.log('🔄 Commissioner polling for new task submissions...');
+    //   fetchTasksToReview();
+    // }, 5000);
 
-    return () => clearInterval(pollInterval);
+    // return () => clearInterval(pollInterval);
   }, [session, status, router]);
 
   const handleTaskClick = (task: TaskToReview) => {
@@ -152,13 +161,13 @@ export default function TasksToReviewPage() {
   };
 
   const handleTaskReviewed = () => {
+    console.log('🔄 handleTaskReviewed called - starting refresh process');
     // Refresh the tasks list after a task is reviewed
     setSelectedTask(null);
-    // Trigger a re-fetch by updating the loading state
-    setLoading(true);
-    setTimeout(() => {
-      window.location.reload(); // Simple refresh for now
-    }, 500);
+    console.log('🔄 Modal closed, now calling fetchTasksToReview...');
+    // Re-fetch the tasks to update the table
+    fetchTasksToReview();
+    console.log('🔄 fetchTasksToReview called successfully');
   };
 
   if (status === 'loading' || loading) {

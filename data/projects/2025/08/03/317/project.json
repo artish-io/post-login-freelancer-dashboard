@@ -17,12 +17,13 @@
   "freelancerId": 31,
   "status": "ongoing",
   "dueDate": "2025-09-21",
-  "totalTasks": 1,
+  "totalTasks": 2,
   "createdAt": "2025-08-03T14:06:24.561Z",
   "invoicingMethod": "completion",
   "budget": {
     "lower": 1000,
     "upper": 5000,
     "currency": "USD"
-  }
+  },
+  "commissionerId": 32
 }

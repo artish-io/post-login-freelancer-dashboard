@@ -9,6 +9,8 @@ import { UnifiedStorageService } from '../storage/unified-storage-service';
 import { listTasksByProject } from '../../app/api/payments/repos/tasks-repo';
 import { getProjectById, updateProject as updateProjectRepo } from '../../app/api/payments/repos/projects-repo';
 import { normalizeTaskStatus } from '../../app/api/payments/domain/types';
+import { readProject } from '../projects-utils';
+import { readProjectTasks } from '../project-tasks/hierarchical-storage';
 
 export interface ProjectCompletionResult {
   projectId: number;
@@ -56,14 +58,13 @@ export async function checkProjectCompletionEligibility(projectId: number): Prom
       };
     }
 
-    // Get tasks from hierarchical storage
-    const hierarchicalTasks = await readProjectTasks(projectId);
-    
-    // Also get tasks from repo for cross-validation
-    const repoTasks = await listTasksByProject(projectId);
-    
-    // Use hierarchical tasks as primary source, fallback to repo
-    const tasks = hierarchicalTasks.length > 0 ? hierarchicalTasks : repoTasks;
+    // Get tasks from hierarchical storage first (faster), fallback to repo if needed
+    let tasks = await readProjectTasks(projectId);
+
+    // Only query repo if hierarchical storage is empty
+    if (tasks.length === 0) {
+      tasks = await listTasksByProject(projectId);
+    }
 
     if (tasks.length === 0) {
       return {

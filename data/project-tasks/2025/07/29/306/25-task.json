@@ -1,0 +1,25 @@
+{
+  "taskId": 25,
+  "projectId": 306,
+  "projectTitle": "Nebula CMS landing redesign",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Web Design",
+    "UX Strategy"
+  ],
+  "title": "404 error page concept",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 8,
+  "link": "bit.ly234234",
+  "dueDate": "2025-07-14T00:00:00.000Z",
+  "rejected": true,
+  "feedbackCount": 2,
+  "pushedBack": false,
+  "version": 3,
+  "description": "Create a playful and branded 404 error page.",
+  "createdDate": "2025-07-29T15:57:39.545Z",
+  "lastModified": "2025-08-13T15:03:42.555Z",
+  "submittedDate": "2025-08-13T06:30:01.246Z",
+  "rejectedDate": "2025-08-13T15:03:42.539Z"
+}

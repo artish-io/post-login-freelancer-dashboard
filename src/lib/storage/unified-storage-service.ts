@@ -19,6 +19,9 @@ import path from 'path';
 import { format } from 'date-fns';
 import { z } from 'zod';
 
+// Throttle warnings to prevent spam
+const warnedProjects = new Set<number>();
+
 // Import schemas
 import { ProjectSchema, ProjectTaskSchema, parseProject, parseTask } from './schemas';
 
@@ -51,11 +54,14 @@ const logger: Logger = {
 export type Project = z.infer<typeof ProjectSchema>;
 export type ProjectTask = z.infer<typeof ProjectTaskSchema>;
 
+// Type aliases for backward compatibility
+export type UnifiedProject = Project;
+export type UnifiedTask = ProjectTask;
+
 // File mutex for thread safety
 const fileLocks = new Map<string, Promise<void>>();
 
-// Legacy warning tracking (warn once per ID)
-const legacyWarnings = new Set<string>();
+// Legacy warning tracking removed - no more legacy fallbacks
 
 /**
  * Core utility functions for path generation and file operations
@@ -149,55 +155,8 @@ async function ensureDirs(dirPath: string): Promise<void> {
  * Legacy compatibility functions (read-only with warnings)
  */
 
-/**
- * Read project from legacy flat file (read-only, warn once)
- */
-async function readLegacyProject(projectId: string | number): Promise<Project | null> {
-  const warningKey = `project-${projectId}`;
-  if (!legacyWarnings.has(warningKey)) {
-    logger.warn(`⚠️ [StorageCompat] Legacy read for project ${projectId}. Please migrate.`);
-    legacyWarnings.add(warningKey);
-  }
-
-  try {
-    const legacyPath = path.join(process.cwd(), 'data', 'projects.json');
-    if (await fileExists(legacyPath)) {
-      const data = await fs.readFile(legacyPath, 'utf-8');
-      const projects = JSON.parse(data);
-      const project = projects.find((p: any) => p.projectId === Number(projectId));
-      return project ? parseProject(project) : null;
-    }
-  } catch (error) {
-    logger.error(`Error reading legacy project ${projectId}:`, error);
-  }
-
-  return null;
-}
-
-/**
- * Read task from legacy flat file (read-only, warn once)
- */
-async function readLegacyTask(projectId: string | number, taskId: string | number): Promise<ProjectTask | null> {
-  const warningKey = `task-${taskId}`;
-  if (!legacyWarnings.has(warningKey)) {
-    logger.warn(`⚠️ [StorageCompat] Legacy read for task ${taskId}. Please migrate.`);
-    legacyWarnings.add(warningKey);
-  }
-
-  try {
-    const legacyPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-    if (await fileExists(legacyPath)) {
-      const data = await fs.readFile(legacyPath, 'utf-8');
-      const tasks = JSON.parse(data);
-      const task = tasks.find((t: any) => t.taskId === Number(taskId) && t.projectId === Number(projectId));
-      return task ? parseTask(task) : null;
-    }
-  } catch (error) {
-    logger.error(`Error reading legacy task ${taskId}:`, error);
-  }
-
-  return null;
-}
+// Legacy read functions removed - no more fallback to flat files
+// This ensures the system fails fast when data is missing from hierarchical storage
 
 /**
  * Index management functions
@@ -237,6 +196,7 @@ async function updateTaskIndexes(task: ProjectTask): Promise<void> {
 
   await withFileLock(indexPath, async () => {
     let index: Record<string, { projectId: number; createdAt: string }> = {};
+
     if (await fileExists(indexPath)) {
       const data = await fs.readFile(indexPath, 'utf-8');
       index = JSON.parse(data);
@@ -248,7 +208,9 @@ async function updateTaskIndexes(task: ProjectTask): Promise<void> {
     };
 
     await ensureDir(path.dirname(indexPath));
-    await atomicWrite(indexPath, index);
+
+    // Use writeJsonAtomic directly instead of atomicWrite to avoid nested locking
+    await writeJsonAtomic(indexPath, index);
 
     logger.info(`Updated task indexes for task ${task.taskId}`);
   });
@@ -283,8 +245,15 @@ export class UnifiedStorageService {
         }
       }
 
-      // Fallback to legacy read (with warning)
-      return await readLegacyProject(projectId);
+      // Graceful degradation - project not found but don't spam logs
+      // This is normal in production when users delete/archive projects
+      if (!warnedProjects.has(projectId)) {
+        logger.info(`[UnifiedStorage] Project ${projectId} not found (may have been deleted/archived)`);
+        warnedProjects.add(projectId);
+        // Clear the warning after 5 minutes to allow retry
+        setTimeout(() => warnedProjects.delete(projectId), 5 * 60 * 1000);
+      }
+      return null;
     } catch (error) {
       logger.error(`Error reading project ${projectId}:`, error);
       return null;
@@ -308,7 +277,10 @@ export class UnifiedStorageService {
       validatedProject.updatedAt = new Date().toISOString();
 
       // Write to hierarchical storage
-      const projectPath = getProjectPath(validatedProject);
+      const projectPath = getProjectPath({
+        id: validatedProject.projectId,
+        createdAt: validatedProject.createdAt
+      });
       await atomicWrite(projectPath, validatedProject);
 
       // Update indexes
@@ -346,8 +318,9 @@ export class UnifiedStorageService {
         }
       }
 
-      // Fallback to legacy read (with warning)
-      return await readLegacyTask(projectId, taskId);
+      // No legacy fallback - fail fast if task not found in hierarchical storage
+      logger.warn(`Task ${taskId} not found in hierarchical storage for project ${projectId}`);
+      return null;
     } catch (error) {
       logger.error(`Error reading task ${taskId} from project ${projectId}:`, error);
       return null;
@@ -376,6 +349,7 @@ export class UnifiedStorageService {
         projectId: validatedTask.projectId,
         createdAt: validatedTask.createdDate
       });
+
       await atomicWrite(taskPath, validatedTask);
 
       // Update indexes
@@ -386,6 +360,78 @@ export class UnifiedStorageService {
       logger.error(`Error writing task ${task.taskId}:`, error);
       throw error;
     }
+  }
+
+  /**
+   * Save a task (alias for writeTask for backward compatibility)
+   */
+  static async saveTask(task: ProjectTask): Promise<void> {
+    return await UnifiedStorageService.writeTask(task);
+  }
+
+  /**
+   * Get a task by composite ID (projectId, taskId) - PREFERRED METHOD
+   */
+  static async getTaskByCompositeId(projectId: number, taskId: number): Promise<ProjectTask | null> {
+    try {
+      // Import tasks-paths utilities dynamically to avoid circular dependency
+      const { readProjectTasks } = await import('./tasks-paths');
+      const tasks = await readProjectTasks(projectId);
+      const task = tasks.find(t => (t.id ?? t.taskId) === taskId);
+
+      if (!task) {
+        logger.warn(`Task ${taskId} not found in project ${projectId}`);
+        return null;
+      }
+
+      // Convert to ProjectTask format if needed
+      return parseTask(task);
+    } catch (error) {
+      logger.error(`Error getting task ${taskId} from project ${projectId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Get a task by ID (searches across all projects) - LEGACY COMPATIBILITY
+   * @deprecated Use getTaskByCompositeId(projectId, taskId) instead
+   */
+  static async getTaskById(taskId: number | string): Promise<ProjectTask | null> {
+    try {
+      // Try to find in hierarchical storage using task index
+      const indexPath = path.join(process.cwd(), 'data', 'project-tasks', 'metadata', 'tasks-index.json');
+      if (await fileExists(indexPath)) {
+        const indexData = await fs.readFile(indexPath, 'utf-8');
+        const index = JSON.parse(indexData);
+        const taskInfo = index[taskId.toString()];
+
+        if (taskInfo && taskInfo.projectId) {
+          // Use composite lookup for better reliability
+          return await UnifiedStorageService.getTaskByCompositeId(taskInfo.projectId, Number(taskId));
+        }
+      }
+
+      // No fallback search - if not in index, task doesn't exist
+      logger.warn(`Task ${taskId} not found in task index`);
+      return null;
+    } catch (error) {
+      logger.error(`Error getting task ${taskId}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * Get a project by ID (alias for readProject)
+   */
+  static async getProjectById(projectId: number | string): Promise<Project | null> {
+    return await UnifiedStorageService.readProject(projectId);
+  }
+
+  /**
+   * Get all tasks for a project (alias for listTasks with projectId filter)
+   */
+  static async getTasksByProject(projectId: number | string): Promise<ProjectTask[]> {
+    return await UnifiedStorageService.listTasks(projectId);
   }
 
   /**
@@ -453,69 +499,28 @@ export class UnifiedStorageService {
     offset?: number;
   }): Promise<ProjectTask[]> {
     try {
-      let tasks: ProjectTask[] = [];
+      // Use the new hierarchical storage approach
+      const { readProjectTasks } = await import('./tasks-paths');
+      let tasks = await readProjectTasks(Number(projectId));
 
-      // Read from task index
-      const indexPath = path.join(process.cwd(), 'data', 'project-tasks', 'metadata', 'tasks-index.json');
-      if (await fileExists(indexPath)) {
-        const indexData = await fs.readFile(indexPath, 'utf-8');
-        const index = JSON.parse(indexData);
+      // Convert to ProjectTask format and apply filters
+      let filteredTasks = tasks
+        .map(task => parseTask(task))
+        .filter(task => {
+          if (filters?.status && task.status !== filters.status) return false;
+          if (filters?.completed !== undefined && task.completed !== filters.completed) return false;
+          return true;
+        });
 
-        // Filter tasks by project
-        const projectTasks = Object.entries(index)
-          .filter(([_, taskInfo]: [string, any]) => taskInfo.projectId === Number(projectId))
-          .map(([taskId, _]) => taskId);
-
-        // Apply pagination early
-        let filteredTaskIds = projectTasks;
-        if (filters?.offset || filters?.limit) {
-          const offset = filters.offset || 0;
-          const limit = filters.limit || 100;
-          filteredTaskIds = projectTasks.slice(offset, offset + limit);
-        }
-
-        // Read tasks
-        for (const taskId of filteredTaskIds) {
-          const task = await UnifiedStorageService.readTask(projectId, taskId);
-          if (task) {
-            // Apply filters
-            if (filters?.status && task.status !== filters.status) continue;
-            if (filters?.completed !== undefined && task.completed !== filters.completed) continue;
-
-            tasks.push(task);
-          }
-        }
-      } else {
-        // Fallback: Use hierarchical storage directly when no index exists
-        logger.info(`No tasks index found, using hierarchical storage for project ${projectId}`);
-        const hierarchicalTasks = await readProjectTasks(Number(projectId));
-
-        // Convert hierarchical tasks to ProjectTask format and validate
-        for (const hierarchicalTask of hierarchicalTasks) {
-          try {
-            const validatedTask = parseTask(hierarchicalTask);
-
-            // Apply filters
-            if (filters?.status && validatedTask.status !== filters.status) continue;
-            if (filters?.completed !== undefined && validatedTask.completed !== filters.completed) continue;
-
-            tasks.push(validatedTask);
-          } catch (error) {
-            logger.warn(`Task validation failed for task ${hierarchicalTask.taskId}:`, error);
-            // Skip invalid tasks but continue processing others
-          }
-        }
-
-        // Apply pagination after filtering
-        if (filters?.offset || filters?.limit) {
-          const offset = filters.offset || 0;
-          const limit = filters.limit || 100;
-          tasks = tasks.slice(offset, offset + limit);
-        }
+      // Apply pagination
+      if (filters?.offset || filters?.limit) {
+        const offset = filters.offset || 0;
+        const limit = filters.limit || 100;
+        filteredTasks = filteredTasks.slice(offset, offset + limit);
       }
 
       // Sort by order, then creation date
-      return tasks.sort((a, b) => {
+      return filteredTasks.sort((a, b) => {
         if (a.order !== b.order) return a.order - b.order;
         const dateA = new Date(a.createdDate || '').getTime();
         const dateB = new Date(b.createdDate || '').getTime();
@@ -765,6 +770,11 @@ export const writeProject = UnifiedStorageService.writeProject.bind(UnifiedStora
 export const listProjects = UnifiedStorageService.listProjects.bind(UnifiedStorageService);
 export const readTask = UnifiedStorageService.readTask.bind(UnifiedStorageService);
 export const writeTask = UnifiedStorageService.writeTask.bind(UnifiedStorageService);
+export const saveTask = UnifiedStorageService.saveTask.bind(UnifiedStorageService);
+export const getTaskById = UnifiedStorageService.getTaskById.bind(UnifiedStorageService);
+export const getTaskByCompositeId = UnifiedStorageService.getTaskByCompositeId.bind(UnifiedStorageService);
+export const getProjectById = UnifiedStorageService.getProjectById.bind(UnifiedStorageService);
+export const getTasksByProject = UnifiedStorageService.getTasksByProject.bind(UnifiedStorageService);
 export const listTasks = UnifiedStorageService.listTasks.bind(UnifiedStorageService);
 export const getAllUsers = UnifiedStorageService.getAllUsers.bind(UnifiedStorageService);
 export const getUserById = UnifiedStorageService.getUserById.bind(UnifiedStorageService);

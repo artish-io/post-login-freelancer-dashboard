@@ -56,7 +56,7 @@ export async function readJson<T>(filePath: string, fallback: T): Promise<T> {
 export async function writeJsonAtomic(filePath: string, data: unknown): Promise<void> {
   const dirPath = path.dirname(filePath);
   await ensureDir(dirPath);
-  
+
   // Write to temporary file first, then rename for atomicity
   const tempPath = `${filePath}.tmp`;
   try {
@@ -70,5 +70,22 @@ export async function writeJsonAtomic(filePath: string, data: unknown): Promise<
       // Ignore cleanup errors
     }
     throw error;
+  }
+}
+
+/**
+ * Safe read with type validation
+ */
+export async function readJsonSafe<T>(filePath: string, fallback: T, validator?: (data: unknown) => data is T): Promise<T> {
+  try {
+    const data = await readJson(filePath, fallback);
+    if (validator && !validator(data)) {
+      console.warn(`Invalid data structure in ${filePath}, using fallback`);
+      return fallback;
+    }
+    return data;
+  } catch (error) {
+    console.warn(`Failed to read JSON file ${filePath}:`, error);
+    return fallback;
   }
 }

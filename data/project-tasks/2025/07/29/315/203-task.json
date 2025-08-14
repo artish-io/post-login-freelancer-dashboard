@@ -1,0 +1,26 @@
+{
+  "taskId": 203,
+  "projectId": 315,
+  "projectTitle": "Interactive Park Map Web App",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Frontend",
+    "React",
+    "GIS"
+  ],
+  "title": "Initial setup for Interactive Park Map Web App",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "link": "",
+  "dueDate": "2025-07-28T00:00:00.000Z",
+  "rejected": true,
+  "feedbackCount": 1,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Begin work on Interactive Park Map Web App project",
+  "createdDate": "2025-07-29T15:57:39.550Z",
+  "lastModified": "2025-08-13T07:52:54.792Z",
+  "submittedDate": "2025-08-04T05:32:27.653Z",
+  "rejectedDate": "2025-08-13T07:52:54.791Z"
+}

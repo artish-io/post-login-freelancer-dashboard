@@ -8,23 +8,25 @@
     "Corporate Events",
     "Professional Photography"
   ],
+  "commissionerId": 35,
+  "freelancerId": 1,
+  "status": "completed",
+  "dueDate": "2025-08-20T04:00:00.000Z",
+  "totalTasks": 1,
+  "invoicingMethod": "completion",
+  "createdAt": "2025-08-07T17:49:37.346Z",
+  "updatedAt": "2025-08-13T18:30:02.663Z",
   "manager": {
     "name": "Tilly Burzinsky",
     "title": "Events Lead",
     "avatar": "/avatars/tilly.png",
     "email": "tilly.burzinsky@example.com"
   },
-  "commissionerId": 35,
-  "freelancerId": 1,
-  "status": "ongoing",
-  "dueDate": "2025-08-20T04:00:00.000Z",
-  "totalTasks": 1,
-  "gigId": 12,
-  "createdAt": "2025-08-07T17:49:37.346Z",
-  "invoicingMethod": "completion",
   "budget": {
     "lower": 1000,
     "upper": 5000,
     "currency": "USD"
-  }
+  },
+  "gigId": 12,
+  "completedAt": "2025-08-13T18:30:02.663Z"
 }

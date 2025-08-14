@@ -24,53 +24,100 @@ export interface TaskOperationResult {
   invoiceGenerated?: boolean;
 }
 
+export interface TaskOperationOptions {
+  projectId?: number;
+  referenceUrl?: string;
+  workingFileUrl?: string;
+  notes?: string;
+  feedback?: string;
+}
+
 export class UnifiedTaskService {
   
   /**
    * Submit a task for review
    */
   static async submitTask(
-    taskId: number, 
-    actorId: number, 
-    submissionData?: TaskSubmissionData
+    taskId: number,
+    actorId: number,
+    options: TaskOperationOptions
   ): Promise<TaskOperationResult> {
-    const task = await UnifiedStorageService.getTaskById(taskId);
-    if (!task) {
-      throw new Error(`Task ${taskId} not found`);
+    // Require projectId for submit operations
+    if (!options.projectId) {
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: 'projectId is required for task submission'
+      };
     }
 
-    const project = await UnifiedStorageService.getProjectById(task.projectId);
+    const task = await UnifiedStorageService.getTaskByCompositeId(options.projectId, taskId);
+    if (!task) {
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: `Task ${taskId} not found in project ${options.projectId}`
+      };
+    }
+
+    const project = await UnifiedStorageService.getProjectById(options.projectId);
     if (!project) {
-      throw new Error(`Project ${task.projectId} not found for task ${taskId}`);
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: `Project ${options.projectId} not found`
+      };
     }
 
     // Validate actor is the freelancer
     if (project.freelancerId !== actorId) {
-      throw new Error('Only the assigned freelancer can submit tasks');
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: 'Only the assigned freelancer can submit tasks'
+      };
     }
 
     // Validate current status allows submission
     if (!['Ongoing', 'Rejected'].includes(task.status)) {
-      throw new Error(`Cannot submit task with status: ${task.status}`);
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: `Cannot submit task with status: ${task.status}`
+      };
     }
 
-    // Update task for submission
-    const updatedTask: UnifiedTask = {
-      ...task,
+    // Update task for submission using hierarchical storage
+    const updates = {
       status: 'In review',
       completed: false, // Only true when approved
       rejected: false,
       submittedDate: new Date().toISOString(),
       lastModified: new Date().toISOString(),
-      version: task.version + 1,
-      link: submissionData?.referenceUrl || task.link
+      version: (task.version || 1) + 1,
+      link: options.referenceUrl || task.link
     };
 
-    await UnifiedStorageService.saveTask(updatedTask);
+    // Use dynamic import to avoid circular dependency
+    const { updateTaskInProject } = await import('../storage/tasks-paths');
+    const updatedTask = await updateTaskInProject(options.projectId, taskId, updates);
+    if (!updatedTask) {
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: `Failed to update task ${taskId} in project ${options.projectId}`
+      };
+    }
 
     return {
       success: true,
-      task: updatedTask,
+      task: updatedTask as UnifiedTask,
       shouldNotify: true,
       notificationTarget: project.commissionerId,
       message: `Task "${task.title}" submitted for review`
@@ -138,46 +185,85 @@ export class UnifiedTaskService {
    * Reject a task
    */
   static async rejectTask(
-    taskId: number, 
+    taskId: number,
     actorId: number,
-    feedback?: string
+    options: TaskOperationOptions
   ): Promise<TaskOperationResult> {
-    const task = await UnifiedStorageService.getTaskById(taskId);
-    if (!task) {
-      throw new Error(`Task ${taskId} not found`);
+    // Require projectId for reject operations
+    if (!options.projectId) {
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: 'projectId is required for task rejection'
+      };
     }
 
-    const project = await UnifiedStorageService.getProjectById(task.projectId);
+    const task = await UnifiedStorageService.getTaskByCompositeId(options.projectId, taskId);
+    if (!task) {
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: `Task ${taskId} not found in project ${options.projectId}`
+      };
+    }
+
+    const project = await UnifiedStorageService.getProjectById(options.projectId);
     if (!project) {
-      throw new Error(`Project ${task.projectId} not found for task ${taskId}`);
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: `Project ${options.projectId} not found`
+      };
     }
 
     // Validate actor is the commissioner
     if (project.commissionerId !== actorId) {
-      throw new Error('Only the project commissioner can reject tasks');
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: 'Only the project commissioner can reject tasks'
+      };
     }
 
     // Validate current status allows rejection
     if (task.status !== 'In review') {
-      throw new Error(`Cannot reject task with status: ${task.status}`);
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: `Cannot reject task with status: ${task.status}`
+      };
     }
 
-    // Update task for rejection
-    const updatedTask: UnifiedTask = {
-      ...task,
+    // Update task for rejection using hierarchical storage
+    const updates = {
       status: 'Ongoing', // Back to ongoing for freelancer to work on
       completed: false,
       rejected: true,
       rejectedDate: new Date().toISOString(),
       lastModified: new Date().toISOString(),
-      feedbackCount: task.feedbackCount + 1
+      feedbackCount: (task.feedbackCount || 0) + 1
     };
 
-    await UnifiedStorageService.saveTask(updatedTask);
+    // Use dynamic import to avoid circular dependency
+    const { updateTaskInProject } = await import('../storage/tasks-paths');
+    const updatedTask = await updateTaskInProject(options.projectId, taskId, updates);
+    if (!updatedTask) {
+      return {
+        success: false,
+        task: null as any,
+        shouldNotify: false,
+        message: `Failed to update task ${taskId} in project ${options.projectId}`
+      };
+    }
 
     return {
       success: true,
-      task: updatedTask,
+      task: updatedTask as UnifiedTask,
       shouldNotify: true,
       notificationTarget: project.freelancerId,
       message: `Task "${task.title}" rejected and returned for revision`

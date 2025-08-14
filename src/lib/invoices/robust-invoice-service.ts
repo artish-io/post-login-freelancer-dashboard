@@ -209,13 +209,13 @@ async function validateInvoiceRequest(request: InvoiceGenerationRequest): Promis
     errors.push('Invalid invoice type');
   }
 
-  // Check if invoice already exists for this task
+  // Check if invoice already exists for this task (optimized to check project invoices only)
   try {
-    const existingInvoices = await getAllInvoices();
-    const duplicateInvoice = existingInvoices.find(invoice => 
+    const projectInvoices = await getAllInvoices({ projectId: request.projectId });
+    const duplicateInvoice = projectInvoices.find(invoice =>
       invoice.milestones?.some(milestone => milestone.taskId === request.taskId)
     );
-    
+
     if (duplicateInvoice) {
       errors.push(`Invoice already exists for task ${request.taskId}: ${duplicateInvoice.invoiceNumber}`);
     }
@@ -296,8 +296,11 @@ async function calculateInvoiceAmount(
  */
 async function getPaidTasksCount(projectId: number): Promise<number> {
   try {
-    const allInvoices = await getAllInvoices();
-    const projectInvoices = allInvoices.filter(inv => inv.projectId === projectId && inv.status === 'paid');
+    // Only get invoices for this specific project with paid status
+    const projectInvoices = await getAllInvoices({
+      projectId: projectId,
+      status: 'paid'
+    });
 
     // Count unique tasks that have been paid
     const paidTaskIds = new Set();

@@ -15,22 +15,27 @@ export default function useSubmitTask() {
   const [success, setSuccess] = useState(false);
 
   const submitTask = async ({ projectId, taskId, referenceUrl, action = 'submit' }: SubmitParams) => {
+
     setLoading(true);
     setError(null);
     setSuccess(false);
 
     try {
+      const requestBody = {
+        projectId,
+        taskId,
+        action,
+        referenceUrl,
+      };
+
+
+
       const res = await fetch('/api/project-tasks/submit', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          projectId,
-          taskId,
-          action,
-          referenceUrl,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (!res.ok) {

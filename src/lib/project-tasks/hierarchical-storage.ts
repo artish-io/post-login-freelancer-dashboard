@@ -274,22 +274,37 @@ export async function readProjectTasks(projectId: number): Promise<HierarchicalT
   try {
     // Walk through year/month/day directories
     const years = await fs.readdir(basePath);
-    
+
     for (const year of years) {
+      // Skip metadata directory
+      if (year === 'metadata') continue;
+
       const yearPath = path.join(basePath, year);
+      const yearStat = await fs.stat(yearPath);
+      if (!yearStat.isDirectory()) continue;
+
       const months = await fs.readdir(yearPath);
-      
+
       for (const month of months) {
         const monthPath = path.join(yearPath, month);
+        const monthStat = await fs.stat(monthPath);
+        if (!monthStat.isDirectory()) continue;
+
         const days = await fs.readdir(monthPath);
-        
+
         for (const day of days) {
           const dayPath = path.join(monthPath, day);
+          const dayStat = await fs.stat(dayPath);
+          if (!dayStat.isDirectory()) continue;
+
           const projectPath = path.join(dayPath, projectId.toString());
-          
+
           try {
+            const projectStat = await fs.stat(projectPath);
+            if (!projectStat.isDirectory()) continue;
+
             const taskFiles = await fs.readdir(projectPath);
-            
+
             for (const taskFile of taskFiles) {
               if (taskFile.endsWith('-task.json')) {
                 const taskPath = path.join(projectPath, taskFile);

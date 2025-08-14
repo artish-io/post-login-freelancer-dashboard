@@ -580,6 +580,10 @@ function generateGranularMessage(event: EventData, _actor: any, _project?: any, 
       return event.metadata.rejectionReason || 'No reason provided';
     case 'gig_rejected':
       return event.metadata.rejectionMessage || 'You will be able to re-apply if this gig listing is still active after 21 days.';
+    case 'rating_prompt_freelancer':
+      return event.metadata.message || `Rate your experience working with ${event.metadata.commissionerName} on ${event.metadata.projectTitle}`;
+    case 'rating_prompt_commissioner':
+      return event.metadata.message || `Rate ${event.metadata.freelancerName}'s work on ${event.metadata.projectTitle}`;
     default:
       return 'Activity update';
   }
@@ -619,6 +623,12 @@ function generateNotificationLink(event: EventData, _project?: any, _task?: any)
     case 'product_purchased':
       // Navigate to product inventory page
       return `/freelancer-dashboard/storefront/product-inventory`;
+    case 'rating_prompt_freelancer':
+      // Navigate to project tracking page where rating UI will be available
+      return `/freelancer-dashboard/projects-and-invoices/project-tracking/${event.context?.projectId}`;
+    case 'rating_prompt_commissioner':
+      // Navigate to project tracking page where rating UI will be available
+      return `/commissioner-dashboard/projects-and-invoices/project-tracking/${event.context?.projectId}`;
     default:
       return '#';
   }

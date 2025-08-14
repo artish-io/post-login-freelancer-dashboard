@@ -6,8 +6,12 @@ import { filterFreelancerProjects, isValidFreelancerTask } from '@/lib/freelance
 
 export async function GET() {
   try {
+    console.log('🔍 /api/project-tasks called');
+
     // Validate session
     const session = await getServerSession(authOptions);
+    console.log('🔐 Session check:', { hasSession: !!session, hasUser: !!session?.user, userId: session?.user?.id });
+
     if (!session?.user?.id) {
       console.warn('No session found in project-tasks API - this should be fixed in production');
       // For now, return empty array instead of 401 to allow frontend to work
@@ -21,19 +25,28 @@ export async function GET() {
     }
 
     // Get all projects and their tasks
+    console.log('📋 Fetching all projects...');
     const allProjectsInfo = await UnifiedStorageService.listProjects();
+    console.log('📋 Found projects:', allProjectsInfo.length);
+
     const allProjects = [];
 
     // Get tasks for each project and format them
     for (const project of allProjectsInfo) {
       const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
       if (projectTasks.length > 0) {
+        // Transform tasks to match frontend expectations (taskId -> id)
+        const transformedTasks = projectTasks.map(task => ({
+          ...task,
+          id: task.taskId // Map taskId to id for frontend compatibility
+        }));
+
         allProjects.push({
           projectId: project.projectId,
           title: project.title || 'Untitled Project',
           organizationId: project.organizationId || 0,
           typeTags: project.typeTags || [],
-          tasks: projectTasks
+          tasks: transformedTasks
         });
       }
     }

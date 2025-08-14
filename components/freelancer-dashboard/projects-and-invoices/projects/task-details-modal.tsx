@@ -52,6 +52,8 @@ export default function TaskDetailsModal({
 }: Props) {
   const { data: session } = useSession();
   const [referenceUrl, setReferenceUrl] = useState('');
+
+
   const [submissionRule, setSubmissionRule] = useState<TaskSubmissionRule>({ canSubmit: true });
   const [checkingRules, setCheckingRules] = useState(false);
   const [, setIsProjectPaused] = useState(false);
@@ -155,6 +157,7 @@ export default function TaskDetailsModal({
       showErrorToast('Cannot Submit Task', submissionRule.reason || 'Task cannot be submitted at this time.');
       return;
     }
+
 
     await submitTask({ projectId, taskId, referenceUrl });
 

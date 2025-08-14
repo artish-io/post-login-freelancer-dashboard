@@ -5,6 +5,7 @@ import { MapPin, Star, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { UserRatingsSummary } from '../../types/ratings';
 
 interface Profile {
   id: string;
@@ -69,6 +70,31 @@ export default function ProfileHeader({
   const [canSendMessage, setCanSendMessage] = useState(true);
   const [messageBlockReason, setMessageBlockReason] = useState<string | null>(null);
   const [checkingPermission, setCheckingPermission] = useState(false);
+  const [ratingsSummary, setRatingsSummary] = useState<UserRatingsSummary | null>(null);
+  const [loadingRatings, setLoadingRatings] = useState(false);
+
+  // Fetch ratings for the profile
+  useEffect(() => {
+    if (!profile.id || !profileType) return;
+
+    const fetchRatings = async () => {
+      try {
+        setLoadingRatings(true);
+        const response = await fetch(`/api/ratings/user?userId=${profile.id}&userType=${profileType}`);
+        const data = await response.json();
+
+        if (data.success) {
+          setRatingsSummary(data.summary);
+        }
+      } catch (error) {
+        console.error('Error fetching profile ratings:', error);
+      } finally {
+        setLoadingRatings(false);
+      }
+    };
+
+    fetchRatings();
+  }, [profile.id, profileType]);
 
   // Check message permissions for commissioners viewing freelancer profiles
   useEffect(() => {
@@ -200,7 +226,39 @@ export default function ProfileHeader({
         )}
 
         {/* Rating - Read-only stars */}
-        {profile.rating && (
+        {loadingRatings ? (
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 text-gray-300 animate-pulse" />
+              ))}
+            </div>
+            <span className="text-sm text-gray-500">Loading ratings...</span>
+          </div>
+        ) : ratingsSummary && ratingsSummary.totalRatings > 0 ? (
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  className={`w-4 h-4 ${
+                    i < Math.floor(ratingsSummary.averageRating)
+                      ? 'text-yellow-400 fill-current'
+                      : 'text-gray-300'
+                  }`}
+                />
+              ))}
+            </div>
+            <span
+              className="text-sm text-gray-600 font-medium"
+              title={`Average rating: ${ratingsSummary.averageRating.toFixed(2)}/5 from ${ratingsSummary.totalRatings} rating${ratingsSummary.totalRatings !== 1 ? 's' : ''}`}
+            >
+              {ratingsSummary.averageRating.toFixed(1)}/5
+              <span className="text-xs text-gray-500 ml-1">({ratingsSummary.totalRatings})</span>
+            </span>
+          </div>
+        ) : profile.rating ? (
+          // Fallback to hardcoded rating if no API ratings found
           <div className="flex items-center gap-2 mb-4">
             <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
@@ -215,6 +273,16 @@ export default function ProfileHeader({
               ))}
             </div>
             <span className="text-sm text-gray-600 font-medium">{profile.rating}/5</span>
+          </div>
+        ) : (
+          // No ratings available
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 text-gray-300" />
+              ))}
+            </div>
+            <span className="text-sm text-gray-500">No ratings yet</span>
           </div>
         )}
 

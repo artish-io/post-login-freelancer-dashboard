@@ -1,0 +1,23 @@
+{
+  "taskId": 1003,
+  "projectId": 329,
+  "projectTitle": "Brand Voice Guidelines",
+  "organizationId": 2,
+  "projectTypeTags": [
+    "Brand Strategy",
+    "Content Design"
+  ],
+  "title": "Brand Voice Research & Analysis",
+  "description": "Conduct research on target audience and analyze current brand voice to establish foundation for guidelines.",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "link": "",
+  "dueDate": "2025-08-13T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "createdDate": "2025-08-07T01:44:33.706Z",
+  "lastModified": "2025-08-13T05:49:23.280Z"
+}

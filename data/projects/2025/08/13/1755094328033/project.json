@@ -1,0 +1,22 @@
+{
+  "projectId": 1755094328033,
+  "title": "Test Project Path Verification",
+  "description": "Testing path generation for new projects",
+  "organizationId": 1,
+  "typeTags": [],
+  "commissionerId": 35,
+  "freelancerId": 1,
+  "status": "ongoing",
+  "invoicingMethod": "completion",
+  "totalBudget": 1000,
+  "createdAt": "2025-08-13T14:12:08.035Z",
+  "updatedAt": "2025-08-13T14:12:08.035Z",
+  "budget": {
+    "lower": 1000,
+    "upper": 1000,
+    "currency": "USD"
+  },
+  "executionMethod": "completion",
+  "skills": [],
+  "tools": []
+}

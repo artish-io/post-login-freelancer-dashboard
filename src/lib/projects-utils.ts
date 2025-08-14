@@ -3,6 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import { promises as fsPromises } from 'fs';
 
+// Throttle warnings to prevent spam
+const warnedProjects = new Set<number>();
+
 export interface Project {
   projectId: number;
   title: string;
@@ -34,14 +37,14 @@ export interface ProjectLocation {
 }
 
 /**
- * Parse date and return date components
+ * Parse date and return date components using UTC to match storage format
  */
 export function parseProjectDate(dateString: string): { year: string; month: string; day: string } {
   const date = new Date(dateString);
   return {
-    year: date.getFullYear().toString(),
-    month: String(date.getMonth() + 1).padStart(2, '0'),
-    day: String(date.getDate()).padStart(2, '0')
+    year: date.getUTCFullYear().toString(),
+    month: String(date.getUTCMonth() + 1).padStart(2, '0'),
+    day: String(date.getUTCDate()).padStart(2, '0')
   };
 }
 
@@ -133,28 +136,49 @@ export async function readProject(projectId: number): Promise<Project | null> {
   try {
     // First, get the creation date from the index
     const indexPath = getProjectMetadataPath();
-    
+
     if (!fs.existsSync(indexPath)) {
+      console.warn(`[readProject] Index file not found: ${indexPath}`);
       return null;
     }
-    
+
     const indexData = await fsPromises.readFile(indexPath, 'utf-8');
     const index = JSON.parse(indexData);
     const createdAt = index[projectId.toString()];
-    
+
     if (!createdAt) {
+      // Fallback: Try to find project by scanning filesystem
+      console.log(`[readProject] Project ${projectId} not in index, scanning filesystem...`);
+      const scannedProject = await scanForProject(projectId);
+
+      if (scannedProject) {
+        // Auto-repair: Add found project back to index
+        await addProjectToIndex(projectId, scannedProject.createdAt);
+        console.log(`[readProject] Auto-repaired index for project ${projectId}`);
+        return scannedProject;
+      }
+
+      // Use throttled warning only if project truly doesn't exist
+      if (!warnedProjects.has(projectId)) {
+        console.warn(`[readProject] Project ${projectId} not found anywhere. Available projects: ${Object.keys(index).slice(0, 10).join(', ')}${Object.keys(index).length > 10 ? '...' : ''}`);
+        warnedProjects.add(projectId);
+        setTimeout(() => warnedProjects.delete(projectId), 5 * 60 * 1000);
+      }
       return null;
     }
-    
+
     const filePath = getProjectFilePath(createdAt, projectId);
-    
+
     if (!fs.existsSync(filePath)) {
+      // Auto-heal: Remove stale entry from index
+      console.warn(`[readProject] Project ${projectId} file not found, removing from index: ${filePath}`);
+      await removeProjectFromIndex(projectId);
       return null;
     }
-    
+
     const data = await fsPromises.readFile(filePath, 'utf-8');
     const project = JSON.parse(data);
-    
+
     return project;
   } catch (error) {
     console.error(`Error reading project ${projectId}:`, error);
@@ -286,6 +310,110 @@ export async function getProjectsByFreelancer(freelancerId: number): Promise<Pro
 export async function getProjectsByCommissioner(commissionerId: number): Promise<Project[]> {
   const allProjects = await readAllProjects();
   return allProjects.filter(project => project.commissionerId === commissionerId);
+}
+
+/**
+ * Remove a project from the index (auto-healing)
+ */
+export async function removeProjectFromIndex(projectId: number): Promise<void> {
+  try {
+    const indexPath = getProjectMetadataPath();
+
+    if (!fs.existsSync(indexPath)) {
+      return;
+    }
+
+    const indexData = await fsPromises.readFile(indexPath, 'utf-8');
+    const index = JSON.parse(indexData);
+
+    delete index[projectId.toString()];
+
+    await fsPromises.writeFile(indexPath, JSON.stringify(index, null, 2), 'utf-8');
+    console.log(`[removeProjectFromIndex] Auto-removed stale project ${projectId} from index`);
+  } catch (error) {
+    console.error(`Error removing project ${projectId} from index:`, error);
+  }
+}
+
+/**
+ * Add a project to the index (auto-repair)
+ */
+export async function addProjectToIndex(projectId: number, createdAt: string): Promise<void> {
+  try {
+    const indexPath = getProjectMetadataPath();
+
+    // Ensure metadata directory exists
+    const metadataDir = path.dirname(indexPath);
+    if (!fs.existsSync(metadataDir)) {
+      await fsPromises.mkdir(metadataDir, { recursive: true });
+    }
+
+    let index = {};
+    if (fs.existsSync(indexPath)) {
+      const indexData = await fsPromises.readFile(indexPath, 'utf-8');
+      index = JSON.parse(indexData);
+    }
+
+    index[projectId.toString()] = createdAt;
+
+    await fsPromises.writeFile(indexPath, JSON.stringify(index, null, 2), 'utf-8');
+    console.log(`[addProjectToIndex] Auto-added project ${projectId} to index`);
+  } catch (error) {
+    console.error(`Error adding project ${projectId} to index:`, error);
+  }
+}
+
+/**
+ * Scan filesystem for a project (resilient fallback)
+ * This is the fallback when index lookup fails
+ */
+export async function scanForProject(projectId: number): Promise<Project | null> {
+  try {
+    const projectsBasePath = path.join(process.cwd(), 'data', 'projects');
+
+    // Scan recent years first (most likely locations)
+    const currentYear = new Date().getFullYear();
+    const yearsToScan = [currentYear, currentYear - 1, currentYear - 2];
+
+    for (const year of yearsToScan) {
+      const yearPath = path.join(projectsBasePath, year.toString());
+      if (!fs.existsSync(yearPath)) continue;
+
+      try {
+        const months = await fsPromises.readdir(yearPath);
+        for (const month of months) {
+          if (month === 'metadata') continue; // Skip metadata directory
+
+          const monthPath = path.join(yearPath, month);
+          const monthStat = await fsPromises.stat(monthPath);
+          if (!monthStat.isDirectory()) continue;
+
+          const days = await fsPromises.readdir(monthPath);
+          for (const day of days) {
+            const dayPath = path.join(monthPath, day);
+            const dayStat = await fsPromises.stat(dayPath);
+            if (!dayStat.isDirectory()) continue;
+
+            const projectPath = path.join(dayPath, projectId.toString(), 'project.json');
+            if (fs.existsSync(projectPath)) {
+              const data = await fsPromises.readFile(projectPath, 'utf-8');
+              const project = JSON.parse(data);
+              console.log(`[scanForProject] Found orphaned project ${projectId} at ${projectPath}`);
+              return project;
+            }
+          }
+        }
+      } catch (error) {
+        console.warn(`[scanForProject] Error scanning year ${year}:`, error.message);
+        continue;
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`[scanForProject] Filesystem scan failed for project ${projectId}:`, error);
+    return null;
+  }
 }
 
 // Migration functions removed - no longer needed since migration is complete

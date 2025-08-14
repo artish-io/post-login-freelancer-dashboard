@@ -8,6 +8,7 @@
 import { UnifiedStorageService } from '../storage/unified-storage-service';
 import { generateInvoiceWithRetry } from '../invoices/robust-invoice-service';
 import { checkAndAutoCompleteProject } from '../project-completion/auto-completion-service';
+import { readProject } from '../projects-utils';
 
 export interface TransactionStep {
   id: string;
@@ -389,7 +390,7 @@ export async function executeProjectCompletionTransaction(
   
   try {
     // Get original project state
-    const originalProject = await readProject(projectId);
+    const originalProject = await UnifiedStorageService.readProject(projectId);
     if (!originalProject) {
       throw new Error(`Project ${projectId} not found`);
     }

@@ -7,18 +7,19 @@
     "UI/UX Design"
   ],
   "title": "Initial setup for UI/UX Design - Lagos State Parks Services",
-  "status": "Ongoing",
-  "completed": false,
+  "status": "Approved",
+  "completed": true,
   "order": 1,
-  "link": "bit.ly123132323434234",
+  "link": "bit.ly23432",
   "dueDate": "2025-08-04T00:00:00.000Z",
-  "rejected": true,
+  "rejected": false,
   "feedbackCount": 1,
   "pushedBack": false,
-  "version": 1,
+  "version": 2,
   "description": "Begin work on UI/UX Design - Lagos State Parks Services project",
+  "submittedDate": "2025-08-13T03:48:22.617Z",
+  "approvedDate": "2025-08-13T04:49:42.139Z",
+  "rejectedDate": "2025-08-05T18:13:39.407Z",
   "createdDate": "2025-08-03T22:21:08.957Z",
-  "lastModified": "2025-08-05T18:13:39.415Z",
-  "submittedDate": "2025-08-05T17:54:33.403Z",
-  "rejectedDate": "2025-08-05T18:13:39.407Z"
+  "lastModified": "2025-08-13T04:49:42.139Z"
 }

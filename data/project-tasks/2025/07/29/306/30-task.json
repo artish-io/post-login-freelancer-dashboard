@@ -1,0 +1,26 @@
+{
+  "taskId": 30,
+  "projectId": 306,
+  "projectTitle": "Nebula CMS landing redesign",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Web Design",
+    "UX Strategy"
+  ],
+  "title": "Blog layout template",
+  "status": "Approved",
+  "completed": true,
+  "order": 13,
+  "link": "bit.ly32432",
+  "dueDate": "2025-07-18T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 1,
+  "pushedBack": false,
+  "version": 2,
+  "description": "Create reusable blog post layout template.",
+  "submittedDate": "2025-08-13T18:38:39.691Z",
+  "approvedDate": "2025-08-13T18:39:55.818Z",
+  "rejectedDate": "2025-08-13T18:38:23.973Z",
+  "createdDate": "2025-07-29T15:57:39.545Z",
+  "lastModified": "2025-08-13T18:39:55.818Z"
+}

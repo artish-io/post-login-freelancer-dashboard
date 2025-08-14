@@ -1,0 +1,122 @@
+[
+  {
+    "id": "task_rejected_30_1755110304013",
+    "timestamp": "2025-08-13T18:38:24.013Z",
+    "type": "task_rejected",
+    "notificationType": 3,
+    "actorId": 34,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 30,
+    "metadata": {
+      "taskTitle": "Blog layout template",
+      "projectTitle": "Nebula CMS landing redesign",
+      "action": "reject",
+      "invoiceGenerated": false
+    },
+    "context": {
+      "projectId": 306,
+      "taskId": 30
+    }
+  },
+  {
+    "id": "task_rejected_26_1755097453852",
+    "timestamp": "2025-08-13T15:04:13.852Z",
+    "type": "task_rejected",
+    "notificationType": 3,
+    "actorId": 34,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 26,
+    "metadata": {
+      "taskTitle": "Global search UI wireframe",
+      "projectTitle": "Nebula CMS landing redesign",
+      "action": "reject",
+      "invoiceGenerated": false
+    },
+    "context": {
+      "projectId": 306,
+      "taskId": 26
+    }
+  },
+  {
+    "id": "task_rejected_25_1755097422584",
+    "timestamp": "2025-08-13T15:03:42.584Z",
+    "type": "task_rejected",
+    "notificationType": 3,
+    "actorId": 34,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 25,
+    "metadata": {
+      "taskTitle": "404 error page concept",
+      "projectTitle": "Nebula CMS landing redesign",
+      "action": "reject",
+      "invoiceGenerated": false
+    },
+    "context": {
+      "projectId": 306,
+      "taskId": 25
+    }
+  },
+  {
+    "id": "task_rejected_203_1755071574793",
+    "timestamp": "2025-08-13T07:52:54.793Z",
+    "type": "task_rejected",
+    "notificationType": 3,
+    "actorId": 32,
+    "targetId": 3,
+    "entityType": 1,
+    "entityId": 203,
+    "metadata": {
+      "taskTitle": "Initial setup for Interactive Park Map Web App",
+      "projectTitle": "Interactive Park Map Web App",
+      "action": "reject",
+      "invoiceGenerated": false
+    },
+    "context": {
+      "projectId": 315,
+      "taskId": 203
+    }
+  },
+  {
+    "id": "task_rejected_1002_1755068588435",
+    "timestamp": "2025-08-13T07:03:08.435Z",
+    "type": "task_rejected",
+    "notificationType": 3,
+    "actorId": 32,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 1002,
+    "metadata": {
+      "taskTitle": "Dashboard UI Design & Implementation",
+      "projectTitle": "Park Analytics Dashboard",
+      "action": "reject",
+      "invoiceGenerated": false
+    },
+    "context": {
+      "projectId": 317,
+      "taskId": 1002
+    }
+  },
+  {
+    "id": "task_rejected_1001_1755068554067",
+    "timestamp": "2025-08-13T07:02:34.067Z",
+    "type": "task_rejected",
+    "notificationType": 3,
+    "actorId": 32,
+    "targetId": 31,
+    "entityType": 1,
+    "entityId": 1001,
+    "metadata": {
+      "taskTitle": "Data Collection & Analysis Framework",
+      "projectTitle": "Park Analytics Dashboard",
+      "action": "reject",
+      "invoiceGenerated": false
+    },
+    "context": {
+      "projectId": 317,
+      "taskId": 1001
+    }
+  }
+]

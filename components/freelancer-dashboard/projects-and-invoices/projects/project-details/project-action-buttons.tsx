@@ -6,8 +6,9 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { PauseCircle, FileText, MessageSquareText, FilePlus2, Play } from 'lucide-react';
+import { PauseCircle, FileText, MessageSquareText, FilePlus2, Play, Star } from 'lucide-react';
 import { useSuccessToast, useErrorToast, useInfoToast, useConfirmation } from '@/components/ui/toast';
+import RatingModal from '../../../../shared/rating-modal';
 
 type Props = {
   projectId: number;
@@ -25,6 +26,13 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
   const [projectTitle, setProjectTitle] = useState<string>('');
   const [remainingTasks, setRemainingTasks] = useState(0);
   const [currentRequestId, setCurrentRequestId] = useState<string | null>(null);
+  const [ratingModal, setRatingModal] = useState<{
+    isOpen: boolean;
+    commissionerId: number;
+    commissionerName: string;
+  } | null>(null);
+  const [canRate, setCanRate] = useState(false);
+  const [hasRated, setHasRated] = useState(false);
 
   const showSuccessToast = useSuccessToast();
   const showErrorToast = useErrorToast();
@@ -59,6 +67,48 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
     };
 
     checkEligibleTasks();
+  }, [session?.user?.id, projectId]);
+
+  // Check rating eligibility
+  useEffect(() => {
+    const checkRatingEligibility = async () => {
+      if (!session?.user?.id || !projectId) return;
+
+      try {
+        // Check if project is completed
+        const projectRes = await fetch(`/api/projects`);
+        if (projectRes.ok) {
+          const projects = await projectRes.json();
+          const currentProject = projects.find((p: any) => p.projectId === projectId);
+
+          if (currentProject && currentProject.status?.toLowerCase() === 'completed') {
+            // Check if all tasks are completed
+            const tasksRes = await fetch(`/api/project-tasks`);
+            if (tasksRes.ok) {
+              const tasks = await tasksRes.json();
+              const projectTasks = tasks.filter((t: any) => t.projectId === projectId);
+              const allTasksComplete = projectTasks.length > 0 &&
+                projectTasks.every((t: any) => t.completed === true && t.status === 'Approved');
+
+              if (allTasksComplete) {
+                setCanRate(true);
+
+                // Check if already rated
+                const ratingRes = await fetch(
+                  `/api/ratings/exists?projectId=${projectId}&subjectUserId=${currentProject.commissionerId}&subjectUserType=commissioner`
+                );
+                const ratingData = await ratingRes.json();
+                setHasRated(ratingData.success && ratingData.data.exists);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error checking rating eligibility:', error);
+      }
+    };
+
+    checkRatingEligibility();
   }, [session?.user?.id, projectId]);
 
   // Fetch project details and check pause request status
@@ -320,6 +370,25 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
         </button>
       )}
 
+      {/* Rate Commissioner Button */}
+      {canRate && !hasRated && (
+        <button
+          onClick={handleRateClick}
+          className="w-full bg-[#eb1966] text-white text-sm font-medium px-6 py-3 rounded-2xl shadow flex items-center justify-center gap-2 hover:bg-[#d1175a] transition"
+        >
+          <Star size={16} />
+          Rate Commissioner
+        </button>
+      )}
+
+      {/* Already Rated Indicator */}
+      {canRate && hasRated && (
+        <div className="w-full bg-green-100 text-green-700 text-sm font-medium px-6 py-3 rounded-2xl border border-green-200 flex items-center justify-center gap-2">
+          <Star size={16} className="fill-current" />
+          Commissioner Rated
+        </div>
+      )}
+
       {/* See All Files */}
       <Link href={`/freelancer-dashboard/projects-and-invoices/files/${projectId}`}>
         <button className="w-full border border-gray-300 text-sm font-medium px-6 py-3 rounded-2xl hover:bg-gray-50 transition flex items-center justify-center gap-2">
@@ -336,6 +405,56 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
         <MessageSquareText size={16} />
         See Comments and Notes
       </button>
+
+      {/* Rating Modal */}
+      {ratingModal && (
+        <RatingModal
+          isOpen={ratingModal.isOpen}
+          onClose={() => setRatingModal(null)}
+          projectId={projectId}
+          projectTitle={projectTitle}
+          subjectUserId={ratingModal.commissionerId}
+          subjectUserType="commissioner"
+          subjectUserName={ratingModal.commissionerName}
+          onRatingSubmitted={handleRatingSubmitted}
+        />
+      )}
     </div>
   );
+
+  // Rating handlers
+  const handleRateClick = async () => {
+    try {
+      // Get commissioner info
+      const projectRes = await fetch(`/api/projects`);
+      if (projectRes.ok) {
+        const projects = await projectRes.json();
+        const currentProject = projects.find((p: any) => p.projectId === projectId);
+
+        if (currentProject) {
+          // Get commissioner name
+          const usersRes = await fetch('/api/users');
+          if (usersRes.ok) {
+            const users = await usersRes.json();
+            const commissioner = users.find((u: any) => u.id === currentProject.commissionerId && u.type === 'commissioner');
+
+            setRatingModal({
+              isOpen: true,
+              commissionerId: currentProject.commissionerId,
+              commissionerName: commissioner?.name || 'Unknown Commissioner'
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error opening rating modal:', error);
+      showErrorToast('Failed to open rating form');
+    }
+  };
+
+  const handleRatingSubmitted = () => {
+    setHasRated(true);
+    setRatingModal(null);
+    showSuccessToast('Rating submitted successfully!');
+  };
 }

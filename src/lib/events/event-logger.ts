@@ -55,7 +55,11 @@ export const NOTIFICATION_TYPES = {
 
   // System notifications (120-139)
   SYSTEM_MAINTENANCE: 120,
-  ACCOUNT_VERIFIED: 121
+  ACCOUNT_VERIFIED: 121,
+
+  // Rating notifications (140-149)
+  RATING_PROMPT_FREELANCER: 140,
+  RATING_PROMPT_COMMISSIONER: 141
 } as const;
 
 // User type targeting for notifications
@@ -126,7 +130,9 @@ export type EventType =
   // Network events
   | 'contact_added' | 'contact_removed'
   // System events
-  | 'user_login' | 'user_logout' | 'profile_updated';
+  | 'user_login' | 'user_logout' | 'profile_updated'
+  // Rating events
+  | 'rating_prompt_freelancer' | 'rating_prompt_commissioner';
 
 export type EntityType =
   | 'task' | 'project' | 'gig' | 'message' | 'invoice' | 'product' | 'proposal' | 'user' | 'organization' | 'milestone';
@@ -204,7 +210,11 @@ function getNotificationTypeNumber(eventType: EventType): number {
     'contact_removed': 0,
     'user_login': 0,
     'user_logout': 0,
-    'profile_updated': 0
+    'profile_updated': 0,
+
+    // Rating events
+    'rating_prompt_freelancer': NOTIFICATION_TYPES.RATING_PROMPT_FREELANCER,
+    'rating_prompt_commissioner': NOTIFICATION_TYPES.RATING_PROMPT_COMMISSIONER
   };
 
   return mapping[eventType] || 0;

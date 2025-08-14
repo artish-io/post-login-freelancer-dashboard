@@ -1,0 +1,23 @@
+{
+  "taskId": 9,
+  "projectId": 305,
+  "projectTitle": "HERO research launch collateral",
+  "organizationId": 5,
+  "projectTypeTags": [
+    "Content Strategy",
+    "Editorial Design"
+  ],
+  "title": "Write product documentation",
+  "status": "Rejected",
+  "completed": false,
+  "order": 1,
+  "link": "https://docs.google.com/document/product-docs",
+  "dueDate": "2025-07-16T00:00:00.000Z",
+  "rejected": true,
+  "feedbackCount": 3,
+  "pushedBack": true,
+  "version": 2,
+  "description": "Document the product’s features, usage guidelines, and workflows.",
+  "createdDate": "2025-07-29T15:57:39.549Z",
+  "lastModified": "2025-08-13T04:39:11.682Z"
+}

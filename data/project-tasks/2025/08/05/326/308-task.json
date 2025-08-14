@@ -7,17 +7,19 @@
     "Design"
   ],
   "title": "Final Delivery & Print Prep",
-  "status": "Ongoing",
-  "completed": false,
+  "status": "Approved",
+  "completed": true,
   "order": 4,
-  "link": "",
-  "dueDate": "2025-08-29T04:00:00.000Z",
-  "rejected": true,
+  "link": "bit.ly12343324324",
+  "dueDate": "2025-08-13T00:00:00.000Z",
+  "rejected": false,
   "feedbackCount": 1,
   "pushedBack": false,
-  "version": 1,
+  "version": 2,
   "description": "Package all approved assets in print-ready and digital formats, optimized for event deployment across channels.",
+  "submittedDate": "2025-08-13T03:37:34.716Z",
+  "approvedDate": "2025-08-13T04:35:08.133Z",
+  "rejectedDate": "2025-08-05T18:32:12.635Z",
   "createdDate": "2025-08-05T14:47:18.291Z",
-  "lastModified": "2025-08-05T18:32:12.637Z",
-  "rejectedDate": "2025-08-05T18:32:12.635Z"
+  "lastModified": "2025-08-13T05:49:50.979Z"
 }

@@ -1,0 +1,26 @@
+{
+  "taskId": 405,
+  "projectId": 331,
+  "projectTitle": "Corporate Event Photography Package",
+  "organizationId": 4,
+  "projectTypeTags": [
+    "Event Photography",
+    "Corporate Events",
+    "Professional Photography"
+  ],
+  "title": "Initial setup for Corporate Event Photography Package",
+  "status": "Approved",
+  "completed": true,
+  "order": 1,
+  "link": "bitl.y2343",
+  "dueDate": "2025-08-13T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 2,
+  "description": "Begin work on Corporate Event Photography Package project",
+  "submittedDate": "2025-08-13T18:22:56.536Z",
+  "approvedDate": "2025-08-13T18:30:01.455Z",
+  "createdDate": "2025-08-07T17:49:37.346Z",
+  "lastModified": "2025-08-13T18:30:01.455Z"
+}

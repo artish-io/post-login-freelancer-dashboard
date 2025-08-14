@@ -2,7 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { Star, MapPin, Linkedin, TrendingUp, TrendingDown, MessageCircle } from 'lucide-react';
+import { UserRatingsSummary } from '../../../types/ratings';
 
 interface SocialLink {
   platform: string;
@@ -13,11 +15,12 @@ interface SocialLink {
 interface CommissionerProfileHeaderProps {
   profile: {
     id: string;
+    userId?: number; // Add userId for rating fetching
     name: string;
     avatar: string;
     location: string;
     lifetimeValue: number;
-    rating?: number;
+    rating?: number; // Keep as optional fallback
     quarterlyChange?: number;
     isActivelyCommissioning?: boolean;
     socialLinks: SocialLink[];
@@ -31,7 +34,36 @@ export default function CommissionerProfileHeader({
   viewerUserType = 'commissioner',
   isOwnProfile = false
 }: CommissionerProfileHeaderProps) {
-  const { name, avatar, location, lifetimeValue, rating, quarterlyChange, isActivelyCommissioning, socialLinks } = profile;
+  const { name, avatar, location, lifetimeValue, rating: propRating, quarterlyChange, isActivelyCommissioning, socialLinks, userId } = profile;
+  const [ratingsSummary, setRatingsSummary] = useState<UserRatingsSummary | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch ratings if userId is provided
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchRatings = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/ratings/user?userId=${userId}&userType=commissioner`);
+        const data = await response.json();
+
+        if (data.success) {
+          setRatingsSummary(data.summary);
+        }
+      } catch (error) {
+        console.error('Error fetching commissioner ratings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRatings();
+  }, [userId]);
+
+  // Use fetched rating or fallback to prop rating
+  const displayRating = ratingsSummary?.averageRating ?? propRating;
+  const ratingCount = ratingsSummary?.totalRatings ?? 0;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -144,14 +176,29 @@ export default function CommissionerProfileHeader({
         </div>
 
         {/* Rating */}
-        {rating && (
+        {displayRating !== undefined ? (
           <div className="flex items-center gap-2 mb-4">
             <div className="flex items-center gap-1">
-              {renderStars(rating)}
+              {renderStars(displayRating)}
             </div>
-            <span className="text-sm text-gray-600 ml-1">
-              {rating.toFixed(1)}/5
+            <span
+              className="text-sm text-gray-600 ml-1"
+              title={`Average rating: ${displayRating.toFixed(2)}/5 from ${ratingCount} rating${ratingCount !== 1 ? 's' : ''}`}
+            >
+              {displayRating.toFixed(1)}/5
+              {ratingCount > 0 && (
+                <span className="text-xs text-gray-500 ml-1">({ratingCount})</span>
+              )}
             </span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 text-gray-300" />
+              ))}
+            </div>
+            <span className="text-sm text-gray-500 ml-1">No ratings yet</span>
           </div>
         )}
 

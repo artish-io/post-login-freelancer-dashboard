@@ -102,7 +102,7 @@ export async function GET(
           min: freelancer.minRate,
           max: freelancer.maxRate
         },
-        rating: freelancer.rating ?? 0,
+        // rating: removed - will be fetched from rating system API
         about: freelancer.about ?? '',
         skills: mappedSkills,
         tools: mappedTools,
@@ -152,7 +152,7 @@ export async function GET(
         isOnline,
         type: user.type,
         location: user.address, // Use address from user data as location
-        rating: user.rating,
+        // rating: removed - will be fetched from rating system API
         about: user.bio || '',
         organization: organization ? {
           id: organization.id,

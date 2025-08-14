@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { FileText, MessageSquareText, CreditCard, PauseCircle, Play } from 'lucide-react';
+import { FileText, MessageSquareText, CreditCard, PauseCircle, Play, Star } from 'lucide-react';
+import RatingModal from '../../../shared/rating-modal';
 
 type Props = {
   projectId: number;
@@ -20,6 +21,13 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
   const [projectTitle, setProjectTitle] = useState<string>('');
   const [pausingProject, setPausingProject] = useState(false);
   const [reactivatingProject, setReactivatingProject] = useState(false);
+  const [ratingModal, setRatingModal] = useState<{
+    isOpen: boolean;
+    freelancerId: number;
+    freelancerName: string;
+  } | null>(null);
+  const [canRate, setCanRate] = useState(false);
+  const [hasRated, setHasRated] = useState(false);
 
   useEffect(() => {
     // Fetch project details and check for unpaid invoices
@@ -81,6 +89,36 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
           } else {
             setPayInvoiceEnabled(false);
           }
+
+          // Check rating eligibility
+          if (projectRes.ok) {
+            const projectsResponse = await projectRes.json();
+            const projects = Array.isArray(projectsResponse) ? projectsResponse : [];
+            const project = projects.find((p: any) => p.projectId === projectId);
+
+            if (project && project.status?.toLowerCase() === 'completed') {
+              // Check if all tasks are completed using the already fetched projectTasks
+              if (projectTasks) {
+                const allTasksComplete = projectTasks.tasks.length > 0 &&
+                  projectTasks.tasks.every((t: any) => t.completed === true && t.status === 'Approved');
+
+                if (allTasksComplete) {
+                  setCanRate(true);
+
+                  // Check if already rated
+                  try {
+                    const ratingRes = await fetch(
+                      `/api/ratings/exists?projectId=${projectId}&subjectUserId=${project.freelancerId}&subjectUserType=freelancer`
+                    );
+                    const ratingData = await ratingRes.json();
+                    setHasRated(ratingData.success && ratingData.data.exists);
+                  } catch (ratingError) {
+                    console.error('Error checking rating status:', ratingError);
+                  }
+                }
+              }
+            }
+          }
         }
       } catch (error) {
         console.error('Error fetching project data:', error);
@@ -91,6 +129,31 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
 
     fetchProjectData();
   }, [projectId]);
+
+  // Rating handlers
+  const handleRateClick = async () => {
+    try {
+      // Get freelancer info
+      const usersRes = await fetch('/api/users');
+      if (usersRes.ok) {
+        const users = await usersRes.json();
+        const freelancer = users.find((u: any) => u.id === freelancerId && u.type === 'freelancer');
+
+        setRatingModal({
+          isOpen: true,
+          freelancerId: freelancerId!,
+          freelancerName: freelancer?.name || 'Unknown Freelancer'
+        });
+      }
+    } catch (error) {
+      console.error('Error opening rating modal:', error);
+    }
+  };
+
+  const handleRatingSubmitted = () => {
+    setHasRated(true);
+    setRatingModal(null);
+  };
 
   const getMessageUrl = () => {
     if (!session?.user?.id || !freelancerId) {
@@ -236,6 +299,25 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
         </button>
       )}
 
+      {/* Rate Freelancer Button */}
+      {canRate && !hasRated && (
+        <button
+          onClick={handleRateClick}
+          className="w-full bg-[#eb1966] text-white text-sm font-medium px-6 py-3 rounded-2xl shadow flex items-center justify-center gap-2 hover:bg-[#d1175a] transition"
+        >
+          <Star size={16} />
+          Rate Freelancer
+        </button>
+      )}
+
+      {/* Already Rated Indicator */}
+      {canRate && hasRated && (
+        <div className="w-full bg-green-100 text-green-700 text-sm font-medium px-6 py-3 rounded-2xl border border-green-200 flex items-center justify-center gap-2">
+          <Star size={16} className="fill-current" />
+          Freelancer Rated
+        </div>
+      )}
+
       {/* Message Freelancer Button */}
       <Link href={getMessageUrl()}>
         <button className="w-full bg-gray-800 text-white text-sm font-medium px-6 py-3 rounded-2xl shadow flex items-center justify-center gap-2 hover:opacity-90 transition">
@@ -251,6 +333,20 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
           See All Project Files
         </button>
       </Link>
+
+      {/* Rating Modal */}
+      {ratingModal && (
+        <RatingModal
+          isOpen={ratingModal.isOpen}
+          onClose={() => setRatingModal(null)}
+          projectId={projectId}
+          projectTitle={projectTitle}
+          subjectUserId={ratingModal.freelancerId}
+          subjectUserType="freelancer"
+          subjectUserName={ratingModal.freelancerName}
+          onRatingSubmitted={handleRatingSubmitted}
+        />
+      )}
     </div>
   );
 }

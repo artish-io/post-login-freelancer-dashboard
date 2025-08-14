@@ -53,14 +53,30 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
   useEffect(() => {
     async function fetchProjectDetails() {
       try {
+        console.log(`🔍 Fetching project details for projectId: ${projectId}`);
         const res = await fetch(
           `/api/dashboard/project-details?projectId=${projectId}`
         );
+
+        if (!res.ok) {
+          console.error(`❌ API response not ok: ${res.status} ${res.statusText}`);
+          throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+        }
+
         const json = await res.json();
+        console.log(`📋 API response for project ${projectId}:`, json);
+
         setTitle(json.title || "Untitled Project");
         setLogoUrl(json.logoUrl || "/icons/lagos-parks-logo.png");
         setTypeTags(json.typeTags || []);
-        setTasks(json.notes || []);
+
+        const notes = json.notes || [];
+        console.log(`📝 Notes found for project ${projectId}:`, notes);
+        setTasks(notes);
+
+        if (notes.length === 0) {
+          console.log(`⚠️ No notes found for project ${projectId}`);
+        }
       } catch (err) {
         console.error("Failed to load project details", err);
         setTasks([]);
@@ -206,7 +222,17 @@ export default function ProjectNotesExpansion({ projectId, onClose }: Props) {
             <div className="absolute top-3 left-4 w-[2px] bg-gray-300 h-full z-0" />
 
             {loading ? (
-              <li className="text-gray-400">Loading...</li>
+              <li className="text-gray-400 text-center py-8">Loading notes...</li>
+            ) : tasks.length === 0 ? (
+              <li className="text-center py-8">
+                <div className="text-gray-400 mb-2">
+                  <svg className="w-12 h-12 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <p className="text-gray-500 text-sm">No comments or notes found for this project</p>
+                <p className="text-gray-400 text-xs mt-1">Notes will appear here when commissioners provide feedback on tasks</p>
+              </li>
             ) : (
               tasks.flatMap((task) =>
                 task.notes.map((note) => (

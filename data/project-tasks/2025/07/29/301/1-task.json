@@ -1,0 +1,25 @@
+{
+  "taskId": 1,
+  "projectId": 301,
+  "projectTitle": "Lagos Parks Services website re-design",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Brand Design",
+    "Content Design"
+  ],
+  "title": "Develop colour palette",
+  "status": "Approved",
+  "completed": true,
+  "order": 1,
+  "link": "https://figma.com/file/color-palette-link",
+  "dueDate": "2025-07-29T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Create a fresh color scheme aligned with the brand’s visual identity.",
+  "submittedDate": "2025-07-29T13:34:45.820Z",
+  "approvedDate": "2025-07-29T15:37:52.419Z",
+  "createdDate": "2025-07-29T15:57:39.547Z",
+  "lastModified": "2025-08-13T04:39:11.686Z"
+}

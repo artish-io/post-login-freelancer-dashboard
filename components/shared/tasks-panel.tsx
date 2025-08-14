@@ -180,9 +180,14 @@ export default function TasksPanel({
             const isPaused = isProjectPaused(task.projectId);
 
             // Paused project tasks should NEVER appear in "Today's Tasks" (aligned with task-column.tsx)
-            if (isPaused && isIncompleteTask) {
+            // EXCEPTION: Rejected tasks should appear even if project is paused (freelancer needs to address feedback)
+            const isRejectedTask = task.rejected === true;
+            if (isPaused && isIncompleteTask && !isRejectedTask) {
               console.log(`🚫 Excluding paused project task from today's tasks: ${task.title} (Project ID: ${task.projectId})`);
               return false;
+            }
+            if (isPaused && isIncompleteTask && isRejectedTask) {
+              console.log(`✅ Including rejected task from paused project in today's tasks: ${task.title} (Project ID: ${task.projectId})`);
             }
 
             return isIncompleteTask;
@@ -396,12 +401,13 @@ export default function TasksPanel({
         }
 
         if (projectData && projectInfo) {
-          const taskDetail = projectData.tasks?.find((t: any) => t.id === commissionerTask.id);
+          const taskDetail = projectData.tasks?.find((t: any) => (t.taskId || t.id) === commissionerTask.id);
           const freelancer = usersData.find((u: any) => u.id === projectInfo.freelancerId);
 
           if (taskDetail && freelancer) {
+            const taskId = taskDetail.taskId || taskDetail.id || commissionerTask.id;
             return {
-              id: commissionerTask.id,
+              id: taskId,
               title: commissionerTask.title,
               projectId: commissionerTask.projectId,
               projectTitle: commissionerTask.projectTitle,
@@ -579,7 +585,7 @@ export default function TasksPanel({
                 <ul className="flex flex-col gap-y-2">
                   {displayedTasks.map((task) => (
                     <li
-                      key={task.id}
+                      key={`${task.id}-${task.projectId}-${viewType}`}
                       className="flex justify-between items-center text-sm cursor-pointer"
                       onClick={() => {
                         if (viewType === 'freelancer') {

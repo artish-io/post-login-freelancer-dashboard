@@ -178,7 +178,7 @@ export default function TaskColumn({ columnId, title }: Props) {
         console.log(`🔄 Scheduled refresh for ${columnId} column`);
         fetchData();
       }
-    }, 30000); // Increased to 30 seconds to prevent overwriting recent submissions
+    }, 5000); // Poll every 5 seconds for faster updates
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -278,7 +278,7 @@ export default function TaskColumn({ columnId, title }: Props) {
         // Review: Show tasks that are submitted and awaiting review
 
         const isOngoingTask = task.status === 'Ongoing' && !task.completed;
-        const isInReview = task.status === 'In review' && !task.completed;
+        const isInReview = task.status === 'In review'; // Show all "In review" tasks regardless of completed status
         const isPaused = isProjectPaused(project.projectId);
 
         // Debug logging for review column to track missing tasks
@@ -289,13 +289,28 @@ export default function TaskColumn({ columnId, title }: Props) {
             completed: task.completed,
             isInReview,
             shouldInclude: isInReview,
-            projectTitle: project.title
+            projectTitle: project.title,
+            note: 'Fixed: Now showing all "In review" tasks regardless of completed status'
           });
         }
 
         // Check if this task was recently submitted to prevent duplication
         const taskKey = `${project.projectId}-${task.id}`;
         const wasRecentlySubmitted = recentlySubmittedTasks.current.has(taskKey);
+
+        // Debug logging for todo column to track task filtering
+        if (columnId === 'todo') {
+          console.log(`Todo Column Debug - Task ${task.id}:`, {
+            taskTitle: task.title,
+            status: task.status,
+            completed: task.completed,
+            isOngoingTask,
+            isPaused,
+            wasRecentlySubmitted,
+            shouldInclude: isOngoingTask && !isPaused && !wasRecentlySubmitted,
+            projectTitle: project.title
+          });
+        }
 
         // Paused project tasks should NEVER appear in today's column
         // They can only appear in upcoming column
@@ -336,10 +351,12 @@ export default function TaskColumn({ columnId, title }: Props) {
           tag,
           columnId,
           projectId: project.projectId,
-          taskId: task.id,
+          taskId: (task as any).taskId || task.id,
           status: task.status,
           completed: task.completed,
         };
+
+
 
         collected.push(cardData);
       });
@@ -359,6 +376,7 @@ export default function TaskColumn({ columnId, title }: Props) {
 
       // Limit to maximum 3 tasks for Today's Tasks column
       const limitedTasks = sortedTasks.slice(0, 3);
+
       setTasks(limitedTasks);
     } else if (columnId === 'upcoming') {
       // For upcoming column, get all incomplete tasks and show the overflow (4th, 5th, 6th, etc.)

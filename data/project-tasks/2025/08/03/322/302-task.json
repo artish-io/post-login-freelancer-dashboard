@@ -9,8 +9,8 @@
     "Figma"
   ],
   "title": "Final design and handoff",
-  "status": "In review",
-  "completed": false,
+  "status": "Approved",
+  "completed": true,
   "order": 2,
   "link": "bitlwedwxwcwdewe.com",
   "dueDate": "2025-08-04T00:00:00.000Z",
@@ -19,7 +19,8 @@
   "pushedBack": false,
   "version": 1,
   "description": "Finalize the design and prepare developer handoff documentation",
+  "submittedDate": "2025-08-05T17:01:44.849Z",
+  "approvedDate": "2025-08-13T08:07:59.925Z",
   "createdDate": "2025-08-03T16:00:00.000Z",
-  "lastModified": "2025-08-05T17:01:44.849Z",
-  "submittedDate": "2025-08-05T17:01:44.849Z"
+  "lastModified": "2025-08-13T08:07:59.925Z"
 }

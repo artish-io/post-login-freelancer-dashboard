@@ -1,10 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { Star } from 'lucide-react';
 import { getProgressRingStyles, getProgressRingProps } from '../../../../../src/lib/project-status-sync';
 import { requireFreelancerSession } from '../../../../../src/lib/freelancer-access-control';
+import RatingModal from '../../../../shared/rating-modal';
 
 type Project = {
   projectId: number;
@@ -32,6 +34,14 @@ type Props = {
 export default function ProjectsRow({ projects, users, filterStatus }: Props) {
   const router = useRouter();
   const { data: session } = useSession();
+  const [ratingModal, setRatingModal] = useState<{
+    isOpen: boolean;
+    projectId: number;
+    projectTitle: string;
+    commissionerId: number;
+    commissionerName: string;
+  } | null>(null);
+  const [ratedProjects, setRatedProjects] = useState<Set<number>>(new Set());
 
   // Ensure user is a freelancer before rendering
   const freelancerSession = requireFreelancerSession(session?.user as any);
@@ -45,6 +55,36 @@ export default function ProjectsRow({ projects, users, filterStatus }: Props) {
     );
   }
 
+  // Check which projects have been rated
+  useEffect(() => {
+    const checkRatedProjects = async () => {
+      if (!session?.user?.id) return;
+
+      const completedProjects = projects.filter(p => p.status === 'completed' && p.progress === 100);
+      const ratedProjectIds = new Set<number>();
+
+      for (const project of completedProjects) {
+        try {
+          const response = await fetch(
+            `/api/ratings/exists?projectId=${project.projectId}&subjectUserId=${project.managerId}&subjectUserType=commissioner`
+          );
+          const data = await response.json();
+          if (data.success && data.data.exists) {
+            ratedProjectIds.add(project.projectId);
+          }
+        } catch (error) {
+          console.error('Error checking rating existence:', error);
+        }
+      }
+
+      setRatedProjects(ratedProjectIds);
+    };
+
+    if (filterStatus === 'completed') {
+      checkRatedProjects();
+    }
+  }, [projects, filterStatus, session?.user?.id]);
+
   const filteredProjects = projects
     .filter((project) => project.status === filterStatus)
     .sort((a, b) => {
@@ -57,6 +97,31 @@ export default function ProjectsRow({ projects, users, filterStatus }: Props) {
 
   const handleProjectClick = (projectId: number) => {
     router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking/${projectId}`);
+  };
+
+  const handleRateClick = (e: React.MouseEvent, project: Project) => {
+    e.stopPropagation(); // Prevent project navigation
+    const commissioner = users.find((user) => user.id === project.managerId && user.type === 'commissioner');
+    setRatingModal({
+      isOpen: true,
+      projectId: project.projectId,
+      projectTitle: project.title,
+      commissionerId: project.managerId,
+      commissionerName: commissioner?.name || 'Unknown Commissioner'
+    });
+  };
+
+  const handleRatingSubmitted = (projectId: number) => {
+    setRatedProjects(prev => new Set(prev).add(projectId));
+    setRatingModal(null);
+  };
+
+  const canRate = (project: Project): boolean => {
+    return (
+      project.status === 'completed' &&
+      project.progress === 100 &&
+      !ratedProjects.has(project.projectId)
+    );
   };
 
   const getCommissionerName = (id: number) => {
@@ -142,11 +207,12 @@ export default function ProjectsRow({ projects, users, filterStatus }: Props) {
   return (
     <div className="relative w-full">
       <div className="sticky top-0 bg-white z-10 flex items-center justify-between border-b border-gray-300 py-2 px-1 text-[10px] md:text-[12px] font-semibold text-gray-700">
-        <div className="w-1/5">Project ID</div>
-        <div className="w-1/5">Project Commissioner</div>
-        <div className="w-1/5">{getDateColumnHeader()}</div>
-        <div className="w-1/10 text-center">Total Tasks</div>
-        <div className="w-1/10 text-center">% Completion</div>
+        <div className="w-1/6">Project ID</div>
+        <div className="w-1/6">Project Commissioner</div>
+        <div className="w-1/6">{getDateColumnHeader()}</div>
+        <div className="w-1/12 text-center">Total Tasks</div>
+        <div className="w-1/12 text-center">% Completion</div>
+        {filterStatus === 'completed' && <div className="w-1/12 text-center">Rating</div>}
       </div>
       <div className="max-h-[480px] overflow-y-auto custom-scrollbar w-full">
         {filteredProjects.length > 0 ? (
@@ -156,18 +222,18 @@ export default function ProjectsRow({ projects, users, filterStatus }: Props) {
               onClick={() => handleProjectClick(project.projectId)}
               className="w-full flex items-center justify-between py-2 border-b border-gray-200 text-[10px] md:text-[12px] cursor-pointer hover:bg-gray-50 transition-colors duration-200"
             >
-              <div className="w-1/5 font-medium text-gray-800 flex flex-col">
+              <div className="w-1/6 font-medium text-gray-800 flex flex-col">
                 <span className="text-gray-800 font-semibold text-[11px] md:text-[13px]">
                   #{project.projectId}
                 </span>
                 <span className="text-gray-800 text-[13px] md:text-[15px] leading-tight">{project.title}</span>
               </div>
-              <div className="w-1/5 text-gray-600">{getCommissionerName(project.managerId)}</div>
-              <div className="w-1/5 text-gray-600">
+              <div className="w-1/6 text-gray-600">{getCommissionerName(project.managerId)}</div>
+              <div className="w-1/6 text-gray-600">
                 {getDisplayDate(project)}
               </div>
-              <div className="w-1/10 text-center text-gray-600">{project.totalTasks}</div>
-              <div className="w-1/10 text-center">
+              <div className="w-1/12 text-center text-gray-600">{project.totalTasks}</div>
+              <div className="w-1/12 text-center">
                 <div className="relative flex items-center justify-center">
                   {(() => {
                     const ringStyles = getProgressRingStyles(project.progress);
@@ -210,12 +276,45 @@ export default function ProjectsRow({ projects, users, filterStatus }: Props) {
                   })()}
                 </div>
               </div>
+              {filterStatus === 'completed' && (
+                <div className="w-1/12 text-center">
+                  {canRate(project) ? (
+                    <button
+                      onClick={(e) => handleRateClick(e, project)}
+                      className="inline-flex items-center justify-center w-6 h-6 bg-[#eb1966] text-white rounded-full hover:bg-[#d1175a] transition-colors"
+                      title="Rate Commissioner"
+                    >
+                      <Star className="w-3 h-3" />
+                    </button>
+                  ) : ratedProjects.has(project.projectId) ? (
+                    <div className="inline-flex items-center justify-center w-6 h-6 bg-green-100 text-green-600 rounded-full" title="Already rated">
+                      <Star className="w-3 h-3 fill-current" />
+                    </div>
+                  ) : (
+                    <div className="w-6 h-6" /> // Empty space for non-completed projects
+                  )}
+                </div>
+              )}
             </div>
           ))
         ) : (
           <div className="py-4 text-center text-sm text-gray-500">No projects found for this status.</div>
         )}
       </div>
+
+      {/* Rating Modal */}
+      {ratingModal && (
+        <RatingModal
+          isOpen={ratingModal.isOpen}
+          onClose={() => setRatingModal(null)}
+          projectId={ratingModal.projectId}
+          projectTitle={ratingModal.projectTitle}
+          subjectUserId={ratingModal.commissionerId}
+          subjectUserType="commissioner"
+          subjectUserName={ratingModal.commissionerName}
+          onRatingSubmitted={() => handleRatingSubmitted(ratingModal.projectId)}
+        />
+      )}
     </div>
   );
 }

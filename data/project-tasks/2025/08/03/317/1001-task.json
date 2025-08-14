@@ -1,0 +1,27 @@
+{
+  "taskId": 1001,
+  "projectId": 317,
+  "projectTitle": "Park Analytics Dashboard",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Analytics",
+    "Dashboard",
+    "Data Visualization"
+  ],
+  "title": "Data Collection & Analysis Framework",
+  "status": "Approved",
+  "completed": true,
+  "order": 1,
+  "link": "bit.ly34",
+  "dueDate": "2025-08-13T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 1,
+  "pushedBack": false,
+  "version": 3,
+  "description": "Set up data collection systems and create analysis framework for park usage metrics.",
+  "submittedDate": "2025-08-13T07:03:27.631Z",
+  "approvedDate": "2025-08-13T07:52:25.139Z",
+  "rejectedDate": "2025-08-13T07:02:34.063Z",
+  "createdDate": "2025-08-03T14:06:24.561Z",
+  "lastModified": "2025-08-13T07:52:25.140Z"
+}

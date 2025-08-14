@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
   try {
     // Load all projects and validate access
-    const allProjects = await UnifiedStorageService.getAllProjects();
+    const allProjects = await UnifiedStorageService.listProjects();
 
     // Validate that the user has access to this project
     const hasAccess = validateFreelancerProjectAccess(
@@ -44,13 +44,11 @@ export async function GET(request: Request) {
     }
 
     // Read project tasks and other data
-    const [projectTasksData, allNotes, allOrganizations] = await Promise.all([
-      UnifiedStorageService.readProjectTasks(projectInfo.projectId),
+    const [projectTasks, allNotes, allOrganizations] = await Promise.all([
+      UnifiedStorageService.listTasks(projectInfo.projectId),
       readProjectNotes(projectId),
       UnifiedStorageService.getAllOrganizations()
     ]);
-
-    const projectTasks = projectTasksData?.tasks || [];
 
     // Find the organization for logo and additional info
     const organization = allOrganizations.find((org: any) => org.id === projectInfo.organizationId);
