@@ -1,7 +1,7 @@
 'use client';
 
 type Props = {
-  projectId: number;
+  projectId: string | number;
 };
 
 export default function ProjectMetaLinks({ projectId: _ }: Props) {

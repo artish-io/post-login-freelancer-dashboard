@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import CommissionerHeader from '../../../../components/commissioner-dashboard/commissioner-header';
 import TalentSearchBar from '../../../../components/commissioner-dashboard/discover-talent/talent-search-bar';
 import TalentFilters from '../../../../components/commissioner-dashboard/discover-talent/talent-filters';
@@ -8,8 +8,6 @@ import CreateGigBanner from '../../../../components/store-search/create-gig-bann
 import GigCardGrid from '../../../../components/store-search/gig-card-grid';
 import TalentFiltersModal from '../../../../components/commissioner-dashboard/discover-talent/talent-filters-modal';
 import { Gig } from '../../../../types/gig';
-import freelancers from '../../../../data/freelancers.json';
-import users from '../../../../data/users.json';
 import gigCategories from '../../../../data/gigs/gig-categories.json';
 import gigTools from '../../../../data/gigs/gig-tools.json';
 
@@ -18,9 +16,14 @@ export default function DiscoverTalentPage() {
   const [selectedTimeZone, setSelectedTimeZone] = useState('');
   const [minRate, setMinRate] = useState('');
   const [maxRate, setMaxRate] = useState('');
+
+  // Data state
+  const [freelancers, setFreelancers] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  // Enrich freelancer data with user information
+  // Enrich freelancer data with user information (must be before conditional return)
   const enrichedFreelancers = useMemo(() => {
     return freelancers.map(freelancer => {
       const userInfo = users.find(user => user.id === freelancer.userId);
@@ -33,9 +36,9 @@ export default function DiscoverTalentPage() {
         address: userInfo?.address,
       };
     });
-  }, []);
+  }, [freelancers, users]);
 
-  // Create search data arrays for fuzzy matching
+  // Create search data arrays for fuzzy matching (must be before conditional return)
   const searchData = useMemo(() => {
     // Extract skills as strings from categories and subcategories
     const skills = gigCategories.flatMap(cat => [
@@ -58,7 +61,7 @@ export default function DiscoverTalentPage() {
     };
   }, [enrichedFreelancers]);
 
-  // Filter freelancers based on search and filters
+  // Filter freelancers based on search and filters (must be before conditional return)
   const filteredFreelancers = useMemo(() => {
     let filtered = enrichedFreelancers;
 
@@ -70,12 +73,12 @@ export default function DiscoverTalentPage() {
         if (freelancer.name.toLowerCase().includes(queryLower)) return true;
 
         // Match skills/categories
-        if (freelancer.skillCategories?.some(skill =>
+        if (freelancer.skillCategories?.some((skill: any) =>
           skill.toLowerCase().includes(queryLower)
         )) return true;
 
         // Match tools
-        if (freelancer.tools?.some(tool =>
+        if (freelancer.tools?.some((tool: any) =>
           tool.toLowerCase().includes(queryLower)
         )) return true;
 
@@ -104,6 +107,52 @@ export default function DiscoverTalentPage() {
 
     return filtered;
   }, [enrichedFreelancers, query, selectedTimeZone, minRate, maxRate]);
+
+  // Fetch data from hierarchical storage
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const [freelancersResponse, usersResponse] = await Promise.all([
+          fetch('/api/freelancers/all'),
+          fetch('/api/users/all')
+        ]);
+
+        if (freelancersResponse.ok && usersResponse.ok) {
+          const freelancersData = await freelancersResponse.json();
+          const usersData = await usersResponse.json();
+
+          setFreelancers(freelancersData);
+          setUsers(usersData);
+        } else {
+          console.error('Failed to fetch data from hierarchical storage');
+          setFreelancers([]);
+          setUsers([]);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setFreelancers([]);
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <CommissionerHeader />
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg text-gray-600">Loading talent...</div>
+        </div>
+      </div>
+    );
+  }
 
   const allGigs: Gig[] = filteredFreelancers as Gig[];
 

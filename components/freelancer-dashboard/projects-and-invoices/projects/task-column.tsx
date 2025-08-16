@@ -72,7 +72,7 @@ export default function TaskColumn({ columnId, title }: Props) {
   }
 
   // Helper function to check if a project is paused
-  const isProjectPaused = (projectId: number): boolean => {
+  const isProjectPaused = (projectId: number | string): boolean => {
     if (!projectsInfo || projectsInfo.length === 0) return false;
     const projectInfo = projectsInfo.find(p => p.projectId === projectId);
     return projectInfo?.status?.toLowerCase() === 'paused';
@@ -105,6 +105,13 @@ export default function TaskColumn({ columnId, title }: Props) {
 
   // Fetch data dynamically
   const fetchData = async () => {
+    // Guard: Ensure we have a valid freelancer session
+    if (!freelancerSession?.id) {
+      console.warn(`🚫 [TaskColumn-${columnId}] No valid freelancer session found`);
+      setTasks([]);
+      return;
+    }
+
     // Prevent concurrent fetches
     if (fetchingRef.current) {
       console.log(`⏳ Fetch already in progress for column: ${columnId}`);
@@ -114,14 +121,33 @@ export default function TaskColumn({ columnId, title }: Props) {
     try {
       fetchingRef.current = true;
       const [projectsRes, orgsRes, projectInfoRes] = await Promise.all([
-        fetch('/api/project-tasks'),
-        fetch('/api/organizations'),
-        fetch('/api/projects')
+        fetch('/api/project-tasks', { credentials: 'include' }),
+        fetch('/api/organizations', { credentials: 'include' }),
+        fetch('/api/projects', { credentials: 'include' })
       ]);
+
+
 
       if (projectsRes.ok && orgsRes.ok) {
         const projectsData = await projectsRes.json();
         const orgsData = await orgsRes.json();
+
+        // Guard: Validate API response structure
+        if (!Array.isArray(projectsData)) {
+          console.error(`🚫 [TaskColumn-${columnId}] Invalid projects data format:`, typeof projectsData);
+          setTasks([]);
+          return;
+        }
+
+        if (!Array.isArray(orgsData)) {
+          console.error(`🚫 [TaskColumn-${columnId}] Invalid organizations data format:`, typeof orgsData);
+          setTasks([]);
+          return;
+        }
+
+
+
+
 
         // Fetch project status info for paused project filtering
         let projectInfoData: any[] = [];
@@ -155,9 +181,16 @@ export default function TaskColumn({ columnId, title }: Props) {
             reviewTasks.map((t: any) => ({ title: t.title, status: t.status, completed: t.completed }))
           );
         }
+      } else {
+        console.log(`🚨 [TaskColumn-${columnId}] API FAILED:`, {
+          projectsOk: projectsRes.ok,
+          projectsStatus: projectsRes.status,
+          orgsOk: orgsRes.ok,
+          orgsStatus: orgsRes.status
+        });
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error(`🚨 [TaskColumn-${columnId}] FETCH ERROR:`, error);
       // Note: Fallback removed due to migration to hierarchical storage
     } finally {
       setLoading(false);
@@ -218,6 +251,16 @@ export default function TaskColumn({ columnId, title }: Props) {
     // Update task counts for submission rules
     getTaskCounts().then(setTaskCounts).catch(console.error);
 
+    // Debug: Log what projects and tasks each column is processing
+    console.log(`📋 [${columnId}] Processing ${projects.length} projects:`,
+      projects.map(p => ({
+        id: p.projectId,
+        title: p.title,
+        taskCount: p.tasks?.length || 0,
+        tasks: p.tasks?.map(t => ({ id: t.id, title: t.title, status: t.status })) || []
+      }))
+    );
+
     projects.forEach((project) => {
       const org = organizations.find(
         (o) => o.id === project.organizationId
@@ -226,22 +269,51 @@ export default function TaskColumn({ columnId, title }: Props) {
       const projectLogo = org?.logo || '/logos/fallback-logo.png';
 
       project.tasks.forEach((task, index) => {
+        // Debug: Log every task being processed
+        if (String(project.projectId) === 'Z-002') {
+          console.log(`🔍 [${columnId}] Processing Z-002 task:`, {
+            taskId: task.id,
+            title: task.title,
+            status: task.status,
+            completed: task.completed
+          });
+        }
+
         // Security check: Ensure this task belongs to the current freelancer
         const projectInfo = projectsInfo.find(p => p.projectId === project.projectId);
+
+        // Guard: Validate project info exists
+        if (!projectInfo) {
+          console.warn(`🚫 [TaskColumn-${columnId}] No project info found for project ${project.projectId}, skipping task ${task.id}`);
+          return; // Skip this task
+        }
+
+        // Guard: Validate freelancer assignment
         if (!isValidFreelancerTask({
           project: {
-            freelancerId: projectInfo?.freelancerId,
-            assignedFreelancerId: projectInfo?.assignedFreelancerId
+            freelancerId: projectInfo.freelancerId,
+            assignedFreelancerId: projectInfo.assignedFreelancerId
           }
         }, freelancerSession)) {
-          console.warn(`🚫 Task ${task.id} filtered out - not assigned to current freelancer`);
+          console.warn(`🚫 [TaskColumn-${columnId}] Task ${task.id} filtered out - not assigned to freelancer ${freelancerSession?.id}`);
           return; // Skip this task
+        }
+
+        // Guard: Validate task has required properties
+        if (!task.id || !task.title || !task.status) {
+          console.warn(`🚫 [TaskColumn-${columnId}] Task missing required properties:`, {
+            id: task.id,
+            title: task.title,
+            status: task.status,
+            projectId: project.projectId
+          });
+          return; // Skip malformed tasks
         }
 
         // Extract just the date part from the UTC string and create a local date
         // Handle cases where dueDate might be undefined
         if (!task.dueDate) {
-          console.warn(`Task ${task.id} has no dueDate, skipping date-based filtering`);
+          console.warn(`🚫 [TaskColumn-${columnId}] Task ${task.id} has no dueDate, skipping date-based filtering`);
           return; // Skip tasks without due dates
         }
 
@@ -273,13 +345,21 @@ export default function TaskColumn({ columnId, title }: Props) {
         }
 
         // Business Logic: Proper task status filtering
-        // Today's Tasks: Show ongoing tasks that are not paused
-        // Upcoming: Show ongoing tasks (including paused project tasks)
+        // Today's Tasks: Show ongoing/rejected tasks that are not paused
+        // Upcoming: Show ongoing/rejected tasks (including paused project tasks)
         // Review: Show tasks that are submitted and awaiting review
 
         const isOngoingTask = task.status === 'Ongoing' && !task.completed;
+        const isRejectedTask = task.status === 'Rejected' && !task.completed;
         const isInReview = task.status === 'In review'; // Show all "In review" tasks regardless of completed status
         const isPaused = isProjectPaused(project.projectId);
+
+        // Tasks that need freelancer attention (ongoing or rejected)
+        const needsAttention = isOngoingTask || isRejectedTask;
+
+
+
+
 
         // Debug logging for review column to track missing tasks
         if (columnId === 'review') {
@@ -298,28 +378,39 @@ export default function TaskColumn({ columnId, title }: Props) {
         const taskKey = `${project.projectId}-${task.id}`;
         const wasRecentlySubmitted = recentlySubmittedTasks.current.has(taskKey);
 
-        // Debug logging for todo column to track task filtering
-        if (columnId === 'todo') {
-          console.log(`Todo Column Debug - Task ${task.id}:`, {
+        // Debug logging for all columns to track task filtering
+        if (columnId === 'todo' || columnId === 'upcoming') {
+          console.log(`${columnId} Column Debug - Task ${task.id}:`, {
             taskTitle: task.title,
             status: task.status,
             completed: task.completed,
             isOngoingTask,
+            isRejectedTask,
+            needsAttention,
             isPaused,
             wasRecentlySubmitted,
-            shouldInclude: isOngoingTask && !isPaused && !wasRecentlySubmitted,
-            projectTitle: project.title
+            shouldInclude: columnId === 'todo' ? (needsAttention && !isPaused && !wasRecentlySubmitted) :
+                          columnId === 'upcoming' ? (needsAttention && !wasRecentlySubmitted) : false,
+            projectTitle: project.title,
+            projectId: project.projectId
           });
         }
 
-        // Paused project tasks should NEVER appear in today's column
-        // They can only appear in upcoming column
-        // Approved/completed tasks should not appear in any column
-        // Recently submitted tasks should not appear in non-review columns
+        // Business Rules for Task Board Columns:
+        // TODAY'S TO DO: Maximum 3 most urgent tasks from ACTIVE (non-paused) projects
+        // UPCOMING THIS WEEK: All other tasks waiting to move into Today's column (including paused project tasks)
+        // AWAITING REVIEW: Tasks that are submitted and awaiting review
+        //
+        // IMPORTANT: Smart workflow - tasks move from Upcoming to Today's as slots free up
+        // IMPORTANT: Paused project tasks should NEVER appear in today's column but CAN appear in upcoming
         const shouldInclude =
-          (columnId === 'todo' && isOngoingTask && !isPaused && !wasRecentlySubmitted) ||
-          (columnId === 'upcoming' && isOngoingTask && !wasRecentlySubmitted) ||
+          (columnId === 'todo' && needsAttention && !isPaused && !wasRecentlySubmitted) ||
+          (columnId === 'upcoming' && needsAttention && !wasRecentlySubmitted) ||
           (columnId === 'review' && isInReview);
+
+
+
+
 
         // Log exclusions for debugging
         if (columnId === 'todo' && isOngoingTask && isPaused) {
@@ -362,6 +453,8 @@ export default function TaskColumn({ columnId, title }: Props) {
       });
     });
 
+
+
     // Handle task distribution between 'todo' and 'upcoming' columns
     if (columnId === 'todo') {
       // Sort tasks by priority (urgent first, then by due date)
@@ -379,81 +472,44 @@ export default function TaskColumn({ columnId, title }: Props) {
 
       setTasks(limitedTasks);
     } else if (columnId === 'upcoming') {
-      // For upcoming column, get all incomplete tasks and show the overflow (4th, 5th, 6th, etc.)
-      const allIncompleteTasks: any[] = [];
-
-      projects.forEach((project) => {
-        const org = organizations.find((o) => o.id === project.organizationId);
-        const projectLogo = org?.logo || '/logos/fallback-logo.png';
-
-        project.tasks.forEach((task, index) => {
-          // Security check: Ensure this task belongs to the current freelancer
-          const projectInfo = projectsInfo.find(p => p.projectId === project.projectId);
-          if (!isValidFreelancerTask({
-            project: {
-              freelancerId: projectInfo?.freelancerId,
-              assignedFreelancerId: projectInfo?.assignedFreelancerId
-            }
-          }, freelancerSession)) {
-            return; // Skip this task
-          }
-
-          // Only include ongoing tasks that are not completed or approved
-          if (task.status === 'Ongoing' && !task.completed) {
-            const isPaused = isProjectPaused(project.projectId);
-
-            let tag = (project.typeTags && project.typeTags.length > 0) ? project.typeTags[0] : 'General';
-            if (task.rejected) tag = 'Rejected';
-            else if (task.feedbackCount > 0) tag = `Feedback ×${task.feedbackCount}`;
-            else if (task.pushedBack) tag = 'Delayed';
-
-            // Add paused indicator for paused project tasks
-            if (isPaused) {
-              tag = `${tag} (Paused Project)`;
-            }
-
-            allIncompleteTasks.push({
-              taskIndex: index + 1,
-              totalTasks: project.tasks.length,
-              taskTitle: task.title,
-              description: task.description || '',
-              avatarUrl: '',
-              projectTitle: project.title,
-              projectLogo,
-              projectTags: project.typeTags,
-              briefUrl: task.briefUrl,
-              workingFileUrl: task.workingFileUrl,
-              tag,
-              columnId: 'upcoming',
-              projectId: project.projectId,
-              taskId: task.id,
-              status: task.status,
-              completed: task.completed,
-            });
-          }
-        });
-      });
-
-      // Sort all incomplete tasks by priority, but ensure paused project tasks don't take today's slots
-      const sortedIncompleteTasks = allIncompleteTasks.sort((a, b) => {
+      // For upcoming column, show all tasks INCLUDING paused project tasks
+      // But exclude tasks that would appear in Today's column (non-paused tasks only)
+      const sortedTasks = collected.sort((a, b) => {
         const aIsUrgent = a.tag === 'Rejected' || a.tag === 'Delayed' || a.tag.includes('Feedback');
         const bIsUrgent = b.tag === 'Rejected' || b.tag === 'Delayed' || b.tag.includes('Feedback');
-        const aIsPaused = a.tag.includes('(Paused Project)');
-        const bIsPaused = b.tag.includes('(Paused Project)');
 
-        // Paused project tasks should never be in the first 3 positions (today's tasks)
-        if (aIsPaused && !bIsPaused) return 1; // Move paused tasks to end
-        if (!aIsPaused && bIsPaused) return -1; // Keep active tasks at start
-
-        // For non-paused tasks, sort by urgency
         if (aIsUrgent && !bIsUrgent) return -1;
         if (!aIsUrgent && bIsUrgent) return 1;
-        return 0;
+        return 0; // Keep original order for same priority
       });
 
-      // Get tasks that didn't make it into today's top 3 (overflow tasks) + all paused project tasks
-      const overflowTasks = sortedIncompleteTasks.slice(3);
-      setTasks(overflowTasks);
+      // Separate paused and non-paused tasks
+      const pausedTasks = sortedTasks.filter(task => {
+        const projectInfo = projectsInfo.find(p => p.projectId === task.projectId);
+        return projectInfo?.status?.toLowerCase() === 'paused';
+      });
+
+      const nonPausedTasks = sortedTasks.filter(task => {
+        const projectInfo = projectsInfo.find(p => p.projectId === task.projectId);
+        return projectInfo?.status?.toLowerCase() !== 'paused';
+      });
+
+      // Only non-paused tasks compete for the "top 3 for todo" slots
+      const top3NonPausedForTodo = nonPausedTasks.slice(0, 3);
+      const remainingNonPaused = nonPausedTasks.slice(3);
+
+      // Upcoming column gets: remaining non-paused tasks + ALL paused tasks
+      const upcomingTasks = [...remainingNonPaused, ...pausedTasks];
+
+      console.log(`📊 [upcoming] Task distribution (FIXED):`, {
+        totalCollected: collected.length,
+        pausedTasks: pausedTasks.map(t => ({ title: t.taskTitle, projectId: t.projectId })),
+        nonPausedTasks: nonPausedTasks.map(t => ({ title: t.taskTitle, projectId: t.projectId })),
+        top3ForTodo: top3NonPausedForTodo.map(t => ({ title: t.taskTitle, projectId: t.projectId })),
+        upcomingTasks: upcomingTasks.map(t => ({ title: t.taskTitle, projectId: t.projectId }))
+      });
+
+      setTasks(upcomingTasks);
     } else {
       // No limits for 'review' column
       setTasks(collected);

@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
+import { requireSession, assertProjectAccess } from '@/lib/auth/session-guard';
 
 export async function PUT(
   request: NextRequest,
@@ -13,20 +14,19 @@ export async function PUT(
     const { milestoneId } = await params;
     const { taskId, newStatus } = await request.json();
 
+    // 🔒 STEP 1: Validate input
     if (!milestoneId || !taskId || !['submitted', 'completed', 'approved'].includes(newStatus)) {
       return NextResponse.json({ error: 'Missing or invalid fields' }, { status: 400 });
     }
 
-    // Use unified storage for project tasks
+    // 🔒 STEP 2: Authenticate user FIRST
+    const { userId: actorId } = await requireSession(request);
+
+    // 🔒 STEP 3: Load milestone and project data
     const milestonesMinimalPath = path.join(process.cwd(), 'data', 'milestones-minimal.json');
-
-    const [milestonesFile] = await Promise.all([
-      readFile(milestonesMinimalPath, 'utf-8')
-    ]);
-
+    const milestonesFile = await readFile(milestonesMinimalPath, 'utf-8');
     const milestones = JSON.parse(milestonesFile);
 
-    // Extract milestone ID number and find milestone
     const milestoneIdNum = parseInt(milestoneId.split('-')[1]) || parseInt(milestoneId);
     const milestone = milestones.find((m: any) => m.id === milestoneIdNum);
 
@@ -34,11 +34,21 @@ export async function PUT(
       return NextResponse.json({ error: 'Milestone not found' }, { status: 404 });
     }
 
-    // Get project tasks using unified storage
-    const projectTasks = await UnifiedStorageService.listTasks(milestone.projectId);
+    const project = await UnifiedStorageService.readProject(milestone.projectId);
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
 
-    // Find the specific task
-    const task = projectTasks.find((t: any) => t.taskId === parseInt(taskId));
+    // 🔒 STEP 4: Block self-approval BEFORE any changes
+    if (actorId === project.freelancerId) {
+      return NextResponse.json({ error: 'Self-approval not allowed' }, { status: 403 });
+    }
+
+    // 🔒 STEP 5: Only commissioners can approve
+    assertProjectAccess(actorId, project, 'commissioner');
+
+    // 🔒 STEP 6: NOW safe to load and update task
+    const task = await UnifiedStorageService.readTask(milestone.projectId, taskId);
     if (!task) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 });
     }
@@ -85,6 +95,18 @@ export async function PUT(
     );
   } catch (error) {
     console.error('Error updating task status:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+
+    // Handle authorization errors specifically
+    if (error instanceof Error && 'status' in error) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: (error as any).status }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
   }
 }

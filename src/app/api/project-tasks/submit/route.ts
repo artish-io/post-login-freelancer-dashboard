@@ -47,7 +47,7 @@ async function handleTaskOperation(request: NextRequest) {
     switch (action) {
       case 'submit':
         result = await UnifiedTaskService.submitTask(Number(taskId), actorId, {
-          projectId: Number(projectId),
+          projectId: projectId,
           referenceUrl
         });
         eventType = 'task_submitted';
@@ -65,6 +65,10 @@ async function handleTaskOperation(request: NextRequest) {
         }
         const project = await UnifiedStorageService.getProjectById(task.projectId);
 
+        // 🛡️ MILESTONE GUARD: For milestone-based projects, ensure invoice generation
+        const isMilestoneProject = project!.invoicingMethod === 'milestone';
+        const shouldGenerateInvoice = isMilestoneProject || project!.invoicingMethod === 'completion';
+
         const transactionParams = {
           taskId: Number(taskId),
           projectId: task!.projectId,
@@ -72,8 +76,8 @@ async function handleTaskOperation(request: NextRequest) {
           commissionerId: project!.commissionerId!,
           taskTitle: task!.title,
           projectTitle: project!.title,
-          generateInvoice: project!.invoicingMethod === 'completion',
-          invoiceType: 'completion' as const
+          generateInvoice: shouldGenerateInvoice,
+          invoiceType: isMilestoneProject ? 'milestone' as const : 'completion' as const
         };
 
         const transactionResult = await executeTaskApprovalTransaction(transactionParams);
@@ -87,20 +91,37 @@ async function handleTaskOperation(request: NextRequest) {
           }, { status: 500 });
         }
 
+        // 🛡️ MILESTONE GUARD: Verify invoice generation for milestone projects
+        if (isMilestoneProject && !transactionResult.results.generate_invoice?.success) {
+          return NextResponse.json({
+            success: false,
+            error: 'Task approval failed: Invoice generation required for milestone-based projects',
+            details: 'Milestone-based projects require automatic invoice generation upon task approval',
+            invoicingMethod: project!.invoicingMethod,
+            transactionId: transactionResult.transactionId
+          }, { status: 400 });
+        }
+
         result = {
           success: true,
           task: transactionResult.results.update_task || task,
           shouldNotify: true,
           notificationTarget: project!.freelancerId,
-          message: 'Task approved successfully with transaction integrity',
-          invoiceGenerated: transactionResult.results.generate_invoice?.success || false
+          message: isMilestoneProject
+            ? 'Task approved successfully with milestone invoice generated'
+            : 'Task approved successfully with transaction integrity',
+          invoiceGenerated: transactionResult.results.generate_invoice?.success || false,
+          project: {
+            invoicingMethod: project!.invoicingMethod,
+            projectId: project!.projectId
+          }
         };
         eventType = 'task_approved';
         break;
 
       case 'reject':
         result = await UnifiedTaskService.rejectTask(Number(taskId), actorId, {
-          projectId: Number(projectId),
+          projectId: projectId,
           feedback
         });
         eventType = 'task_rejected';
@@ -209,22 +230,34 @@ async function handleTaskOperation(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(
-      ok({
-        entities: {
-          task: {
-            id: result.task.taskId,
-            title: result.task.title,
-            status: result.task.status,
-            completed: result.task.completed,
-            version: result.task.version,
-            projectId: result.task.projectId,
-          },
-        },
-        message: result.message,
-        notificationsQueued: result.shouldNotify
-      })
-    );
+    // Build response with additional metadata for milestone guard
+    const responseData: any = {
+      entities: {
+        task: {
+          id: result.task.taskId,
+          title: result.task.title,
+          status: result.task.status,
+          completed: result.task.completed,
+          version: result.task.version,
+          projectId: result.task.projectId,
+        }
+      },
+      message: result.message,
+      notificationsQueued: result.shouldNotify
+    };
+
+    // Add project and invoice information for milestone guard
+    if ('project' in result && result.project) {
+      responseData.entities.project = result.project;
+    }
+    if ('invoiceGenerated' in result) {
+      responseData.invoiceGenerated = result.invoiceGenerated;
+      if (result.invoiceGenerated) {
+        responseData.entities.invoice = { generated: true };
+      }
+    }
+
+    return NextResponse.json(ok(responseData));
 
   } catch (error) {
     console.error('Error in task operation:', error);

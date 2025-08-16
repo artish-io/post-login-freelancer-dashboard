@@ -12,7 +12,7 @@ import ProjectNotesExpansion from '../../../../../components/freelancer-dashboar
 
 export default function CommissionerProjectTrackingPage() {
   const searchParams = useSearchParams();
-  const projectId = Number(searchParams.get('id')) || 0;
+  const projectId = searchParams.get('id') || '0';
 
   const [projectDetails, setProjectDetails] = useState<{
     title: string;

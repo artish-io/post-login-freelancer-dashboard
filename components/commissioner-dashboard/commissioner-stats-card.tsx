@@ -18,14 +18,22 @@ export default function CommissionerStatsCard({
   bgColor = 'bg-[#FCD5E3]'
 }: CommissionerStatsCardProps) {
   return (
-    <div className={`${bgColor} rounded-xl p-6 flex flex-col justify-between h-32`}>
+    <div
+      className={`${bgColor} rounded-3xl p-6 flex flex-col justify-between h-32 shadow-lg border border-white/20 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-[1.02]`}
+      style={{
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+      }}
+    >
       {/* Top - Title */}
       <div className="text-sm text-gray-700 font-medium">
         {title}
       </div>
 
       {/* Middle - Main value */}
-      <div className="text-4xl font-bold text-black">
+      <div
+        className="text-4xl font-semibold text-black font-bodoni-moda"
+        style={{ fontFamily: "'Bodoni Moda SC', serif", fontWeight: 600 }}
+      >
         {value}
       </div>
 

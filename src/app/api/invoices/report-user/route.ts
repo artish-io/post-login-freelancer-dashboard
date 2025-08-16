@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { getAllUsers } from '@/lib/storage/unified-storage-service';
 
 const ESCALATION_LOG_PATH = path.join(process.cwd(), 'data', 'invoices-log', 'overdue-invoice-escalation.json');
 const INVOICES_PATH = path.join(process.cwd(), 'data', 'invoices.json');
@@ -15,15 +16,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Read current data
-    const [escalationData, invoicesData, usersData] = await Promise.all([
+    const [escalationData, invoicesData, users] = await Promise.all([
       fs.promises.readFile(ESCALATION_LOG_PATH, 'utf-8'),
       fs.promises.readFile(INVOICES_PATH, 'utf-8'),
-      fs.promises.readFile(path.join(process.cwd(), 'data', 'users.json'), 'utf-8')
+      getAllUsers()
     ]);
 
     const escalations = JSON.parse(escalationData);
     const invoices = JSON.parse(invoicesData);
-    const users = JSON.parse(usersData);
 
     // Find the invoice
     const invoice = invoices.find((inv: any) => inv.invoiceNumber === invoiceNumber);

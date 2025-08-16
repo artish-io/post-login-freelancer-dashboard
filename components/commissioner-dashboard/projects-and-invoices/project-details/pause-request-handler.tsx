@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { Check, X } from 'lucide-react';
 
 interface PauseRequestHandlerProps {
-  projectId: number;
+  projectId: string | number;
   projectTitle: string;
   projectStatus: string;
   onRequestHandled?: () => void;

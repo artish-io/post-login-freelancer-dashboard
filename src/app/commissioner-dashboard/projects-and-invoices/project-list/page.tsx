@@ -7,24 +7,9 @@ import { useSession } from 'next-auth/react';
 import CommissionerHeader from '../../../../../components/commissioner-dashboard/commissioner-header';
 import CommissionerProjectsRow from '../../../../../components/commissioner-dashboard/projects-and-invoices/project-status-list/projects-row';
 import CommissionerProjectStatusNav from '../../../../../components/commissioner-dashboard/projects-and-invoices/project-status-list/project-status-nav';
-import type { Project } from '../../../../lib/projects/tasks/types';
+import { calculateProjectStatus } from '../../../../lib/project-status-sync';
 
-// Helper function to calculate project status based on tasks
-function calculateProjectStatus(project: any): 'ongoing' | 'paused' | 'completed' {
-  const tasks = project.tasks || [];
-  const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
-  const totalTasks = tasks.length;
 
-  if (totalTasks === 0) return 'paused';
-  if (approvedTasks === totalTasks) return 'completed';
-
-  // Check if project has recent activity (tasks in review or recently updated)
-  const hasRecentActivity = tasks.some((task: any) =>
-    task.status === 'In review' || task.status === 'Ongoing'
-  );
-
-  return hasRecentActivity ? 'ongoing' : 'paused';
-}
 
 export default function CommissionerProjectListPage() {
   const { data: session } = useSession();
@@ -137,33 +122,41 @@ export default function CommissionerProjectListPage() {
             // Find the freelancer assigned to this project
             const freelancerId = projectInfo?.freelancerId || projectTasks.freelancerId || null;
 
-            // Calculate completion date for completed projects
-            // Use actual status from projects.json if available, otherwise calculate it
+            // Determine project status - always calculate based on tasks, but respect manual overrides
+            const calculatedStatus = calculateProjectStatus(tasks);
             let projectStatus: 'ongoing' | 'paused' | 'completed';
+
             if (projectInfo?.status) {
               // Normalize the status from projects.json (handle case variations)
               const normalizedStatus = projectInfo.status.toLowerCase();
-              console.log(`🔍 Project ${projectTasks.projectId}: Found status "${projectInfo.status}" -> normalized to "${normalizedStatus}"`);
+              console.log(`🔍 Project ${projectTasks.projectId}: Found status "${projectInfo.status}" -> normalized to "${normalizedStatus}", calculated: "${calculatedStatus}"`);
 
-              // Map various status values to our standard format
-              if (normalizedStatus === 'ongoing') {
-                projectStatus = 'ongoing';
-                console.log(`✅ Using status from projects.json: ${projectStatus}`);
-              } else if (normalizedStatus === 'paused') {
-                projectStatus = 'paused';
-                console.log(`✅ Using status from projects.json: ${projectStatus}`);
-              } else if (normalizedStatus === 'completed') {
+              // If calculated status is 'completed', always use that regardless of project.json status
+              // This ensures that projects with all tasks approved and completed show as completed
+              if (calculatedStatus === 'completed') {
                 projectStatus = 'completed';
-                console.log(`✅ Using status from projects.json: ${projectStatus}`);
+                console.log(`✅ Overriding projects.json status with calculated 'completed' status`);
               } else {
-                // Fallback to calculated status if status is not recognized
-                projectStatus = calculateProjectStatus(projectTasks);
-                console.log(`⚠️ Unrecognized status "${normalizedStatus}", calculated: ${projectStatus}`);
+                // For non-completed calculated statuses, respect the project.json status if valid
+                if (normalizedStatus === 'ongoing') {
+                  projectStatus = 'ongoing';
+                  console.log(`✅ Using status from projects.json: ${projectStatus}`);
+                } else if (normalizedStatus === 'paused') {
+                  projectStatus = 'paused';
+                  console.log(`✅ Using status from projects.json: ${projectStatus}`);
+                } else if (normalizedStatus === 'completed') {
+                  projectStatus = 'completed';
+                  console.log(`✅ Using status from projects.json: ${projectStatus}`);
+                } else {
+                  // Fallback to calculated status if status is not recognized
+                  projectStatus = calculatedStatus;
+                  console.log(`⚠️ Unrecognized status "${normalizedStatus}", using calculated: ${projectStatus}`);
+                }
               }
             } else {
               // Fallback to calculated status if no status in projects.json
-              projectStatus = calculateProjectStatus(projectTasks);
-              console.log(`📊 No status in projects.json for project ${projectTasks.projectId}, calculated: ${projectStatus}`);
+              projectStatus = calculatedStatus;
+              console.log(`📊 No status in projects.json for project ${projectTasks.projectId}, using calculated: ${projectStatus}`);
             }
             let completionDate = null;
 
@@ -234,7 +227,7 @@ export default function CommissionerProjectListPage() {
             const freelancerId = projectTasks.freelancerId || null;
 
             // Use calculated status since projects.json is not available
-            const projectStatus = calculateProjectStatus(projectTasks);
+            const projectStatus = calculateProjectStatus(tasks);
             console.log(`📊 Fallback: Project ${projectTasks.projectId} calculated status: ${projectStatus}`);
 
             let completionDate = null;

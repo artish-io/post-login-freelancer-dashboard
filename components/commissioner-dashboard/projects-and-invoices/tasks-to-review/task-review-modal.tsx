@@ -176,6 +176,21 @@ export default function TaskReviewModal({ isOpen, onClose, task, onTaskReviewed 
       });
 
       console.log('✅ Task approved successfully:', result);
+
+      // 🛡️ MILESTONE GUARD: For milestone-based projects, verify invoice was generated
+      if (result.entities?.project?.invoicingMethod === 'milestone') {
+        console.log('🔍 Milestone-based project detected, verifying invoice generation...');
+
+        if (!result.invoiceGenerated && !result.entities?.invoice) {
+          console.error('❌ Milestone guard failed: No invoice generated for milestone-based project');
+          setError('Task approval failed: Invoice generation required for milestone-based projects. Please try again.');
+          setLoading(false);
+          return;
+        }
+
+        console.log('✅ Milestone guard passed: Invoice generated successfully');
+      }
+
       console.log('🔄 About to reset loading state and close modal...');
 
       // Reset loading state first, then close modal and trigger refresh

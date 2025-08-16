@@ -6,6 +6,7 @@ export interface PostGigFormData {
   selectedSubcategory?: string;
   
   // Step 3
+  projectTitle?: string;
   startType?: 'Immediately' | 'Custom';
   customStartDate?: string;
   endDate?: string;
@@ -20,7 +21,7 @@ export interface PostGigFormData {
     size: number;
     type: string;
     lastModified: number;
-  };
+  } | null;
   skills?: string[];
   tools?: string[];
   milestones?: Array<{

@@ -34,14 +34,17 @@ export interface Project {
 }
 
 /**
- * Calculate project progress based on approved tasks
+ * Calculate project progress based on approved AND completed tasks
  * This is the unified logic used across all components
  */
 export function calculateProjectProgress(tasks: Task[]): number {
   if (!tasks || tasks.length === 0) return 0;
-  
-  const approvedTasks = tasks.filter(task => task.status === 'Approved').length;
-  return Math.round((approvedTasks / tasks.length) * 100);
+
+  // Progress is based on tasks that are both approved AND completed
+  const completedTasks = tasks.filter(task =>
+    task.status === 'Approved' && task.completed === true
+  ).length;
+  return Math.round((completedTasks / tasks.length) * 100);
 }
 
 /**
@@ -50,18 +53,23 @@ export function calculateProjectProgress(tasks: Task[]): number {
  */
 export function calculateProjectStatus(tasks: Task[]): 'ongoing' | 'paused' | 'completed' {
   if (!tasks || tasks.length === 0) return 'paused';
-  
-  const approvedTasks = tasks.filter(task => task.status === 'Approved').length;
+
+  // Tasks must be both approved AND completed to count as finished
+  const completedTasks = tasks.filter(task =>
+    task.status === 'Approved' && task.completed === true
+  ).length;
   const totalTasks = tasks.length;
-  
-  // All tasks approved = completed
-  if (approvedTasks === totalTasks) return 'completed';
-  
-  // Check if project has recent activity
+
+  // All tasks approved AND completed = project completed
+  if (completedTasks === totalTasks) return 'completed';
+
+  // Check if project has recent activity (including approved tasks that aren't completed yet)
   const hasRecentActivity = tasks.some(task =>
-    task.status === 'In review' || task.status === 'Ongoing'
+    task.status === 'In review' ||
+    task.status === 'Ongoing' ||
+    (task.status === 'Approved' && task.completed !== true)
   );
-  
+
   return hasRecentActivity ? 'ongoing' : 'paused';
 }
 

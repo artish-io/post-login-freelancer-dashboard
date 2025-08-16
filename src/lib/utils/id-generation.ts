@@ -137,6 +137,36 @@ export function generateUniqueProjectId(existingProjectIds: Set<number>): number
 }
 
 /**
+ * Generate organization-based project ID in format [ORG_FIRST_LETTER]-[COUNTER]
+ * Example: For "Corlax Wellness" -> "C-001", "C-002", etc.
+ */
+export function generateOrganizationProjectId(organizationName: string, existingProjectIds: Set<string> = new Set()): string {
+  // Extract first letter of organization name
+  const firstLetter = organizationName.trim().charAt(0).toUpperCase();
+  const prefix = firstLetter || 'X'; // Fallback to 'X' if no name
+
+  // Find the highest existing counter for this organization
+  let maxCounter = 0;
+  const prefixPattern = new RegExp(`^${prefix}-(\\d+)$`);
+
+  for (const existingId of existingProjectIds) {
+    const match = existingId.match(prefixPattern);
+    if (match) {
+      const counter = parseInt(match[1], 10);
+      if (counter > maxCounter) {
+        maxCounter = counter;
+      }
+    }
+  }
+
+  // Generate next counter
+  const nextCounter = maxCounter + 1;
+  const paddedCounter = nextCounter.toString().padStart(3, '0');
+
+  return `${prefix}-${paddedCounter}`;
+}
+
+/**
  * Enhanced task ID generation with collision detection
  */
 export function generateUniqueTaskId(existingTaskIds: Set<number>): number {

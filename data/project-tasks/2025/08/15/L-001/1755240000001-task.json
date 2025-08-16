@@ -1,0 +1,19 @@
+{
+  "taskId": 1755240000001,
+  "projectId": "L-001",
+  "projectTitle": "Urban Green Space Revitalization Initiative",
+  "organizationId": 1,
+  "freelancerId": 25,
+  "title": "Site Assessment and Planning",
+  "description": "Conduct comprehensive assessment of current park conditions and develop detailed renovation plans",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "dueDate": "2025-08-25T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "createdDate": "2025-08-15T04:15:00.000Z",
+  "lastModified": "2025-08-15T04:15:00.000Z"
+}

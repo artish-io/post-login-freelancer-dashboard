@@ -125,7 +125,9 @@ async function handleWithdrawRequest(req: NextRequest) {
       },
     };
 
-    await appendTransaction(transaction);
+    // Add withdrawal method metadata to transaction
+    const enhancedTransaction = await addWithdrawalMethodMetadata(transaction, actorId);
+    await appendTransaction(enhancedTransaction);
 
     // Log transitions for observability
     logWithdrawalTransition(
@@ -196,6 +198,38 @@ async function handleWithdrawRequest(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+// Helper function to add withdrawal method metadata to transaction
+async function addWithdrawalMethodMetadata(transaction: any, userId: number) {
+  try {
+    const fs = require('fs/promises');
+    const path = require('path');
+    const methodsPath = path.join(process.cwd(), 'data/freelancer-payments/withdrawal-methods.json');
+    const methodsData = await fs.readFile(methodsPath, 'utf-8');
+    const methods = JSON.parse(methodsData);
+
+    const defaultMethod = methods.find((method: any) =>
+      method.freelancerId === userId && method.isDefault
+    );
+
+    if (defaultMethod) {
+      transaction.metadata = {
+        ...transaction.metadata,
+        withdrawalMethod: {
+          type: defaultMethod.type,
+          last4: defaultMethod.accountLast4,
+          email: defaultMethod.email,
+          bankName: defaultMethod.bankName,
+          id: defaultMethod.id
+        }
+      };
+    }
+  } catch (error) {
+    console.warn('Could not load withdrawal method metadata:', error);
+  }
+
+  return transaction;
 }
 
 // Wrap the handler with error handling

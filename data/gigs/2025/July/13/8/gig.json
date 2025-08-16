@@ -14,7 +14,7 @@
   "description": "Build an analytics dashboard to track park usage, visitor patterns, and facility utilization.",
   "deliveryTimeWeeks": 7,
   "estimatedHours": 50,
-  "status": "Unavailable",
+  "status": "Available",
   "toolsRequired": [
     "React",
     "D3.js",
@@ -22,5 +22,6 @@
     "SQL"
   ],
   "notes": "Real-time data processing capabilities required. Integration with IoT sensors.",
-  "postedDate": "2025-07-14"
+  "postedDate": "2025-07-14",
+  "lastModified": "2025-08-15T19:56:57.448Z"
 }

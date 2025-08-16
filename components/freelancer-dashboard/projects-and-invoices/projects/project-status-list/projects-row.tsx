@@ -95,7 +95,7 @@ export default function ProjectsRow({ projects, users, filterStatus }: Props) {
       return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
     });
 
-  const handleProjectClick = (projectId: number) => {
+  const handleProjectClick = (projectId: string | number) => {
     router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking/${projectId}`);
   };
 

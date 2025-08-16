@@ -1,0 +1,22 @@
+{
+  "projectId": "L-001",
+  "title": "Urban Green Space Revitalization Initiative",
+  "description": "Comprehensive project to revitalize and modernize public parks across Lagos State. This initiative includes landscape redesign, installation of modern amenities, implementation of sustainable irrigation systems, and creation of community engagement programs to enhance urban green spaces.",
+  "organizationId": 1,
+  "commissionerId": 32,
+  "freelancerId": 25,
+  "status": "ongoing",
+  "dueDate": "2025-10-30T23:59:59.000Z",
+  "invoicingMethod": "milestone",
+  "totalBudget": 75000,
+  "currency": "USD",
+  "typeTags": ["Environmental", "Public Works", "Community Development"],
+  "createdAt": "2025-08-15T04:15:00.000Z",
+  "updatedAt": "2025-08-15T04:15:00.000Z",
+  "manager": {
+    "name": "Neilsan Mando",
+    "title": "Product Manager",
+    "avatar": "/avatars/neilsan.png",
+    "email": "neilsan.mando@example.com"
+  }
+}

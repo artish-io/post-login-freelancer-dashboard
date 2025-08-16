@@ -1,0 +1,64 @@
+{
+  "id": 14,
+  "title": "Financial Modelling For Series A Fundraising",
+  "organizationId": 3,
+  "commissionerId": "34",
+  "category": "Accounting",
+  "subcategory": "Financial Forecasting",
+  "tags": [
+    "Accounting",
+    "Financial Forecasting"
+  ],
+  "hourlyRateMin": 125,
+  "hourlyRateMax": 150,
+  "description": "We’re seeking an experienced accountant to build a comprehensive financial model and profitability forecast in preparation for our upcoming startup fundraising round. The work will involve translating our operational and market data into clear, investor-ready projections. You’ll help us validate our growth assumptions and present a credible, data-driven path to profitability.",
+  "deliveryTimeWeeks": 2,
+  "estimatedHours": 80,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Xero",
+    "QuickBooks",
+    "Excel"
+  ],
+  "executionMethod": "milestone",
+  "milestones": [
+    {
+      "id": "620bbd01-4ad4-4ed8-ac89-0f53541266f7",
+      "title": "Data Gathering & Validation",
+      "description": "Collect and verify all relevant historical, operational, and market data.",
+      "startDate": "2025-08-14T04:00:00.000Z",
+      "endDate": "2025-08-20T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "c809a223-6c3f-43cc-96a1-222e7d86a06b",
+      "title": "Financial Modelling",
+      "description": "Develop a detailed, dynamic financial model with revenue, cost, and cash flow projections.",
+      "startDate": "2025-08-21T04:00:00.000Z",
+      "endDate": "2025-08-25T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "3a3e6f4e-83cc-4b42-928a-c49a26690dca",
+      "title": "Profitability Forecast & Presentation",
+      "description": "Create a profitability forecast and a concise investor-ready report or deck.",
+      "startDate": "2025-08-26T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 10000,
+  "upperBudget": 12000,
+  "postedDate": "2025-08-14",
+  "notes": "Budget range: $10,000 - $12,000",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false,
+  "briefFile": {
+    "name": "_Toye Sokunbi   (1).pdf",
+    "size": 110796,
+    "type": "application/pdf"
+  }
+}

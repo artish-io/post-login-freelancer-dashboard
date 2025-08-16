@@ -61,7 +61,7 @@ interface CandidateData {
   freelancer: Freelancer | null;
   user: User | null;
   gig: Gig;
-  type: 'public' | 'private' | 'placeholder';
+  type: 'public' | 'private';
 }
 
 type ViewMode = 'all' | 'gig-listings' | 'gig-requests' | 'matched-listings' | 'rejected-listings' | 'accepted-requests' | 'rejected-requests';
@@ -175,41 +175,21 @@ export default function CandidateTable({ onCandidateSelect, viewMode = 'all', on
           candidate.freelancer && candidate.user && candidate.gig
         );
 
-        // Create placeholder entries for gigs without applications
-        const gigsWithApplications = new Set([
-          ...organizationApplications.map((app: Application) => app.gigId),
-          ...organizationGigRequests.map((req: GigRequest) => req.gigId)
-        ]);
-
-        const gigsWithoutApplications = organizationGigs.filter((gig: any) =>
-          !gigsWithApplications.has(gig.id)
-        );
-
-        const gigPlaceholders: CandidateData[] = gigsWithoutApplications.map((gig: any) => ({
-          application: null,
-          gigRequest: null,
-          freelancer: null,
-          user: null,
-          gig,
-          type: 'placeholder' as const
-        }));
+        // Note: Removed placeholder entries - candidate table should only show actual candidates
 
         // Filter candidates based on view mode
         let candidateData: CandidateData[] = [];
 
         switch (viewMode) {
           case 'all':
-            // Show both public applications, private requests, and gigs without applications
-            candidateData = [...applicationCandidates, ...requestCandidates, ...gigPlaceholders];
+            // Show both public applications and private requests
+            candidateData = [...applicationCandidates, ...requestCandidates];
             break;
           case 'gig-listings':
-            // Show only public gig applications (pending) and gigs without applications
-            candidateData = [
-              ...applicationCandidates.filter(c =>
-                !c.application?.status || c.application.status === 'pending'
-              ),
-              ...gigPlaceholders.filter(p => (p.gig as any).isPublic !== false)
-            ];
+            // Show only public gig applications (pending)
+            candidateData = applicationCandidates.filter(c =>
+              !c.application?.status || c.application.status === 'pending'
+            );
             break;
           case 'gig-requests':
             // Show only private gig requests that are unaccepted
@@ -250,12 +230,22 @@ export default function CandidateTable({ onCandidateSelect, viewMode = 'all', on
 
         // Sort by most recent submissions first
         const sortedCandidates = candidateData.sort((a, b) => {
-          const dateA = a.type === 'public'
-            ? new Date(a.application!.submittedAt).getTime()
-            : new Date(a.gigRequest!.createdAt || 0).getTime();
-          const dateB = b.type === 'public'
-            ? new Date(b.application!.submittedAt).getTime()
-            : new Date(b.gigRequest!.createdAt || 0).getTime();
+          let dateA = 0;
+          let dateB = 0;
+
+          // Handle public applications
+          if (a.type === 'public' && a.application?.submittedAt) {
+            dateA = new Date(a.application.submittedAt).getTime();
+          } else if (a.type === 'private' && a.gigRequest?.createdAt) {
+            dateA = new Date(a.gigRequest.createdAt).getTime();
+          }
+
+          if (b.type === 'public' && b.application?.submittedAt) {
+            dateB = new Date(b.application.submittedAt).getTime();
+          } else if (b.type === 'private' && b.gigRequest?.createdAt) {
+            dateB = new Date(b.gigRequest.createdAt).getTime();
+          }
+
           return dateB - dateA; // Newest first
         });
 
@@ -264,11 +254,8 @@ export default function CandidateTable({ onCandidateSelect, viewMode = 'all', on
         // Calculate tab counts and send to parent
         if (onTabCountsUpdate) {
           const counts: Record<ViewMode, number> = {
-            'all': [...applicationCandidates, ...requestCandidates, ...gigPlaceholders].length,
-            'gig-listings': [
-              ...applicationCandidates.filter(c => !c.application?.status || c.application.status === 'pending'),
-              ...gigPlaceholders.filter(p => (p.gig as any).isPublic !== false)
-            ].length,
+            'all': [...applicationCandidates, ...requestCandidates].length,
+            'gig-listings': applicationCandidates.filter(c => !c.application?.status || c.application.status === 'pending').length,
             'gig-requests': requestCandidates.filter(c => !c.gigRequest?.status || c.gigRequest.status === 'pending' || c.gigRequest.status === 'Pending' || c.gigRequest.status === 'Available').length,
             'matched-listings': applicationCandidates.filter(c => c.application?.status === 'accepted').length,
             'rejected-listings': applicationCandidates.filter(c => c.application?.status === 'rejected').length,
@@ -436,75 +423,52 @@ export default function CandidateTable({ onCandidateSelect, viewMode = 'all', on
                 ? candidate.application?.id
                 : candidate.gigRequest?.id;
               const submittedDate = candidate.type === 'public'
-                ? candidate.application?.submittedAt
-                : candidate.gigRequest?.createdAt;
+                ? candidate.application?.submittedAt || null
+                : candidate.gigRequest?.createdAt || null;
               const attachmentCount = candidate.type === 'public'
                 ? candidate.application?.sampleLinks?.length || 0
                 : 0;
 
+              // Generate a unique key
+              const uniqueKey = `${candidate.type}-${candidateId}`;
+
               return (
                 <tr
-                  key={`${candidate.type}-${candidateId}`}
+                  key={uniqueKey}
                   onClick={() => onCandidateSelect(candidate)}
                   className="hover:bg-gray-50 cursor-pointer"
                 >
                 <td className="px-3 md:px-6 py-4 w-3/5 md:w-auto">
-                  {candidate.type === 'placeholder' ? (
-                    <div className="flex items-center min-w-0">
-                      <div className="flex-shrink-0 h-8 w-8 md:h-10 md:w-10">
-                        <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gray-200 flex items-center justify-center">
-                          <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6.5" />
-                          </svg>
-                        </div>
+                  <div className="flex items-center min-w-0">
+                    <div className="flex-shrink-0 h-8 w-8 md:h-10 md:w-10">
+                      <Image
+                        className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover"
+                        src={candidate.user?.avatar || '/default-avatar.png'}
+                        alt={candidate.user?.name || 'User'}
+                        width={40}
+                        height={40}
+                      />
+                    </div>
+                    <div className="ml-2 md:ml-4 min-w-0 flex-1 overflow-hidden">
+                      <div className="text-sm font-medium text-gray-900 truncate">
+                        {candidate.user?.name}
                       </div>
-                      <div className="ml-2 md:ml-4 min-w-0 flex-1 overflow-hidden">
-                        <div className="text-sm font-medium text-gray-900 truncate">
-                          No applications yet
-                        </div>
-                        <div className="text-xs md:text-sm text-gray-500 truncate">
-                          Gig is active and accepting applications
-                        </div>
+                      <div className="text-xs md:text-sm text-gray-500 truncate">
+                        {candidate.user?.title}
                       </div>
                     </div>
-                  ) : (
-                    <div className="flex items-center min-w-0">
-                      <div className="flex-shrink-0 h-8 w-8 md:h-10 md:w-10">
-                        <Image
-                          className="h-8 w-8 md:h-10 md:w-10 rounded-full object-cover"
-                          src={candidate.user?.avatar || '/default-avatar.png'}
-                          alt={candidate.user?.name || 'User'}
-                          width={40}
-                          height={40}
-                        />
-                      </div>
-                      <div className="ml-2 md:ml-4 min-w-0 flex-1 overflow-hidden">
-                        <div className="text-sm font-medium text-gray-900 truncate">
-                          {candidate.user?.name}
-                        </div>
-                        <div className="text-xs md:text-sm text-gray-500 truncate">
-                          {candidate.user?.title}
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  </div>
                 </td>
                 <td className="px-3 md:px-6 py-4 w-2/5 md:w-auto">
                   <div className="flex justify-start">
-                    {candidate.type === 'placeholder' ? (
-                      <span className="text-sm text-gray-400">-</span>
-                    ) : (
-                      renderStars(candidate.freelancer?.rating || 0)
-                    )}
+                    {renderStars(candidate.freelancer?.rating || 0)}
                   </div>
                 </td>
                 <td className="hidden md:table-cell px-6 py-4">
                   <div className="min-w-0 max-w-xs">
                     <div className="text-sm text-gray-900 truncate">{candidate.gig.title}</div>
                     <div className="text-sm text-gray-500 truncate">
-                      {candidate.type === 'placeholder'
-                        ? 'Awaiting applications'
-                        : candidate.type === 'public'
+                      {candidate.type === 'public'
                         ? candidate.freelancer?.category
                         : candidate.gigRequest?.budget
                           ? `$${candidate.gigRequest.budget.min?.toLocaleString()} - $${candidate.gigRequest.budget.max?.toLocaleString()}`

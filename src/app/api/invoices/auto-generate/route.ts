@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
 import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
-import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
+import { getAllInvoices } from '../../../../lib/invoice-storage';
 import { getInitialInvoiceStatus, AUTO_MILESTONE_CONFIG } from '../../../../lib/invoice-status-definitions';
 
 const EVENTS_LOG_PATH = path.join(process.cwd(), 'data/notifications/notifications-log.json');
@@ -36,6 +36,8 @@ export async function POST(request: Request) {
   try {
     const { taskId, projectId, action } = await request.json();
 
+    console.log('🔧 Auto-generate invoice called with:', { taskId, projectId, action });
+
     if (action !== 'task_approved') {
       return NextResponse.json({ message: 'No invoice generation needed' });
     }
@@ -44,8 +46,15 @@ export async function POST(request: Request) {
     const [projects, invoices, eventsData] = await Promise.all([
       UnifiedStorageService.listProjects(),
       getAllInvoices(), // Use hierarchical storage for invoices
-      fs.readFile(EVENTS_LOG_PATH, 'utf-8')
+      fs.readFile(EVENTS_LOG_PATH, 'utf-8').catch(() => '[]') // Handle missing file gracefully
     ]);
+
+    console.log('📊 Loaded data:', {
+      projectsCount: projects.length,
+      invoicesCount: invoices.length,
+      projectIds: projects.map(p => p.projectId),
+      searchingFor: { taskId, projectId }
+    });
 
     // Get all tasks across all projects
     const allTasks = [];
@@ -53,6 +62,7 @@ export async function POST(request: Request) {
       const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
       allTasks.push(...projectTasks.map(task => ({
         id: task.taskId,
+        taskId: task.taskId, // Keep both for compatibility
         projectId: task.projectId,
         title: task.title,
         status: task.status,
@@ -65,11 +75,25 @@ export async function POST(request: Request) {
     // invoices is already parsed from hierarchical storage
     const events = JSON.parse(eventsData);
 
-    // Find the project and task
-    const project = projects.find(p => Number(p.projectId) === Number(projectId));
-    const task = allTasks.find(t => Number(t.id) === Number(taskId) && Number(t.projectId) === Number(projectId));
+    // Find the project and task - handle both string and number project IDs
+    const project = projects.find(p => String(p.projectId) === String(projectId));
+    const task = allTasks.find(t => Number(t.taskId) === Number(taskId) && String(t.projectId) === String(projectId));
+
+    console.log('🔍 Lookup results:', {
+      project: project ? { id: project.projectId, title: project.title } : null,
+      task: task ? { id: task.taskId, title: task.title, status: task.status } : null,
+      allTasksCount: allTasks.length,
+      taskIds: allTasks.map(t => ({ taskId: t.taskId, projectId: t.projectId }))
+    });
 
     if (!project || !task) {
+      console.error('❌ Project or task not found:', {
+        projectFound: !!project,
+        taskFound: !!task,
+        searchCriteria: { taskId, projectId },
+        availableProjects: projects.map(p => p.projectId),
+        availableTasks: allTasks.map(t => ({ taskId: t.taskId, projectId: t.projectId }))
+      });
       return NextResponse.json({ error: 'Project or task not found' }, { status: 404 });
     }
 
@@ -81,7 +105,8 @@ export async function POST(request: Request) {
     }
 
     // 🔒 MILESTONE VALIDATION: Verify task is approved before generating invoice
-    if (task.status !== 'approved') {
+    // Handle both "approved" and "Approved" for case sensitivity compatibility
+    if (task.status.toLowerCase() !== 'approved') {
       return NextResponse.json({
         error: 'Invoice can only be generated for approved milestone tasks',
         taskStatus: task.status
@@ -97,6 +122,7 @@ export async function POST(request: Request) {
     if (existingInvoice) {
       return NextResponse.json({
         message: 'Invoice already exists for this milestone task',
+        invoiceNumber: existingInvoice.invoiceNumber,
         existingInvoiceNumber: existingInvoice.invoiceNumber
       });
     }
@@ -105,7 +131,10 @@ export async function POST(request: Request) {
     // For milestone-based projects, total budget is evenly distributed across ALL milestones
     // This matches the logic in post-a-gig and proposal creation
     const totalBudget = project.totalBudget || project.budget?.upper || project.budget?.lower || 5000;
-    const totalMilestones = project.totalTasks || 1;
+
+    // Calculate total tasks dynamically from the project's task list
+    const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
+    const totalMilestones = projectTasks.length || 1;
 
     // For milestone-based projects, there's NO upfront commitment - payment is per milestone
     const milestoneAmount = Math.round((totalBudget / totalMilestones) * 100) / 100;
@@ -118,8 +147,33 @@ export async function POST(request: Request) {
       note: 'Each milestone gets equal share of total budget'
     });
 
-    // Generate invoice number
-    const invoiceNumber = `AUTO-${Date.now()}-${projectId}-${taskId}`;
+    // Generate invoice number using commissioner initials
+    let invoiceNumber = `AUTO-${Date.now()}-${projectId}-${taskId}`; // Fallback
+
+    try {
+      // Get commissioner data using hierarchical storage
+      const commissioner = await UnifiedStorageService.getUserById(project.commissionerId);
+
+      if (commissioner?.name) {
+        // Extract initials from commissioner name
+        const initials = commissioner.name
+          .split(' ')
+          .map((word: string) => word.charAt(0).toUpperCase())
+          .join('');
+
+        // Get existing invoices to determine next number
+        const existingInvoices = await getAllInvoices({ commissionerId: project.commissionerId });
+        const commissionerInvoices = existingInvoices.filter(inv =>
+          inv.invoiceNumber.startsWith(initials)
+        );
+        const nextNumber = String(commissionerInvoices.length + 1).padStart(3, '0');
+
+        invoiceNumber = `${initials}-${nextNumber}`;
+        console.log(`📋 Generated invoice number: ${invoiceNumber} for commissioner ${commissioner.name}`);
+      }
+    } catch (error) {
+      console.warn('⚠️  Could not generate custom invoice number, using fallback:', error);
+    }
 
     // Create new invoice entry with proper status system
     const initialStatus = getInitialInvoiceStatus('auto_milestone', true);
@@ -152,9 +206,46 @@ export async function POST(request: Request) {
       sentDate: new Date().toISOString() // Auto-milestone invoices are immediately sent
     };
 
-    // Add to invoices
-    invoices.push(newInvoice);
-    await fs.writeFile(INVOICES_PATH, JSON.stringify(invoices, null, 2));
+    // Save invoice using hierarchical storage structure
+    try {
+      const [year, month, day] = newInvoice.issueDate.split("-");
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                         'July', 'August', 'September', 'October', 'November', 'December'];
+      const monthIndex = parseInt(month) - 1;
+
+      if (monthIndex < 0 || monthIndex >= 12) {
+        throw new Error(`Invalid month: ${month}`);
+      }
+
+      const monthName = monthNames[monthIndex];
+      const projectFolder = newInvoice.projectId ? String(newInvoice.projectId) : 'custom';
+
+      console.log('📁 Building invoice path:', { year, month, day, monthName, projectFolder });
+
+      const invoiceDir = path.join(
+        process.cwd(),
+        'data/invoices',
+        year,
+        monthName,
+        day,
+        projectFolder
+      );
+
+      console.log('📂 Invoice directory:', invoiceDir);
+
+      // Create directory if it doesn't exist
+      await fs.mkdir(invoiceDir, { recursive: true });
+      console.log('✅ Directory created/verified');
+
+      // Write invoice to hierarchical location
+      const invoiceFilePath = path.join(invoiceDir, `${newInvoice.invoiceNumber}.json`);
+      await fs.writeFile(invoiceFilePath, JSON.stringify(newInvoice, null, 2));
+
+      console.log(`✅ Invoice saved to: ${invoiceFilePath}`);
+    } catch (saveError) {
+      console.error('❌ Error saving invoice:', saveError);
+      throw new Error(`Failed to save invoice: ${saveError.message}`);
+    }
 
     // Create invoice generation event
     const invoiceEvent = {
@@ -169,7 +260,7 @@ export async function POST(request: Request) {
       metadata: {
         taskTitle: task.title,
         projectTitle: project.title,
-        amount: taskRate,
+        amount: milestoneAmount,
         invoiceNumber
       },
       context: {
@@ -180,7 +271,17 @@ export async function POST(request: Request) {
     };
 
     events.push(invoiceEvent);
-    await fs.writeFile(EVENTS_LOG_PATH, JSON.stringify(events, null, 2));
+
+    // Save events log with error handling
+    try {
+      const eventsDir = path.dirname(EVENTS_LOG_PATH);
+      await fs.mkdir(eventsDir, { recursive: true });
+      await fs.writeFile(EVENTS_LOG_PATH, JSON.stringify(events, null, 2));
+      console.log('✅ Events log updated');
+    } catch (eventsError) {
+      console.error('⚠️  Failed to update events log:', eventsError);
+      // Don't fail the entire operation for events logging
+    }
 
     return NextResponse.json({
       success: true,

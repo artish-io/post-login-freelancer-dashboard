@@ -1,0 +1,83 @@
+{
+  "timestamp": "2025-08-15T18-43-19-505Z",
+  "totalApplications": 10,
+  "applications": [
+    {
+      "id": 6,
+      "gigId": 8,
+      "status": "accepted",
+      "projectId": null,
+      "orphanReason": "Accepted application without projectId (should have been linked to a project)",
+      "originalPath": "/Users/toyesokunbi/artish-web/data/gigs/gig-applications/2025/August/03/6.json"
+    },
+    {
+      "id": 7,
+      "gigId": 4,
+      "projectId": null,
+      "orphanReason": "Unknown status: undefined",
+      "originalPath": "/Users/toyesokunbi/artish-web/data/gigs/gig-applications/2025/August/03/7.json"
+    },
+    {
+      "id": 10,
+      "gigId": 1,
+      "projectId": null,
+      "orphanReason": "Unknown status: undefined",
+      "originalPath": "/Users/toyesokunbi/artish-web/data/gigs/gig-applications/2025/August/03/10.json"
+    },
+    {
+      "id": 11,
+      "gigId": 9,
+      "status": "accepted",
+      "projectId": null,
+      "orphanReason": "Accepted application without projectId (should have been linked to a project)",
+      "originalPath": "/Users/toyesokunbi/artish-web/data/gigs/gig-applications/2025/August/03/11.json"
+    },
+    {
+      "id": 12,
+      "gigId": 1,
+      "projectId": null,
+      "orphanReason": "Unknown status: undefined",
+      "originalPath": "/Users/toyesokunbi/artish-web/data/gigs/gig-applications/2025/August/03/12.json"
+    },
+    {
+      "id": 13,
+      "gigId": 10,
+      "status": "accepted",
+      "projectId": null,
+      "orphanReason": "Accepted application without projectId (should have been linked to a project)",
+      "originalPath": "/Users/toyesokunbi/artish-web/data/gigs/gig-applications/2025/August/04/13.json"
+    },
+    {
+      "id": 14,
+      "gigId": 2,
+      "status": "accepted",
+      "projectId": null,
+      "orphanReason": "Accepted application without projectId (should have been linked to a project)",
+      "originalPath": "/Users/toyesokunbi/artish-web/data/gigs/gig-applications/2025/August/06/14.json"
+    },
+    {
+      "id": 21,
+      "gigId": 12,
+      "status": "accepted",
+      "projectId": null,
+      "orphanReason": "Accepted application without projectId (should have been linked to a project)",
+      "originalPath": "/Users/toyesokunbi/artish-web/data/gigs/gig-applications/2025/August/07/21.json"
+    },
+    {
+      "id": 1755193217237,
+      "gigId": 1755194225000,
+      "status": "accepted",
+      "projectId": null,
+      "orphanReason": "Accepted application without projectId (should have been linked to a project)",
+      "originalPath": "/Users/toyesokunbi/artish-web/data/gigs/gig-applications/2025/August/14/1755193217237.json"
+    },
+    {
+      "id": 1755193217238,
+      "gigId": 1755194225002,
+      "status": "accepted",
+      "projectId": null,
+      "orphanReason": "Accepted application without projectId (should have been linked to a project)",
+      "originalPath": "/Users/toyesokunbi/artish-web/data/gigs/gig-applications/2025/August/14/1755193217238.json"
+    }
+  ]
+}

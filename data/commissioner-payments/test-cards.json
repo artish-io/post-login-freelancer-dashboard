@@ -1,0 +1,15 @@
+[
+  {
+    "id": "card_test_001",
+    "commissionerId": 32,
+    "cardNumber": "**** **** **** 4242",
+    "expiryMonth": 12,
+    "expiryYear": 2025,
+    "cardholderName": "Test Commissioner",
+    "brand": "visa",
+    "isDefault": true,
+    "isActive": true,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "lastUsed": "2025-01-15T00:00:00.000Z"
+  }
+]

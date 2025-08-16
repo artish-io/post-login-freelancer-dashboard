@@ -15,11 +15,7 @@ export async function POST(req: Request) {
     const session = await getServerSession(authOptions);
     if (!session?.user?.id) {
       return NextResponse.json(
-        err({
-          code: ErrorCodes.UNAUTHORIZED,
-          message: 'Authentication required',
-          status: 401,
-        }),
+        err(ErrorCodes.UNAUTHORIZED, 'Authentication required', 401),
         { status: 401 }
       );
     }
@@ -29,11 +25,7 @@ export async function POST(req: Request) {
 
     if (!withdrawalId) {
       return NextResponse.json(
-        err({
-          code: ErrorCodes.MISSING_REQUIRED_FIELD,
-          message: 'Missing withdrawalId',
-          status: 400,
-        }),
+        err(ErrorCodes.MISSING_REQUIRED_FIELD, 'Missing withdrawalId', 400),
         { status: 400 }
       );
     }
@@ -42,11 +34,7 @@ export async function POST(req: Request) {
     const withdrawal = await getWithdrawalById(withdrawalId);
     if (!withdrawal) {
       return NextResponse.json(
-        err({
-          code: ErrorCodes.RESOURCE_NOT_FOUND,
-          message: 'Withdrawal not found',
-          status: 404,
-        }),
+        err(ErrorCodes.RESOURCE_NOT_FOUND, 'Withdrawal not found', 404),
         { status: 404 }
       );
     }
@@ -54,11 +42,7 @@ export async function POST(req: Request) {
     // Check withdrawal status
     if (withdrawal.status !== 'pending') {
       return NextResponse.json(
-        err({
-          code: ErrorCodes.INVALID_STATUS,
-          message: `Withdrawal is not pending (current status: ${withdrawal.status})`,
-          status: 400,
-        }),
+        err(ErrorCodes.INVALID_STATUS, `Withdrawal is not pending (current status: ${withdrawal.status})`, 400),
         { status: 400 }
       );
     }
@@ -67,24 +51,32 @@ export async function POST(req: Request) {
     const wallet = await getWallet(withdrawal.userId, withdrawal.userType, withdrawal.currency);
     if (!wallet) {
       return NextResponse.json(
-        err({
-          code: ErrorCodes.RESOURCE_NOT_FOUND,
-          message: 'Wallet not found',
-          status: 404,
-        }),
+        err(ErrorCodes.RESOURCE_NOT_FOUND, 'Wallet not found', 404),
         { status: 404 }
       );
     }
 
     // Use service for business logic
+    // Process through test gateway
+    try {
+      const { processMockWithdrawal } = await import('../../utils/gateways/test-gateway');
+      const gatewayResult = await processMockWithdrawal({
+        withdrawalId: withdrawal.withdrawalId,
+        userId: withdrawal.userId,
+        amount: withdrawal.amount,
+        currency: withdrawal.currency
+      });
+
+      console.log('Mock withdrawal processed:', gatewayResult);
+    } catch (gatewayError) {
+      console.error('Gateway withdrawal failed:', gatewayError);
+      // Continue with processing - gateway failure shouldn't block withdrawal
+    }
+
     const finalizeResult = PaymentsService.finalizeWithdrawal(wallet, withdrawal.amount);
     if (!finalizeResult.ok) {
       return NextResponse.json(
-        err({
-          code: ErrorCodes.INSUFFICIENT_FUNDS,
-          message: finalizeResult.reason,
-          status: 409,
-        }),
+        err(ErrorCodes.INSUFFICIENT_FUNDS, finalizeResult.reason, 409),
         { status: 409 }
       );
     }
@@ -104,11 +96,7 @@ export async function POST(req: Request) {
 
     if (!updated) {
       return NextResponse.json(
-        err({
-          code: ErrorCodes.INTERNAL_ERROR,
-          message: 'Failed to update withdrawal status',
-          status: 500,
-        }),
+        err(ErrorCodes.INTERNAL_ERROR, 'Failed to update withdrawal status', 500),
         { status: 500 }
       );
     }
@@ -136,6 +124,7 @@ export async function POST(req: Request) {
       'pending',
       'paid',
       finalProcessedById,
+      'PAYMENTS_WITHDRAW',
       {
         amount: withdrawal.amount,
         currency: withdrawal.currency,
@@ -150,6 +139,7 @@ export async function POST(req: Request) {
       withdrawal.amount,
       withdrawal.currency,
       finalProcessedById,
+      'WALLETS_UPDATE',
       {
         reason: 'withdrawal_executed',
         withdrawalId,
@@ -188,11 +178,7 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('[WITHDRAW_EXECUTE_ERROR]', error);
     return NextResponse.json(
-      err({
-        code: ErrorCodes.INTERNAL_ERROR,
-        message: 'Internal server error',
-        status: 500,
-      }),
+      err(ErrorCodes.INTERNAL_ERROR, 'Internal server error', 500),
       { status: 500 }
     );
   }

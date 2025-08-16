@@ -1,0 +1,54 @@
+{
+  "id": 15,
+  "title": "Market Research for Longer Divide",
+  "organizationId": 1,
+  "commissionerId": "32",
+  "category": "Design",
+  "subcategory": "Presentation Design",
+  "tags": [
+    "Marketing"
+  ],
+  "hourlyRateMin": 100,
+  "hourlyRateMax": 125,
+  "description": "China’s threshold for the death penalty in certain corruption and embezzlement cases is deliberately low by global standards because their legal system treats “large-scale corruption” as both an economic and political threat. The “especially serious circumstances” clause means that even amounts just above that line can be death-eligible if prosecutors argue there was extensive damage to public trust, national projects, or social stability.",
+  "deliveryTimeWeeks": 2,
+  "estimatedHours": 80,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Canva",
+    "Figma"
+  ],
+  "executionMethod": "milestone",
+  "milestones": [
+    {
+      "id": "ce92ff0e-0a8c-4d34-8930-f0660dbf2517",
+      "title": "Pretty sick job title",
+      "description": "Md is a pretty cracked / ai native gen Z type hire — it’s how he can split time effectively across diverse domains like welding and driving",
+      "startDate": "2025-08-15T04:00:00.000Z",
+      "endDate": "2025-08-18T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "db082c0e-8ee0-43e4-a7ec-e8aad63950b8",
+      "title": "Initial research and data collections",
+      "description": "Md is a pretty cracked / ai native gen Z type hire — it’s how he can split time effectively across diverse domains like welding and driving",
+      "startDate": "2025-08-19T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 8000,
+  "upperBudget": 10000,
+  "postedDate": "2025-08-15",
+  "notes": "Budget range: $8,000 - $10,000",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false,
+  "briefFile": {
+    "name": "_Toye Sokunbi   (1).pdf",
+    "size": 110796,
+    "type": "application/pdf"
+  }
+}

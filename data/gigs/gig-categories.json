@@ -248,6 +248,10 @@
       {
         "name": "Bookkeeping",
         "description": "Maintaining financial records and transaction management for businesses."
+      },
+      {
+        "name": "Financial Forecasting",
+        "description": "Financial forecasting and profitability analysis for companies, startups and fundraising."
       }
     ]
   },

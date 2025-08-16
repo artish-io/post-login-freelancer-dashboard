@@ -1,0 +1,18 @@
+{
+  "transactionId": "TXN-PAY-TEST-001-1755364687581",
+  "userId": 31,
+  "type": "payment",
+  "amount": 1000,
+  "currency": "USD",
+  "timestamp": "2025-08-16T17:18:07.581Z",
+  "status": "completed",
+  "invoiceNumber": "TEST-001",
+  "projectId": "TEST-PROJECT",
+  "commissionerId": 32,
+  "freelancerId": 31,
+  "source": "manual_payment",
+  "paymentMethod": "mock",
+  "createdAt": "2025-08-16T17:18:07.585Z",
+  "updatedAt": "2025-08-16T17:18:07.585Z",
+  "description": "Test payment for verification"
+}

@@ -160,7 +160,7 @@ export function filterFreelancerTasks(tasks: ProjectTask[], sessionUser: Session
  * @returns true if the user has access to this project
  */
 export function validateFreelancerProjectAccess(
-  projectId: number,
+  projectId: string | number,
   projects: Project[],
   sessionUser: SessionUser | null
 ): boolean {

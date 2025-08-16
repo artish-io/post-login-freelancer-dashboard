@@ -1,0 +1,19 @@
+{
+  "taskId": 1755230857976,
+  "projectId": "C-001",
+  "projectTitle": "Financial Modelling For Series A Fundraising",
+  "organizationId": 3,
+  "freelancerId": 25,
+  "title": "Financial Model Development",
+  "description": "Create comprehensive financial models for Series A fundraising including revenue projections, cost analysis, and growth scenarios",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "dueDate": "2025-08-25T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "createdDate": "2025-08-15T04:02:10.718Z",
+  "lastModified": "2025-08-15T04:02:10.718Z"
+}

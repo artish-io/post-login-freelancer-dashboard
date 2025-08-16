@@ -24,6 +24,31 @@ export interface Wallet {
 
 const WALLETS_PATH = path.join(process.cwd(), 'data', 'payments', 'wallets.json');
 
+// File locking mechanism to prevent concurrent writes
+const fileLocks = new Map<string, Promise<void>>();
+
+/**
+ * File locking mechanism to prevent concurrent writes
+ */
+async function withFileLock<T>(lockKey: string, fn: () => Promise<T>): Promise<T> {
+  // Wait for any existing lock
+  while (fileLocks.has(lockKey)) {
+    await fileLocks.get(lockKey);
+  }
+
+  // Create new lock
+  const lockPromise = (async () => {
+    try {
+      return await fn();
+    } finally {
+      fileLocks.delete(lockKey);
+    }
+  })();
+
+  fileLocks.set(lockKey, lockPromise.then(() => {}));
+  return lockPromise;
+}
+
 async function readJsonSafe<T>(filePath: string, fallback: T): Promise<T> {
   try {
     const raw = await fs.readFile(filePath, 'utf-8');
@@ -59,14 +84,24 @@ export async function getWallet(userId: number, userType: UserType, currency: Cu
 }
 
 export async function upsertWallet(wallet: Wallet): Promise<void> {
-  const items = await readAllWallets();
-  const idx = items.findIndex(w => w.userId === wallet.userId && w.userType === wallet.userType && w.currency === wallet.currency);
-  if (idx === -1) {
-    items.push(wallet);
-  } else {
-    items[idx] = wallet;
-  }
-  await writeAllWallets(items);
+  const walletLockKey = `wallet_${wallet.userId}_${wallet.userType}_${wallet.currency}`;
+
+  await withFileLock(walletLockKey, async () => {
+    const items = await readAllWallets();
+    const idx = items.findIndex(w =>
+      w.userId === wallet.userId &&
+      w.userType === wallet.userType &&
+      w.currency === wallet.currency
+    );
+
+    if (idx === -1) {
+      items.push(wallet);
+    } else {
+      items[idx] = wallet;
+    }
+
+    await writeAllWallets(items);
+  });
 }
 
 export async function updateWallet(userId: number, userType: UserType, currency: Currency, patch: Partial<Wallet>): Promise<boolean> {

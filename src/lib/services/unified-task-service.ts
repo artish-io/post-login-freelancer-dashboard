@@ -25,7 +25,7 @@ export interface TaskOperationResult {
 }
 
 export interface TaskOperationOptions {
-  projectId?: number;
+  projectId?: number | string;
   referenceUrl?: string;
   workingFileUrl?: string;
   notes?: string;

@@ -1,24 +1,24 @@
 [
   {
-    "id": 1,
+    "id": "comm_withdraw_001",
     "commissionerId": 32,
     "type": "bank_transfer",
     "bankName": "Chase Bank",
-    "accountType": "checking",
-    "accountLast4": "1234",
-    "routingNumber": "****5678",
-    "holderName": "John Smith",
+    "accountNumber": "9876543210",
+    "accountLast4": "3210",
+    "routingNumber": "021000021",
+    "holderName": "Neilsan Mando",
+    "swiftCode": "CHASUS33",
     "isDefault": true,
-    "createdAt": "2025-01-15T10:30:00Z",
-    "updatedAt": "2025-01-15T10:30:00Z"
-  },
-  {
-    "id": 2,
-    "commissionerId": 32,
-    "type": "paypal",
-    "email": "j***@example.com",
-    "isDefault": false,
-    "createdAt": "2025-02-10T16:20:00Z",
-    "updatedAt": "2025-02-10T16:20:00Z"
+    "isTestAccount": true,
+    "billingAddress": {
+      "street": "456 Business Ave",
+      "city": "Lagos",
+      "state": "Lagos State",
+      "zipCode": "100001",
+      "country": "Nigeria"
+    },
+    "createdAt": "2025-08-15T00:00:00.000Z",
+    "updatedAt": "2025-08-15T00:00:00.000Z"
   }
 ]

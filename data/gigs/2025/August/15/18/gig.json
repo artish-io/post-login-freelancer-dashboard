@@ -1,0 +1,49 @@
+{
+  "id": 18,
+  "title": "Product Specification for Data Farm Handbook Cover Graphic",
+  "organizationId": 4,
+  "commissionerId": "35",
+  "category": "Design",
+  "subcategory": "Brand Design",
+  "tags": [
+    "Marketing",
+    "Graphic Design"
+  ],
+  "hourlyRateMin": null,
+  "hourlyRateMax": null,
+  "description": "I need a quick graphic for an event I'm producing for a C-suite conference. They’ve reduced the number of economic crimes punishable by death over the years, but that corruption threshold has stayed as a kind of “symbolic deterrent” — it sends a message that they’ll treat graft almost like treason.",
+  "deliveryTimeWeeks": 0,
+  "estimatedHours": 0,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Adobe Photoshop",
+    "Canva",
+    "Figma"
+  ],
+  "executionMethod": "milestone",
+  "invoicingMethod": "milestone",
+  "milestones": [
+    {
+      "id": "140471bd-0706-43e0-a4f1-0ca28c141210",
+      "title": "I need a quick graphic for an event I'm producing for a C-suite conference.",
+      "description": "They’ve reduced the number of economic crimes punishable by death over the years.",
+      "startDate": "2025-08-15T04:00:00.000Z",
+      "endDate": "2025-08-19T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-19T04:00:00.000Z",
+  "lowerBudget": 800,
+  "upperBudget": 1000,
+  "postedDate": "2025-08-15",
+  "notes": "Budget range: $800 - $1,000",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false,
+  "briefFile": {
+    "name": "_Toye Sokunbi   (1).pdf",
+    "size": 110796,
+    "type": "application/pdf"
+  }
+}

@@ -20,6 +20,13 @@ type Gig = {
   description?: string;
   estimatedHours?: number;
   deliveryTimeWeeks?: number;
+  invoicingMethod?: 'completion' | 'milestone';
+  briefFile?: {
+    name: string;
+    size: number;
+    type: string;
+    path?: string;
+  };
 };
 
 type Organization = {
@@ -297,10 +304,56 @@ export default function ExploreGigsPage() {
                       <span className="bg-gray-100 px-2 py-1 rounded">{gig.category}</span>
                       <span>${gig.hourlyRateMin}–${gig.hourlyRateMax}/hr</span>
                       <span>{formatPostedDate(gig.postedDate)}</span>
+                      {gig.invoicingMethod && (
+                        <span className="bg-white px-3 py-1 rounded-full text-xs font-medium text-gray-700 shadow-sm border border-gray-200">
+                          {gig.invoicingMethod === 'milestone' ? 'Milestone-Based Invoicing' : 'Completion-Based Invoicing'}
+                        </span>
+                      )}
                     </div>
 
                     {gig.description && gig.description.trim() && !isPlaceholderDescription(gig.description) && (
                       <p className="text-gray-700 text-sm mb-3 line-clamp-2">{gig.description}</p>
+                    )}
+
+                    {gig.briefFile && (
+                      <div className="mb-3">
+                        <button
+                          onClick={async () => {
+                            try {
+                              // Create a download API endpoint call
+                              const response = await fetch(`/api/gigs/${gig.id}/brief-download`);
+
+                              if (response.ok) {
+                                // Get the blob data
+                                const blob = await response.blob();
+
+                                // Create download link
+                                const url = window.URL.createObjectURL(blob);
+                                const link = document.createElement('a');
+                                link.href = url;
+                                link.download = gig.briefFile?.name || 'project-brief.pdf';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                                window.URL.revokeObjectURL(url);
+                              } else {
+                                // Fallback: show file info if download fails
+                                alert(`Brief file: ${gig.briefFile?.name} (${((gig.briefFile?.size || 0) / 1024).toFixed(1)} KB)\n\nDownload functionality will be available once files are properly uploaded.`);
+                              }
+                            } catch (error) {
+                              console.error('Download failed:', error);
+                              // Fallback: show file info
+                              alert(`Brief file: ${gig.briefFile?.name} (${((gig.briefFile?.size || 0) / 1024).toFixed(1)} KB)\n\nDownload functionality will be available once files are properly uploaded.`);
+                            }
+                          }}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#FCD5E3] text-[#eb1966] rounded-full text-sm font-medium hover:bg-[#F8C2D4] transition-colors"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          Project Brief
+                        </button>
+                      </div>
                     )}
 
                     {gig.tags && gig.tags.length > 0 && (

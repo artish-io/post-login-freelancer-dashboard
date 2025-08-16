@@ -15,7 +15,7 @@
   "description": "Professional photography coverage for Zynate Events Group's upcoming corporate conference. Need comprehensive event documentation including keynote speakers, networking sessions, and award ceremony.",
   "deliveryTimeWeeks": 1,
   "estimatedHours": 16,
-  "status": "Unavailable",
+  "status": "Available",
   "toolsRequired": [
     "Professional Camera Equipment",
     "Adobe Lightroom",
@@ -31,5 +31,6 @@
   "notes": "Event takes place August 15-16, 2025 in Ottawa. Must have experience with corporate event photography and ability to work in low-light conditions.",
   "isPublic": true,
   "targetFreelancerId": null,
-  "isTargetedRequest": false
+  "isTargetedRequest": false,
+  "lastModified": "2025-08-15T19:56:57.444Z"
 }

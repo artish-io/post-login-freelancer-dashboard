@@ -18,6 +18,12 @@ export function useUnreadMessages() {
       const res = await fetch(
         `/api/dashboard/messages/count?userId=${session.user.id}&t=${Date.now()}`
       );
+
+      if (!res.ok) {
+        console.warn(`Messages count API returned ${res.status}: ${res.statusText}`);
+        return;
+      }
+
       const data = await res.json();
       
       if (typeof data.unreadCount === "number") {

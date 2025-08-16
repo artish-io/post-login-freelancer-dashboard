@@ -4,10 +4,11 @@ import path from 'path';
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const requestId = parseInt(params.id);
+    const { id } = await params;
+    const requestId = parseInt(id);
     const body = await request.json();
     const { reason } = body;
     

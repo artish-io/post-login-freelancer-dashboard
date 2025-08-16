@@ -199,6 +199,32 @@ export async function POST(req: Request): Promise<NextResponse<ApiSuccess | ApiE
     // Write to hierarchical storage using UnifiedStorageService
     await UnifiedStorageService.writeProject(project);
 
+    // 🛡️ GUARD: Enforce project-gig consistency
+    if (input.gigId) {
+      const { enforceProjectGigConsistency } = await import('../../../lib/guards/project-gig-consistency-guard');
+      const guardResult = await enforceProjectGigConsistency({
+        projectId,
+        gigId: input.gigId,
+        freelancerId: input.freelancerId || 0,
+        commissionerId: input.commissionerId,
+        title: input.title
+      });
+
+      if (!guardResult.success) {
+        // Rollback project creation if guard fails
+        console.error(`❌ Guard failed for project ${projectId}:`, guardResult.message);
+        // TODO: Implement project deletion when UnifiedStorageService supports it
+        return NextResponse.json({
+          success: false,
+          code: 'GUARD_FAILURE',
+          message: `Project created but guard failed: ${guardResult.message}`,
+          details: guardResult.details
+        }, { status: 500 });
+      }
+
+      console.log(`✅ Guard passed for project ${projectId}`);
+    }
+
     return NextResponse.json({
       success: true,
       projectId,

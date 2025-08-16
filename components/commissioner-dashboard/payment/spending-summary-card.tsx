@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { ArrowUpRight, BarChart3 } from 'lucide-react';
+import CurrencyDisplay from '../../ui/currency-display';
 
 type SpendingSummary = {
   currentTotal: number;
@@ -54,6 +55,13 @@ export default function SpendingSummaryCard({
     }).format(amount);
   };
 
+  const formatCurrencyWithSeparateDollar = (amount: number) => {
+    const formatted = new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+    }).format(amount);
+    return formatted;
+  };
+
   const getGrowthColor = (percent: number) => {
     if (percent > 0) return 'text-red-600'; // Spending increase is concerning
     if (percent < 0) return 'text-green-600'; // Spending decrease is good
@@ -68,7 +76,12 @@ export default function SpendingSummaryCard({
 
   if (isCleanVersion) {
     return (
-      <div className="w-full rounded-3xl border border-gray-300 bg-white px-6 py-8 shadow-sm">
+      <div
+        className="w-full rounded-3xl border border-white/20 bg-white px-6 py-8 shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+        style={{
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+        }}
+      >
         <div className="flex items-start justify-between mb-6">
           <h3 className="text-2xl font-extrabold text-black">
             Total Spending
@@ -76,7 +89,7 @@ export default function SpendingSummaryCard({
           {onToggleChart && (
             <button
               onClick={onToggleChart}
-              className="p-2 hover:bg-gray-100 rounded-lg transition"
+              className="p-2 hover:bg-gray-100 rounded-lg transition backdrop-blur-sm border border-white/10 shadow-sm"
             >
               <ArrowUpRight className="w-5 h-5 text-gray-600" />
             </button>
@@ -84,8 +97,12 @@ export default function SpendingSummaryCard({
         </div>
 
         <div className="space-y-4">
-          <div className="text-4xl font-bold text-black">
-            {formatCurrency(totalSpending)}
+          <div className="text-4xl font-semibold text-black font-bodoni-moda">
+            <CurrencyDisplay
+              amount={totalSpending}
+              className="text-4xl leading-none"
+              currencySymbolSize="text-[23px]"
+            />
           </div>
 
           {summary && (
@@ -108,7 +125,12 @@ export default function SpendingSummaryCard({
   }
 
   return (
-    <div className="w-full rounded-3xl border border-gray-300 bg-white px-6 py-8 shadow-sm">
+    <div
+      className="w-full rounded-3xl border border-white/20 bg-white px-6 py-8 shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:scale-[1.02]"
+      style={{
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+      }}
+    >
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-2xl font-extrabold text-black">
           Total Spending
@@ -121,15 +143,19 @@ export default function SpendingSummaryCard({
             </div>
           )}
           
-          <button className="p-2 hover:bg-gray-100 rounded-lg transition">
+          <button className="p-2 hover:bg-gray-100 rounded-lg transition backdrop-blur-sm border border-white/10 shadow-sm">
             <ArrowUpRight className="w-5 h-5 text-gray-600" />
           </button>
         </div>
       </div>
       
       <div className="space-y-4">
-        <div className="text-4xl font-bold text-black">
-          {formatCurrency(totalSpending)}
+        <div className="text-4xl font-semibold text-black font-bodoni-moda">
+          <CurrencyDisplay
+            amount={totalSpending}
+            className="text-4xl leading-none"
+            currencySymbolSize="text-[23px]"
+          />
         </div>
         
         {summary && (

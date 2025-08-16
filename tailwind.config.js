@@ -21,6 +21,7 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-jakarta)', ...fontFamily.sans],
         jakarta: ['var(--font-jakarta)'],
+        'bodoni-moda': ['var(--font-bodoni-moda)', 'Bodoni Moda SC', 'serif'],
         "Text-Regular-Normal": ['"Plus Jakarta Sans"', ...fontFamily.sans],
         "button-medium": ['var(--font-jakarta)', ...fontFamily.sans],
       },

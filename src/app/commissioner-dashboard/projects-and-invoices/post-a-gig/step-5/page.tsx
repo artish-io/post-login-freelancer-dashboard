@@ -6,7 +6,6 @@ import { useSession } from 'next-auth/react';
 import ProgressIndicator from '../../../../../../components/commissioner-dashboard/projects-and-invoices/post-a-gig/progress-indicator';
 import OrganizationMetadataForm from '../../../../../../components/commissioner-dashboard/projects-and-invoices/post-a-gig/organization-metadata-form';
 import { FormPersistence } from '../../../../../../utils/form-persistence';
-import organizationsData from '../../../../../../data/organizations.json';
 
 type StartType = 'Immediately' | 'Custom';
 type ExecutionMethod = 'completion' | 'milestone';
@@ -30,6 +29,7 @@ export default function PostAGigStep5Page() {
   // Get data from previous steps
   const selectedCategory = searchParams.get('category');
   const selectedSubcategory = searchParams.get('subcategory');
+  const projectTitle = searchParams.get('projectTitle') || '';
   const startType = searchParams.get('startType') as StartType;
   const customStartDate = searchParams.get('customStartDate') ? new Date(searchParams.get('customStartDate')!) : null;
   const endDate = searchParams.get('endDate') ? new Date(searchParams.get('endDate')!) : null;
@@ -40,6 +40,9 @@ export default function PostAGigStep5Page() {
   const skills = JSON.parse(searchParams.get('skills') || '[]');
   const tools = JSON.parse(searchParams.get('tools') || '[]');
   const milestones = JSON.parse(searchParams.get('milestones') || '[]');
+
+  // Get project brief file from form persistence
+  const [projectBriefFile, setProjectBriefFile] = useState<{name: string; size: number; type: string; lastModified: number} | null>(null);
 
   // Check if this is a targeted gig request to a specific freelancer
   const targetFreelancer = searchParams.get('targetFreelancer');
@@ -64,40 +67,67 @@ export default function PostAGigStep5Page() {
     const loadData = async () => {
       if (!session?.user?.id) return;
 
+      const commissionerId = parseInt(session.user.id);
+
       // Load persisted form data first
       const formData = FormPersistence.getMergedFormData(searchParams);
-      if (formData.organizationData) {
-        setOrganizationData(formData.organizationData);
-        return; // Use cached data if available
+
+      // Load project brief file from form data
+      if (formData.projectBriefFile) {
+        setProjectBriefFile(formData.projectBriefFile);
       }
 
-      // Load organization data from JSON file based on contactPersonId
-      try {
-        const commissionerId = parseInt(session.user.id);
-        const orgData = organizationsData.find(org => org.contactPersonId === commissionerId);
+      // Check if cached organization data belongs to the current user
+      if (formData.organizationData && formData.organizationData.contactPersonId === commissionerId) {
+        setOrganizationData(formData.organizationData);
+        return; // Use cached data if available and it belongs to current user
+      } else if (formData.organizationData) {
+        // Clear stale cache if it belongs to a different user
+        FormPersistence.clearFormData();
+      }
 
-        if (orgData) {
-          const organizationData = {
-            id: orgData.id,
-            name: orgData.name,
-            email: orgData.email,
-            logo: orgData.logo,
-            address: orgData.address,
-            contactPersonId: orgData.contactPersonId,
-            website: '', // Organizations.json uses 'bio' instead of 'website', so we'll leave this empty for editing
-            description: orgData.bio || '', // Map 'bio' to 'description'
-          };
-          setOrganizationData(organizationData);
-          // Save to form persistence for future use
-          FormPersistence.saveStepData(5, { organizationData });
+      // Load organization data using API based on commissionerId
+      try {
+        const response = await fetch(`/api/organizations?contactPersonId=${commissionerId}`);
+
+        if (response.ok) {
+          const orgData = await response.json();
+
+          if (orgData && orgData.id) {
+            const organizationData = {
+              id: orgData.id,
+              name: orgData.name || '',
+              email: orgData.email || '',
+              logo: orgData.logo || '',
+              address: '', // Use address field for role/title as per form design, leave empty for user to fill
+              contactPersonId: orgData.contactPersonId || orgData.firstCommissionerId || commissionerId,
+              website: orgData.website || '',
+              description: orgData.description || orgData.bio || '', // Support both description and bio fields
+            };
+            setOrganizationData(organizationData);
+            // Save to form persistence for future use
+            FormPersistence.saveStepData(5, { organizationData });
+          } else {
+            // Set default values with user info if no organization exists
+            const defaultOrgData = {
+              name: '',
+              email: session.user.email || '',
+              logo: '',
+              address: '',
+              contactPersonId: commissionerId,
+              website: '',
+              description: '',
+            };
+            setOrganizationData(defaultOrgData);
+          }
         } else {
-          // Set default values with user info if no organization exists
+          // Set default values if API call fails
           const defaultOrgData = {
             name: '',
             email: session.user.email || '',
             logo: '',
             address: '',
-            contactPersonId: parseInt(session.user.id),
+            contactPersonId: commissionerId,
             website: '',
             description: '',
           };
@@ -143,6 +173,7 @@ export default function PostAGigStep5Page() {
     const params = new URLSearchParams({
       category: selectedCategory || '',
       subcategory: selectedSubcategory || '',
+      projectTitle,
       startType: startType || '',
       customStartDate: customStartDate?.toISOString() || '',
       endDate: endDate?.toISOString() || '',
@@ -166,7 +197,7 @@ export default function PostAGigStep5Page() {
     try {
       // Create the gig data
       const gigData = {
-        title: `${selectedSubcategory} Project`,
+        title: projectTitle || `${selectedSubcategory} Project`, // Use custom title or fallback to auto-generated
         category: selectedCategory,
         subcategory: selectedSubcategory,
         description: projectDescription,
@@ -185,6 +216,8 @@ export default function PostAGigStep5Page() {
         isTargetedRequest,
         targetFreelancerId: targetFreelancer ? Number(targetFreelancer) : null,
         isPublic: !isTargetedRequest, // Private if targeted, public otherwise
+        // Add project brief file if available
+        ...(projectBriefFile && { briefFile: projectBriefFile }),
       };
 
       const response = await fetch('/api/gigs/post', {
@@ -196,6 +229,32 @@ export default function PostAGigStep5Page() {
       });
 
       if (response.ok) {
+        const result = await response.json();
+        const gigId = result.gigId;
+
+        // If there's a project brief file, upload it after gig creation
+        if (projectBriefFile && gigId) {
+          try {
+            // For now, we'll show a message that the file metadata was saved
+            // In a full implementation, you'd need to store the actual File object
+            console.log('Project brief file metadata saved:', projectBriefFile);
+
+            // TODO: Implement actual file upload here when File object is available
+            // const uploadFormData = new FormData();
+            // uploadFormData.append('gigId', gigId.toString());
+            // uploadFormData.append('file', actualFileObject);
+            //
+            // const uploadResponse = await fetch('/api/gigs/brief-upload', {
+            //   method: 'POST',
+            //   body: uploadFormData,
+            // });
+
+          } catch (uploadError) {
+            console.error('Error uploading brief file:', uploadError);
+            // Don't fail the entire gig creation for file upload issues
+          }
+        }
+
         // Success - clear form data and redirect
         FormPersistence.clearFormData();
         const successMessage = isTargetedRequest ? 'gig-request-sent' : 'gig-posted';

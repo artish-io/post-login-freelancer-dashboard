@@ -4,12 +4,42 @@ import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { eventLogger, NOTIFICATION_TYPES, ENTITY_TYPES } from '@/lib/events/event-logger';
 import { updateGigRequestStatus } from '@/lib/gigs/gig-request-storage';
 
+// File locking mechanism to prevent concurrent writes
+const fileLocks = new Map<string, Promise<void>>();
+
+/**
+ * File locking mechanism to prevent race conditions
+ */
+async function withFileLock<T>(lockKey: string, fn: () => Promise<T>): Promise<T> {
+  // Wait for any existing lock
+  while (fileLocks.has(lockKey)) {
+    await fileLocks.get(lockKey);
+  }
+
+  // Create new lock
+  const lockPromise = (async () => {
+    try {
+      return await fn();
+    } finally {
+      fileLocks.delete(lockKey);
+    }
+  })();
+
+  fileLocks.set(lockKey, lockPromise.then(() => {}));
+  return lockPromise;
+}
+
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+  const requestId = id;
+
+  // 🔒 Add file locking around the critical section
+  return await withFileLock(`gig_request_${requestId}`, async () => {
   try {
-    const requestId = params.id;
+    const requestId = id;
     const body = await request.json();
 
     console.log(`🔍 Processing gig request acceptance: ${requestId}`);
@@ -87,6 +117,15 @@ export async function POST(
 
       gigRequest = requestsData[requestIndex];
       gigId = gigRequest.gigId;
+
+      // 🔒 Race condition check: Verify request hasn't been accepted already
+      if (gigRequest.status === 'Accepted' || gigRequest.status === 'accepted') {
+        console.log(`❌ Gig request ${requestId} already accepted`);
+        return NextResponse.json(
+          { error: 'Gig request already accepted' },
+          { status: 409 }
+        );
+      }
     }
 
     // Check if project already exists for this specific request to prevent duplicates
@@ -212,7 +251,7 @@ export async function POST(
       },
       commissionerId: gigRequest.commissionerId,
       freelancerId: gigRequest.freelancerId,
-      status: 'ongoing',
+      status: 'ongoing' as const,
       dueDate: (gigData as any).endDate || new Date(Date.now() + (gigData.deliveryTimeWeeks || 4) * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       totalTasks: milestoneCount,
       invoicingMethod: (gigData as any).executionMethod || (gigData as any).invoicingMethod || 'completion', // CRITICAL: Use executionMethod from gig
@@ -415,4 +454,5 @@ export async function POST(
       { status: 500 }
     );
   }
+  }); // Close withFileLock
 }

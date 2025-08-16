@@ -13,7 +13,13 @@ export async function GET() {
     console.log('🔐 Session check:', { hasSession: !!session, hasUser: !!session?.user, userId: session?.user?.id });
 
     if (!session?.user?.id) {
-      console.warn('No session found in project-tasks API - this should be fixed in production');
+      console.warn('❌ No session found in project-tasks API');
+      console.warn('Session details:', {
+        hasSession: !!session,
+        hasUser: !!session?.user,
+        userId: session?.user?.id,
+        userType: (session?.user as any)?.userType || (session?.user as any)?.type
+      });
       // For now, return empty array instead of 401 to allow frontend to work
       return NextResponse.json([], {
         headers: {
@@ -25,7 +31,7 @@ export async function GET() {
     }
 
     // Get all projects and their tasks
-    console.log('📋 Fetching all projects...');
+    console.log('📋 Fetching all projects for user:', session.user.id, 'type:', (session.user as any)?.userType || (session.user as any)?.type);
     const allProjectsInfo = await UnifiedStorageService.listProjects();
     console.log('📋 Found projects:', allProjectsInfo.length);
 
@@ -53,14 +59,33 @@ export async function GET() {
 
     // For freelancers, filter to only show their assigned projects and tasks
     const userType = (session.user as any)?.userType || (session.user as any)?.type;
+    const userId = parseInt(session.user.id);
+
+    // Guard: Validate user ID is a valid number
+    if (isNaN(userId)) {
+      console.error('❌ Invalid user ID in session:', session.user.id);
+      return NextResponse.json({ error: 'Invalid session' }, { status: 400 });
+    }
 
     if (userType === 'freelancer') {
+      console.log('🔍 Filtering projects for freelancer:', userId);
+
       // Get project information for filtering
       const projectsInfo = allProjectsInfo;
+
+      // Guard: Validate projects info is an array
+      if (!Array.isArray(projectsInfo)) {
+        console.error('❌ Invalid projects info format:', typeof projectsInfo);
+        return NextResponse.json({ error: 'Data format error' }, { status: 500 });
+      }
 
       // Filter projects to only include those assigned to this freelancer
       const freelancerProjects = filterFreelancerProjects(projectsInfo, session.user as any);
       const freelancerProjectIds = new Set(freelancerProjects.map(p => p.projectId));
+
+      console.log(`👤 Freelancer ${userId} has access to ${freelancerProjects.length} projects:`, Array.from(freelancerProjectIds));
+      console.log(`🔍 All available projects:`, projectsInfo.map(p => ({ id: p.projectId, title: p.title, freelancerId: p.freelancerId, status: p.status })));
+      console.log(`🔍 Freelancer projects:`, freelancerProjects.map(p => ({ id: p.projectId, title: p.title, freelancerId: p.freelancerId, status: p.status })));
 
       // Filter the task projects to only include assigned projects
       const filteredProjects = allProjects.filter(project =>
@@ -68,20 +93,42 @@ export async function GET() {
       );
 
       // Additional task-level validation for extra security
-      const secureProjects = filteredProjects.map(project => ({
-        projectId: project.projectId,
-        title: project.title,
-        organizationId: project.organizationId,
-        typeTags: project.typeTags,
-        tasks: project.tasks.filter(task =>
-          isValidFreelancerTask({
-            project: {
-              freelancerId: freelancerProjects.find(p => p.projectId === project.projectId)?.freelancerId,
-              assignedFreelancerId: freelancerProjects.find(p => p.projectId === project.projectId)?.assignedFreelancerId
+      const secureProjects = filteredProjects.map(project => {
+        // Guard: Validate project structure
+        if (!project.projectId || !project.tasks || !Array.isArray(project.tasks)) {
+          console.warn(`⚠️ Invalid project structure for project ${project.projectId}`);
+          return {
+            projectId: project.projectId || 0,
+            title: project.title || 'Untitled Project',
+            organizationId: project.organizationId || 0,
+            typeTags: project.typeTags || [],
+            tasks: []
+          };
+        }
+
+        const projectInfo = freelancerProjects.find(p => p.projectId === project.projectId);
+
+        return {
+          projectId: project.projectId,
+          title: project.title,
+          organizationId: project.organizationId,
+          typeTags: project.typeTags,
+          tasks: project.tasks.filter(task => {
+            // Guard: Validate task structure
+            if (!task || typeof task !== 'object') {
+              console.warn(`⚠️ Invalid task structure in project ${project.projectId}`);
+              return false;
             }
-          }, session.user as any)
-        )
-      }));
+
+            return isValidFreelancerTask({
+              project: {
+                freelancerId: projectInfo?.freelancerId,
+                assignedFreelancerId: projectInfo?.assignedFreelancerId
+              }
+            }, session.user as any);
+          })
+        };
+      });
 
       return NextResponse.json(secureProjects, {
         headers: {

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import CurrencyDisplay from '../../ui/currency-display';
 
 type WalletSummary = {
   currentTotal: number;
@@ -110,9 +111,11 @@ export default function WalletDropDownToggle({ range, onRangeChange }: Props) {
 
       {/* Current Earnings Display - Right Aligned */}
       <div className="mt-2 flex items-center justify-end gap-2">
-        <span className="text-black font-semibold text-lg">
-          ${summary?.currentTotal?.toLocaleString() || '0'}
-        </span>
+        <CurrencyDisplay
+          amount={summary?.currentTotal || 0}
+          className="text-lg leading-none"
+          currencySymbolSize="text-[12px]"
+        />
         <div className="flex items-center gap-1">
           <span className={`text-sm font-medium ${(summary?.monthlyGrowthPercent || 0) >= 0 ? 'text-green-500' : 'text-red-500'}`}>
             {Math.abs(summary?.monthlyGrowthPercent || 0)}%

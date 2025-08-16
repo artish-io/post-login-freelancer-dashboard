@@ -52,10 +52,11 @@ export default function StorefrontSummaryStatsRow({ startDate, endDate }: Props)
   const cards = [
     {
       label: 'Revenue',
-      value: `$${stats.revenue.toLocaleString()}`,
+      value: stats.revenue,
       bgColor: '#FDE7EF',
       change: stats.revenueChange,
       changeDirection: stats.revenueChange >= 0 ? ('up' as const) : ('down' as const),
+      isCurrency: true,
     },
     {
       label: 'Growth (Month-on-Month)',

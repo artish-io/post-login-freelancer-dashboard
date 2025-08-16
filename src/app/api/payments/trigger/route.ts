@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { getInvoiceByNumber, updateInvoice } from '@/app/api/payments/repos/invoices-repo';
 import { appendTransaction, listByInvoiceNumber } from '@/app/api/payments/repos/transactions-repo';
 import { getProjectById } from '@/app/api/payments/repos/projects-repo';
@@ -22,8 +22,14 @@ const requireEligibility = process.env.PAYMENTS_REQUIRE_ELIGIBILITY !== 'false';
 
 async function handleTriggerPayment(req: Request) {
   try {
+    // Generate correlation ID for tracing
+    const correlationId = req.headers.get('x-correlation-id') ||
+      `pay_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+
+    console.log(`[${correlationId}] Payment trigger ${req.url} started`);
+
     // 🔒 Auth - get session and validate
-    const { userId: actorId } = await requireSession(req);
+    const { userId: actorId } = await requireSession(req as NextRequest);
 
     // 🔒 Parse, sanitize, and validate request body
     const rawBody = await req.json();
@@ -124,12 +130,13 @@ async function handleTriggerPayment(req: Request) {
 
     // Persist: set invoice → processing
     const updateOk = await updateInvoice(invoiceNumber, {
-      status: 'processing',
+      status: 'processing' as any, // Handle status transition
       updatedAt: new Date().toISOString()
     });
     assert(updateOk, ErrorCodes.INTERNAL_ERROR, 500, 'Failed to update invoice status');
 
     // Log the status transition
+    console.log(`[${correlationId}] Invoice transition: sent -> processing for ${invoiceNumber}`);
     logInvoiceTransition(
       invoiceNumber,
       'sent',
@@ -144,11 +151,14 @@ async function handleTriggerPayment(req: Request) {
       }
     );
 
-    // Persist: append transaction record
+    // Persist: append transaction record with correlation ID
     await appendTransaction({
       ...paymentRecord,
       type: 'invoice',
-      integration: 'mock'
+      integration: 'mock',
+      metadata: {
+        correlationId
+      }
     } as any);
 
     return NextResponse.json(

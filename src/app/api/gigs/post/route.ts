@@ -5,6 +5,7 @@ import { differenceInWeeks } from 'date-fns';
 import { logGigRequestSent } from '../../../../lib/events/event-logger';
 import { saveGig, getNextGigId, type Gig } from '../../../../lib/gigs/hierarchical-storage';
 import { getAllOrganizations, writeOrganization } from '@/lib/storage/unified-storage-service';
+import { saveBriefFile } from '@/lib/gigs/brief-storage';
 
 export async function POST(req: Request) {
   try {
@@ -51,18 +52,27 @@ export async function POST(req: Request) {
       }
     }
 
-    // Calculate project duration and hourly rate
+    // Calculate project duration and hourly rate using standardized utility
     const startDate = gigData.customStartDate ? new Date(gigData.customStartDate) : new Date();
     const endDate = new Date(gigData.endDate);
-    const deliveryTimeWeeks = differenceInWeeks(endDate, startDate);
-    const estimatedHours = deliveryTimeWeeks * 40; // Assuming 40 hours per week
-    const hourlyRateMin = Math.round(gigData.lowerBudget / estimatedHours);
-    const hourlyRateMax = Math.round(gigData.upperBudget / estimatedHours);
+
+    // Import and use the standardized duration calculator
+    const { calculateProjectDuration, calculateHourlyRate } = await import('../../../lib/utils/project-duration-calculator');
+
+    const duration = calculateProjectDuration(startDate, endDate);
+    const minRateCalc = calculateHourlyRate(gigData.lowerBudget, duration);
+    const maxRateCalc = calculateHourlyRate(gigData.upperBudget, duration);
+
+    // Use the calculated values
+    const deliveryTimeWeeks = duration.deliveryTimeWeeks;
+    const estimatedHours = duration.estimatedHours;
+    const hourlyRateMin = minRateCalc.hourlyRate;
+    const hourlyRateMax = maxRateCalc.hourlyRate;
 
     // Create new gig
     const newGig: Gig = {
       id: newGigId,
-      title: `${gigData.subcategory} - ${gigData.organizationData.name}`,
+      title: gigData.title || `${gigData.subcategory} - ${gigData.organizationData.name}`,
       organizationId,
       commissionerId: gigData.commissionerId,
       category: gigData.category,
@@ -76,6 +86,7 @@ export async function POST(req: Request) {
       status: 'Available',
       toolsRequired: gigData.tools,
       executionMethod: gigData.executionMethod,
+      invoicingMethod: gigData.executionMethod, // Use same value as executionMethod for invoicing
       milestones: gigData.milestones,
       startType: gigData.startType,
       customStartDate: gigData.customStartDate,
@@ -88,6 +99,15 @@ export async function POST(req: Request) {
       isPublic: gigData.isPublic !== false, // Default to public unless explicitly set to false
       targetFreelancerId: gigData.targetFreelancerId || null,
       isTargetedRequest: gigData.isTargetedRequest || false,
+      // Add brief file information if provided
+      ...(gigData.briefFile && {
+        briefFile: {
+          name: gigData.briefFile.name,
+          size: gigData.briefFile.size,
+          type: gigData.briefFile.type,
+          // For now, we'll just store metadata. File upload can be implemented later
+        }
+      }),
     };
 
     // Save the gig using hierarchical storage

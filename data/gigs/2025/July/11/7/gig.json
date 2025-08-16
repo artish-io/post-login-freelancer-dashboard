@@ -14,12 +14,13 @@
   "description": "Create a content management system for digital signage across Lagos parks.",
   "deliveryTimeWeeks": 6,
   "estimatedHours": 40,
-  "status": "Unavailable",
+  "status": "Available",
   "toolsRequired": [
     "Figma",
     "Adobe Creative Suite",
     "Web Technologies"
   ],
   "notes": "Must be accessible and easy to use for park staff with varying technical skills.",
-  "postedDate": "2025-07-12"
+  "postedDate": "2025-07-12",
+  "lastModified": "2025-08-15T19:56:57.447Z"
 }

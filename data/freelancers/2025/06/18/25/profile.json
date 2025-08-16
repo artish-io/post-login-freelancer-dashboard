@@ -1,11 +1,11 @@
 {
   "id": 25,
   "userId": 25,
-  "category": "Software Development",
+  "category": "Accounting & Finance",
   "skills": [
-    "Hardware",
-    "Embedded Systems",
-    "IoT"
+    "Excel",
+    "Forecasting",
+    "Financial Modelling"
   ],
   "rate": "80-130/hr",
   "minRate": 80,

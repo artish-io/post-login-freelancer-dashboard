@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Upload, X } from 'lucide-react';
 import Image from 'next/image';
 
@@ -26,6 +26,11 @@ function OrganizationMetadataForm({
 }: OrganizationMetadataFormProps) {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string>(organizationData.logo || '');
+
+  // Update logo preview when organizationData changes
+  useEffect(() => {
+    setLogoPreview(organizationData.logo || '');
+  }, [organizationData.logo]);
 
   const handleInputChange = (field: keyof Organization, value: string) => {
     onOrganizationDataChange({

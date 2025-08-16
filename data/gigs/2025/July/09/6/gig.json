@@ -15,12 +15,13 @@
   "description": "Develop a mobile app for park visitors to find amenities, book facilities, and get real-time updates.",
   "deliveryTimeWeeks": 8,
   "estimatedHours": 60,
-  "status": "Unavailable",
+  "status": "Available",
   "toolsRequired": [
     "React Native",
     "Firebase",
     "Maps API"
   ],
   "notes": "Cross-platform compatibility required. Integration with existing park systems.",
-  "postedDate": "2025-07-10"
+  "postedDate": "2025-07-10",
+  "lastModified": "2025-08-15T19:56:57.446Z"
 }

@@ -20,7 +20,8 @@
     "Tailwind CSS"
   ],
   "submittedAt": "2025-07-12T14:15:00Z",
-  "status": "accepted",
+  "status": "pending",
   "migratedAt": "2025-08-12T15:22:41.889Z",
-  "originalSource": "data/gigs/gig-applications.json"
+  "originalSource": "data/gigs/gig-applications.json",
+  "_filePath": "data/gigs/gig-applications/2025/July/12/2.json"
 }

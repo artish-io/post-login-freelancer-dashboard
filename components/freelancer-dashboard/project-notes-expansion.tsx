@@ -19,7 +19,7 @@ type Task = {
 };
 
 type Props = {
-  projectId: number;
+  projectId: string | number;
   onClose: () => void;
 };
 

@@ -31,7 +31,7 @@ export interface TransactionResult {
 
 export interface TaskApprovalTransaction {
   taskId: number;
-  projectId: number;
+  projectId: number | string;
   freelancerId: number;
   commissionerId: number;
   taskTitle: string;
@@ -113,14 +113,44 @@ export async function executeTaskApprovalTransaction(
             projectTitle: params.projectTitle,
             invoiceType: params.invoiceType || 'completion'
           };
-          
-          const invoiceResult = await generateInvoiceWithRetry(invoiceRequest);
-          
-          if (!invoiceResult.success) {
-            throw new Error(`Invoice generation failed: ${invoiceResult.error}`);
+
+          // 🛡️ MILESTONE GUARD: For milestone projects, use auto-generate endpoint
+          if (params.invoiceType === 'milestone') {
+            console.log(`🔧 Generating milestone invoice for task ${params.taskId}...`);
+
+            const response = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/invoices/auto-generate`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                taskId: params.taskId,
+                projectId: params.projectId,
+                action: 'task_approved'
+              })
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json().catch(() => ({}));
+              throw new Error(`Milestone invoice generation failed: ${errorData.error || response.statusText}`);
+            }
+
+            const result = await response.json();
+            console.log(`✅ Milestone invoice generated:`, result);
+
+            return {
+              success: true,
+              invoiceNumber: result.invoiceNumber,
+              message: result.message || 'Milestone invoice generated successfully'
+            };
+          } else {
+            // Use existing completion invoice generation
+            const invoiceResult = await generateInvoiceWithRetry(invoiceRequest);
+
+            if (!invoiceResult.success) {
+              throw new Error(`Invoice generation failed: ${invoiceResult.error}`);
+            }
+
+            return invoiceResult;
           }
-          
-          return invoiceResult;
         },
         rollback: async () => {
           console.log(`🔙 Rolling back invoice generation...`);
@@ -132,7 +162,63 @@ export async function executeTaskApprovalTransaction(
         data: { taskId: params.taskId, invoiceType: params.invoiceType }
       });
     }
-    
+
+    // Step 3: Execute payment for the generated invoice
+    steps.push({
+      id: 'execute_payment',
+      operation: async () => {
+        console.log(`💳 Executing payment for task ${params.taskId}...`);
+
+        // Get the generated invoice number from the previous step
+        const invoiceResult = results['generate_invoice'];
+        const invoiceNumber = invoiceResult?.invoiceNumber || invoiceResult?.existingInvoiceNumber;
+        if (!invoiceNumber) {
+          throw new Error('No invoice number available for payment execution');
+        }
+
+        // Execute payment directly using the payments service
+        const { PaymentsService } = await import('../../app/api/payments/services/payments-service');
+
+        // Get invoice details
+        const { getInvoiceByNumber } = await import('../invoice-storage');
+        const invoice = await getInvoiceByNumber(invoiceNumber);
+
+        if (!invoice) {
+          throw new Error(`Invoice ${invoiceNumber} not found`);
+        }
+
+        // Execute payment
+        const paymentResult = await PaymentsService.processInvoicePayment({
+          invoiceNumber: invoice.invoiceNumber,
+          amount: invoice.totalAmount,
+          commissionerId: invoice.commissionerId,
+          freelancerId: invoice.freelancerId,
+          projectId: invoice.projectId,
+          source: 'auto_milestone_payment'
+        });
+
+        if (!paymentResult.success) {
+          throw new Error(`Payment execution failed: ${paymentResult.error}`);
+        }
+
+        console.log(`✅ Payment executed successfully:`, paymentResult);
+
+        return {
+          success: true,
+          paymentId: paymentResult.paymentId,
+          amount: paymentResult.amount,
+          message: 'Payment executed successfully'
+        };
+      },
+      rollback: async () => {
+        console.log(`🔙 Rolling back payment execution...`);
+        // Note: In a real system, you'd need to reverse the payment
+        console.warn(`⚠️ Manual cleanup required: Reverse payment for task ${params.taskId}`);
+      },
+      description: `Execute payment for task ${params.taskId}`,
+      data: { taskId: params.taskId }
+    });
+
     // Step 4: Check for project auto-completion
     steps.push({
       id: 'check_project_completion',

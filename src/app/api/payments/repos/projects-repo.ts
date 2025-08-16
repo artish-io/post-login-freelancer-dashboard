@@ -12,7 +12,7 @@ import type { Project } from '@/lib/storage/schemas';
 
 // Legacy project record interface for backward compatibility
 export interface ProjectRecord {
-  projectId: number;
+  projectId: number | string;
   title: string;
   description?: string;
   organizationId?: number;

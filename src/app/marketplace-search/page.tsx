@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar1 from '../../../components/navbar1';
 import Footer from '../../../components/footer';
 import SearchBar from '../../../components/store-search/search-bar';
@@ -9,8 +9,6 @@ import CreateGigBanner from '../../../components/store-search/create-gig-banner'
 import SidebarFilters from '../../../components/store-search/sidebar-filters';
 import GigCardGrid from '../../../components/store-search/gig-card-grid';
 import { Gig } from '../../../types/gig';
-import freelancers from '../../../data/freelancers.json';
-import users from '../../../data/users.json';
 
 export default function MarketplaceSearchPage() {
   // New: query state for search bar
@@ -18,11 +16,52 @@ export default function MarketplaceSearchPage() {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [sortOption, setSortOption] = useState<string>('skill');
+
+  // Data state
+  const [freelancers, setFreelancers] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [minRate, setMinRate] = useState<string>('');
   const [maxRate, setMaxRate] = useState<string>('');
   const [selectedRating, setSelectedRating] = useState<string>('');
 
-  // Enrich freelancer data with user information (avatar, etc.)
+  // Fetch data from hierarchical storage
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        // Create API endpoints to fetch data from hierarchical storage
+        const [freelancersResponse, usersResponse] = await Promise.all([
+          fetch('/api/freelancers/all'),
+          fetch('/api/users/all')
+        ]);
+
+        if (freelancersResponse.ok && usersResponse.ok) {
+          const freelancersData = await freelancersResponse.json();
+          const usersData = await usersResponse.json();
+
+          setFreelancers(freelancersData);
+          setUsers(usersData);
+        } else {
+          console.error('Failed to fetch data from hierarchical storage');
+          // Fallback to empty arrays
+          setFreelancers([]);
+          setUsers([]);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setFreelancers([]);
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Enrich freelancer data with user information (avatar, etc.) - must be before conditional return
   const enrichedFreelancers = freelancers.map(freelancer => {
     const userInfo = users.find(user => user.id === freelancer.userId);
     return {
@@ -34,6 +73,19 @@ export default function MarketplaceSearchPage() {
       address: userInfo?.address,
     };
   });
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white">
+        <Navbar1 />
+        <div className="flex items-center justify-center h-64">
+          <div className="text-lg text-gray-600">Loading marketplace...</div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   const allGigs: Gig[] = enrichedFreelancers as Gig[];
   const allCardsCount = allGigs.length;

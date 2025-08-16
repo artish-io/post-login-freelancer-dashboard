@@ -187,7 +187,7 @@ export function handleRouteError(error: any): ErrorEnvelope {
 /**
  * Wrapper for route handlers with consistent error handling
  */
-export function withErrorHandling<T extends any[], R>(
+export function withErrorHandling<T extends any[]>(
   handler: (...args: T) => Promise<Response>
 ) {
   return async (...args: T): Promise<Response> => {

@@ -136,10 +136,10 @@ export async function POST(req: Request) {
         const notificationEvent = {
           id: `gig_applied_${gigId}_${freelancerId}_${Date.now()}`,
           timestamp: new Date().toISOString(),
-          type: 'gig_applied',
+          type: 'gig_applied' as const,
           notificationType: 60, // Using the same type as existing gig_applied notifications
           actorId: freelancerId,
-          targetId: gig.commissionerId,
+          targetId: Number(gig.commissionerId), // Fix: Convert to number for consistency
           entityType: 3, // GIG entity type
           entityId: gigId.toString(),
           metadata: {

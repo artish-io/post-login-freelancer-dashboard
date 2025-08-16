@@ -8,6 +8,7 @@ import EarningsChart from '../../../../components/freelancer-dashboard/wallet/ea
 import EarningsSummaryCard from '../../../../components/freelancer-dashboard/wallet/earnings-summary-card';
 import WalletHistoryList from '../../../../components/freelancer-dashboard/wallet/wallet-history-list';
 import ChangeWithdrawalCard from '../../../../components/freelancer-dashboard/wallet/change-withdrawal-card';
+import CurrencyDisplay from '../../../../components/ui/currency-display';
 
 type RangeOption = 'month' | 'january' | 'february' | 'march' | 'april' | 'may' | 'june' | 'july' | 'august' | 'september' | 'october' | 'november' | 'december' | 'year' | 'all';
 
@@ -39,8 +40,13 @@ export default function WalletPage() {
         <div className="flex justify-between items-start gap-4">
           <div className="flex flex-col gap-1">
             <h2 className="text-xl font-semibold">Earnings Overview</h2>
-            <p className="text-sm text-gray-500">
-              Last Month ${lastMonthTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            <p className="text-sm text-gray-500 flex items-center gap-1">
+              Last Month
+              <CurrencyDisplay
+                amount={lastMonthTotal}
+                className="text-sm"
+                currencySymbolSize="text-[10px]"
+              />
             </p>
           </div>
           <WalletDropDownToggle range={range} onRangeChange={setRange} />

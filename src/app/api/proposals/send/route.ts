@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 import { eventLogger } from '../../../../lib/events/event-logger';
+import { getUserById } from '@/lib/storage/unified-storage-service';
 import {
   saveProposal,
   readAllProposals,
@@ -16,7 +17,6 @@ import {
 } from '../../../../lib/proposals/enriched-metadata';
 
 const draftsPath = path.join(process.cwd(), 'data', 'proposals', 'proposal-drafts.json');
-const usersPath = path.join(process.cwd(), 'data', 'users.json');
 
 /**
  * Send Proposal API Endpoint

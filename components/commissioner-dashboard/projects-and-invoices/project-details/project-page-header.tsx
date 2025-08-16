@@ -4,7 +4,7 @@
 import Image from 'next/image';
 
 export type Props = {
-  projectId: number;
+  projectId: string | number;
   tags: string[];
   logoUrl: string;
   title: string;

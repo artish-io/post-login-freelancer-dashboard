@@ -1,0 +1,11 @@
+{
+  "id": 9000,
+  "name": "Sandbox Organization",
+  "contactPersonId": 9002,
+  "firstCommissionerId": 9002,
+  "associatedCommissioners": [
+    9002
+  ],
+  "email": "sandbox.org@test.com",
+  "createdAt": "2025-08-14T17:57:05.025Z"
+}

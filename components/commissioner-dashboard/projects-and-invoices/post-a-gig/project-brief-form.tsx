@@ -123,6 +123,7 @@ export default function ProjectBriefForm({
   useEffect(() => {
     const suggestions = getSkillSuggestions(skillInput);
     setSkillSuggestions(suggestions);
+    // Only show suggestions if there's input and suggestions exist
     setShowSkillSuggestions(skillInput.length > 0 && suggestions.length > 0);
   }, [skillInput]);
 
@@ -130,6 +131,7 @@ export default function ProjectBriefForm({
   useEffect(() => {
     const suggestions = getToolSuggestions(toolInput);
     setToolSuggestions(suggestions);
+    // Only show suggestions if there's input and suggestions exist
     setShowToolSuggestions(toolInput.length > 0 && suggestions.length > 0);
   }, [toolInput]);
 
@@ -150,6 +152,7 @@ export default function ProjectBriefForm({
       onSkillsChange([...skills, skillToAdd]);
       setSkillInput('');
       setShowSkillSuggestions(false);
+      // Don't set skillInputFocused to false - let the natural blur handle it
     }
   };
 
@@ -163,6 +166,7 @@ export default function ProjectBriefForm({
       onToolsChange([...tools, toolToAdd]);
       setToolInput('');
       setShowToolSuggestions(false);
+      // Don't set toolInputFocused to false - let the natural blur handle it
     }
   };
 
@@ -298,8 +302,18 @@ export default function ProjectBriefForm({
                   value={skillInput}
                   onChange={(e) => setSkillInput(e.target.value)}
                   onKeyPress={handleSkillKeyPress}
-                  onFocus={() => setShowSkillSuggestions(skillSuggestions.length > 0)}
-                  onBlur={() => setTimeout(() => setShowSkillSuggestions(false), 200)}
+                  onFocus={() => {
+                    // Show suggestions if there's input and suggestions exist
+                    if (skillInput.trim().length > 0 && skillSuggestions.length > 0) {
+                      setShowSkillSuggestions(true);
+                    }
+                  }}
+                  onBlur={() => {
+                    // Delay hiding to allow click events on suggestions
+                    setTimeout(() => {
+                      setShowSkillSuggestions(false);
+                    }, 150);
+                  }}
                   placeholder="Tag up-to 3 skills that are relevant to this project"
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-0 focus:border-[#eb1966] transition text-sm"
                   disabled={skills.length >= 3}
@@ -312,7 +326,10 @@ export default function ProjectBriefForm({
                       <button
                         key={index}
                         type="button"
-                        onClick={() => addSkill(suggestion)}
+                        onMouseDown={(e) => {
+                          e.preventDefault(); // Prevent input blur
+                          addSkill(suggestion);
+                        }}
                         className="w-full px-4 py-2 text-left hover:bg-gray-50 transition text-sm border-b border-gray-100 last:border-b-0"
                       >
                         <div className="font-medium text-gray-900">{suggestion}</div>
@@ -368,8 +385,18 @@ export default function ProjectBriefForm({
                   value={toolInput}
                   onChange={(e) => setToolInput(e.target.value)}
                   onKeyPress={handleToolKeyPress}
-                  onFocus={() => setShowToolSuggestions(toolSuggestions.length > 0)}
-                  onBlur={() => setTimeout(() => setShowToolSuggestions(false), 200)}
+                  onFocus={() => {
+                    // Show suggestions if there's input and suggestions exist
+                    if (toolInput.trim().length > 0 && toolSuggestions.length > 0) {
+                      setShowToolSuggestions(true);
+                    }
+                  }}
+                  onBlur={() => {
+                    // Delay hiding to allow click events on suggestions
+                    setTimeout(() => {
+                      setShowToolSuggestions(false);
+                    }, 150);
+                  }}
                   placeholder="Tag up-to 3 tools required for this project"
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-0 focus:border-[#eb1966] transition text-sm"
                   disabled={tools.length >= 3}
@@ -382,7 +409,10 @@ export default function ProjectBriefForm({
                       <button
                         key={index}
                         type="button"
-                        onClick={() => addTool(suggestion)}
+                        onMouseDown={(e) => {
+                          e.preventDefault(); // Prevent input blur
+                          addTool(suggestion);
+                        }}
                         className="w-full px-4 py-2 text-left hover:bg-gray-50 transition text-sm border-b border-gray-100 last:border-b-0"
                       >
                         <div className="font-medium text-gray-900">{suggestion}</div>

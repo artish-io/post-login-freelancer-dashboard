@@ -7,7 +7,7 @@ import { FileText, MessageSquareText, CreditCard, PauseCircle, Play, Star } from
 import RatingModal from '../../../shared/rating-modal';
 
 type Props = {
-  projectId: number;
+  projectId: string | number;
   onNotesClick: () => void;
 };
 
@@ -35,11 +35,14 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
       try {
         // Fetch project details to get the freelancer ID
         const projectRes = await fetch(`/api/projects`);
+        let projects: any[] = [];
+        let project: any = null;
+
         if (projectRes.ok) {
           const projectsResponse = await projectRes.json();
           // Ensure projects is always an array
-          const projects = Array.isArray(projectsResponse) ? projectsResponse : [];
-          const project = projects.find((p: any) => p.projectId === projectId);
+          projects = Array.isArray(projectsResponse) ? projectsResponse : [];
+          project = projects.find((p: any) => p.projectId === projectId);
           if (project?.freelancerId) {
             setFreelancerId(project.freelancerId);
             setProjectStatus(project.status || 'ongoing');
@@ -91,30 +94,24 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
           }
 
           // Check rating eligibility
-          if (projectRes.ok) {
-            const projectsResponse = await projectRes.json();
-            const projects = Array.isArray(projectsResponse) ? projectsResponse : [];
-            const project = projects.find((p: any) => p.projectId === projectId);
+          if (project && project.status?.toLowerCase() === 'completed') {
+            // Check if all tasks are completed using the already fetched projectTasks
+            if (projectTasks) {
+              const allTasksComplete = projectTasks.tasks.length > 0 &&
+                projectTasks.tasks.every((t: any) => t.completed === true && t.status === 'Approved');
 
-            if (project && project.status?.toLowerCase() === 'completed') {
-              // Check if all tasks are completed using the already fetched projectTasks
-              if (projectTasks) {
-                const allTasksComplete = projectTasks.tasks.length > 0 &&
-                  projectTasks.tasks.every((t: any) => t.completed === true && t.status === 'Approved');
+              if (allTasksComplete) {
+                setCanRate(true);
 
-                if (allTasksComplete) {
-                  setCanRate(true);
-
-                  // Check if already rated
-                  try {
-                    const ratingRes = await fetch(
-                      `/api/ratings/exists?projectId=${projectId}&subjectUserId=${project.freelancerId}&subjectUserType=freelancer`
-                    );
-                    const ratingData = await ratingRes.json();
-                    setHasRated(ratingData.success && ratingData.data.exists);
-                  } catch (ratingError) {
-                    console.error('Error checking rating status:', ratingError);
-                  }
+                // Check if already rated
+                try {
+                  const ratingRes = await fetch(
+                    `/api/ratings/exists?projectId=${projectId}&subjectUserId=${project.freelancerId}&subjectUserType=freelancer`
+                  );
+                  const ratingData = await ratingRes.json();
+                  setHasRated(ratingData.success && ratingData.data.exists);
+                } catch (ratingError) {
+                  console.error('Error checking rating status:', ratingError);
                 }
               }
             }

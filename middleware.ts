@@ -15,6 +15,7 @@ export default withAuth(
       pathname.startsWith('/get-started') ||
       pathname.startsWith('/marketplace') ||
       pathname.startsWith('/api/auth') ||
+      pathname.startsWith('/api/organizations') ||
       pathname.startsWith('/test-login-tilly') ||
       pathname.startsWith('/test-login-neilsan') ||
       pathname.startsWith('/login-freelancer-tobi') ||
@@ -84,6 +85,7 @@ export default withAuth(
           pathname.startsWith('/get-started') ||
           pathname.startsWith('/marketplace') ||
           pathname.startsWith('/api/auth') ||
+          pathname.startsWith('/api/organizations') ||
           pathname.startsWith('/test-login-tilly') ||
           pathname.startsWith('/test-login-neilsan') ||
           pathname.startsWith('/login-freelancer-tobi') ||

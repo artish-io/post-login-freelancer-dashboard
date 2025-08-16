@@ -21,7 +21,8 @@
     "Adobe After Effects"
   ],
   "submittedAt": "2025-08-06T17:03:20.000Z",
-  "status": "accepted",
+  "status": "pending",
   "migratedAt": "2025-08-12T15:22:41.893Z",
-  "originalSource": "data/gigs/gig-applications.json"
+  "originalSource": "data/gigs/gig-applications.json",
+  "_filePath": "data/gigs/gig-applications/2025/August/06/103.json"
 }

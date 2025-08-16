@@ -10,10 +10,10 @@ import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const projectIdParam = searchParams.get('projectId');
-  const projectId = parseInt(projectIdParam || '', 10);
+  const projectId = projectIdParam;
 
-  if (!projectId || isNaN(projectId)) {
-    return NextResponse.json({ error: 'Missing or invalid projectId' }, { status: 400 });
+  if (!projectId) {
+    return NextResponse.json({ error: 'Missing projectId' }, { status: 400 });
   }
 
   // Validate session and access control

@@ -2,8 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import fs from 'fs';
-import path from 'path';
+import { getUserById } from '@/lib/storage/unified-storage-service';
 import { saveGig, getNextGigId, type Gig } from '../../../../lib/gigs/hierarchical-storage';
 
 export async function POST(req: Request) {
@@ -28,10 +27,7 @@ export async function POST(req: Request) {
     gigData.commissionerId = userId;
 
     // Find the user's organization
-    const usersPath = path.join(process.cwd(), 'data', 'users.json');
-    const usersFile = await fs.promises.readFile(usersPath, 'utf-8');
-    const users = JSON.parse(usersFile);
-    const user = users.find((u: any) => u.id === userId);
+    const user = await getUserById(userId);
     
     if (user && user.organizationId) {
       gigData.organizationId = user.organizationId;

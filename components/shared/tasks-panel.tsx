@@ -583,9 +583,9 @@ export default function TasksPanel({
               >
                 {/* Unified task list style for both view types */}
                 <ul className="flex flex-col gap-y-2">
-                  {displayedTasks.map((task) => (
+                  {displayedTasks.map((task, index) => (
                     <li
-                      key={`${task.id}-${task.projectId}-${viewType}`}
+                      key={`${task.id || `task-${index}`}-${task.projectId}-${viewType}`}
                       className="flex justify-between items-center text-sm cursor-pointer"
                       onClick={() => {
                         if (viewType === 'freelancer') {

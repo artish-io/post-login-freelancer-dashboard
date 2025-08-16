@@ -3,6 +3,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
+import { getAllUsers } from '@/lib/storage/unified-storage-service';
 
 // NOTE TO DEV TEAM:
 // This endpoint returns a preview summary of all threads a user participates in,
@@ -20,14 +21,12 @@ export async function GET(req: Request) {
 
   try {
     const messagesPath = path.join(process.cwd(), 'data/messages.json');
-    const usersPath = path.join(process.cwd(), 'data/users.json');
-    const [messagesData, usersData] = await Promise.all([
+    const [messagesData, users] = await Promise.all([
       fs.readFile(messagesPath, 'utf-8'),
-      fs.readFile(usersPath, 'utf-8'),
+      getAllUsers(),
     ]);
 
     const threads = JSON.parse(messagesData);
-    const users = JSON.parse(usersData);
 
     const previews = threads
       .filter((thread: any) => thread.participants.includes(userId))

@@ -19,6 +19,7 @@ type Gig = {
   toolsRequired?: string[];
   tags?: string[];
   category?: string;
+  invoicingMethod?: 'completion' | 'milestone';
 };
 
 export default function ApplyModal({ gigId, gigTitle, isOpen, onClose, onSuccess }: ApplyModalProps) {
@@ -257,7 +258,7 @@ export default function ApplyModal({ gigId, gigTitle, isOpen, onClose, onSuccess
     setNewSkill(value);
     const suggestions = getSkillSuggestions(value);
     setSkillSuggestions(suggestions);
-    setShowSuggestions(suggestions.length > 0);
+    setShowSuggestions(value.length > 0 && suggestions.length > 0);
     setSelectedSuggestionIndex(-1);
   };
 
@@ -288,6 +289,7 @@ export default function ApplyModal({ gigId, gigTitle, isOpen, onClose, onSuccess
     if (!skills.includes(skill)) {
       setSkills([...skills, skill]);
       setNewSkill('');
+      setSkillSuggestions([]); // Clear suggestions array
       setShowSuggestions(false);
       setSelectedSuggestionIndex(-1);
     }
@@ -316,6 +318,7 @@ export default function ApplyModal({ gigId, gigTitle, isOpen, onClose, onSuccess
     if (newSkill.trim() && !skills.includes(newSkill.trim())) {
       setSkills([...skills, newSkill.trim()]);
       setNewSkill('');
+      setSkillSuggestions([]); // Clear suggestions array
       setShowSuggestions(false);
       setSelectedSuggestionIndex(-1);
     }
@@ -428,6 +431,30 @@ export default function ApplyModal({ gigId, gigTitle, isOpen, onClose, onSuccess
             </div>
           )}
 
+          {/* Invoicing Method Information */}
+          {gigData?.invoicingMethod && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mt-0.5">
+                  <svg className="w-3 h-3 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-sm font-medium text-blue-900 mb-1">
+                    {gigData.invoicingMethod === 'milestone' ? 'Milestone-Based Invoicing' : 'Completion-Based Invoicing'}
+                  </h3>
+                  <p className="text-sm text-blue-700">
+                    {gigData.invoicingMethod === 'milestone'
+                      ? 'This project uses milestone-based payments. You\'ll be paid incrementally as you complete specific project milestones, providing steady cash flow throughout the project duration.'
+                      : 'This project uses completion-based payment. You\'ll receive full payment upon successful completion and approval of the entire project deliverable.'
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Pitch */}
             <div>
@@ -495,13 +522,18 @@ export default function ApplyModal({ gigId, gigTitle, isOpen, onClose, onSuccess
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
                     onKeyDown={handleSkillKeyDown}
                     onFocus={() => {
-                      if (skillSuggestions.length > 0) {
-                        setShowSuggestions(true);
+                      // Regenerate suggestions if there's input
+                      if (newSkill.trim().length > 0) {
+                        const suggestions = getSkillSuggestions(newSkill);
+                        setSkillSuggestions(suggestions);
+                        setShowSuggestions(suggestions.length > 0);
                       }
                     }}
                     onBlur={() => {
-                      // Delay hiding suggestions to allow clicking on them
-                      setTimeout(() => setShowSuggestions(false), 200);
+                      // Delay hiding suggestions to allow click events on suggestions
+                      setTimeout(() => {
+                        setShowSuggestions(false);
+                      }, 150);
                     }}
                   />
                   <button
@@ -523,7 +555,10 @@ export default function ApplyModal({ gigId, gigTitle, isOpen, onClose, onSuccess
                         className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${
                           index === selectedSuggestionIndex ? 'bg-pink-50 text-pink-700' : ''
                         }`}
-                        onClick={() => addSkillFromSuggestion(suggestion)}
+                        onMouseDown={(e) => {
+                          e.preventDefault(); // Prevent input blur
+                          addSkillFromSuggestion(suggestion);
+                        }}
                       >
                         {suggestion}
                       </button>

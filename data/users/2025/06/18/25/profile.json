@@ -6,6 +6,8 @@
   "type": "freelancer",
   "email": "lucas.meyer@example.com",
   "address": "25 Remote Lane, Virtual City, Country",
+  "username": "lucas25",
+  "password": "testpass",
   "createdAt": "2025-06-18T17:38:37.775Z",
   "updatedAt": "2025-08-12T15:46:25.227Z"
 }

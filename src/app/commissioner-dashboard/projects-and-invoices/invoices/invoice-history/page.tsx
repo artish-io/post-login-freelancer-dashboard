@@ -65,7 +65,7 @@ export default function InvoiceHistoryPage() {
 
         // Load invoices and users data
         const [invoicesResponse, usersResponse] = await Promise.all([
-          fetch('/api/invoices'),
+          fetch('/api/invoices?userType=commissioner'),
           fetch('/api/users')
         ]);
 

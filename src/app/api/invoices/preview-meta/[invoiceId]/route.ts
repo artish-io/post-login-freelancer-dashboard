@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import path from 'path';
+import { getAllUsers } from '@/lib/storage/unified-storage-service';
 
 const invoicesPath = path.join(process.cwd(), 'data', 'invoices.json');
-const usersPath = path.join(process.cwd(), 'data', 'users.json');
 const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
 
 export async function GET(
@@ -13,14 +13,13 @@ export async function GET(
   try {
     const { invoiceId } = await context.params;
 
-    const [invoiceData, userData, projectData] = await Promise.all([
+    const [invoiceData, users, projectData] = await Promise.all([
       readFile(invoicesPath, 'utf-8'),
-      readFile(usersPath, 'utf-8'),
+      getAllUsers(),
       readFile(projectsPath, 'utf-8')
     ]);
 
     const invoices = JSON.parse(invoiceData);
-    const users = JSON.parse(userData);
     const projects = JSON.parse(projectData);
 
     const invoice = invoices.find((inv: any) => String(inv.id) === invoiceId);

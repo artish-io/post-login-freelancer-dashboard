@@ -85,51 +85,172 @@ export default function CandidateDetailsSidebar({
   const showErrorToast = useErrorToast();
 
   const handleMatchWithFreelancer = async () => {
-    if (!candidate) return;
+    console.log('🚀 [ATOMIC] handleMatchWithFreelancer TRIGGERED');
+    console.log('📊 [ATOMIC] Initial state check:', {
+      candidateExists: !!candidate,
+      candidateType: candidate?.type,
+      applicationId: candidate?.application?.id,
+      gigId: candidate?.application?.gigId,
+      freelancerId: candidate?.application?.freelancerId,
+      currentStatus: candidate?.application?.status,
+      isMatching: isMatching,
+      isRejecting: isRejecting
+    });
+
+    if (!candidate) {
+      console.log('❌ [ATOMIC] EARLY EXIT: No candidate provided');
+      return;
+    }
 
     const isPublicApplication = candidate.type === 'public';
+    console.log('🔍 [ATOMIC] Application type check:', {
+      candidateType: candidate.type,
+      isPublicApplication: isPublicApplication
+    });
 
     if (!isPublicApplication) {
+      console.log('❌ [ATOMIC] EARLY EXIT: Not a public application');
       showErrorToast('Action Not Available', 'Matching is only available for public gig applications.');
       return;
     }
 
+    console.log('🔍 [ATOMIC] Application data check:', {
+      applicationExists: !!candidate.application,
+      applicationData: candidate.application
+    });
+
     if (!candidate.application) {
+      console.log('❌ [ATOMIC] EARLY EXIT: Application data is missing');
       showErrorToast('Invalid Data', 'Application data is missing.');
       return;
     }
 
+    console.log('⏳ [ATOMIC] Setting isMatching to TRUE');
     setIsMatching(true);
+
     try {
+      console.log('🔧 [ATOMIC] Preparing match request:', {
+        applicationId: candidate.application.id,
+        gigId: candidate.application.gigId,
+        freelancerId: candidate.application.freelancerId,
+      });
+
+      const requestPayload = {
+        applicationId: candidate.application.id,
+        gigId: candidate.application.gigId,
+        freelancerId: candidate.application.freelancerId,
+      };
+      console.log('📦 [ATOMIC] Request payload:', requestPayload);
+
+      console.log('🌐 [ATOMIC] Sending fetch request to /api/gigs/match-freelancer...');
       const response = await fetch('/api/gigs/match-freelancer', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          applicationId: candidate.application.id,
-          gigId: candidate.application.gigId,
-          freelancerId: candidate.application.freelancerId,
-        }),
+        body: JSON.stringify(requestPayload),
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        const freelancerName = candidate.application.freelancer?.name || 'Freelancer';
-        showSuccessToast(`You've matched with ${freelancerName}! The project has now been activated.`);
+      console.log('📨 [ATOMIC] Response received:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        url: response.url,
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
+      console.log('📄 [ATOMIC] Parsing response JSON...');
+      const result = await response.json();
+      console.log('� [ATOMIC] Parsed response data:', {
+        success: result.success,
+        ok: result.ok,
+        message: result.message,
+        hasEntities: !!result.entities,
+        projectData: result.entities?.project,
+        tasksData: result.entities?.tasks,
+        fullResult: result
+      });
+
+      console.log('🔍 [ATOMIC] Checking response success:', {
+        responseOk: response.ok,
+        resultOk: result.ok,
+        bothOk: response.ok && result.ok
+      });
+
+      if (response.ok && result.ok) {
+        console.log('✅ [ATOMIC] Response indicates success, starting guard verification...');
+
+        // 🛡️ GIG APPLICATION GUARD: Verify project and tasks were created
+        console.log('🛡️ [ATOMIC] Frontend guard: Verifying project and task creation...');
+
+        console.log('🔍 [ATOMIC] Checking project data:', {
+          hasEntities: !!result.entities,
+          hasProject: !!result.entities?.project,
+          projectData: result.entities?.project
+        });
+
+        if (!result.entities?.project) {
+          console.error('❌ [ATOMIC] Frontend guard failed: No project data in response');
+          throw new Error('Matching failed: Project was not created. Please try again.');
+        }
+
+        console.log('🔍 [ATOMIC] Checking tasks data:', {
+          hasTasks: !!result.entities?.tasks,
+          isArray: Array.isArray(result.entities?.tasks),
+          taskCount: result.entities?.tasks?.length || 0,
+          tasksData: result.entities?.tasks
+        });
+
+        if (!result.entities?.tasks || !Array.isArray(result.entities.tasks) || result.entities.tasks.length === 0) {
+          console.error('❌ [ATOMIC] Frontend guard failed: No task data in response');
+          throw new Error('Matching failed: Project tasks were not created. Please try again.');
+        }
+
+        console.log(`✅ [ATOMIC] Frontend guard passed: Project ${result.entities.project.projectId} with ${result.entities.tasks.length} tasks created`);
+
+        const freelancerName = candidate.user?.name || 'Freelancer';
+        const successMessage = `You've matched with ${freelancerName}! Project #${result.entities.project.projectId} has been activated with ${result.entities.tasks.length} tasks.`;
+
+        console.log('🎉 [ATOMIC] Showing success toast:', successMessage);
+        showSuccessToast(successMessage);
+
+        console.log('🚪 [ATOMIC] Closing sidebar...');
         onClose();
-        // Refresh candidate list to remove matched candidate
+
+        console.log('🔄 [ATOMIC] Triggering candidate list refresh...');
         if (onCandidateUpdate) {
           onCandidateUpdate();
+        } else {
+          console.log('⚠️ [ATOMIC] onCandidateUpdate callback not available');
         }
+
+        console.log('✅ [ATOMIC] Match process completed successfully');
       } else {
-        throw new Error('Failed to match with freelancer');
+        console.log('❌ [ATOMIC] Response indicates failure:', {
+          responseOk: response.ok,
+          resultOk: result.ok,
+          responseStatus: response.status,
+          resultMessage: result.message
+        });
+
+        const errorMessage = result.message || 'Failed to match with freelancer';
+        console.log('❌ [ATOMIC] Throwing error:', errorMessage);
+        throw new Error(errorMessage);
       }
     } catch (error) {
-      console.error('Error matching with freelancer:', error);
+      console.error('💥 [ATOMIC] Error in match process:', {
+        errorType: error instanceof Error ? error.constructor.name : typeof error,
+        errorMessage: error instanceof Error ? error.message : String(error),
+        errorStack: error instanceof Error ? error.stack : 'No stack trace',
+        fullError: error
+      });
+
+      console.log('🚨 [ATOMIC] Showing error toast...');
       showErrorToast('Failed to match with freelancer', 'Please try again or contact support if the issue persists.');
     } finally {
+      console.log('🔄 [ATOMIC] Finally block: Setting isMatching to FALSE');
       setIsMatching(false);
+      console.log('🏁 [ATOMIC] handleMatchWithFreelancer COMPLETED');
     }
   };
 
@@ -409,7 +530,16 @@ export default function CandidateDetailsSidebar({
 
                           {/* Match Button - Only for public applications */}
                           <button
-                            onClick={handleMatchWithFreelancer}
+                            onClick={() => {
+                              console.log('🖱️ [ATOMIC] MATCH BUTTON CLICKED');
+                              console.log('🔍 [ATOMIC] Button state check:', {
+                                isMatching,
+                                isRejecting,
+                                applicationStatus: candidate.application?.status,
+                                buttonDisabled: isMatching || isRejecting || candidate.application?.status === 'accepted' || candidate.application?.status === 'rejected'
+                              });
+                              handleMatchWithFreelancer();
+                            }}
                             disabled={isMatching || isRejecting || candidate.application?.status === 'accepted' || candidate.application?.status === 'rejected'}
                             className="w-full bg-black hover:bg-gray-800 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
                           >

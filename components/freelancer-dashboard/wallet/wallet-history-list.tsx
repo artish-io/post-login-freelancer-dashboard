@@ -4,6 +4,28 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import WalletHistoryItem from './wallet-history-item';
 
+type Transaction = {
+  transactionId: string;
+  type: string;
+  amount: number;
+  status: string;
+  timestamp: string;
+  metadata?: {
+    cardUsed?: {
+      last4: string;
+      type: string;
+    };
+    withdrawalMethod?: {
+      type: string;
+      last4?: string;
+      email?: string;
+      bankName?: string;
+    };
+    projectTitle?: string;
+    invoiceNumber?: string;
+  };
+};
+
 type WalletEntry = {
   id: number;
   userId: string;
@@ -21,11 +43,12 @@ type WalletEntry = {
 
 export default function WalletHistoryList() {
   const { data: session } = useSession();
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [entries, setEntries] = useState<WalletEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchHistory = async () => {
+    const fetchTransactions = async () => {
       if (!session?.user?.id) {
         setLoading(false);
         return;
@@ -33,68 +56,74 @@ export default function WalletHistoryList() {
 
       try {
         setLoading(true);
-        console.log('Fetching wallet history...');
+        console.log('Fetching transaction history...');
 
-        // Fetch wallet history, organizations, projects, and users data
-        const [historyRes, orgsRes, projectsRes, usersRes] = await Promise.all([
-          fetch(`/api/dashboard/wallet/history?userId=${session.user.id}`),
-          fetch('/api/data/organizations'),
-          fetch('/api/data/projects'),
-          fetch('/api/data/users')
-        ]);
+        // Fetch transactions from new API
+        const response = await fetch(`/api/payments/transactions?userId=${session.user.id}`);
 
-        if (!historyRes.ok) {
-          throw new Error(`History API failed: ${historyRes.status}`);
+        if (!response.ok) {
+          throw new Error(`Transactions API failed: ${response.status}`);
         }
 
-        const [historyData, organizations, projects, users] = await Promise.all([
-          historyRes.json(),
-          orgsRes.json(),
-          projectsRes.json(),
-          usersRes.json()
-        ]);
+        const data = await response.json();
 
-        console.log('Raw history data:', historyData.length, 'transactions');
-        console.log('Organizations loaded:', organizations.length);
-        console.log('Projects loaded:', projects.length);
-        console.log('Users loaded:', users.length);
+        if (data.success && data.transactions) {
+          setTransactions(data.transactions);
 
-        // Enrich with organization/project/commissioner names (API already filtered by userId)
-        const enriched = historyData.map((item: any) => {
-          const organization = organizations.find((org: any) => org.id === item.organizationId);
-          const project = projects.find((proj: any) => proj.projectId === item.projectId);
-          const commissioner = users.find((user: any) => user.id === item.commissionerId);
+          // Convert transactions to legacy format for existing UI
+          const legacyEntries = data.transactions.map((tx: Transaction, index: number) => ({
+            id: index + 1,
+            userId: session.user.id,
+            type: tx.type === 'credit' ? 'credit' as const : 'debit' as const,
+            amount: tx.amount,
+            currency: 'USD',
+            date: tx.timestamp,
+            name: getTransactionTitle(tx),
+            company: getTransactionSource(tx),
+            commissioner: getCommissionerName(tx)
+          }));
 
-          console.log(`Transaction ${item.id}:`);
-          console.log(`  Project ${item.projectId}:`, project?.title);
-          console.log(`  Organization ${item.organizationId}:`, organization?.name);
-          console.log(`  Commissioner ${item.commissionerId}:`, commissioner?.name);
-
-          return {
-            ...item,
-            name: project?.title || `${item.type === 'credit' ? 'Payment Received' : 'Withdrawal'}`,
-            company: organization?.name || 'Unknown Organization',
-            commissioner: commissioner?.name || 'Unknown Commissioner'
-          };
-        });
-
-        console.log('Enriched entries:', enriched.length);
-        console.log('Sample enriched entry:', enriched[0]);
-
-        const finalEntries = enriched.slice().reverse(); // newest first
-        console.log('Final entries to render:', finalEntries.length);
-        console.log('First entry to render:', finalEntries[0]);
-
-        setEntries(finalEntries);
+          setEntries(legacyEntries);
+        } else {
+          console.error('Failed to fetch transactions:', data.error);
+          setEntries([]);
+        }
       } catch (err) {
-        console.error('Failed to load wallet history:', err);
-        setEntries([]); // Set empty array instead of dummy data
+        console.error('Failed to load transaction history:', err);
+        setEntries([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchHistory();
+
+    fetchTransactions();
   }, [session?.user?.id]);
+
+  // Helper functions for transaction display
+  const getTransactionTitle = (tx: Transaction) => {
+    if (tx.metadata?.projectTitle) {
+      return tx.metadata.projectTitle;
+    }
+    return tx.type === 'credit' ? 'Payment Received' : 'Withdrawal';
+  };
+
+  const getTransactionSource = (tx: Transaction) => {
+    if (tx.type === 'credit' && tx.metadata?.cardUsed) {
+      return `From ${tx.metadata.cardUsed.type} ****${tx.metadata.cardUsed.last4}`;
+    } else if (tx.type === 'withdrawal' && tx.metadata?.withdrawalMethod) {
+      const method = tx.metadata.withdrawalMethod;
+      if (method.type === 'bank_transfer') {
+        return `To ${method.bankName} ****${method.last4}`;
+      } else if (method.type === 'paypal') {
+        return `To PayPal ${method.email}`;
+      }
+    }
+    return 'Transaction';
+  };
+
+  const getCommissionerName = (tx: Transaction) => {
+    return 'Commissioner'; // Could be enhanced with actual commissioner lookup
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 flex flex-col relative">

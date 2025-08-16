@@ -11,7 +11,7 @@ import { format, parse } from 'date-fns';
 
 export interface HierarchicalTask {
   taskId: number;
-  projectId: number;
+  projectId: string | number;
   projectTitle: string;
   organizationId: number;
   projectTypeTags: string[];
@@ -34,7 +34,7 @@ export interface HierarchicalTask {
 }
 
 export interface LegacyProject {
-  projectId: number;
+  projectId: string | number;
   title: string;
   organizationId: number;
   typeTags: string[];
@@ -367,8 +367,8 @@ export async function readAllTasks(): Promise<HierarchicalTask[]> {
           const projects = await fs.readdir(dayPath);
           
           for (const project of projects) {
-            // Skip files, only process directories (projects should be numeric IDs)
-            if (!project.match(/^\d+$/)) continue;
+            // Skip files, only process directories (projects can be numeric or alphanumeric IDs like "L-001", "C-001")
+            if (!project.match(/^[A-Za-z0-9-]+$/)) continue;
 
             const projectPath = path.join(dayPath, project);
             const projectStat = await fs.stat(projectPath);
@@ -492,11 +492,12 @@ export function convertLegacyToHierarchical(legacyProject: LegacyProject): Hiera
  * Convert hierarchical tasks back to legacy project structure
  */
 export function convertHierarchicalToLegacy(tasks: HierarchicalTask[]): LegacyProject[] {
-  const projectsMap = new Map<number, LegacyProject>();
-  
+  const projectsMap = new Map<string, LegacyProject>();
+
   for (const task of tasks) {
-    if (!projectsMap.has(task.projectId)) {
-      projectsMap.set(task.projectId, {
+    const projectKey = task.projectId.toString();
+    if (!projectsMap.has(projectKey)) {
+      projectsMap.set(projectKey, {
         projectId: task.projectId,
         title: task.projectTitle,
         organizationId: task.organizationId,
@@ -504,8 +505,8 @@ export function convertHierarchicalToLegacy(tasks: HierarchicalTask[]): LegacyPr
         tasks: []
       });
     }
-    
-    const project = projectsMap.get(task.projectId)!;
+
+    const project = projectsMap.get(projectKey)!;
     project.tasks.push({
       id: task.taskId,
       title: task.title,

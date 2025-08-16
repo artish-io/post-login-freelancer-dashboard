@@ -44,11 +44,14 @@ const statusLabels: Record<ProjectSummaryItem['status'], string> = {
 // Helper function to calculate project status based on tasks and due dates
 function calculateProjectStatus(project: any, earliestDueDate: string | null): 'ongoing' | 'paused' | 'completed' | 'delayed' {
   const tasks = project.tasks || [];
-  const approvedTasks = tasks.filter((task: any) => task.status === 'Approved').length;
+  // Tasks must be both approved AND completed to count as finished
+  const completedTasks = tasks.filter((task: any) =>
+    task.status === 'Approved' && task.completed === true
+  ).length;
   const totalTasks = tasks.length;
 
   if (totalTasks === 0) return 'paused';
-  if (approvedTasks === totalTasks) return 'completed';
+  if (completedTasks === totalTasks) return 'completed';
 
   // Check if project has recent activity (tasks in review or recently updated)
   const hasRecentActivity = tasks.some((task: any) =>

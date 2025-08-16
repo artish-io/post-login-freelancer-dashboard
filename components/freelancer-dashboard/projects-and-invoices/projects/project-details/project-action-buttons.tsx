@@ -11,7 +11,7 @@ import { useSuccessToast, useErrorToast, useInfoToast, useConfirmation } from '@
 import RatingModal from '../../../../shared/rating-modal';
 
 type Props = {
-  projectId: number;
+  projectId: string | number;
   onNotesClick: () => void;
   projectStatus?: string;
 };

@@ -178,11 +178,14 @@ async function updateProjectIndexes(project: Project): Promise<void> {
     }
 
     index[project.projectId.toString()] = project.createdAt;
-    await atomicWrite(indexPath, index);
 
-    // Update metadata index
+    // Use writeJsonAtomic directly to avoid nested locking
+    await ensureDir(path.dirname(indexPath));
+    await writeJsonAtomic(indexPath, index);
+
+    // Update metadata index (same file, so no need to write twice)
     await ensureDir(path.dirname(metadataIndexPath));
-    await atomicWrite(metadataIndexPath, index);
+    await writeJsonAtomic(metadataIndexPath, index);
 
     logger.info(`Updated project indexes for project ${project.projectId}`);
   });
@@ -305,7 +308,7 @@ export class UnifiedStorageService {
         const index = JSON.parse(indexData);
         const taskInfo = index[taskId.toString()];
 
-        if (taskInfo && taskInfo.projectId === Number(projectId)) {
+        if (taskInfo && String(taskInfo.projectId) === String(projectId)) {
           const taskPath = getTaskPath({
             id: taskId,
             projectId: projectId,
@@ -501,7 +504,8 @@ export class UnifiedStorageService {
     try {
       // Use the new hierarchical storage approach
       const { readProjectTasks } = await import('./tasks-paths');
-      let tasks = await readProjectTasks(Number(projectId));
+      // Handle both string and numeric project IDs
+      let tasks = await readProjectTasks(projectId);
 
       // Convert to ProjectTask format and apply filters
       let filteredTasks = tasks

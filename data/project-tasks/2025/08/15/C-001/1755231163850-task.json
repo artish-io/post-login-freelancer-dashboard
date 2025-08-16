@@ -1,0 +1,19 @@
+{
+  "taskId": 1755231163850,
+  "projectId": "C-001",
+  "projectTitle": "Financial Modelling For Series A Fundraising",
+  "organizationId": 3,
+  "freelancerId": 25,
+  "title": "Investor Presentation Deck",
+  "description": "Design and develop compelling investor presentation materials highlighting key metrics, market opportunity, and growth strategy",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 2,
+  "dueDate": "2025-09-05T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "createdDate": "2025-08-15T04:02:10.718Z",
+  "lastModified": "2025-08-15T04:02:10.718Z"
+}

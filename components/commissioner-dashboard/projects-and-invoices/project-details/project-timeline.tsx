@@ -17,7 +17,7 @@ interface Task {
 }
 
 interface Props {
-  projectId: number;
+  projectId: string | number;
   title: string;
   logoUrl: string;
   onNotesClick: () => void;

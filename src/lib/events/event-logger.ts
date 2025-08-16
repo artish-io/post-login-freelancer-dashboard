@@ -583,10 +583,14 @@ class EventLogger {
   }
 
   private async getProjectFreelancer(projectId: number): Promise<number | null> {
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projects = JSON.parse(fs.readFileSync(projectsPath, 'utf-8'));
-    const project = projects.find((p: any) => p.projectId === projectId);
-    return project?.freelancerId || null;
+    try {
+      const { UnifiedStorageService } = await import('../storage/unified-storage-service');
+      const project = await UnifiedStorageService.readProject(String(projectId));
+      return project?.freelancerId || null;
+    } catch (error) {
+      console.error('Error getting project freelancer:', error);
+      return null;
+    }
   }
 
   private async getGigOwner(gigId: number): Promise<number | null> {

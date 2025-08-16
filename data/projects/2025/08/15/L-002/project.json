@@ -1,0 +1,28 @@
+{
+  "projectId": "L-002",
+  "title": "Market Research for Longer Divide",
+  "description": "China’s threshold for the death penalty in certain corruption and embezzlement cases is deliberately low by global standards because their legal system treats “large-scale corruption” as both an economic and political threat. The “especially serious circumstances” clause means that even amounts just above that line can be death-eligible if prosecutors argue there was extensive damage to public trust, national projects, or social stability.",
+  "organizationId": 1,
+  "commissionerId": 32,
+  "freelancerId": 31,
+  "status": "ongoing",
+  "dueDate": "2025-08-31T04:00:00.000Z",
+  "invoicingMethod": "milestone",
+  "totalBudget": 10000,
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-15T20:30:01.212Z",
+  "updatedAt": "2025-08-15T20:30:01.212Z",
+  "category": "Design",
+  "subcategory": "Presentation Design",
+  "tags": [
+    "Marketing"
+  ],
+  "toolsRequired": [
+    "Canva",
+    "Figma"
+  ],
+  "estimatedHours": 80,
+  "deliveryTimeWeeks": 2,
+  "gigId": 16
+}

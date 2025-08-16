@@ -45,7 +45,13 @@ export async function GET(req: Request) {
       );
     });
 
-    return NextResponse.json(filtered);
+    // Enrich gigs with default invoicing method for older gigs that don't have it
+    const enrichedGigs = filtered.map((gig: any) => ({
+      ...gig,
+      invoicingMethod: gig.invoicingMethod || 'completion'
+    }));
+
+    return NextResponse.json(enrichedGigs);
   } catch (error) {
     console.error('Error reading gigs:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

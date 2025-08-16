@@ -18,6 +18,7 @@ export default function PostAGigStep4Page() {
   // Get data from previous steps
   const selectedCategory = searchParams.get('category');
   const selectedSubcategory = searchParams.get('subcategory');
+  const projectTitle = searchParams.get('projectTitle') || '';
   const startType = searchParams.get('startType') as StartType;
   const customStartDate = searchParams.get('customStartDate') ? new Date(searchParams.get('customStartDate')!) : null;
   const endDate = searchParams.get('endDate') ? new Date(searchParams.get('endDate')!) : null;
@@ -91,6 +92,7 @@ export default function PostAGigStep4Page() {
     const params = new URLSearchParams({
       category: selectedCategory || '',
       subcategory: selectedSubcategory || '',
+      projectTitle,
       startType: startType || '',
       customStartDate: customStartDate?.toISOString() || '',
       endDate: endDate?.toISOString() || '',
@@ -113,6 +115,7 @@ export default function PostAGigStep4Page() {
       FormPersistence.saveStepData(4, {
         selectedCategory: selectedCategory || '',
         selectedSubcategory: selectedSubcategory || '',
+        projectTitle,
         startType: startType || '',
         customStartDate: customStartDate?.toISOString(),
         endDate: endDate?.toISOString(),
@@ -123,12 +126,20 @@ export default function PostAGigStep4Page() {
         skills,
         tools,
         milestones: milestonesToSave,
+        // Save project brief file metadata (not the actual file)
+        projectBriefFile: projectBriefFile ? {
+          name: projectBriefFile.name,
+          size: projectBriefFile.size,
+          type: projectBriefFile.type,
+          lastModified: projectBriefFile.lastModified
+        } : null,
       });
 
       // Navigate to step 5 with all the data
       const params = new URLSearchParams({
         category: selectedCategory || '',
         subcategory: selectedSubcategory || '',
+        projectTitle,
         startType: startType || '',
         customStartDate: customStartDate?.toISOString() || '',
         endDate: endDate?.toISOString() || '',

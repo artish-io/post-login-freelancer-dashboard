@@ -17,7 +17,8 @@ export default function PostAGigStep3Page() {
   const selectedCategory = searchParams.get('category');
   const selectedSubcategory = searchParams.get('subcategory');
 
-  // State for timeline and payment plan
+  // State for project title and timeline and payment plan
+  const [projectTitle, setProjectTitle] = useState('');
   const [startType, setStartType] = useState<StartType>('Immediately');
   const [customStartDate, setCustomStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -29,6 +30,7 @@ export default function PostAGigStep3Page() {
   useEffect(() => {
     const formData = FormPersistence.getMergedFormData(searchParams);
 
+    if (formData.projectTitle) setProjectTitle(formData.projectTitle);
     if (formData.startType) setStartType(formData.startType);
     if (formData.customStartDate) setCustomStartDate(new Date(formData.customStartDate));
     if (formData.endDate) setEndDate(new Date(formData.endDate));
@@ -76,6 +78,7 @@ export default function PostAGigStep3Page() {
       FormPersistence.saveStepData(3, {
         selectedCategory: selectedCategory || '',
         selectedSubcategory: selectedSubcategory || '',
+        projectTitle,
         startType,
         customStartDate: customStartDate?.toISOString(),
         endDate: endDate?.toISOString(),
@@ -88,6 +91,7 @@ export default function PostAGigStep3Page() {
       const params = new URLSearchParams({
         category: selectedCategory || '',
         subcategory: selectedSubcategory || '',
+        projectTitle,
         startType,
         customStartDate: customStartDate?.toISOString() || '',
         endDate: endDate?.toISOString() || '',
@@ -100,7 +104,8 @@ export default function PostAGigStep3Page() {
   };
 
   // Form validation
-  const isFormValid = endDate && lowerBudget && upperBudget &&
+  const isFormValid = projectTitle.trim().length > 0 &&
+    endDate && lowerBudget && upperBudget &&
     Number(lowerBudget) > 0 && Number(upperBudget) > 0 &&
     Number(upperBudget) >= Number(lowerBudget);
 
@@ -119,6 +124,27 @@ export default function PostAGigStep3Page() {
           <p className="text-gray-600">
             Choose specification
           </p>
+        </div>
+
+        {/* Project Title */}
+        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 mb-6">
+          <div className="mb-6">
+            <label htmlFor="projectTitle" className="block text-sm font-medium text-gray-700 mb-2">
+              Project Title *
+            </label>
+            <input
+              type="text"
+              id="projectTitle"
+              value={projectTitle}
+              onChange={(e) => setProjectTitle(e.target.value)}
+              placeholder="Enter a descriptive title for your project"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-all duration-200"
+              required
+            />
+            <p className="text-sm text-gray-500 mt-2">
+              This will be the title of your project that freelancers will see
+            </p>
+          </div>
         </div>
 
         {/* Timeline and Payment Plan Form */}

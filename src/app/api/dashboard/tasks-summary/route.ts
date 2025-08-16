@@ -80,7 +80,7 @@ export async function GET(request: Request) {
 
 
         return {
-          id: task.id,
+          id: task.taskId || task.id, // Use taskId from hierarchical storage, fallback to id
           projectId: project.projectId,
           title: task.title,
           status: derivedStatus,

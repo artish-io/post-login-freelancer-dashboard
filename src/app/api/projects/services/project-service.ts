@@ -5,7 +5,7 @@
 import { ProjectRecord } from '@/app/api/payments/repos/projects-repo';
 import { TaskRecord } from '@/app/api/payments/repos/tasks-repo';
 import { InvoicingMethod, ProjectStatus } from '@/app/api/payments/domain/types';
-import { generateProjectId, generateTaskId } from '@/lib/utils/id-generation';
+import { generateProjectId, generateTaskId, generateOrganizationProjectId } from '@/lib/utils/id-generation';
 
 export interface GigLike {
   id: number;
@@ -51,7 +51,9 @@ export interface AcceptGigParams {
   gig: GigLike;
   freelancerId: number;
   commissionerId?: number;
-  projectId?: number;
+  projectId?: string;
+  organizationName?: string;
+  existingProjectIds?: Set<string>;
 }
 
 export class ProjectService {
@@ -60,7 +62,7 @@ export class ProjectService {
    * Pure business logic - caller handles persistence and events
    */
   static acceptGig(params: AcceptGigParams): AcceptGigResult {
-    const { gig, freelancerId, commissionerId, projectId } = params;
+    const { gig, freelancerId, commissionerId, projectId, organizationName, existingProjectIds } = params;
 
     // Validate gig is available
     if (gig.status !== 'Available') {
@@ -74,7 +76,7 @@ export class ProjectService {
     }
 
     // Generate project ID if not provided
-    const finalProjectId = projectId ?? this.generateProjectId();
+    const finalProjectId = projectId ?? this.generateProjectId(organizationName, existingProjectIds);
 
     // Calculate due date
     const dueDate = this.calculateDueDate(gig.deliveryTimeWeeks, gig.endDate);
@@ -120,11 +122,15 @@ export class ProjectService {
   }
 
   /**
-   * Generate a unique project ID using enhanced crypto-random approach
+   * Generate a unique project ID using organization-based format or fallback to numeric
    * Delegates to centralized ID generation utility
    */
-  private static generateProjectId(): number {
-    return generateProjectId();
+  private static generateProjectId(organizationName?: string, existingProjectIds?: Set<string>): string {
+    if (organizationName && existingProjectIds) {
+      return generateOrganizationProjectId(organizationName, existingProjectIds);
+    }
+    // Fallback to numeric ID for backward compatibility
+    return generateProjectId().toString();
   }
 
   /**

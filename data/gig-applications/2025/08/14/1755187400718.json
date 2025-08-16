@@ -1,0 +1,21 @@
+{
+  "id": 1755187400718,
+  "gigId": 1755187400708,
+  "freelancerId": 8001,
+  "pitch": "I'm experienced in building e-commerce platforms with React and Node.js",
+  "sampleLinks": [
+    "https://github.com/example/ecommerce"
+  ],
+  "skills": [
+    "React",
+    "Node.js",
+    "PostgreSQL"
+  ],
+  "tools": [
+    "VS Code",
+    "Docker",
+    "AWS"
+  ],
+  "submittedAt": "2025-08-14T16:03:20.718Z",
+  "status": "pending"
+}

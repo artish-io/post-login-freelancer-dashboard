@@ -13,12 +13,13 @@
   "description": "Create a 90-second animated video explaining features of Corlax's iOS wellness app.",
   "deliveryTimeWeeks": 3,
   "estimatedHours": 35,
-  "status": "Unavailable",
+  "status": "Available",
   "toolsRequired": [
     "Adobe After Effects",
     "Illustrator"
   ],
   "invoicingMethod": "milestone",
   "notes": "Maintain a calm, clean visual aesthetic aligned with healthtech branding.",
-  "postedDate": "2025-07-05"
+  "postedDate": "2025-07-05",
+  "lastModified": "2025-08-15T19:56:57.446Z"
 }

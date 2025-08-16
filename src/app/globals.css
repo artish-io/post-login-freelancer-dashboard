@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bodoni+Moda+SC:wght@400;600;700&display=swap");
 @import "tailwindcss";
 
 /* -------------------------
@@ -26,6 +27,21 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;  /* Safari and Chrome */
+  }
+
+  /* Ensure Bodoni Moda SC font is applied */
+  .font-bodoni-moda {
+    font-family: 'Bodoni Moda SC', var(--font-bodoni-moda), serif !important;
+    font-weight: 600 !important;
+    font-feature-settings: "kern" 1, "liga" 1;
+    font-display: swap;
+  }
+
+  /* More specific selectors to ensure font is applied */
+  .font-bodoni-moda,
+  .font-bodoni-moda * {
+    font-family: 'Bodoni Moda SC', serif !important;
+    font-weight: 600 !important;
   }
 }
 

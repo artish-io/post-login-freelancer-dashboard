@@ -9,7 +9,7 @@ import { RatingSubmissionRequest } from '../../types/ratings';
 interface RatingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  projectId: number;
+  projectId: string | number;
   projectTitle: string;
   subjectUserId: number;
   subjectUserType: 'freelancer' | 'commissioner';

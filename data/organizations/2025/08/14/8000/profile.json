@@ -1,0 +1,11 @@
+{
+  "id": 8000,
+  "name": "Test Organization",
+  "contactPersonId": 8002,
+  "firstCommissionerId": 8002,
+  "associatedCommissioners": [
+    8002
+  ],
+  "email": "test.org@example.com",
+  "createdAt": "2025-08-14T17:40:16.208Z"
+}

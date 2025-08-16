@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile } from 'fs/promises';
-import { readAllProjects } from '@/lib/projects-utils';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { readAllTasks, convertHierarchicalToLegacy } from '@/lib/project-tasks/hierarchical-storage';
 
 export async function GET(req: Request) {
@@ -15,7 +15,7 @@ export async function GET(req: Request) {
   try {
     // Read data from hierarchical storage
     const [projects, hierarchicalTasks] = await Promise.all([
-      readAllProjects(), // Use hierarchical storage for projects
+      UnifiedStorageService.listProjects(), // Use UnifiedStorageService for projects
       readAllTasks() // Use hierarchical storage for project tasks
     ]);
 
@@ -57,8 +57,10 @@ function calculateFreelancerStats(projects: any[], projectTasks: any[], freelanc
   // Get all tasks for freelancer's projects
   const freelancerProjectIds = freelancerProjects.map(p => p.projectId);
   const freelancerTaskProjects = projectTasks.filter(pt =>
-    freelancerProjectIds.includes(pt.projectId)
+    freelancerProjectIds.some(id => id.toString() === pt.projectId.toString())
   );
+
+
 
   let tasksToday = 0;
   let upcomingDeadlines = 0;
@@ -76,19 +78,13 @@ function calculateFreelancerStats(projects: any[], projectTasks: any[], freelanc
       const taskDueDate = new Date(task.dueDate);
       const taskDueDateStr = taskDueDate.toISOString().split('T')[0];
 
-      // Tasks for today - match tasks-panel logic (incomplete, ongoing tasks)
-      // Note: tasks-panel shows top 3 urgent tasks, not necessarily due today
-      // This counts tasks that could appear in "Today's Tasks" panel
+      // Tasks for today - match tasks-panel logic exactly
+      // The tasks panel shows top 3 most urgent incomplete, ongoing tasks
+      // So we count all incomplete, ongoing tasks that could appear in "Today's Tasks"
       if (!task.completed && task.status === 'Ongoing') {
-        // Count as "today's task" if it's urgent (has feedback, rejected, pushed back, or due soon)
-        const isUrgent = task.rejected ||
-                        (task.feedbackCount && task.feedbackCount > 0) ||
-                        task.pushedBack ||
-                        taskDueDateStr === todayStr;
-
-        if (isUrgent) {
-          tasksToday++;
-        }
+        // All incomplete, ongoing tasks are potential "today's tasks"
+        // The tasks panel will sort by urgency and take top 3
+        tasksToday++;
       }
 
       // Upcoming deadlines (due within 3 days and not completed)

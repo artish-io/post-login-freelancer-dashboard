@@ -38,6 +38,12 @@ export interface Gig {
   notes?: string;
   isPublic?: boolean;
   isTargetedRequest?: boolean;
+  briefFile?: {
+    name: string;
+    size: number;
+    type: string;
+    path?: string; // File path for server storage
+  };
 }
 
 /**

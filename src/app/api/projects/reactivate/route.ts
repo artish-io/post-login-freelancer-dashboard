@@ -18,14 +18,14 @@ async function handleProjectReactivation(request: NextRequest) {
     assert(projectId && projectTitle, ErrorCodes.MISSING_REQUIRED_FIELD, 400, 'Missing required fields: projectId, projectTitle');
 
     // Get project details and validate commissioner access
-    const project = await getProjectById(Number(projectId));
+    const project = await UnifiedStorageService.readProject(projectId);
     assert(project, ErrorCodes.PROJECT_NOT_FOUND, 404, 'Project not found');
 
     // 🔒 Ensure session user is the project commissioner
     assertProjectAccess(actorId, project!, 'commissioner');
 
     // Update project status to ongoing using unified storage
-    const unifiedProject = await UnifiedStorageService.readProject(Number(projectId));
+    const unifiedProject = project;
     assert(unifiedProject, ErrorCodes.PROJECT_NOT_FOUND, 404, 'Project not found in unified storage');
 
     await UnifiedStorageService.writeProject({
@@ -36,7 +36,7 @@ async function handleProjectReactivation(request: NextRequest) {
 
     // Log the transition
     logProjectTransition(
-      Number(projectId),
+      projectId,
       project!.status,
       'ongoing',
       actorId,
@@ -73,7 +73,7 @@ async function handleProjectReactivation(request: NextRequest) {
       ok({
         entities: {
           project: {
-            projectId: Number(projectId),
+            projectId: projectId,
             title: projectTitle,
             status: 'ongoing',
             freelancerId: project!.freelancerId,

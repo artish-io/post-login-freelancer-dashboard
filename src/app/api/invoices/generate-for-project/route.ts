@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
     // Find available tasks
     const availableTasks = tasks.filter((task: any) => {
-      return task.status === 'Approved' &&
+      return task.status?.toLowerCase() === 'approved' &&
              !invoicedTaskIds.has(task.id) &&
              !invoicedTaskTitles.has(task.title) &&
              !task.invoicePaid;

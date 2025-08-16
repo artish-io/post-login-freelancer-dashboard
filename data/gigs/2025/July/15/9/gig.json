@@ -13,7 +13,7 @@
   "description": "qwewq",
   "deliveryTimeWeeks": 1,
   "estimatedHours": 40,
-  "status": "Unavailable",
+  "status": "Available",
   "toolsRequired": [
     "Figma"
   ],
@@ -33,5 +33,6 @@
   "lowerBudget": 4000,
   "upperBudget": 5000,
   "postedDate": "2025-07-16",
-  "notes": "Budget range: $4,000 - $5,000"
+  "notes": "Budget range: $4,000 - $5,000",
+  "lastModified": "2025-08-15T19:56:57.448Z"
 }

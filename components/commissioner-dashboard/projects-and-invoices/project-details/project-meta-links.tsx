@@ -2,7 +2,7 @@
 // Commissioner project meta links component
 
 type Props = {
-  projectId: number;
+  projectId: string | number;
 };
 
 export default function CommissionerProjectMetaLinks({ projectId: _ }: Props) {

@@ -4,7 +4,7 @@
     "timestamp": "2025-07-28T20:40:35.772Z",
     "type": "invoice_paid",
     "notificationType": 41,
-    "actorId": "32",
+    "actorId": 32,
     "targetId": 31,
     "entityType": 3,
     "entityId": "MF-24BGJ",

@@ -82,7 +82,7 @@ export default function InvoiceHistoryPanel({ commissionerId }: InvoiceHistoryPa
 
         // Fetch invoices and users data
         const [invoicesRes, usersRes] = await Promise.all([
-          fetch('/api/invoices'),
+          fetch('/api/invoices?userType=commissioner'),
           fetch('/api/users')
         ]);
 

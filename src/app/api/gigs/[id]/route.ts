@@ -17,7 +17,13 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(gig);
+    // Enrich with default invoicing method for older gigs that don't have it
+    const enrichedGig = {
+      ...gig,
+      invoicingMethod: gig.invoicingMethod || 'completion'
+    };
+
+    return NextResponse.json(enrichedGig);
   } catch (error) {
     console.error('Error fetching gig:', error);
     return NextResponse.json(

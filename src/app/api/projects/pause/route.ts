@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { getProjectById } from '@/app/api/payments/repos/projects-repo';
-import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
+import { UnifiedStorageService, getUserById } from '@/lib/storage/unified-storage-service';
 import { NotificationStorage } from '@/lib/notifications/notification-storage';
 import { NOTIFICATION_TYPES, ENTITY_TYPES } from '@/lib/events/event-logger';
 import { requireSession, assert, assertProjectAccess } from '@/lib/auth/session-guard';
@@ -20,14 +20,14 @@ async function handleProjectPause(request: NextRequest) {
     assert(projectId && projectTitle, ErrorCodes.MISSING_REQUIRED_FIELD, 400, 'Missing required fields: projectId, projectTitle');
 
     // Get project details and validate commissioner access
-    const project = await getProjectById(Number(projectId));
+    const project = await UnifiedStorageService.readProject(projectId);
     assert(project, ErrorCodes.PROJECT_NOT_FOUND, 404, 'Project not found');
 
     // 🔒 Ensure session user is the project commissioner
     assertProjectAccess(actorId, project!, 'commissioner');
 
     // Update project status to paused using unified storage
-    const unifiedProject = await UnifiedStorageService.readProject(Number(projectId));
+    const unifiedProject = project;
     assert(unifiedProject, ErrorCodes.PROJECT_NOT_FOUND, 404, 'Project not found in unified storage');
 
     await UnifiedStorageService.writeProject({
@@ -38,7 +38,7 @@ async function handleProjectPause(request: NextRequest) {
 
     // Log the transition
     logProjectTransition(
-      Number(projectId),
+      projectId,
       project!.status,
       'paused',
       actorId,
@@ -75,7 +75,7 @@ async function handleProjectPause(request: NextRequest) {
       ok({
         entities: {
           project: {
-            projectId: Number(projectId),
+            projectId: projectId,
             title: projectTitle,
             status: 'paused',
             freelancerId: project!.freelancerId,
@@ -109,7 +109,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Get project details to find commissioner
-    const project = await readProject(projectId);
+    const project = await UnifiedStorageService.readProject(projectId);
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
@@ -121,9 +121,7 @@ export async function PUT(request: NextRequest) {
     const remainingTasks = projectTasks.filter((task: any) => !task.completed).length || 0;
 
     // Get freelancer name
-    const usersPath = path.join(process.cwd(), 'data', 'users.json');
-    const usersData = JSON.parse(fs.readFileSync(usersPath, 'utf-8'));
-    const freelancer = usersData.find((user: any) => user.id === freelancerId);
+    const freelancer = await getUserById(freelancerId);
     const freelancerName = freelancer?.name || 'Freelancer';
 
     // Create pause request event for commissioner

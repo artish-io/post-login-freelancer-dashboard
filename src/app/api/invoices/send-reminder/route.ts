@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
+import { getAllUsers } from '@/lib/storage/unified-storage-service';
 import { NotificationStorage } from '@/lib/notifications/notification-storage';
 import { ok, err, RefreshHints, ErrorCodes } from '@/lib/http/envelope';
 
@@ -17,15 +18,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Read current data
-    const [invoicesData, commissionerNotificationsData, usersData] = await Promise.all([
+    const [invoicesData, commissionerNotificationsData, users] = await Promise.all([
       fs.promises.readFile(INVOICES_PATH, 'utf-8'),
       fs.promises.readFile(COMMISSIONER_NOTIFICATIONS_PATH, 'utf-8'),
-      fs.promises.readFile(path.join(process.cwd(), 'data', 'users.json'), 'utf-8')
+      getAllUsers()
     ]);
 
     const invoices = JSON.parse(invoicesData);
     const commissionerNotifications = JSON.parse(commissionerNotificationsData);
-    const users = JSON.parse(usersData);
 
     // Find the invoice
     const invoiceIndex = invoices.findIndex((inv: any) => inv.invoiceNumber === invoiceNumber);

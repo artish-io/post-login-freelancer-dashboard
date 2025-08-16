@@ -12,7 +12,7 @@ import ProjectNotesExpansion from '../../../../../../components/freelancer-dashb
 
 export default function CommissionerProjectTrackingDynamicPage() {
   const params = useParams();
-  const projectId = Number(params.projectId) || 0;
+  const projectId = params.projectId as string;
 
   const [projectDetails, setProjectDetails] = useState<{
     title: string;

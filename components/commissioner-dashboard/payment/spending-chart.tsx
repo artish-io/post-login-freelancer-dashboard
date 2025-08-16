@@ -122,20 +122,22 @@ export default function SpendingChart({ range }: Props) {
                     >
                       {/* Bar with grey background and dynamic pink fill */}
                       <div
-                        className="relative rounded-full transition-all duration-500 ease-out"
+                        className="relative rounded-full transition-all duration-500 ease-out shadow-lg border border-white/20 backdrop-blur-sm"
                         style={{
                           width: '13.34px',
                           height: '288px',
-                          backgroundColor: '#EEEEEE'
+                          backgroundColor: '#EEEEEE',
+                          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
                         }}
                         title={`$${amount.toFixed(2)} on ${date}`}
                       >
                         {/* Dynamic fill */}
                         <div
-                          className="absolute bottom-0 left-0 w-full rounded-full transition-all duration-500 ease-out"
+                          className="absolute bottom-0 left-0 w-full rounded-full transition-all duration-500 ease-out shadow-inner"
                           style={{
                             height: `${fillPercent}%`,
-                            backgroundColor: '#B30445'
+                            backgroundColor: '#B30445',
+                            boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(179, 4, 69, 0.3)'
                           }}
                         />
                       </div>

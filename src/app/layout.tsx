@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { Plus_Jakarta_Sans, Bodoni_Moda_SC } from 'next/font/google';
 import { Suspense } from 'react';
 import CustomSessionProvider from '../../components/providers/session-provider';
 import NavigationProgress from '../../components/ui/navigation-progress';
@@ -25,6 +25,13 @@ const jakarta = Plus_Jakarta_Sans({
   variable: '--font-jakarta',
 });
 
+const bodoniModa = Bodoni_Moda_SC({
+  subsets: ['latin'],
+  variable: '--font-bodoni-moda',
+  weight: ['400', '600', '700'],
+  display: 'swap',
+});
+
 export const metadata: Metadata = {
   title: 'ARTISH',
   description: 'Registered Trademark of ARTISH Inc',
@@ -36,7 +43,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={jakarta.variable}>
+    <html lang="en" className={`${jakarta.variable} ${bodoniModa.variable}`}>
+      <head>
+        <link
+          rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Bodoni+Moda+SC:wght@400;600;700&display=swap"
+          as="style"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Bodoni+Moda+SC:wght@400;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="font-jakarta antialiased">
         <Suspense fallback={null}>
           <NavigationProgress />

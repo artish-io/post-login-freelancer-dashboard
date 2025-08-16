@@ -3,14 +3,12 @@
 // Refactored to consume shared types from ../domain/types
 
 import {
-  InvoicingMethod,
   InvoiceLike,
   ProjectLike,
   TaskLike,
   Wallet,
   TransactionRecord,
   Result,
-  normalizeTaskStatus,
   allTasksEligibleForFinal,
   Integration,
 } from '../domain/types';
@@ -127,5 +125,102 @@ export class PaymentsService {
     updated.totalWithdrawn = Number(updated.totalWithdrawn) + Number(amount);
     updated.updatedAt = nowISO();
     return { ok: true, data: updated };
+  }
+
+  /**
+   * Process invoice payment - executes payment from commissioner to freelancer
+   */
+  static async processInvoicePayment(params: {
+    invoiceNumber: string;
+    amount: number;
+    commissionerId: number;
+    freelancerId: number;
+    projectId: string;
+    source: string;
+  }): Promise<{ success: boolean; paymentId?: string; amount?: number; error?: string }> {
+    try {
+      console.log(`💳 Processing payment:`, {
+        invoiceNumber: params.invoiceNumber,
+        amount: params.amount,
+        from: `Commissioner ${params.commissionerId}`,
+        to: `Freelancer ${params.freelancerId}`,
+        project: params.projectId,
+        source: params.source
+      });
+
+      // Call test gateway to actually process the payment
+      const { processMockPayment } = await import('../utils/gateways/test-gateway');
+
+      const mockInvoice = {
+        invoiceNumber: params.invoiceNumber,
+        projectId: parseInt(params.projectId) || 0, // Convert string to number for interface
+        freelancerId: params.freelancerId,
+        commissionerId: params.commissionerId,
+        totalAmount: params.amount
+      };
+
+      const transaction = await processMockPayment(mockInvoice, 'execute');
+
+      console.log(`✅ Payment processed successfully:`, transaction);
+
+      // Update invoice status to 'paid' after successful payment
+      const { updateInvoice } = await import('../../../../lib/invoice-storage');
+      await updateInvoice(params.invoiceNumber, {
+        status: 'paid',
+        paidDate: new Date().toISOString().split('T')[0],
+        paidAmount: params.amount,
+        paymentDetails: {
+          paymentId: transaction.transactionId,
+          paymentMethod: 'mock',
+          platformFee: 0,
+          freelancerAmount: params.amount,
+          currency: 'USD',
+          processedAt: new Date().toISOString()
+        }
+      });
+
+      console.log(`📄 Invoice ${params.invoiceNumber} status updated to 'paid'`);
+
+      // Record transaction in hierarchical storage
+      try {
+        const { HierarchicalTransactionService } = await import('../../../../lib/storage/hierarchical-transaction-service');
+
+        const paymentTransaction = {
+          userId: params.freelancerId,
+          type: 'payment' as const,
+          amount: params.amount,
+          currency: 'USD',
+          timestamp: new Date().toISOString(),
+          status: 'completed' as const,
+          invoiceNumber: params.invoiceNumber,
+          projectId: params.projectId || 'unknown',
+          commissionerId: params.commissionerId || 0,
+          freelancerId: params.freelancerId,
+          source: 'auto_milestone' as const,
+          paymentMethod: 'mock' as const,
+          gatewayTransactionId: transaction.transactionId,
+          description: `Payment for invoice ${params.invoiceNumber}`
+        };
+
+        await HierarchicalTransactionService.createPaymentTransaction(paymentTransaction);
+        console.log(`💾 Transaction recorded in hierarchical storage: ${paymentTransaction.userId}`);
+
+      } catch (transactionError) {
+        console.error('⚠️ Failed to record transaction in hierarchical storage:', transactionError);
+        // Don't fail the payment if transaction recording fails - log and continue
+      }
+
+      return {
+        success: true,
+        paymentId: transaction.transactionId,
+        amount: params.amount
+      };
+    } catch (error) {
+      console.error('Payment processing error:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Payment processing failed'
+      };
+    }
   }
 }

@@ -120,30 +120,38 @@ export default function ProjectListPage() {
               user.id === managerId && user.type === 'commissioner'
             );
 
-            // Calculate completion date for completed projects
-            // Use actual status from projects.json if available, otherwise calculate it
+            // Determine project status - always calculate based on tasks, but respect manual overrides
+            const calculatedStatus = tasks.length > 0 ? calculateProjectStatus(tasks) : 'ongoing';
             let projectStatus: 'ongoing' | 'paused' | 'completed';
+
             if (projectInfo?.status) {
               // Normalize status to lowercase for consistency
               const normalizedStatus = projectInfo.status.toLowerCase();
-              console.log(`🔍 Project ${projectInfo.projectId}: Found status "${projectInfo.status}" -> normalized to "${normalizedStatus}"`);
+              console.log(`🔍 Project ${projectInfo.projectId}: Found status "${projectInfo.status}" -> normalized to "${normalizedStatus}", calculated: "${calculatedStatus}"`);
 
-              // Map to standard lowercase statuses
-              if (normalizedStatus === 'ongoing') {
-                projectStatus = 'ongoing';
-              } else if (normalizedStatus === 'paused') {
-                projectStatus = 'paused';
-              } else if (normalizedStatus === 'completed') {
+              // If calculated status is 'completed', always use that regardless of project.json status
+              // This ensures that projects with all tasks approved and completed show as completed
+              if (calculatedStatus === 'completed') {
                 projectStatus = 'completed';
+                console.log(`✅ Overriding projects.json status with calculated 'completed' status`);
               } else {
-                // Fallback to calculated status if status is not recognized
-                projectStatus = tasks.length > 0 ? calculateProjectStatus(tasks) : 'ongoing';
-                console.log(`⚠️ Unrecognized status "${normalizedStatus}", using fallback: ${projectStatus}`);
+                // For non-completed calculated statuses, respect the project.json status if valid
+                if (normalizedStatus === 'ongoing') {
+                  projectStatus = 'ongoing';
+                } else if (normalizedStatus === 'paused') {
+                  projectStatus = 'paused';
+                } else if (normalizedStatus === 'completed') {
+                  projectStatus = 'completed';
+                } else {
+                  // Fallback to calculated status if status is not recognized
+                  projectStatus = calculatedStatus;
+                  console.log(`⚠️ Unrecognized status "${normalizedStatus}", using calculated: ${projectStatus}`);
+                }
               }
             } else {
               // Fallback to calculated status if no status in projects.json
-              projectStatus = tasks.length > 0 ? calculateProjectStatus(tasks) : 'ongoing';
-              console.log(`📊 No status in projects.json for project ${projectInfo.projectId}, calculated: ${projectStatus}`);
+              projectStatus = calculatedStatus;
+              console.log(`📊 No status in projects.json for project ${projectInfo.projectId}, using calculated: ${projectStatus}`);
             }
             let completionDate = null;
 

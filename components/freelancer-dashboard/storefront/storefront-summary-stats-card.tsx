@@ -3,6 +3,7 @@
 import React from 'react';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import clsx from 'clsx';
+import CurrencyDisplay from '../../ui/currency-display';
 
 export type StorefrontSummaryStatsCardProps = {
   label: string;
@@ -11,6 +12,7 @@ export type StorefrontSummaryStatsCardProps = {
   changeDirection?: 'up' | 'down';
   className?: string;
   bgColor?: string;
+  isCurrency?: boolean;
 };
 
 export default function StorefrontSummaryStatsCard({
@@ -20,6 +22,7 @@ export default function StorefrontSummaryStatsCard({
   changeDirection,
   className = '',
   bgColor = '#FEE7F0',
+  isCurrency = false,
 }: StorefrontSummaryStatsCardProps) {
   const isPositive = changeDirection === 'up';
 
@@ -33,7 +36,15 @@ export default function StorefrontSummaryStatsCard({
     >
       <span className="text-sm font-medium text-black mb-2">{label}</span>
       <div className="flex justify-between items-center">
-        <span className="text-[40px] font-bold text-black leading-none">{value}</span>
+        {isCurrency && typeof value === 'number' ? (
+          <CurrencyDisplay
+            amount={value}
+            className="text-[40px] leading-none"
+            currencySymbolSize="text-[26px]"
+          />
+        ) : (
+          <span className="text-[40px] font-bold text-black leading-none">{value}</span>
+        )}
         {change !== undefined && (
           <div className="flex items-center gap-1 text-sm font-medium text-black opacity-75">
             <span className={isPositive ? 'text-green-600' : 'text-red-600'}>

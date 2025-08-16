@@ -4,6 +4,7 @@ import Image from 'next/image';
 import clsx from 'clsx';
 import { ArrowUpLeft, ArrowDownRight, ShoppingBag, CreditCard, Banknote } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import CurrencyDisplay from '../../ui/currency-display';
 
 type CombinedTransaction = {
   id: string;
@@ -131,7 +132,13 @@ export default function CombinedHistoryItem({ transaction }: Props) {
           'font-semibold',
           getAmountColor()
         )}>
-          {getSign()}{formatCurrency(transaction.amount)}
+          {getSign()}
+          <CurrencyDisplay
+            amount={transaction.amount}
+            currency={transaction.currency}
+            className="inline"
+            currencySymbolSize="text-[0.7em]"
+          />
         </div>
       </div>
     </div>

@@ -1,0 +1,24 @@
+[
+  {
+    "userId": 31,
+    "userType": "freelancer",
+    "currency": "USD",
+    "availableBalance": 0,
+    "pendingWithdrawals": 0,
+    "lifetimeEarnings": 0,
+    "totalWithdrawn": 0,
+    "holds": 0,
+    "updatedAt": "2025-08-15T00:00:00.000Z"
+  },
+  {
+    "userId": 32,
+    "userType": "commissioner",
+    "currency": "USD",
+    "availableBalance": 10000,
+    "pendingWithdrawals": 0,
+    "lifetimeEarnings": 0,
+    "totalWithdrawn": 0,
+    "holds": 0,
+    "updatedAt": "2025-08-15T00:00:00.000Z"
+  }
+]

@@ -155,7 +155,7 @@ export async function saveNote(
 /**
  * Read all notes for a specific task
  */
-export async function readTaskNotes(projectId: number, taskId: number): Promise<Note[]> {
+export async function readTaskNotes(projectId: string | number, taskId: number): Promise<Note[]> {
   const indexPath = getNotesIndexPath();
   const key = `${projectId}-${taskId}`;
   
@@ -195,7 +195,7 @@ export async function readTaskNotes(projectId: number, taskId: number): Promise<
 /**
  * Read all notes for a project
  */
-export async function readProjectNotes(projectId: number): Promise<TaskNoteBlock[]> {
+export async function readProjectNotes(projectId: string | number): Promise<TaskNoteBlock[]> {
   const indexPath = getNotesIndexPath();
   
   try {
@@ -210,9 +210,23 @@ export async function readProjectNotes(projectId: number): Promise<TaskNoteBlock
     
     // Find all task IDs for this project
     for (const [key, dates] of Object.entries(index)) {
-      const [projId, taskId] = key.split('-').map(Number);
-      
-      if (projId === projectId) {
+      // Handle both string and numeric project IDs
+      const parts = key.split('-');
+      let projId: string | number;
+      let taskId: number;
+
+      // For string project IDs like "C-001-123", the project ID includes the first dash
+      if (isNaN(Number(parts[0]))) {
+        // String project ID case: "C-001-123" -> projId="C-001", taskId=123
+        projId = parts.slice(0, -1).join('-');
+        taskId = Number(parts[parts.length - 1]);
+      } else {
+        // Numeric project ID case: "123-456" -> projId=123, taskId=456
+        projId = Number(parts[0]);
+        taskId = Number(parts[1]);
+      }
+
+      if (projId.toString() === projectId.toString()) {
         const notes = await readTaskNotes(projectId, taskId);
         
         if (notes.length > 0) {

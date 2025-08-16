@@ -1,0 +1,42 @@
+{
+  "id": 1755192235133,
+  "title": "Test Milestone E-commerce Platform",
+  "description": "Complete e-commerce platform with 3 development milestones",
+  "commissionerId": 8002,
+  "organizationId": 8000,
+  "budget": 15000,
+  "currency": "USD",
+  "deliveryTimeWeeks": 8,
+  "status": "Available",
+  "isMilestoneBased": true,
+  "milestones": [
+    {
+      "id": 1,
+      "title": "Backend API Development",
+      "description": "Create REST API and database schema",
+      "amount": 5000,
+      "deliveryWeeks": 3
+    },
+    {
+      "id": 2,
+      "title": "Frontend Development",
+      "description": "Build React frontend with shopping cart",
+      "amount": 5000,
+      "deliveryWeeks": 3
+    },
+    {
+      "id": 3,
+      "title": "Testing & Deployment",
+      "description": "QA testing, bug fixes, and production deployment",
+      "amount": 5000,
+      "deliveryWeeks": 2
+    }
+  ],
+  "skills": [
+    "React",
+    "Node.js",
+    "PostgreSQL",
+    "AWS"
+  ],
+  "createdAt": "2025-08-14T17:23:55.133Z"
+}

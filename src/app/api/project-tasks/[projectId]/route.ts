@@ -12,10 +12,10 @@ export async function GET(
 ) {
   try {
     const { projectId: projectIdParam } = await params;
-    const projectId = Number(projectIdParam);
+    const projectId = projectIdParam;
 
-    if (isNaN(projectId)) {
-      return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 });
+    if (!projectId) {
+      return NextResponse.json({ error: 'Missing project ID' }, { status: 400 });
     }
 
     // Validate session and access control

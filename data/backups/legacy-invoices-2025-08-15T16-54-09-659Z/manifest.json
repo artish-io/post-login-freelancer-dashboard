@@ -1,0 +1,181 @@
+{
+  "timestamp": "2025-08-15T16-54-09-659Z",
+  "totalInvoices": 35,
+  "invoices": [
+    {
+      "invoiceNumber": "MGL100008-M4",
+      "projectId": 312,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2024/August/05/312/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100008-M5",
+      "projectId": 312,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2024/August/12/312/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100008-M6",
+      "projectId": 312,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2024/August/19/312/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100008-M7",
+      "projectId": 312,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2024/August/26/312/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100008-M1",
+      "projectId": 312,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2024/July/15/312/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100008-M2",
+      "projectId": 312,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2024/July/22/312/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100008-M3",
+      "projectId": 312,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2024/July/29/312/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100008-M8",
+      "projectId": 312,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2024/September/02/312/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100006-M1",
+      "projectId": 300,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/April/07/300/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100006-M2",
+      "projectId": 300,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/April/11/300/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100006-M3",
+      "projectId": 300,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/April/14/300/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100002-M1",
+      "projectId": 302,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/April/17/302/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100002-M2",
+      "projectId": 302,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/April/21/302/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100002-M3",
+      "projectId": 302,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/April/24/302/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100005-M1",
+      "projectId": 299,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/April/30/299/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL327001",
+      "projectId": 327,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/August/07/327/invoice.json"
+    },
+    {
+      "invoiceNumber": "COMP_331_405_1755109802660_922",
+      "projectId": 331,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/August/12/331/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL000301-M3",
+      "projectId": 301,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/July/20/301/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL000303-M1",
+      "projectId": 303,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/July/20/303/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL000314-M1",
+      "projectId": 314,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/July/20/314/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL000306-M1",
+      "projectId": 306,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/July/30/306/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100000-M2",
+      "projectId": 301,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/June/04/301/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100004-M1",
+      "projectId": 303,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/June/04/303/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100000-M3",
+      "projectId": 301,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/June/07/301/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100004-M2",
+      "projectId": 303,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/June/09/303/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100004-M3",
+      "projectId": 303,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/June/11/303/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100003-M1",
+      "projectId": 302,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/March/09/302/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100003-M2",
+      "projectId": 302,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/March/14/302/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100003-M3",
+      "projectId": 302,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/March/17/302/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100007-M1",
+      "projectId": 313,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/March/21/313/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100007-M2",
+      "projectId": 313,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/March/25/313/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100007-M3",
+      "projectId": 313,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/March/28/313/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100005-M2",
+      "projectId": 299,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/May/04/299/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100005-M3",
+      "projectId": 299,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/May/07/299/invoice.json"
+    },
+    {
+      "invoiceNumber": "MGL100000-M1",
+      "projectId": 301,
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/May/31/301/invoice.json"
+    }
+  ]
+}

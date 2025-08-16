@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { Edit2, Building2 } from 'lucide-react';
 import ChooseWithdrawalMethodModal from '../wallet/choose-withdrawal-method-modal';
 import {
@@ -19,6 +20,7 @@ interface PaymentMethod {
 }
 
 export default function WithdrawalsAndPayouts() {
+  const { data: session } = useSession();
   const [showChooseMethodModal, setShowChooseMethodModal] = useState(false);
   const [showPhoneVerificationModal, setShowPhoneVerificationModal] = useState(false);
   const [showPayPalInfoModal, setShowPayPalInfoModal] = useState(false);
@@ -28,17 +30,67 @@ export default function WithdrawalsAndPayouts() {
   const [userCountry] = useState('United States'); // This should come from account settings
   const [addressData, setAddressData] = useState<any>(null);
   const [, setEditingPaymentMethod] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Mock payment methods - in real app this would come from API
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([
-    {
-      id: '1',
-      type: 'bank',
-      name: 'FIRST BANK OF NIGERIA',
-      details: '1234XXXXXX',
-      isDefault: true
+  // Real payment methods from API
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+
+  // Fetch withdrawal methods from API
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchWithdrawalMethods();
     }
-  ]);
+  }, [session]);
+
+  const fetchWithdrawalMethods = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/freelancer-payments/withdrawal-methods');
+      const data = await response.json();
+
+      if (data.success) {
+        setPaymentMethods(data.withdrawalMethods.map((method: any) => ({
+          id: method.id,
+          type: method.type === 'bank_transfer' ? 'bank' : 'paypal',
+          name: method.type === 'bank_transfer' ? method.bankName : 'PayPal',
+          details: method.type === 'bank_transfer'
+            ? `****${method.accountLast4}`
+            : method.email,
+          isDefault: method.isDefault
+        })));
+      }
+    } catch (error) {
+      console.error('Failed to fetch withdrawal methods:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Add withdrawal processing
+  const handleWithdraw = async (amount: number, methodId?: string) => {
+    try {
+      const response = await fetch('/api/payments/withdraw', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount,
+          currency: 'USD'
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        console.log('Withdrawal initiated:', data);
+        // Show success message and refresh data
+        await fetchWithdrawalMethods();
+      } else {
+        console.error('Withdrawal failed:', data.error);
+      }
+    } catch (error) {
+      console.error('Withdrawal error:', error);
+    }
+  };
 
   const handleMethodSelect = (method: 'bank_transfer' | 'paypal') => {
     setSelectedMethod(method);

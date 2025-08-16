@@ -1,0 +1,35 @@
+[
+  {
+    "id": "withdraw_001",
+    "freelancerId": 31,
+    "type": "bank_transfer",
+    "bankName": "First Bank of Nigeria",
+    "accountNumber": "1234567890",
+    "accountLast4": "7890",
+    "routingNumber": "011000015",
+    "holderName": "Margsate Flether",
+    "swiftCode": "FBNGNGLA",
+    "isDefault": true,
+    "isTestAccount": true,
+    "billingAddress": {
+      "street": "31 Remote Lane",
+      "city": "Lagos",
+      "state": "Lagos State",
+      "zipCode": "100001",
+      "country": "Nigeria"
+    },
+    "createdAt": "2025-08-15T00:00:00.000Z",
+    "updatedAt": "2025-08-15T00:00:00.000Z"
+  },
+  {
+    "id": "withdraw_002",
+    "freelancerId": 31,
+    "type": "paypal",
+    "email": "margsate.flether@example.com",
+    "holderName": "Margsate Flether",
+    "isDefault": false,
+    "isTestAccount": true,
+    "createdAt": "2025-08-15T00:00:00.000Z",
+    "updatedAt": "2025-08-15T00:00:00.000Z"
+  }
+]

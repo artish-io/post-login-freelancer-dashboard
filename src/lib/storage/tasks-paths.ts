@@ -39,10 +39,11 @@ export interface Task {
  * Resolve the canonical directory path for a project's tasks
  * Uses project creation date to determine hierarchical path
  */
-export async function resolveCanonicalTasksDir(projectId: number): Promise<string | null> {
+export async function resolveCanonicalTasksDir(projectId: string | number): Promise<string | null> {
   try {
-    // Get project to find its creation date
-    const project = await readProject(projectId);
+    // Get project to find its creation date using UnifiedStorageService
+    const { UnifiedStorageService } = await import('./unified-storage-service');
+    const project = await UnifiedStorageService.readProject(projectId);
     if (!project || !project.createdAt) {
       // Graceful handling - project may have been deleted/archived
       if (!warnedProjects.has(projectId)) {
@@ -88,7 +89,7 @@ export function getTaskFilePath(tasksDir: string, taskId: number): string {
 /**
  * Read all tasks for a specific project from hierarchical storage
  */
-export async function readProjectTasks(projectId: number): Promise<Task[]> {
+export async function readProjectTasks(projectId: string | number): Promise<Task[]> {
   try {
     const tasksDir = await resolveCanonicalTasksDir(projectId);
     if (!tasksDir) {

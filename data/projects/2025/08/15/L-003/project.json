@@ -1,0 +1,28 @@
+{
+  "projectId": "L-003",
+  "title": "Digital Signage Content Management",
+  "description": "Create a content management system for digital signage across Lagos parks.",
+  "organizationId": 1,
+  "commissionerId": 32,
+  "freelancerId": 31,
+  "status": "ongoing",
+  "dueDate": "2025-09-26",
+  "invoicingMethod": "completion",
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-15T21:59:37.368Z",
+  "updatedAt": "2025-08-15T21:59:37.368Z",
+  "category": "Design",
+  "tags": [
+    "Digital Signage",
+    "Content Management",
+    "UI Design"
+  ],
+  "toolsRequired": [
+    "Figma",
+    "Adobe Creative Suite",
+    "Web Technologies"
+  ],
+  "estimatedHours": 40,
+  "deliveryTimeWeeks": 6
+}

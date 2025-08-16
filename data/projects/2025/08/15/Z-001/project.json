@@ -1,0 +1,29 @@
+{
+  "projectId": "Z-001",
+  "title": "Product Specification for Data Farm Handbook",
+  "description": "Urgently need a technical writing brief delivered quickly. Moratoriums and have not used it for over a decade, making them abolitionist in practice. In Nigeria, some states are de facto abolitionist while others are retentionist.",
+  "organizationId": 4,
+  "commissionerId": 35,
+  "freelancerId": 1,
+  "status": "ongoing",
+  "dueDate": "2025-08-22T04:00:00.000Z",
+  "invoicingMethod": "completion",
+  "totalBudget": 2000,
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-15T22:09:36.439Z",
+  "updatedAt": "2025-08-15T22:09:36.439Z",
+  "category": "Writing",
+  "subcategory": "Technical Writing",
+  "tags": [
+    "Writing",
+    "Creative Writing",
+    "Technical Writing"
+  ],
+  "toolsRequired": [
+    "Google Docs",
+    "Canva"
+  ],
+  "estimatedHours": 0,
+  "deliveryTimeWeeks": 0
+}

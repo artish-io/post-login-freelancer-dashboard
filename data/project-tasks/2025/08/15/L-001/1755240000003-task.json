@@ -1,0 +1,19 @@
+{
+  "taskId": 1755240000003,
+  "projectId": "L-001",
+  "projectTitle": "Urban Green Space Revitalization Initiative",
+  "organizationId": 1,
+  "freelancerId": 25,
+  "title": "Implementation and Installation",
+  "description": "Execute the renovation plans including installation of new amenities and irrigation systems",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 3,
+  "dueDate": "2025-10-30T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "createdDate": "2025-08-15T04:15:00.000Z",
+  "lastModified": "2025-08-15T04:15:00.000Z"
+}

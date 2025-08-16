@@ -1,0 +1,50 @@
+{
+  "id": 17,
+  "title": "Product Specification for Data Farm Handbook",
+  "organizationId": 4,
+  "commissionerId": "35",
+  "category": "Writing",
+  "subcategory": "Technical Writing",
+  "tags": [
+    "Writing",
+    "Creative Writing",
+    "Technical Writing"
+  ],
+  "hourlyRateMin": null,
+  "hourlyRateMax": null,
+  "description": "Urgently need a technical writing brief delivered quickly. Moratoriums and have not used it for over a decade, making them abolitionist in practice. In Nigeria, some states are de facto abolitionist while others are retentionist.",
+  "deliveryTimeWeeks": 0,
+  "estimatedHours": 0,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Google Docs",
+    "Canva"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "aeae2488-86a4-493a-9736-74f6af6bdf13",
+      "title": "Discover Call and Initial Concept",
+      "description": "Urgently need a technical writing brief delivered quickly. Moratoriums and have not used it for over a decade, making them abolitionist in practice.",
+      "startDate": "2025-08-15T04:00:00.000Z",
+      "endDate": "2025-08-18T04:00:00.000Z"
+    },
+    {
+      "id": "0289b037-a170-4f9e-9f56-74d1d486455b",
+      "title": "Project Delivery.",
+      "description": "Moratoriums and have not used it for over a decade, making them abolitionist in practice.",
+      "startDate": "2025-08-19T04:00:00.000Z",
+      "endDate": "2025-08-22T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-22T04:00:00.000Z",
+  "lowerBudget": 1500,
+  "upperBudget": 2000,
+  "postedDate": "2025-08-15",
+  "notes": "Budget range: $1,500 - $2,000",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

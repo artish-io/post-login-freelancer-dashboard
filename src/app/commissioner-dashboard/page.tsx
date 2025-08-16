@@ -7,7 +7,6 @@ import CommissionerHeader from '../../../components/commissioner-dashboard/commi
 import CommissionerStatsRow from '../../../components/commissioner-dashboard/commissioner-stats-row';
 import ProjectSummaryTable from '../../../components/shared/project-summary-table';
 import TasksPanel from '../../../components/shared/tasks-panel';
-import CommissionerNotificationsPanel from '../../../components/commissioner-dashboard/commissioner-notifications-panel';
 import CommissionerNetworkPanel from '../../../components/commissioner-dashboard/commissioner-network-panel';
 
 export default function CommissionerDashboard() {
@@ -141,9 +140,8 @@ export default function CommissionerDashboard() {
           />
         </div>
 
-        {/* Right Column - Notifications and Network */}
+        {/* Right Column - Network */}
         <div className="space-y-6">
-          <CommissionerNotificationsPanel />
           {commissionerId && <CommissionerNetworkPanel commissionerId={commissionerId} />}
         </div>
       </div>
