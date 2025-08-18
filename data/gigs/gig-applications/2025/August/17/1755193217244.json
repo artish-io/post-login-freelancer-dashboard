@@ -1,0 +1,22 @@
+{
+  "id": 1755193217244,
+  "gigId": 20,
+  "freelancerId": 1,
+  "pitch": "I am great at building UI designs for smart websites and integrating logic and clean animations",
+  "sampleLinks": [],
+  "skills": [
+    "Frontend Development",
+    "UI/UX Design",
+    "Mobile Design"
+  ],
+  "tools": [
+    "VS Code",
+    "JavaScript",
+    "React"
+  ],
+  "submittedAt": "2025-08-17T05:01:21.644Z",
+  "status": "accepted",
+  "lastModified": "2025-08-17T05:03:24.186Z",
+  "acceptedAt": "2025-08-17T05:03:24.185Z",
+  "projectId": "Z-003"
+}

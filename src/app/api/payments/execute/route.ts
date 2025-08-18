@@ -253,7 +253,7 @@ async function handleExecutePayment(req: Request) {
       await emitBus('invoice.paid', {
         actorId: actorId,
         targetId: Number(invoice.freelancerId),
-        projectId: Number(invoice.projectId),
+        projectId: String(invoice.projectId), // Keep as string for proper project lookup
         invoiceNumber: invoice.invoiceNumber,
         amount: invoice.totalAmount,
         projectTitle: undefined, // Could be fetched if needed

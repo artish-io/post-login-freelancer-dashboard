@@ -31,12 +31,16 @@ export async function GET(req: Request) {
 
         return {
           id: inv.invoiceNumber,
+          invoiceNumber: inv.invoiceNumber, // Include for React keys
           client: {
             name: client?.name || 'Unknown Client',
             title: client?.title || 'Client',
             avatar: client?.avatar || '/default-avatar.png'
           },
-          status: inv.status
+          status: inv.status,
+          issueDate: inv.issueDate,
+          totalAmount: inv.totalAmount,
+          projectTitle: inv.projectTitle
         };
       });
 

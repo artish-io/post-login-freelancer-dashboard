@@ -1,0 +1,22 @@
+{
+  "id": "milestone_payment_L-002_1755389841338",
+  "timestamp": "2025-08-17T00:17:21.338Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 32,
+  "targetId": 31,
+  "entityType": 10,
+  "entityId": "L-002_Initial research and data collections",
+  "metadata": {
+    "milestoneTitle": "Initial research and data collections",
+    "amount": 5000,
+    "organizationName": "Lagos State Parks Services",
+    "invoiceNumber": "NM-002",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "L-002",
+    "milestoneTitle": "Initial research and data collections",
+    "invoiceNumber": "NM-002"
+  }
+}

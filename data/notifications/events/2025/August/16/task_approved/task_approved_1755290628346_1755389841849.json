@@ -1,0 +1,20 @@
+{
+  "id": "task_approved_1755290628346_1755389841849",
+  "timestamp": "2025-08-17T00:17:21.849Z",
+  "type": "task_approved",
+  "notificationType": 2,
+  "actorId": 32,
+  "targetId": 31,
+  "entityType": 1,
+  "entityId": 1755290628346,
+  "metadata": {
+    "taskTitle": "Initial research and data collections",
+    "projectTitle": "Market Research for Longer Divide",
+    "action": "approve",
+    "invoiceGenerated": true
+  },
+  "context": {
+    "projectId": "L-002",
+    "taskId": 1755290628346
+  }
+}

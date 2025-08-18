@@ -23,6 +23,10 @@ type Invoice = {
   isCustomProject?: boolean;
   isManualInvoice?: boolean;
   parentInvoiceNumber: string;
+  createdAt?: string;
+  updatedAt?: string;
+  generatedAt?: string;
+  sentDate?: string;
 };
 
 type InvoiceWithFreelancer = Invoice & {
@@ -117,7 +121,16 @@ export default function InvoiceHistoryPanel({ commissionerId }: InvoiceHistoryPa
               }
             };
           })
-          .sort((a: Invoice, b: Invoice) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime());
+          .sort((a: any, b: any) => {
+            // Prioritize timestamp fields (with time) over issueDate (date only) for accurate "recently sent" ordering
+            const aDate = a.createdAt || a.generatedAt || a.sentDate || a.updatedAt
+              ? new Date(a.createdAt || a.generatedAt || a.sentDate || a.updatedAt).getTime()
+              : new Date(a.issueDate).getTime();
+            const bDate = b.createdAt || b.generatedAt || b.sentDate || b.updatedAt
+              ? new Date(b.createdAt || b.generatedAt || b.sentDate || b.updatedAt).getTime()
+              : new Date(b.issueDate).getTime();
+            return bDate - aDate; // Most recent first
+          });
 
         setInvoices(commissionerInvoices);
       } catch (error) {
@@ -179,9 +192,9 @@ export default function InvoiceHistoryPanel({ commissionerId }: InvoiceHistoryPa
       <div className="px-6 py-4">
         <div className="space-y-3 h-[270px] overflow-y-auto">
           <AnimatePresence>
-            {invoices.map((invoice: InvoiceWithFreelancer) => (
+            {invoices.map((invoice: InvoiceWithFreelancer, index: number) => (
               <motion.div
-                key={invoice.invoiceNumber}
+                key={`invoice-${invoice.invoiceNumber}-${index}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}

@@ -1,0 +1,25 @@
+{
+  "id": "rating_prompt_commissioner_Z-003_1755409261088",
+  "timestamp": "2025-08-17T05:41:01.087Z",
+  "type": "rating_prompt_commissioner",
+  "notificationType": 141,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 2,
+  "entityId": "Z-003",
+  "metadata": {
+    "projectTitle": "Landing Page for Ticket Announcement",
+    "freelancerName": "Tobi Philly",
+    "completedTaskTitle": "Testing & Launch",
+    "message": "You have approved all task milestones for Landing Page for Ticket Announcement. Click here to rate Tobi Philly for their work on this project. Your rating improves the experience of other project managers on ARTISH.",
+    "ratingSubjectId": 1,
+    "ratingSubjectType": "freelancer",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "Z-003",
+    "ratingSubjectUserId": 1,
+    "ratingSubjectUserType": "freelancer",
+    "action": "rate_freelancer"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_Z-004_1755413479671",
+  "timestamp": "2025-08-17T06:51:19.671Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "Z-004",
+  "metadata": {
+    "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+    "gigTitle": "Landing Page for 2Baba 40-Year Concert",
+    "taskCount": 3,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group"
+  },
+  "context": {
+    "projectId": "Z-004",
+    "gigId": 21,
+    "applicationId": 1755193217245
+  }
+}

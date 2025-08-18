@@ -119,7 +119,7 @@ export default function InvoiceHistoryTable({ invoices, onInvoiceClick, loading 
         <AnimatePresence mode="wait">
           {currentInvoices.map((invoice, index) => (
             <motion.div
-              key={invoice.invoiceNumber}
+              key={`invoice-table-${invoice.invoiceNumber}-${index}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}

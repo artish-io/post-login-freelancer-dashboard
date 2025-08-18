@@ -1,0 +1,21 @@
+{
+  "id": "task_approved_1755446172095_1755449635086",
+  "timestamp": "2025-08-17T16:53:55.086Z",
+  "type": "task_approved",
+  "notificationType": 2,
+  "actorId": 32,
+  "targetId": 1,
+  "entityType": 1,
+  "entityId": 1755446172095,
+  "metadata": {
+    "taskId": 1755446172095,
+    "taskTitle": "Phase 2: Conclusion and Review",
+    "projectTitle": "Beautiful days and simple flows",
+    "action": "approve",
+    "invoiceGenerated": true
+  },
+  "context": {
+    "projectId": "L-004",
+    "taskId": 1755446172095
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_Z-002_1755296079184",
+  "timestamp": "2025-08-15T22:14:39.184Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 2,
+  "entityId": "Z-002",
+  "metadata": {
+    "projectTitle": "Product Specification for Data Farm Handbook Cover Graphic",
+    "gigTitle": "Product Specification for Data Farm Handbook Cover Graphic",
+    "taskCount": 1,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group"
+  },
+  "context": {
+    "projectId": "Z-002",
+    "gigId": 18,
+    "applicationId": 1755193217243
+  }
+}

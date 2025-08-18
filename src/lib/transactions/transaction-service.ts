@@ -138,7 +138,7 @@ export async function executeTaskApprovalTransaction(
 
             return {
               success: true,
-              invoiceNumber: result.invoiceNumber,
+              invoiceNumber: result.invoice?.invoiceNumber || result.invoiceNumber,
               message: result.message || 'Milestone invoice generated successfully'
             };
           } else {
@@ -163,8 +163,9 @@ export async function executeTaskApprovalTransaction(
       });
     }
 
-    // Step 3: Execute payment for the generated invoice
-    steps.push({
+    // Step 4: Execute payment for the generated invoice (only if invoice was generated)
+    if (params.generateInvoice) {
+      steps.push({
       id: 'execute_payment',
       operation: async () => {
         console.log(`💳 Executing payment for task ${params.taskId}...`);
@@ -194,7 +195,8 @@ export async function executeTaskApprovalTransaction(
           commissionerId: invoice.commissionerId,
           freelancerId: invoice.freelancerId,
           projectId: invoice.projectId,
-          source: 'auto_milestone_payment'
+          source: 'auto_milestone_payment',
+          invoiceType: params.invoiceType // Pass through the invoiceType from transaction params
         });
 
         if (!paymentResult.success) {
@@ -202,6 +204,70 @@ export async function executeTaskApprovalTransaction(
         }
 
         console.log(`✅ Payment executed successfully:`, paymentResult);
+
+        // Log milestone payment notification for freelancer
+        try {
+          // Get organization information for the commissioner
+          const { readProject } = await import('../projects-utils');
+
+          // Ensure projectId is a valid number
+          const projectId = typeof invoice.projectId === 'string' ? parseInt(invoice.projectId) : invoice.projectId;
+          if (!projectId || isNaN(projectId)) {
+            throw new Error(`Invalid project ID: ${invoice.projectId}`);
+          }
+
+          const project = await readProject(projectId);
+
+          // Get organization data
+          let organizationName = 'Organization';
+          try {
+            const { getOrganizationByCommissionerId } = await import('../storage/unified-storage-service');
+            const organization = await getOrganizationByCommissionerId(invoice.commissionerId);
+            if (organization) {
+              organizationName = organization.name;
+            }
+          } catch (orgError) {
+            console.warn('Could not fetch organization name, using fallback');
+          }
+
+          // Only send commissioner milestone payment notifications for milestone-based projects
+          // (Freelancer notifications are handled by the bus system via PaymentsService)
+          if (params.invoiceType === 'milestone') {
+            const { logMilestonePaymentSent } = await import('../events/event-logger');
+
+            // Notification for commissioner (sender) only
+            // Get freelancer name for the sender notification
+            let freelancerName = 'Freelancer';
+            try {
+              const { getUserById } = await import('../storage/unified-storage-service');
+              const freelancer = await getUserById(invoice.freelancerId);
+              if (freelancer) {
+                freelancerName = freelancer.name || freelancer.firstName || 'Freelancer';
+              }
+            } catch (userError) {
+              console.warn('Could not fetch freelancer name, using fallback');
+            }
+
+            await logMilestonePaymentSent(
+              invoice.commissionerId,
+              invoice.freelancerId,
+              projectId,
+              params.taskTitle,
+              invoice.totalAmount,
+              freelancerName,
+              invoice.invoiceNumber,
+              project?.totalBudget || project?.budget?.upper || project?.budget?.lower,
+              project?.title
+            );
+            console.log(`📧 Payment sent notification created for commissioner ${invoice.commissionerId}`);
+            console.log(`ℹ️ Freelancer notification will be handled by bus system`);
+          } else {
+            console.log(`ℹ️ Skipping milestone payment notifications for ${params.invoiceType}-based project`);
+          }
+        } catch (notificationError) {
+          console.error('⚠️ Failed to send milestone payment notification:', notificationError);
+          // Don't fail the payment if notification fails
+        }
 
         return {
           success: true,
@@ -218,6 +284,7 @@ export async function executeTaskApprovalTransaction(
       description: `Execute payment for task ${params.taskId}`,
       data: { taskId: params.taskId }
     });
+    }
 
     // Step 4: Check for project auto-completion
     steps.push({

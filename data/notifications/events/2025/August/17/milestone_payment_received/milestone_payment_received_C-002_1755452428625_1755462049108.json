@@ -1,0 +1,25 @@
+{
+  "id": "milestone_payment_received_C-002_1755452428625_1755462049108",
+  "timestamp": "2025-08-17T20:20:49.108Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 5,
+  "entityId": "C-002_1755452428625",
+  "metadata": {
+    "taskTitle": "Phase 2:  Legitimate concerns from users",
+    "projectTitle": "Web 3 Graphic Design Asssets ",
+    "projectId": "C-002",
+    "taskId": 1755452428625,
+    "invoiceGenerated": true,
+    "amount": 1000,
+    "invoiceNumber": "MH-002",
+    "organizationName": "Corlax Wellness"
+  },
+  "context": {
+    "projectId": "C-002",
+    "taskId": 1755452428625,
+    "invoiceNumber": "MH-002"
+  }
+}

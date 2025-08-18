@@ -26,6 +26,7 @@ export default function CombinedWalletHistory() {
   const [transactions, setTransactions] = useState<CombinedTransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -35,7 +36,9 @@ export default function CombinedWalletHistory() {
       }
 
       try {
-        const res = await fetch('/api/commissioner-dashboard/payments/combined-history?limit=20');
+        // Add timestamp to prevent caching
+        const timestamp = Date.now();
+        const res = await fetch(`/api/commissioner-dashboard/payments/combined-history?limit=20&t=${timestamp}`);
         const data: CombinedTransaction[] = await res.json();
         setTransactions(data);
       } catch (err) {
@@ -46,7 +49,16 @@ export default function CombinedWalletHistory() {
     };
 
     fetchHistory();
-  }, [session?.user?.id]);
+  }, [session?.user?.id, refreshKey]);
+
+  // Auto-refresh every 30 seconds to catch new transactions
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshKey(prev => prev + 1);
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   if (loading) {
     return (

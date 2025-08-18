@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_22_1_1755445759000",
+  "timestamp": "2025-08-17T15:49:19.000Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "22",
+  "metadata": {
+    "gigTitle": "Beautiful days and simple flows",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 22,
+    "applicationId": 1755193217246
+  }
+}

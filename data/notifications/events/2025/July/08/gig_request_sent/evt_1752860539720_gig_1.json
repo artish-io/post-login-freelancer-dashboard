@@ -1,0 +1,21 @@
+{
+  "id": "evt_1752860539720_gig_1",
+  "timestamp": "2025-07-08T09:15:00Z",
+  "type": "gig_request_sent",
+  "notificationType": 61,
+  "actorId": 32,
+  "targetId": 31,
+  "entityType": 3,
+  "entityId": 207,
+  "metadata": {
+    "gigTitle": "Content Strategy for Parks Website",
+    "organizationName": "Lagos Parks Services",
+    "budgetMin": 2000,
+    "budgetMax": 3500
+  },
+  "context": {
+    "gigId": 107,
+    "organizationId": 1,
+    "requestId": 207
+  }
+}

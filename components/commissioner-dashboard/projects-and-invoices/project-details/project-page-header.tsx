@@ -28,7 +28,7 @@ export default function CommissionerProjectPageHeader({
 
         {/* Type Tags */}
         <div className="mt-2 flex flex-wrap gap-2">
-          {tags.map((tag) => (
+          {(tags || []).map((tag) => (
             <span
               key={tag}
               className="text-xs font-medium bg-[#f0f0f0] text-gray-800 rounded px-2 py-[2px]"

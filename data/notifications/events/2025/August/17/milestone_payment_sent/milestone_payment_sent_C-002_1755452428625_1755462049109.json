@@ -1,0 +1,26 @@
+{
+  "id": "milestone_payment_sent_C-002_1755452428625_1755462049109",
+  "timestamp": "2025-08-17T20:20:49.109Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "C-002_1755452428625",
+  "metadata": {
+    "taskTitle": "Phase 2:  Legitimate concerns from users",
+    "projectTitle": "Web 3 Graphic Design Asssets ",
+    "projectId": "C-002",
+    "taskId": 1755452428625,
+    "freelancerName": "Tobi Philly",
+    "amount": 1000,
+    "invoiceNumber": "MH-002",
+    "remainingBudget": 1000,
+    "projectBudget": 3000
+  },
+  "context": {
+    "projectId": "C-002",
+    "taskId": 1755452428625,
+    "invoiceNumber": "MH-002"
+  }
+}

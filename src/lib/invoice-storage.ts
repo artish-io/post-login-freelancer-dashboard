@@ -92,7 +92,7 @@ function getInvoiceFilePath(invoice: Invoice): string {
   const issueDate = parseInvoiceDate(invoice.issueDate);
   const { year, month, day } = getDateParts(issueDate);
   const projectId = invoice.projectId ? invoice.projectId.toString() : 'custom';
-  
+
   return path.join(
     process.cwd(),
     'data',
@@ -101,7 +101,7 @@ function getInvoiceFilePath(invoice: Invoice): string {
     month,
     day,
     projectId,
-    'invoice.json'
+    `${invoice.invoiceNumber}.json`
   );
 }
 
@@ -110,7 +110,7 @@ function getInvoiceDirectoryPath(invoice: Invoice): string {
   const issueDate = parseInvoiceDate(invoice.issueDate);
   const { year, month, day } = getDateParts(issueDate);
   const projectId = invoice.projectId ? invoice.projectId.toString() : 'custom';
-  
+
   return path.join(
     process.cwd(),
     'data',
@@ -122,44 +122,41 @@ function getInvoiceDirectoryPath(invoice: Invoice): string {
   );
 }
 
+// Helper function to determine if a new invoice should replace an existing one
+function shouldReplaceInvoice(existing: Invoice, candidate: Invoice): boolean {
+  // Status priority: paid > sent > draft
+  const statusPriority = { 'paid': 3, 'sent': 2, 'draft': 1 };
+
+  const existingPriority = statusPriority[existing.status] || 0;
+  const candidatePriority = statusPriority[candidate.status] || 0;
+
+  // If candidate has higher status priority, replace
+  if (candidatePriority > existingPriority) {
+    return true;
+  }
+
+  // If same status priority, use timestamp (most recent wins)
+  if (candidatePriority === existingPriority) {
+    const existingTime = existing.updatedAt || existing.createdAt || existing.issueDate;
+    const candidateTime = candidate.updatedAt || candidate.createdAt || candidate.issueDate;
+
+    if (candidateTime && existingTime) {
+      return new Date(candidateTime).getTime() > new Date(existingTime).getTime();
+    }
+  }
+
+  // Default: don't replace
+  return false;
+}
+
 // Save an invoice to the hierarchical structure
 export async function saveInvoice(invoice: Invoice): Promise<void> {
   const dirPath = getInvoiceDirectoryPath(invoice);
   await ensureDir(dirPath);
-  
-  // Check if invoice already exists
+
+  // Use invoice number as filename for consistency
   const filePath = getInvoiceFilePath(invoice);
-  let filename = 'invoice.json';
-  
-  try {
-    const existingData = await readFile(filePath, 'utf-8');
-    const existingInvoice = JSON.parse(existingData);
-    
-    if (existingInvoice.invoiceNumber !== invoice.invoiceNumber) {
-      // Different invoice, create unique filename
-      let counter = 1;
-      while (true) {
-        filename = `invoice-${counter}.json`;
-        const newFilePath = path.join(dirPath, filename);
-        try {
-          const data = await readFile(newFilePath, 'utf-8');
-          const existing = JSON.parse(data);
-          if (existing.invoiceNumber === invoice.invoiceNumber) {
-            filename = `invoice-${counter}.json`;
-            break;
-          }
-          counter++;
-        } catch {
-          break;
-        }
-      }
-    }
-  } catch {
-    // File doesn't exist, use default filename
-  }
-  
-  const finalPath = path.join(dirPath, filename);
-  await writeFile(finalPath, JSON.stringify(invoice, null, 2));
+  await writeFile(filePath, JSON.stringify(invoice, null, 2));
 }
 
 // Get all invoices (with optional filters)
@@ -220,9 +217,27 @@ export async function getAllInvoices(filters?: {
   }
   
   await scanDirectory(baseDir);
-  
-  // Sort by issue date (newest first)
-  return invoices.sort((a, b) => {
+
+  // Deduplicate invoices by invoice number, prioritizing paid > sent > draft
+  const deduplicatedInvoices = new Map<string, Invoice>();
+
+  for (const invoice of invoices) {
+    const existing = deduplicatedInvoices.get(invoice.invoiceNumber);
+
+    if (!existing) {
+      // No existing invoice, add this one
+      deduplicatedInvoices.set(invoice.invoiceNumber, invoice);
+    } else {
+      // Determine which invoice to keep based on priority
+      const shouldReplace = shouldReplaceInvoice(existing, invoice);
+      if (shouldReplace) {
+        deduplicatedInvoices.set(invoice.invoiceNumber, invoice);
+      }
+    }
+  }
+
+  // Convert back to array and sort by issue date (newest first)
+  return Array.from(deduplicatedInvoices.values()).sort((a, b) => {
     const dateA = parseInvoiceDate(a.issueDate);
     const dateB = parseInvoiceDate(b.issueDate);
     return dateB.getTime() - dateA.getTime();
@@ -254,7 +269,7 @@ export async function getInvoicesByCommissionerId(commissionerId: number): Promi
 export async function updateInvoice(invoiceNumber: string, updates: Partial<Invoice>): Promise<boolean> {
   const invoice = await getInvoiceByNumber(invoiceNumber);
   if (!invoice) return false;
-  
+
   const updatedInvoice = { ...invoice, ...updates, updatedAt: new Date().toISOString() };
   await saveInvoice(updatedInvoice);
   return true;

@@ -33,11 +33,11 @@ export default function CommissionerProjectTrackingPage() {
       const res = await fetch(`/api/dashboard/project-details?projectId=${projectId}`);
       const json = await res.json();
       setProjectDetails({
-        title: json.title,
-        summary: json.summary,
-        logoUrl: json.logoUrl,
-        tags: json.typeTags,
-        status: json.status,
+        title: json.title || 'Unknown Project',
+        summary: json.summary || 'No summary available',
+        logoUrl: json.logoUrl || '/default-logo.png',
+        tags: json.typeTags || [],
+        status: json.status || 'unknown',
       });
     }
     fetchProjectDetails();

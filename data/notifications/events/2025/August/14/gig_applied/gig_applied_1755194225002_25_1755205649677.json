@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_1755194225002_25_1755205649677",
+  "timestamp": "2025-08-14T21:07:29.677Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "1755194225002",
+  "metadata": {
+    "gigTitle": "Financial Modelling For Series A Fundraising",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 1755194225002,
+    "applicationId": 1755193217238
+  }
+}

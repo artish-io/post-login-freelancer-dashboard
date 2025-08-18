@@ -14,15 +14,24 @@ export function Calendar({
   showOutsideDays = true,
   disabled: disabledFromProps,
   proposalEndDate,
+  toDate,
+  fromDate,
   ...props
 }: CalendarProps) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  // Determine the effective end date - use proposalEndDate if provided, otherwise use toDate
+  const effectiveEndDate = proposalEndDate || toDate;
+
+  // Determine the effective start date - use fromDate if provided, otherwise use today
+  const effectiveStartDate = fromDate || today;
+
   // Local disabled logic — fallback if none provided
   const fallbackDisabled = (date: Date): boolean => {
-    const afterEnd = proposalEndDate ? date > proposalEndDate : false;
-    return date < today || afterEnd;
+    const beforeStart = date < effectiveStartDate;
+    const afterEnd = effectiveEndDate ? date > effectiveEndDate : false;
+    return beforeStart || afterEnd;
   };
 
   return (
@@ -30,6 +39,8 @@ export function Calendar({
       <DayPicker
         showOutsideDays={showOutsideDays}
         disabled={disabledFromProps ?? fallbackDisabled}
+        fromDate={effectiveStartDate}
+        toDate={effectiveEndDate}
         classNames={{
           months: 'flex flex-col space-y-4',
           caption: 'flex justify-center pt-1 relative items-center',

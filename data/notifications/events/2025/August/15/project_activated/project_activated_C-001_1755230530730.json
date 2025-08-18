@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_C-001_1755230530730",
+  "timestamp": "2025-08-15T04:02:10.730Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 34,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "C-001",
+  "metadata": {
+    "projectTitle": "Financial Modelling For Series A Fundraising",
+    "gigTitle": "Financial Modelling For Series A Fundraising",
+    "taskCount": 3,
+    "commissionerName": "Matte Hannery",
+    "organizationName": "Corlax Wellness"
+  },
+  "context": {
+    "projectId": "C-001",
+    "gigId": 14,
+    "applicationId": 1755193217239
+  }
+}

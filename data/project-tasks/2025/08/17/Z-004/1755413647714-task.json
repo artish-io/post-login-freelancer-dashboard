@@ -1,0 +1,25 @@
+{
+  "taskId": 1755413647714,
+  "projectId": "Z-004",
+  "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+  "organizationId": 4,
+  "projectTypeTags": [
+    "Frontend Development",
+    "UI/UX Design"
+  ],
+  "title": "Wireframe & Visual Design ",
+  "status": "Approved",
+  "completed": true,
+  "order": 1,
+  "link": "bit.ly234234",
+  "dueDate": "2025-08-21T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Develop page layout, color schemes, and branding concepts aligned with 2Baba’s anniversary theme.\n",
+  "submittedDate": "2025-08-17T06:53:44.489Z",
+  "approvedDate": "2025-08-17T06:56:38.223Z",
+  "createdDate": "2025-08-17T06:51:19.657Z",
+  "lastModified": "2025-08-17T06:56:38.223Z"
+}

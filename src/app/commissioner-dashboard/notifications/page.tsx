@@ -25,8 +25,26 @@ export default function NotificationsPage() {
   const handleNotificationClick = (notification: NotificationData) => {
     const { type, context } = notification;
 
+    // Use the link from the notification if available for any type
+    if (notification.link && notification.link !== '#') {
+      try {
+        router.push(notification.link);
+        return;
+      } catch (error) {
+        console.error('Error navigating with notification link:', error);
+        // Continue to fallback navigation
+      }
+    }
+
+    // Handle milestone payment notifications separately - they go to payments page
+    if (type === 'milestone_payment_sent') {
+      router.push('/commissioner-dashboard/payments');
+      return;
+    }
+
     // Handle invoice notifications with universal routing
-    if (type === 'invoice_sent' || type === 'invoice_reminder' || type === 'invoice_overdue_reminder') {
+    if (type === 'invoice_sent' || type === 'invoice_reminder' || type === 'invoice_overdue_reminder' ||
+        type === 'invoice_paid') {
       // Try multiple sources for invoice number with proper fallback
       const invoiceNumber =
         notification.invoice?.number ||

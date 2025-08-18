@@ -9,7 +9,44 @@
     "brand": "visa",
     "isDefault": true,
     "isActive": true,
+    "availableBalance": 43900,
+    "transactionHistory": [
+      {
+        "transactionId": "TXN-1755389841327",
+        "amount": -5000,
+        "type": "payment",
+        "description": "Payment for invoice NM-002",
+        "invoiceNumber": "NM-002",
+        "projectId": "0",
+        "freelancerId": 31,
+        "timestamp": "2025-08-17T00:17:21.327Z",
+        "balanceAfter": 45000
+      },
+      {
+        "transactionId": "TXN-1755445859473",
+        "amount": -550,
+        "type": "payment",
+        "description": "Payment for invoice NM-003",
+        "invoiceNumber": "NM-003",
+        "projectId": "0",
+        "freelancerId": 1,
+        "timestamp": "2025-08-17T15:50:59.473Z",
+        "balanceAfter": 44450
+      },
+      {
+        "transactionId": "TXN-1755449634984",
+        "amount": -550,
+        "type": "payment",
+        "description": "Payment for invoice NM-004",
+        "invoiceNumber": "NM-004",
+        "projectId": "0",
+        "freelancerId": 1,
+        "timestamp": "2025-08-17T16:53:54.984Z",
+        "balanceAfter": 43900
+      }
+    ],
     "createdAt": "2025-01-01T00:00:00.000Z",
-    "lastUsed": "2025-01-15T00:00:00.000Z"
+    "lastUsed": "2025-01-15T00:00:00.000Z",
+    "updatedAt": "2025-08-17T16:53:54.984Z"
   }
 ]

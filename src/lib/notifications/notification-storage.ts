@@ -44,24 +44,65 @@ export class NotificationStorage {
   }
 
   /**
-   * Get the granular path for an event
-   * Format: data/notifications/events/2025/July/01/invoice_paid.json
+   * Get the granular directory path for an event type
+   * Format: data/notifications/events/2025/July/01/invoice_paid/
    */
-  private static getGranularEventPath(date: Date, eventType: string): string {
+  private static getGranularEventDir(date: Date, eventType: string): string {
     const year = date.getFullYear().toString();
     const month = date.toLocaleDateString('en-US', { month: 'long' });
     const day = date.getDate().toString().padStart(2, '0');
 
-    const dirPath = path.join(this.EVENTS_DIR, year, month, day);
-    if (!fs.existsSync(dirPath)) {
-      fs.mkdirSync(dirPath, { recursive: true });
+    const eventTypeDir = path.join(this.EVENTS_DIR, year, month, day, eventType);
+    if (!fs.existsSync(eventTypeDir)) {
+      fs.mkdirSync(eventTypeDir, { recursive: true });
     }
 
-    return path.join(dirPath, `${eventType}.json`);
+    return eventTypeDir;
   }
 
   /**
-   * Load events from a granular event file
+   * Get the individual event file path
+   * Format: data/notifications/events/2025/July/01/invoice_paid/evt_123_invoice_paid.json
+   */
+  private static getIndividualEventPath(date: Date, eventType: string, eventId: string): string {
+    const eventTypeDir = this.getGranularEventDir(date, eventType);
+    return path.join(eventTypeDir, `${eventId}.json`);
+  }
+
+  /**
+   * Load events from a granular event directory (new structure)
+   */
+  private static loadGranularEventsFromDir(eventTypeDir: string): NotificationEvent[] {
+    if (!fs.existsSync(eventTypeDir)) {
+      return [];
+    }
+
+    const events: NotificationEvent[] = [];
+
+    try {
+      const eventFiles = fs.readdirSync(eventTypeDir);
+
+      for (const eventFile of eventFiles) {
+        if (eventFile.endsWith('.json')) {
+          const eventFilePath = path.join(eventTypeDir, eventFile);
+          try {
+            const content = fs.readFileSync(eventFilePath, 'utf-8');
+            const event = JSON.parse(content);
+            events.push(event);
+          } catch (error) {
+            console.error(`Error loading event from ${eventFilePath}:`, error);
+          }
+        }
+      }
+    } catch (error) {
+      console.error(`Error loading events from directory ${eventTypeDir}:`, error);
+    }
+
+    return events;
+  }
+
+  /**
+   * Load events from a granular event file (legacy structure - for migration compatibility)
    */
   private static loadGranularEvents(filePath: string): NotificationEvent[] {
     if (!fs.existsSync(filePath)) {
@@ -137,32 +178,54 @@ export class NotificationStorage {
   }
 
   /**
-   * Add a new notification event using granular storage
+   * Add a new notification event using granular storage with deduplication
    */
   static addEvent(event: NotificationEvent): void {
+    // Check for duplicates using in-memory cache first (fast path)
+    const { isDuplicateNotification } = require('./deduplication');
+    if (isDuplicateNotification(event)) {
+      console.log(`🔄 Skipping duplicate notification: ${event.type} for target ${event.targetId}`);
+      return;
+    }
+
     this.ensureEventsDirectory();
 
     const eventDate = new Date(event.timestamp);
-    const granularPath = this.getGranularEventPath(eventDate, event.type);
 
-    // Load existing events from the granular file
-    const events = this.loadGranularEvents(granularPath);
+    // Generate unique event ID if not present
+    const eventId = event.id || `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-    // Add new event at the beginning (most recent first)
-    events.unshift(event);
+    // Ensure event has proper ID
+    const eventWithId = {
+      ...event,
+      id: eventId
+    };
 
-    // Keep only the most recent 100 events per granular file to prevent files from growing too large
-    if (events.length > 100) {
-      events.splice(100);
-    }
+    // Get individual event file path
+    const eventFilePath = this.getIndividualEventPath(eventDate, event.type, eventId);
 
-    // Save updated events
-    this.saveGranularEvents(granularPath, events);
+    // Write individual event file (granular storage)
+    fs.writeFileSync(eventFilePath, JSON.stringify(eventWithId, null, 2));
 
     const year = eventDate.getFullYear();
     const month = eventDate.toLocaleDateString('en-US', { month: 'long' });
     const day = eventDate.getDate().toString().padStart(2, '0');
-    console.log(`📝 Added ${event.type} event to granular storage: ${year}/${month}/${day}/${event.type}.json`);
+    console.log(`📝 Added ${event.type} event (${eventId}) to granular storage: ${year}/${month}/${day}/${event.type}/${eventId}.json`);
+  }
+
+  /**
+   * Add a new notification event with persistent deduplication (async version)
+   */
+  static async addEventWithPersistentDedup(event: NotificationEvent): Promise<void> {
+    // Check for duplicates using persistent storage (serverless-safe)
+    const { PersistentDeduplication } = await import('./deduplication');
+    if (await PersistentDeduplication.isDuplicatePersistent(event)) {
+      console.log(`🔄 Skipping duplicate notification (persistent): ${event.type} for target ${event.targetId}`);
+      return;
+    }
+
+    // Use the regular addEvent method for storage
+    this.addEvent(event);
   }
 
   /**
@@ -194,13 +257,20 @@ export class NotificationStorage {
       const dayDir = path.join(this.EVENTS_DIR, year, month, day);
 
       if (fs.existsSync(dayDir)) {
-        // Get all event type files for this day
-        const eventFiles = fs.readdirSync(dayDir).filter(file => file.endsWith('.json'));
+        const entries = fs.readdirSync(dayDir, { withFileTypes: true });
 
-        for (const eventFile of eventFiles) {
-          const eventFilePath = path.join(dayDir, eventFile);
-          const dayEvents = this.loadGranularEvents(eventFilePath);
-          allEvents.push(...dayEvents);
+        for (const entry of entries) {
+          if (entry.isDirectory()) {
+            // New granular structure: event type directories
+            const eventTypeDir = path.join(dayDir, entry.name);
+            const dayEvents = this.loadGranularEventsFromDir(eventTypeDir);
+            allEvents.push(...dayEvents);
+          } else if (entry.isFile() && entry.name.endsWith('.json') && !entry.name.endsWith('.migrated')) {
+            // Legacy structure: event type files
+            const eventFilePath = path.join(dayDir, entry.name);
+            const dayEvents = this.loadGranularEvents(eventFilePath);
+            allEvents.push(...dayEvents);
+          }
         }
       }
 
@@ -299,6 +369,61 @@ export class NotificationStorage {
   static isRead(notificationId: string, userId: number): boolean {
     const readStates = this.loadReadStates();
     return readStates[notificationId]?.has(userId) || false;
+  }
+
+  /**
+   * Get recent events (for reconciliation and deduplication)
+   */
+  static getRecentEvents(limit: number = 1000): NotificationEvent[] {
+    try {
+      const events: NotificationEvent[] = [];
+      const now = new Date();
+
+      // Get events from the last 30 days
+      for (let i = 0; i < 30 && events.length < limit; i++) {
+        const date = new Date(now);
+        date.setDate(date.getDate() - i);
+
+        const year = date.getFullYear();
+        const month = date.toLocaleDateString('en-US', { month: 'long' });
+        const day = date.getDate().toString().padStart(2, '0');
+
+        const dayDir = path.join(this.EVENTS_DIR, year.toString(), month, day);
+
+        if (fs.existsSync(dayDir)) {
+          const files = fs.readdirSync(dayDir);
+
+          for (const file of files) {
+            if (file.endsWith('.json')) {
+              const filePath = path.join(dayDir, file);
+              const dayEvents = this.loadGranularEvents(filePath);
+              events.push(...dayEvents);
+
+              if (events.length >= limit) break;
+            }
+          }
+        }
+      }
+
+      // Sort by timestamp (newest first) and limit
+      return events
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        .slice(0, limit);
+    } catch (error) {
+      console.error('Error getting recent events:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Get events for a specific project (for reconciliation)
+   */
+  static getEventsForProject(projectId: number): NotificationEvent[] {
+    const allEvents = this.getRecentEvents(1000); // Get recent events
+    return allEvents.filter(event =>
+      event.context?.projectId === projectId ||
+      event.entityId === projectId
+    );
   }
 
   /**

@@ -16,7 +16,6 @@ import { ok, err, ErrorCodes, withErrorHandling } from '../../../../lib/http/env
 import { logTaskTransition, Subsystems } from '../../../../lib/log/transitions';
 import {
   sendProjectCompletionRatingNotifications,
-  checkProjectCompletionForRating,
   getUserNamesForRating
 } from '../../../../lib/notifications/rating-notifications';
 
@@ -114,7 +113,9 @@ async function handleTaskOperation(request: NextRequest) {
           project: {
             invoicingMethod: project!.invoicingMethod,
             projectId: project!.projectId
-          }
+          },
+          // Add invoice details for notifications
+          invoiceData: transactionResult.results.generate_invoice
         };
         eventType = 'task_approved';
         break;
@@ -173,6 +174,7 @@ async function handleTaskOperation(request: NextRequest) {
           entityType: ENTITY_TYPES.TASK,
           entityId: Number(taskId),
           metadata: {
+            taskId: Number(taskId),
             taskTitle: result.task.title,
             projectTitle: result.task.projectTitle,
             action: action,
@@ -183,6 +185,87 @@ async function handleTaskOperation(request: NextRequest) {
             taskId: Number(taskId)
           }
         });
+
+        // 🔔 For milestone project task approvals, create additional payment notifications
+        if (action === 'approve' && (result as any).project?.invoicingMethod === 'milestone') {
+          console.log(`💰 Creating payment notifications for milestone project ${result.task.projectId}`);
+
+          // Get project data for budget calculation and user names
+          const projectData = await UnifiedStorageService.getProjectById(result.task.projectId);
+
+          // Get invoice details and budget information
+          const invoiceData = (result as any)?.invoiceData;
+          const invoiceAmount = invoiceData?.amount || 0;
+          const invoiceNumber = invoiceData?.invoiceNumber || null;
+
+          // Get organization and user names for proper context
+          const organization = projectData?.organizationId ? await UnifiedStorageService.getOrganizationById(projectData.organizationId) : null;
+          const freelancer = await UnifiedStorageService.getUserById(result.task.freelancerId);
+          const organizationName = organization?.name || 'Organization';
+          const freelancerName = freelancer?.name || 'Freelancer';
+
+          // Calculate remaining budget (total budget - total paid to date)
+          const projectBudget = Number(projectData?.totalBudget || projectData?.budget) || 0;
+          const paidToDate = Number(projectData?.paidToDate) || 0;
+          const remainingBudget = Math.max(0, projectBudget - (paidToDate + Number(invoiceAmount)));
+
+          // Create separate invoice value notification for freelancer
+          await eventLogger.logEvent({
+            id: `milestone_payment_received_${result.task.projectId}_${taskId}_${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            type: 'milestone_payment_received',
+            notificationType: NOTIFICATION_TYPES.MILESTONE_PAYMENT_RECEIVED,
+            actorId: actorId, // Commissioner who approved
+            targetId: result.task.freelancerId, // Freelancer receives payment
+            entityType: ENTITY_TYPES.INVOICE,
+            entityId: `${result.task.projectId}_${Number(taskId)}`,
+            metadata: {
+              taskTitle: result.task.title,
+              projectTitle: result.task.projectTitle,
+              projectId: result.task.projectId,
+              taskId: Number(taskId),
+              invoiceGenerated: result.invoiceGenerated || false,
+              amount: invoiceAmount,
+              invoiceNumber: invoiceNumber,
+              organizationName: organizationName
+            },
+            context: {
+              projectId: result.task.projectId,
+              taskId: Number(taskId),
+              invoiceNumber: invoiceNumber
+            }
+          });
+
+          // Create separate payment notification for commissioner
+          await eventLogger.logEvent({
+            id: `milestone_payment_sent_${result.task.projectId}_${taskId}_${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            type: 'milestone_payment_sent',
+            notificationType: NOTIFICATION_TYPES.MILESTONE_PAYMENT_SENT,
+            actorId: actorId, // Commissioner who approved
+            targetId: actorId, // Commissioner receives their own payment notification
+            entityType: ENTITY_TYPES.INVOICE,
+            entityId: `${result.task.projectId}_${Number(taskId)}`,
+            metadata: {
+              taskTitle: result.task.title,
+              projectTitle: result.task.projectTitle,
+              projectId: result.task.projectId,
+              taskId: Number(taskId),
+              freelancerName: freelancerName,
+              amount: invoiceAmount,
+              invoiceNumber: invoiceNumber,
+              remainingBudget: remainingBudget,
+              projectBudget: projectBudget
+            },
+            context: {
+              projectId: result.task.projectId,
+              taskId: Number(taskId),
+              invoiceNumber: invoiceNumber
+            }
+          });
+
+          console.log(`✅ Payment notifications created for task ${taskId} approval`);
+        }
       } catch (eventError) {
         console.error('Error logging event:', eventError);
         // Don't fail the main operation if event logging fails
@@ -197,23 +280,42 @@ async function handleTaskOperation(request: NextRequest) {
       // Fire and forget - don't await this to improve response time
       setImmediate(async () => {
         try {
-          const completionCheck = await checkProjectCompletionForRating(taskData.projectId);
+          // ✅ Check if this was the final task AFTER status update using fresh data
+          const { detectProjectCompletion } = await import('../../../../lib/notifications/project-completion-detector');
+          const completionStatus = await detectProjectCompletion(
+            taskData.projectId,
+            taskData.taskId
+          );
 
-          if (completionCheck.isCompleted && completionCheck.allTasksApproved && completionCheck.projectData) {
-            const project = completionCheck.projectData;
-            const userNames = await getUserNamesForRating(project.freelancerId, project.commissionerId);
+          if (completionStatus.isComplete && completionStatus.isFinalTask) {
+            // Get project and user data for rating notifications
+            const { UnifiedStorageService } = await import('../../../../lib/storage/unified-storage-service');
+            const project = await UnifiedStorageService.getProjectById(taskData.projectId);
 
-            await sendProjectCompletionRatingNotifications({
-              projectId: project.projectId,
-              projectTitle: project.title || 'Untitled Project',
-              freelancerId: project.freelancerId,
-              freelancerName: userNames.freelancerName,
-              commissionerId: project.commissionerId,
-              commissionerName: userNames.commissionerName,
-              completedTaskTitle: taskData.title
-            });
+            if (project) {
+              // Verify this is actually a milestone-based project before sending rating notifications
+              const isMilestoneProject = project.invoicingMethod === 'milestone';
 
-            console.log(`🌟 Project ${project.projectId} completed - rating notifications sent`);
+              if (isMilestoneProject && project.freelancerId && project.commissionerId) {
+                const userNames = await getUserNamesForRating(project.freelancerId, project.commissionerId);
+
+                // For final tasks, the rating notifications should be combined with project completion
+                // This matches the requirement: "project complete + commissioner rating prompt notification"
+                await sendProjectCompletionRatingNotifications({
+                  projectId: Number(project.projectId),
+                  projectTitle: project.title || 'Untitled Project',
+                  freelancerId: project.freelancerId,
+                  freelancerName: userNames.freelancerName,
+                  commissionerId: project.commissionerId,
+                  commissionerName: userNames.commissionerName,
+                  completedTaskTitle: taskData.title
+                });
+
+                console.log(`🎉 Final task approved - sent completion and rating notifications for milestone project ${taskData.projectId}`);
+              } else {
+                console.log(`ℹ️ Skipping rating notifications for non-milestone project ${taskData.projectId}`);
+              }
+            }
           }
         } catch (ratingError) {
           console.error('Error sending rating notifications:', ratingError);

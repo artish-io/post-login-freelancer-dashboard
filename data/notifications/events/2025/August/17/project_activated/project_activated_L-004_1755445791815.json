@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_L-004_1755445791815",
+  "timestamp": "2025-08-17T15:49:51.815Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 32,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "L-004",
+  "metadata": {
+    "projectTitle": "Beautiful days and simple flows",
+    "gigTitle": "Beautiful days and simple flows",
+    "taskCount": 2,
+    "commissionerName": "Neilsan Mando",
+    "organizationName": "Lagos State Parks Services"
+  },
+  "context": {
+    "projectId": "L-004",
+    "gigId": 22,
+    "applicationId": 1755193217246
+  }
+}

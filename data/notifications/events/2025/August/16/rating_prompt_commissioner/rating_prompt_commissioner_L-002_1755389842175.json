@@ -1,0 +1,25 @@
+{
+  "id": "rating_prompt_commissioner_L-002_1755389842175",
+  "timestamp": "2025-08-17T00:17:22.174Z",
+  "type": "rating_prompt_commissioner",
+  "notificationType": 141,
+  "actorId": 31,
+  "targetId": 32,
+  "entityType": 2,
+  "entityId": "L-002",
+  "metadata": {
+    "projectTitle": "Market Research for Longer Divide",
+    "freelancerName": "Margsate Flether",
+    "completedTaskTitle": "Initial research and data collections",
+    "message": "You have approved all task milestones for Market Research for Longer Divide. Click here to rate Margsate Flether for their work on this project. Your rating improves the experience of other project managers on ARTISH.",
+    "ratingSubjectId": 31,
+    "ratingSubjectType": "freelancer",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "L-002",
+    "ratingSubjectUserId": 31,
+    "ratingSubjectUserType": "freelancer",
+    "action": "rate_freelancer"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "gig_request_sent_1754588739598_1754588739599",
+  "timestamp": "2025-08-07T17:45:39.594Z",
+  "type": "gig_request_sent",
+  "notificationType": 61,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "1754588739598",
+  "metadata": {
+    "gigTitle": "NFT Asset Created Update",
+    "organizationName": "Corlax Wellness",
+    "organizationLogo": "/logos/corlax-ios-logo.png",
+    "budgetMin": 25000,
+    "budgetMax": 3000
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 3,
+    "requestId": 1754588739598
+  }
+}

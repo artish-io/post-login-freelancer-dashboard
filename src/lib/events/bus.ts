@@ -42,6 +42,36 @@ export function off(eventName: string, handler?: EventHandler): void {
 }
 
 /**
+ * Retry wrapper for bus events with jitter and structured logging
+ */
+export async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries: number = 3,
+  delay: number = 1000,
+  eventType?: string,
+  key?: string
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      // Add jitter between 500ms and 1500ms
+      const jitter = 500 + Math.floor(Math.random() * 1000);
+      // Structured error logging with code, eventType, key if available
+      const errCode = (error as any)?.code || 'UNKNOWN_ERROR';
+      const eventTypeStr = eventType || 'unknown_event';
+      const keyStr = key || 'unknown_key';
+      console.warn(`[bus] Attempt ${attempt} failed for eventType=${eventTypeStr} key=${keyStr} code=${errCode}, retrying in ${jitter}ms:`, error);
+      await new Promise(resolve => setTimeout(resolve, jitter));
+    }
+  }
+  throw new Error('Max retries exceeded');
+}
+
+/**
  * Emit an event. Returns an array of handler results; errors are caught and logged per handler.
  */
 export async function emit<P = any>(eventName: string, payload: P): Promise<any[]> {
@@ -62,9 +92,17 @@ export async function emit<P = any>(eventName: string, payload: P): Promise<any[
   const results: any[] = [];
   for (const t of tasks) {
     try {
-      results.push(await t);
+      // Use retry wrapper for critical event handlers
+      const result = await withRetry(
+        () => t,
+        3, // maxRetries
+        1000, // delay
+        eventName, // eventType
+        key // key
+      );
+      results.push(result);
     } catch (err) {
-      console.warn(`[events.bus] handler rejected for ${key}:`, err);
+      console.warn(`[events.bus] handler rejected after retries for ${key}:`, err);
       results.push(undefined);
     }
   }
@@ -92,7 +130,98 @@ export function registerInvoicePaidToNotifications() {
     projectTitle?: string;
   }> = async (p) => {
     try {
-      await emitInvoicePaid(p.actorId, p.targetId, p.projectId, p.invoiceNumber, p.amount, p.projectTitle);
+      // For milestone payments, we need to create milestone_payment_received notifications
+      // Import the milestone payment logger
+      const { logMilestonePaymentWithOrg } = await import('../events/event-logger');
+      const { UnifiedStorageService } = await import('../storage/unified-storage-service');
+
+      // Get project and commissioner info to create proper milestone notification
+      const project = await UnifiedStorageService.getProjectById(p.projectId); // Keep as string
+      const commissioner = await UnifiedStorageService.getUserById(Number(p.actorId));
+
+      if (project && commissioner) {
+        // Get the actual organization name from the project's organizationId
+        let organizationName = 'Organization'; // fallback
+        if (project.organizationId) {
+          try {
+            const organization = await UnifiedStorageService.getOrganizationById(project.organizationId);
+            if (organization && organization.name) {
+              organizationName = organization.name;
+            }
+          } catch (orgError) {
+            console.warn('[events.bus] Could not fetch organization:', orgError);
+          }
+        }
+
+        // Get the actual invoice amount instead of relying on event payload
+        let invoiceAmount = Number(p.amount) || 0;
+        if (p.invoiceNumber) {
+          try {
+            const { getInvoiceByNumber } = await import('../invoice-storage');
+            const invoice = await getInvoiceByNumber(p.invoiceNumber);
+            if (invoice && invoice.totalAmount) {
+              invoiceAmount = Number(invoice.totalAmount);
+            }
+          } catch (invoiceError) {
+            console.warn('[events.bus] Could not fetch invoice amount:', invoiceError);
+          }
+        }
+
+        // Get freelancer info for commissioner notification
+        const freelancer = await UnifiedStorageService.getUserById(Number(p.targetId));
+        const freelancerName = freelancer?.name || 'Freelancer';
+
+        // Calculate remaining budget (total budget - current paid amount - this payment)
+        const totalBudget = Number(project.totalBudget) || 0;
+        const currentPaidToDate = Number(project.paidToDate) || 0;
+        const remainingBudget = Math.max(0, totalBudget - (currentPaidToDate + invoiceAmount));
+
+        // Create milestone_payment_received notification for freelancer
+        await logMilestonePaymentWithOrg(
+          Number(p.actorId), // commissionerId
+          Number(p.targetId), // freelancerId
+          p.projectId, // Keep as string for proper project lookup
+          p.projectTitle || project.title || 'Task', // milestoneTitle
+          invoiceAmount, // Use actual invoice amount
+          organizationName, // Use actual organization name
+          p.invoiceNumber
+        );
+        console.log(`[events.bus] ✅ Created milestone_payment_received notification for freelancer ${p.targetId}`);
+
+        // Create milestone_payment_sent notification for commissioner with remaining budget
+        const eventLogger = await import('../events/event-logger');
+        await eventLogger.eventLogger.logEvent({
+          id: `milestone_payment_sent_${p.projectId}_${Date.now()}`,
+          timestamp: new Date().toISOString(),
+          type: 'milestone_payment_sent',
+          notificationType: 43, // MILESTONE_PAYMENT_SENT
+          actorId: Number(p.actorId),
+          targetId: Number(p.actorId), // Commissioner receives this notification
+          entityType: 5, // MILESTONE
+          entityId: `${p.projectId}_${invoiceAmount}`,
+          metadata: {
+            taskTitle: p.projectTitle || project.title || 'Task',
+            projectTitle: p.projectTitle || project.title,
+            projectId: String(p.projectId), // Ensure string type
+            taskId: Date.now(), // Use timestamp as taskId fallback
+            freelancerName,
+            amount: invoiceAmount,
+            invoiceNumber: p.invoiceNumber,
+            remainingBudget,
+            projectBudget: totalBudget
+          },
+          context: {
+            projectId: Number(p.projectId.toString().replace(/[^0-9]/g, '')) || 0, // Extract numeric part
+            taskId: Date.now(),
+            invoiceNumber: p.invoiceNumber
+          }
+        });
+        console.log(`[events.bus] ✅ Created milestone_payment_sent notification for commissioner ${p.actorId}`);
+      } else {
+        console.warn('[events.bus] ⚠️ Could not find project or commissioner data for milestone payment notification');
+        // Fallback to basic invoice paid notification
+        emitInvoicePaid(p.actorId, p.targetId, p.projectId, p.invoiceNumber, p.amount, p.projectTitle);
+      }
     } catch (e) {
       console.warn('[events.bus] emitInvoicePaid failed:', e);
     }

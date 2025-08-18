@@ -1,0 +1,25 @@
+{
+  "id": "rating_prompt_commissioner_C-002_1755462459401",
+  "timestamp": "2025-08-17T20:27:39.401Z",
+  "type": "rating_prompt_commissioner",
+  "notificationType": 141,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": "C-002",
+  "metadata": {
+    "projectTitle": "Web 3 Graphic Design Asssets ",
+    "freelancerName": "Tobi Philly",
+    "completedTaskTitle": "Phase 3: Algorithms corrupt curated",
+    "message": "You have approved all task milestones for Web 3 Graphic Design Asssets . Click here to rate Tobi Philly for their work on this project. Your rating improves the experience of other project managers on ARTISH.",
+    "ratingSubjectId": 1,
+    "ratingSubjectType": "freelancer",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "C-002",
+    "ratingSubjectUserId": 1,
+    "ratingSubjectUserType": "freelancer",
+    "action": "rate_freelancer"
+  }
+}

@@ -40,8 +40,8 @@ export type SpendingSummary = {
  */
 export async function getSpendingTransactions(commissionerId: number): Promise<SpendingTransaction[]> {
   const allInvoices = await getAllInvoices({ commissionerId });
-  
-  return allInvoices
+
+  const transactions = allInvoices
     .filter(invoice => invoice.status === 'paid')
     .map(invoice => ({
       id: invoice.invoiceNumber,
@@ -55,6 +55,18 @@ export async function getSpendingTransactions(commissionerId: number): Promise<S
       description: `Payment for ${invoice.projectTitle}`,
       projectName: invoice.projectTitle
     }));
+
+  // Deduplicate by invoice number (keep the most recent one)
+  const uniqueTransactions = new Map<string, SpendingTransaction>();
+
+  transactions.forEach(transaction => {
+    const existing = uniqueTransactions.get(transaction.id);
+    if (!existing || new Date(transaction.date) > new Date(existing.date)) {
+      uniqueTransactions.set(transaction.id, transaction);
+    }
+  });
+
+  return Array.from(uniqueTransactions.values());
 }
 
 /**

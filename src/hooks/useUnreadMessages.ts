@@ -21,6 +21,8 @@ export function useUnreadMessages() {
 
       if (!res.ok) {
         console.warn(`Messages count API returned ${res.status}: ${res.statusText}`);
+        setUnreadCount(0); // Set to 0 instead of leaving undefined
+        setIsLoading(false);
         return;
       }
 
@@ -46,6 +48,7 @@ export function useUnreadMessages() {
       }
     } catch (err) {
       console.error("[useUnreadMessages] Failed to fetch unread count:", err);
+      setUnreadCount(0); // Set to 0 on error
     } finally {
       setIsLoading(false);
     }

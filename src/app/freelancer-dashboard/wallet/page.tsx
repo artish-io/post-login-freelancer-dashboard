@@ -21,11 +21,13 @@ export default function WalletPage() {
   useEffect(() => {
     async function fetchLastMonthData() {
       try {
+        console.log('🔍 WalletPage | Fetching summary for range:', range);
         const res = await fetch(`/api/dashboard/wallet/summary?range=${range}`);
         const data = await res.json();
+        console.log('📦 WalletPage | Summary response:', data);
         setLastMonthTotal(data.previousTotal || 0);
       } catch (err) {
-        console.error('Failed to load last month data:', err);
+        console.error('❌ WalletPage | Failed to load last month data:', err);
       }
     }
     fetchLastMonthData();
@@ -94,8 +96,13 @@ export default function WalletPage() {
           <div className="flex justify-between items-start gap-4 flex-wrap">
             <div className="flex flex-col gap-1">
               <h2 className="text-xl font-semibold">Earnings Overview</h2>
-              <p className="text-sm text-gray-500">
-                Last Month ${lastMonthTotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              <p className="text-sm text-gray-500 flex items-center gap-1">
+                Last Month
+                <CurrencyDisplay
+                  amount={lastMonthTotal}
+                  className="text-sm"
+                  currencySymbolSize="text-[10px]"
+                />
               </p>
             </div>
             <WalletDropDownToggle range={range} onRangeChange={setRange} />

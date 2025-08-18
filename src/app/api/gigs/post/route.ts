@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     const endDate = new Date(gigData.endDate);
 
     // Import and use the standardized duration calculator
-    const { calculateProjectDuration, calculateHourlyRate } = await import('../../../lib/utils/project-duration-calculator');
+    const { calculateProjectDuration, calculateHourlyRate } = await import('../../../../lib/utils/project-duration-calculator');
 
     const duration = calculateProjectDuration(startDate, endDate);
     const minRateCalc = calculateHourlyRate(gigData.lowerBudget, duration);

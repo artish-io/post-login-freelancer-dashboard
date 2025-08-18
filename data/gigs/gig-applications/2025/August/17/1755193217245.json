@@ -1,0 +1,21 @@
+{
+  "id": 1755193217245,
+  "gigId": 21,
+  "freelancerId": 1,
+  "pitch": "Complete the mission",
+  "sampleLinks": [],
+  "skills": [
+    "Frontend Development",
+    "Product Design"
+  ],
+  "tools": [
+    "VS Code",
+    "Figma",
+    "React"
+  ],
+  "submittedAt": "2025-08-17T06:50:54.541Z",
+  "status": "accepted",
+  "lastModified": "2025-08-17T06:51:19.670Z",
+  "acceptedAt": "2025-08-17T06:51:19.670Z",
+  "projectId": "Z-004"
+}

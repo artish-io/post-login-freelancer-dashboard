@@ -1,0 +1,19 @@
+{
+  "userId": 1,
+  "type": "payment",
+  "amount": 550,
+  "currency": "USD",
+  "timestamp": "2025-08-17T15:50:59.485Z",
+  "status": "completed",
+  "invoiceNumber": "NM-003",
+  "projectId": "L-004",
+  "commissionerId": 32,
+  "freelancerId": 1,
+  "source": "auto_milestone",
+  "paymentMethod": "mock",
+  "gatewayTransactionId": "TXN-NM-003",
+  "description": "Payment for invoice NM-003",
+  "transactionId": "TXN-PAY-NM-003-1755445859485",
+  "createdAt": "2025-08-17T15:50:59.485Z",
+  "updatedAt": "2025-08-17T15:50:59.485Z"
+}

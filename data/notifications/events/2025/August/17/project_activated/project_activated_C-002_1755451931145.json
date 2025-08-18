@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_C-002_1755451931145",
+  "timestamp": "2025-08-17T17:32:11.145Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "C-002",
+  "metadata": {
+    "projectTitle": "Web 3 Graphic Design Asssets ",
+    "gigTitle": "Web 3 Graphic Design Asssets ",
+    "taskCount": 3,
+    "commissionerName": "Matte Hannery",
+    "organizationName": "Corlax Wellness"
+  },
+  "context": {
+    "projectId": "C-002",
+    "gigId": 23,
+    "applicationId": 1755193217247
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_20_1_1755406882162",
+  "timestamp": "2025-08-17T05:01:22.162Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "20",
+  "metadata": {
+    "gigTitle": "Landing Page for Ticket Announcement",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 20,
+    "applicationId": 1755193217244
+  }
+}

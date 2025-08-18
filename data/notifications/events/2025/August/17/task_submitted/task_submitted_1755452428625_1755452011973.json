@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755452428625_1755452011973",
+  "timestamp": "2025-08-17T17:33:31.973Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1755452428625,
+  "metadata": {
+    "taskId": 1755452428625,
+    "taskTitle": "Phase 2:  Legitimate concerns from users",
+    "projectTitle": "Web 3 Graphic Design Asssets ",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-002",
+    "taskId": 1755452428625
+  }
+}

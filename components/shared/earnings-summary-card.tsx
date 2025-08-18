@@ -57,16 +57,28 @@ export default function EarningsSummaryCard({
         setLoading(true);
 
         if (userType === 'freelancer') {
-          // Use new wallet API for freelancers
-          const response = await fetch(`/api/payments/wallet/${session.user.id}?userType=freelancer`);
+          // Use same earnings API as the working earnings card
+          console.log('🔍 EarningsSummary | Fetching earnings for user:', session.user.id);
+          const response = await fetch(`/api/dashboard/earnings?id=${session.user.id}`);
           const data = await response.json();
+          console.log('📦 EarningsSummary | Earnings response:', data);
 
-          if (data.success && data.wallet) {
-            setWalletData(data.wallet);
-            setTotalBalance(data.wallet.availableBalance);
-            setLastUpdated(new Date(data.wallet.updatedAt));
+          if (response.ok && data.amount !== undefined) {
+            setTotalBalance(data.amount);
+            setLastUpdated(data.lastUpdated ? new Date(data.lastUpdated) : new Date());
+
+            // Set wallet data for display
+            setWalletData({
+              currency: data.currency || 'USD',
+              availableBalance: data.amount,
+              pendingWithdrawals: 0,
+              lifetimeEarnings: data.amount,
+              totalWithdrawn: 0,
+              updatedAt: data.lastUpdated || new Date().toISOString()
+            });
+            console.log('✅ EarningsSummary | Set balance:', data.amount);
           } else {
-            console.error('Failed to fetch wallet data:', data.error);
+            console.error('❌ EarningsSummary | Failed to fetch earnings data:', data.error);
             setTotalBalance(0);
           }
         } else {

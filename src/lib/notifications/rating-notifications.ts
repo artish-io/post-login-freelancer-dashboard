@@ -41,16 +41,24 @@ export async function sendProjectCompletionRatingNotifications(
     completedTaskTitle
   } = params;
 
-  const timestamp = new Date().toISOString();
-
   try {
+    // Verify this is actually a milestone-based project
+    const { UnifiedStorageService } = await import('../storage/unified-storage-service');
+    const project = await UnifiedStorageService.getProjectById(projectId);
+
+    if (!project || project.invoicingMethod !== 'milestone') {
+      console.log(`ℹ️ Skipping rating notifications for non-milestone project ${projectId}`);
+      return;
+    }
+
+    const timestamp = new Date().toISOString();
     // Send notification to freelancer to rate commissioner
     const freelancerNotification = {
       id: `rating_prompt_freelancer_${projectId}_${Date.now()}`,
       timestamp,
       type: 'rating_prompt_freelancer' as const,
       notificationType: RATING_NOTIFICATION_TYPES.RATING_PROMPT_FREELANCER,
-      actorId: commissionerId, // Commissioner completed the project (approved last task)
+      actorId: commissionerId, // Commissioner approved all tasks
       targetId: freelancerId, // Freelancer should rate
       entityType: ENTITY_TYPES.PROJECT,
       entityId: projectId.toString(),
@@ -58,7 +66,7 @@ export async function sendProjectCompletionRatingNotifications(
         projectTitle,
         commissionerName,
         completedTaskTitle,
-        message: `${commissionerName} has approved "${completedTaskTitle}" for ${projectTitle}. This project is now complete. Click here to rate.`,
+        message: `All tasks for ${projectTitle} have been approved. Click here to rate your collaboration with ${commissionerName}.`,
         ratingSubjectId: commissionerId,
         ratingSubjectType: 'commissioner',
         priority: 'high'
@@ -102,7 +110,7 @@ export async function sendProjectCompletionRatingNotifications(
     NotificationStorage.addEvent(freelancerNotification);
     NotificationStorage.addEvent(commissionerNotification);
 
-    console.log(`✅ Sent rating prompt notifications for completed project ${projectId}`);
+    console.log(`✅ Sent milestone project completion rating notifications for project ${projectId}`);
     console.log(`   → Freelancer ${freelancerId} prompted to rate commissioner ${commissionerId}`);
     console.log(`   → Commissioner ${commissionerId} prompted to rate freelancer ${freelancerId}`);
 

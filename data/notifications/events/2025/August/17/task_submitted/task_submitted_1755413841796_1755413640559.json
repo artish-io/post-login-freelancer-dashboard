@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755413841796_1755413640559",
+  "timestamp": "2025-08-17T06:54:00.560Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1755413841796,
+  "metadata": {
+    "taskId": 1755413841796,
+    "taskTitle": "Testing & Launch",
+    "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-004",
+    "taskId": 1755413841796
+  }
+}

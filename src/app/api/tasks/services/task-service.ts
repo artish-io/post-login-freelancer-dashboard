@@ -128,8 +128,8 @@ export class TaskService {
       submittedAt: new Date().toISOString(),
       workingFileUrl: submissionData?.workingFileUrl,
       submissionNotes: submissionData?.notes,
-      // Increment version for tracking iterations
-      version: (task.version || 0) + 1,
+      // Only increment version if task was previously rejected (resubmission)
+      version: task.rejected ? (task.version || 1) + 1 : (task.version || 1),
     };
 
     return {

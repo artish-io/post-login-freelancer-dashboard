@@ -20,6 +20,8 @@ const getNotificationIcon = (type: NotificationData['type']): string => {
       return '/icons/new-proposal.png';
     case 'invoice_sent':
       return '/icons/new-invoice.png';
+    case 'milestone_payment_sent':
+      return '/icons/payment-sent.png';
     default:
       return '/icons/notification-default.png';
   }

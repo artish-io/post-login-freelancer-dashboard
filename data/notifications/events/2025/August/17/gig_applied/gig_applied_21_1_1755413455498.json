@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_21_1_1755413455498",
+  "timestamp": "2025-08-17T06:50:55.498Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "21",
+  "metadata": {
+    "gigTitle": "Landing Page for 2Baba 40-Year Concert",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 21,
+    "applicationId": 1755193217245
+  }
+}

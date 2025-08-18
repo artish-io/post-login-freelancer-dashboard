@@ -1,0 +1,18 @@
+{
+  "id": "evt_1752860539720_39",
+  "timestamp": "2025-06-16T00:00:00.000Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 2,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": 7,
+  "metadata": {
+    "gigTitle": "Digital Signage Content Management",
+    "applicationMessage": "Application submitted"
+  },
+  "context": {
+    "gigId": 7,
+    "applicationId": 5
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "rating_prompt_commissioner_Z-004_1755414164311",
+  "timestamp": "2025-08-17T07:02:44.310Z",
+  "type": "rating_prompt_commissioner",
+  "notificationType": 141,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 2,
+  "entityId": "Z-004",
+  "metadata": {
+    "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+    "freelancerName": "Tobi Philly",
+    "completedTaskTitle": "Frontend Development",
+    "message": "You have approved all task milestones for Landing Page for 2Baba 40-Year Concert. Click here to rate Tobi Philly for their work on this project. Your rating improves the experience of other project managers on ARTISH.",
+    "ratingSubjectId": 1,
+    "ratingSubjectType": "freelancer",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "Z-004",
+    "ratingSubjectUserId": 1,
+    "ratingSubjectUserType": "freelancer",
+    "action": "rate_freelancer"
+  }
+}

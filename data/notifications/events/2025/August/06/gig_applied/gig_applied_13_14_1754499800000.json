@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_13_14_1754499800000",
+  "timestamp": "2025-08-06T17:03:20.000Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 14,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "13",
+  "metadata": {
+    "gigTitle": "Event Venue 3D Visualization",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Liam Chai"
+  },
+  "context": {
+    "gigId": 13,
+    "applicationId": 103
+  }
+}

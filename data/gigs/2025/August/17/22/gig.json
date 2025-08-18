@@ -1,0 +1,57 @@
+{
+  "id": 22,
+  "title": "Beautiful days and simple flows",
+  "organizationId": 1,
+  "commissionerId": "32",
+  "category": "Design",
+  "subcategory": "Brand Design",
+  "tags": [
+    "Brand Design",
+    "Graphic Design"
+  ],
+  "hourlyRateMin": 23.44,
+  "hourlyRateMax": 34.38,
+  "description": "In the week leading to the Oscars, and the weeks after its groundbreaking 5 Oscar sweep for auteur Sean Baker and lead Mikey Madison, conversations about the ethics of Anora, a film that explores the complexities of sex work, divided intellectual public discourse. Some argued that as a man, Baker unqualified to explore sex work from a female perspective. ",
+  "deliveryTimeWeeks": 0.7142857142857143,
+  "estimatedHours": 32,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Figma",
+    "Adobe Photoshop",
+    "Canva"
+  ],
+  "executionMethod": "milestone",
+  "invoicingMethod": "milestone",
+  "milestones": [
+    {
+      "id": "f5bb13f7-21b9-4963-94f9-84c299b7a1ad",
+      "title": "Phase 1: In the week leading to the Oscars",
+      "description": "A film that explores the complexities of sex work, divided intellectual public discourse. Some argued that as a man, Baker unqualified to explore se",
+      "startDate": "2025-08-18T04:00:00.000Z",
+      "endDate": "2025-08-20T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "24d5f5f9-1a35-426d-b0f7-a77d2035f696",
+      "title": "Phase 2: Conclusion and Review",
+      "description": "In the week leading to the Oscars, and the weeks after its groundbreaking 5 Oscar sweep for auteur Sean Baker and lead Mikey Madison, conversations ab",
+      "startDate": "2025-08-21T04:00:00.000Z",
+      "endDate": "2025-08-22T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-22T04:00:00.000Z",
+  "lowerBudget": 750,
+  "upperBudget": 1100,
+  "postedDate": "2025-08-17",
+  "notes": "Budget range: $750 - $1,100",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false,
+  "briefFile": {
+    "name": "_Toye Sokunbi   (1).pdf",
+    "size": 110796,
+    "type": "application/pdf"
+  }
+}

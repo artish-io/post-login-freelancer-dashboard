@@ -1,0 +1,65 @@
+{
+  "id": 23,
+  "title": "Web 3 Graphic Design Asssets ",
+  "organizationId": 3,
+  "commissionerId": "34",
+  "category": "Engineering",
+  "subcategory": "Blockchain Development",
+  "tags": [
+    "Blockchain Development",
+    "Graphic Design"
+  ],
+  "hourlyRateMin": 31.25,
+  "hourlyRateMax": 37.5,
+  "description": "Cultivating desire is very profitable for the companies that build these platforms and algorithms, so they refuse to investigate legitimate concerns from users or intervene when algorithms corrupt curated feeds and make platforms unusable for children and users who do not want to be inundated with sexualised content.",
+  "deliveryTimeWeeks": 2,
+  "estimatedHours": 80,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Python",
+    "Canva",
+    "Figma"
+  ],
+  "executionMethod": "milestone",
+  "invoicingMethod": "milestone",
+  "milestones": [
+    {
+      "id": "c062d91a-4bc7-41bf-9575-5bb69aa4940b",
+      "title": "Phase 1: Cultivating desire is very profitable",
+      "description": "Profitable for the companies that build these platforms and algorithms, so they refuse to investigate legitimate concerns from users or intervene.",
+      "startDate": "2025-08-18T04:00:00.000Z",
+      "endDate": "2025-08-21T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "b7f38049-60af-4d0a-84a9-85e777bfb1ec",
+      "title": "Phase 2:  Legitimate concerns from users",
+      "description": "Cultivating desire is very profitable for the companies that build these platforms and algorithms, so they refuse to investigate legitimate concerns.",
+      "startDate": "2025-08-22T04:00:00.000Z",
+      "endDate": "2025-08-26T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "0e942bf6-b8fa-4fc3-b371-0e3898b0f1f2",
+      "title": "Phase 3: Algorithms corrupt curated",
+      "description": "Intervene when algorithms corrupt curated feeds and make platforms unusable for children and users who do not want to be inundated with sexualised c",
+      "startDate": "2025-08-27T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 2500,
+  "upperBudget": 3000,
+  "postedDate": "2025-08-17",
+  "notes": "Budget range: $2,500 - $3,000",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false,
+  "briefFile": {
+    "name": "_Toye Sokunbi   (1).pdf",
+    "size": 110796,
+    "type": "application/pdf"
+  }
+}

@@ -34,7 +34,8 @@ export const NOTIFICATION_TYPES = {
   INVOICE_SENT: 40,
   INVOICE_PAID: 41,
   MILESTONE_PAYMENT_RECEIVED: 42,
-  INVOICE_OVERDUE: 43,
+  MILESTONE_PAYMENT_SENT: 43,
+  INVOICE_OVERDUE: 44,
 
   // Gig notifications (60-79)
   GIG_APPLICATION_RECEIVED: 60,
@@ -64,8 +65,8 @@ export const NOTIFICATION_TYPES = {
 
 // User type targeting for notifications
 export const USER_TYPE_FILTERS = {
-  COMMISSIONER_ONLY: ['task_submitted', 'gig_applied', 'invoice_sent', 'proposal_sent'],
-  FREELANCER_ONLY: ['task_approved', 'task_rejected', 'task_rejected_with_comment', 'gig_request_sent', 'invoice_paid', 'milestone_payment_received', 'project_pause_accepted'],
+  COMMISSIONER_ONLY: ['task_submitted', 'gig_applied', 'invoice_sent', 'proposal_sent', 'milestone_payment_sent', 'rating_prompt_commissioner'],
+  FREELANCER_ONLY: ['task_approved', 'task_rejected', 'task_rejected_with_comment', 'gig_request_sent', 'invoice_paid', 'milestone_payment_received', 'project_pause_accepted', 'rating_prompt_freelancer'],
   BOTH: ['project_created', 'project_started', 'project_pause_requested', 'product_approved', 'product_rejected']
 } as const;
 
@@ -122,7 +123,7 @@ export type EventType =
   // Message events
   | 'message_sent' | 'message_read'
   // Invoice events - More granular
-  | 'invoice_created' | 'invoice_sent' | 'invoice_paid' | 'invoice_overdue' | 'milestone_payment_received'
+  | 'invoice_created' | 'invoice_sent' | 'invoice_paid' | 'invoice_overdue' | 'milestone_payment_received' | 'milestone_payment_sent'
   // Storefront events
   | 'product_purchased' | 'product_downloaded' | 'review_posted' | 'product_approved' | 'product_rejected'
   // Proposal events
@@ -178,6 +179,7 @@ function getNotificationTypeNumber(eventType: EventType): number {
     'invoice_sent': NOTIFICATION_TYPES.INVOICE_SENT,
     'invoice_paid': NOTIFICATION_TYPES.INVOICE_PAID,
     'milestone_payment_received': NOTIFICATION_TYPES.MILESTONE_PAYMENT_RECEIVED,
+    'milestone_payment_sent': NOTIFICATION_TYPES.MILESTONE_PAYMENT_SENT,
     'invoice_overdue': NOTIFICATION_TYPES.INVOICE_OVERDUE,
 
     // Gig events
@@ -571,8 +573,14 @@ class EventLogger {
 
   // Helper methods to load data
   private async loadUsers(): Promise<any[]> {
-    const usersPath = path.join(process.cwd(), 'data', 'users.json');
-    return JSON.parse(fs.readFileSync(usersPath, 'utf-8'));
+    try {
+      // Use unified storage service instead of flat file
+      const { getAllUsers } = await import('../storage/unified-storage-service');
+      return await getAllUsers();
+    } catch (error) {
+      console.error('Failed to load users from unified storage:', error);
+      return [];
+    }
   }
 
   private async getProjectCommissioner(projectId: number): Promise<number | null> {
@@ -762,6 +770,59 @@ export const logMilestonePayment = (commissionerId: number, freelancerId: number
     context: {
       projectId,
       milestoneTitle
+    }
+  });
+};
+
+export const logMilestonePaymentWithOrg = (commissionerId: number, freelancerId: number, projectId: string | number, milestoneTitle: string, amount: number, organizationName: string, invoiceNumber: string) => {
+  return eventLogger.logEvent({
+    id: `milestone_payment_${projectId}_${Date.now()}`,
+    timestamp: new Date().toISOString(),
+    type: 'milestone_payment_received',
+    notificationType: NOTIFICATION_TYPES.MILESTONE_PAYMENT_RECEIVED,
+    actorId: commissionerId,
+    targetId: freelancerId,
+    entityType: ENTITY_TYPES.MILESTONE,
+    entityId: `${projectId}_${milestoneTitle}`,
+    metadata: {
+      milestoneTitle,
+      amount,
+      organizationName,
+      invoiceNumber,
+      priority: 'high'
+    },
+    context: {
+      projectId,
+      milestoneTitle,
+      invoiceNumber
+    }
+  });
+};
+
+export const logMilestonePaymentSent = (commissionerId: number, freelancerId: number, projectId: string | number, taskTitle: string, amount: number, freelancerName: string, invoiceNumber: string, projectBudget?: number, projectTitle?: string) => {
+  return eventLogger.logEvent({
+    id: `milestone_payment_sent_${projectId}_${Date.now()}`,
+    timestamp: new Date().toISOString(),
+    type: 'milestone_payment_sent',
+    notificationType: NOTIFICATION_TYPES.MILESTONE_PAYMENT_SENT,
+    actorId: commissionerId,
+    targetId: commissionerId, // Commissioner receives this notification
+    entityType: ENTITY_TYPES.MILESTONE,
+    entityId: `${projectId}_${taskTitle}`,
+    metadata: {
+      taskTitle,
+      amount,
+      freelancerName,
+      invoiceNumber,
+      projectBudget,
+      projectTitle,
+      priority: 'medium'
+    },
+    context: {
+      projectId,
+      taskTitle,
+      invoiceNumber,
+      freelancerId
     }
   });
 };

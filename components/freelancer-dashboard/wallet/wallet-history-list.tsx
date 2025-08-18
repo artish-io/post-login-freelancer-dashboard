@@ -56,19 +56,22 @@ export default function WalletHistoryList() {
 
       try {
         setLoading(true);
-        console.log('Fetching transaction history...');
+        console.log('🔍 WalletHistory | Fetching transaction history for user:', session.user.id);
 
         // Fetch transactions from new API
         const response = await fetch(`/api/payments/transactions?userId=${session.user.id}`);
 
         if (!response.ok) {
+          console.error('❌ WalletHistory | API failed:', response.status);
           throw new Error(`Transactions API failed: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log('📦 WalletHistory | API response:', data);
 
         if (data.success && data.transactions) {
           setTransactions(data.transactions);
+          console.log('✅ WalletHistory | Found transactions:', data.transactions.length);
 
           // Convert transactions to legacy format for existing UI
           const legacyEntries = data.transactions.map((tx: Transaction, index: number) => ({
@@ -84,12 +87,13 @@ export default function WalletHistoryList() {
           }));
 
           setEntries(legacyEntries);
+          console.log('✅ WalletHistory | Converted to legacy format:', legacyEntries.length, 'entries');
         } else {
-          console.error('Failed to fetch transactions:', data.error);
+          console.error('❌ WalletHistory | Failed to fetch transactions:', data.error);
           setEntries([]);
         }
       } catch (err) {
-        console.error('Failed to load transaction history:', err);
+        console.error('❌ WalletHistory | Failed to load transaction history:', err);
         setEntries([]);
       } finally {
         setLoading(false);

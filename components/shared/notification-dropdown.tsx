@@ -38,7 +38,7 @@ type Props = {
 };
 
 export default function NotificationDropdown({ dashboardType }: Props) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -48,7 +48,8 @@ export default function NotificationDropdown({ dashboardType }: Props) {
 
   // Fetch unread count on component mount and periodically
   useEffect(() => {
-    if (session?.user?.id) {
+    // Only fetch if session is loaded and user is authenticated
+    if (status === 'authenticated' && session?.user?.id) {
       fetchUnreadCount();
 
       // Set up polling for unread count every 10 seconds for better responsiveness
@@ -69,15 +70,15 @@ export default function NotificationDropdown({ dashboardType }: Props) {
         window.removeEventListener('notificationRefresh', handleNotificationRefresh);
       };
     }
-  }, [session?.user?.id, dashboardType, open]);
+  }, [status, session?.user?.id, dashboardType, open]);
 
   // Fetch notifications when dropdown opens
   useEffect(() => {
-    if (open && session?.user?.id) {
+    if (open && status === 'authenticated' && session?.user?.id) {
       fetchNotifications();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, session?.user?.id, dashboardType]);
+  }, [open, status, session?.user?.id, dashboardType]);
 
   const fetchUnreadCount = async () => {
     if (!session?.user?.id) return;
@@ -87,6 +88,11 @@ export default function NotificationDropdown({ dashboardType }: Props) {
       const endpoint = `/api/notifications-v2?userId=${session.user.id}&userType=${dashboardType}&tab=all`;
 
       const res = await fetch(endpoint);
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
       const data = await res.json();
 
       if (data.notifications) {
@@ -108,6 +114,11 @@ export default function NotificationDropdown({ dashboardType }: Props) {
       const endpoint = `/api/notifications-v2?userId=${session.user.id}&userType=${dashboardType}&tab=all`;
 
       const res = await fetch(endpoint);
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
       const data = await res.json();
 
       if (data.notifications) {
@@ -276,9 +287,22 @@ export default function NotificationDropdown({ dashboardType }: Props) {
     );
   };
 
-  const viewAllLink = dashboardType === 'commissioner' 
+  const viewAllLink = dashboardType === 'commissioner'
     ? '/commissioner-dashboard/notifications'
     : '/freelancer-dashboard/notifications';
+
+  // Don't render if user is not authenticated
+  if (status === 'loading') {
+    return (
+      <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100">
+        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (status !== 'authenticated' || !session?.user?.id) {
+    return null; // Don't show notification dropdown for unauthenticated users
+  }
 
   return (
     <div className="relative" ref={dropdownRef}>

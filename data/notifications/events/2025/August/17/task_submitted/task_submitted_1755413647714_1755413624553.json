@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755413647714_1755413624553",
+  "timestamp": "2025-08-17T06:53:44.553Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1755413647714,
+  "metadata": {
+    "taskId": 1755413647714,
+    "taskTitle": "Wireframe & Visual Design ",
+    "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-004",
+    "taskId": 1755413647714
+  }
+}

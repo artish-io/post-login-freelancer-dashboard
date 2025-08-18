@@ -1,0 +1,20 @@
+{
+  "id": "task_approved_1755290696512_1755386256776",
+  "timestamp": "2025-08-16T23:17:36.776Z",
+  "type": "task_approved",
+  "notificationType": 2,
+  "actorId": 32,
+  "targetId": 31,
+  "entityType": 1,
+  "entityId": 1755290696512,
+  "metadata": {
+    "taskTitle": "Pretty sick job title",
+    "projectTitle": "Market Research for Longer Divide",
+    "action": "approve",
+    "invoiceGenerated": true
+  },
+  "context": {
+    "projectId": "L-002",
+    "taskId": 1755290696512
+  }
+}

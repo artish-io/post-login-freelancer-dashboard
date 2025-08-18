@@ -1,0 +1,25 @@
+{
+  "id": "rating_prompt_freelancer_L-002_1755389842174",
+  "timestamp": "2025-08-17T00:17:22.174Z",
+  "type": "rating_prompt_freelancer",
+  "notificationType": 140,
+  "actorId": 32,
+  "targetId": 31,
+  "entityType": 2,
+  "entityId": "L-002",
+  "metadata": {
+    "projectTitle": "Market Research for Longer Divide",
+    "commissionerName": "Neilsan Mando",
+    "completedTaskTitle": "Initial research and data collections",
+    "message": "Neilsan Mando has approved \"Initial research and data collections\" for Market Research for Longer Divide. This project is now complete. Click here to rate.",
+    "ratingSubjectId": 32,
+    "ratingSubjectType": "commissioner",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "L-002",
+    "ratingSubjectUserId": 32,
+    "ratingSubjectUserType": "commissioner",
+    "action": "rate_commissioner"
+  }
+}

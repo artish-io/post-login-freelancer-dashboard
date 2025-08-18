@@ -60,7 +60,7 @@ export default function TaskCard({
           {columnId === 'review'
             ? `Version ${version}`
             : columnId === 'todo'
-            ? `Version ${version + 1}`
+            ? `Version ${version}`
             : tag}
         </div>
 

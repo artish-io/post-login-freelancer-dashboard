@@ -74,11 +74,17 @@ export default function CommissionerProjectsRow({ projects, users, filterStatus 
   const filteredProjects = projects
     .filter((project) => project.status === filterStatus)
     .sort((a, b) => {
-      // Sort by nearest due date (earliest first)
-      if (!a.dueDate && !b.dueDate) return 0;
-      if (!a.dueDate) return 1;
-      if (!b.dueDate) return -1;
-      return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      // Sort by latest to oldest (most recent first)
+      if (filterStatus === 'completed') {
+        // For completed projects, sort by completion date (latest first)
+        if (!a.completionDate && !b.completionDate) return b.projectId - a.projectId;
+        if (!a.completionDate) return 1;
+        if (!b.completionDate) return -1;
+        return new Date(b.completionDate).getTime() - new Date(a.completionDate).getTime();
+      } else {
+        // For ongoing/paused projects, sort by project ID (higher ID = more recent)
+        return b.projectId - a.projectId;
+      }
     });
 
   const handleProjectClick = (projectId: number) => {

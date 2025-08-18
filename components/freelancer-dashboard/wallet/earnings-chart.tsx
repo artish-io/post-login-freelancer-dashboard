@@ -33,8 +33,10 @@ export default function EarningsChart({ range }: Props) {
   useEffect(() => {
     async function fetchSummary() {
       try {
+        console.log('📊 EarningsChart | Fetching summary for range:', range);
         const res = await fetch(`/api/dashboard/wallet/summary?range=${range}`);
         const data: WalletSummaryResponse = await res.json();
+        console.log('📦 EarningsChart | Summary response:', data);
 
         if (Array.isArray(data.dailyBreakdown)) {
           const sorted = data.dailyBreakdown.sort(
@@ -44,9 +46,12 @@ export default function EarningsChart({ range }: Props) {
           const max = Math.max(...sorted.map((d: DailyEarnings) => d.amount));
           setYMax(getYMax(max));
           setDailyTotals(sorted);
+          console.log('✅ EarningsChart | Set daily totals:', sorted.length, 'entries, max:', max);
+        } else {
+          console.warn('⚠️ EarningsChart | No dailyBreakdown array in response');
         }
       } catch (err) {
-        console.error('Failed to load wallet summary for range:', range, err);
+        console.error('❌ EarningsChart | Failed to load wallet summary for range:', range, err);
       }
     }
 

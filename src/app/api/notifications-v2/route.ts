@@ -83,6 +83,11 @@ export async function GET(request: NextRequest) {
         }
       }
 
+      // Special case: milestone_payment_sent notifications are self-notifications for commissioners
+      if (event.type === 'milestone_payment_sent' && event.targetId === parseInt(userId)) {
+        return true;
+      }
+
       // User is the target of the event AND not the actor (no self-notifications)
       if (event.targetId === parseInt(userId) && event.actorId !== parseInt(userId)) return true;
 
@@ -91,8 +96,7 @@ export async function GET(request: NextRequest) {
         'project_pause_accepted',
         'project_pause_refused',
         'project_paused',
-        'invoice_paid',
-        'milestone_payment_received'
+        'invoice_paid'
       ];
 
       if (targetOnlyNotifications.includes(event.type)) {
@@ -171,8 +175,28 @@ export async function GET(request: NextRequest) {
       return false;
     };
 
+    // Filter out notifications for deleted projects to reduce noise
+    const validEvents = [];
+    for (const event of groupedEvents) {
+      if (event.context?.projectId) {
+        try {
+          const { UnifiedStorageService } = await import('../../../lib/storage/unified-storage-service');
+          const project = await UnifiedStorageService.getProjectById(event.context.projectId);
+          if (project) {
+            validEvents.push(event);
+          }
+          // Silently skip notifications for deleted projects
+        } catch (error) {
+          // Skip events for projects that can't be accessed
+        }
+      } else {
+        // Keep non-project events
+        validEvents.push(event);
+      }
+    }
+
     // Convert events to notifications
-    const notifications = groupedEvents.map(event => {
+    const notificationPromises = validEvents.map(async event => {
       // For gig-related events, actorId might be a freelancer ID, so we need to map it to user ID
       let actor;
       if (event.type === 'gig_applied' || event.type === 'gig_request_accepted') {
@@ -206,12 +230,20 @@ export async function GET(request: NextRequest) {
         iconPath = '/icons/task-rejected.png';
       }
 
+      const title = await generateGranularTitle(event, actor, project, projectTaskData, task);
+      const message = generateGranularMessage(event, actor, project, projectTaskData, task);
+
+      // Filter out notifications with null title or message (unknown event types)
+      if (title === null || message === null) {
+        return null;
+      }
+
       const notificationId = `${event.id}-${userId}`;
       return {
         id: notificationId,
         type: getNotificationType(event.type),
-        title: generateGranularTitle(event, actor, project, projectTaskData, task),
-        message: generateGranularMessage(event, actor, project, projectTaskData, task),
+        title,
+        message,
         timestamp: event.timestamp,
         isRead: NotificationStorage.isRead(notificationId, parseInt(userId)),
         user: shouldUseAvatar(event.type) ? {
@@ -241,12 +273,15 @@ export async function GET(request: NextRequest) {
       };
     });
 
+    const notifications = (await Promise.all(notificationPromises)).filter(notification => notification !== null);
+
     // Filter by tab
     let filteredNotifications = notifications;
     if (userType === 'freelancer') {
       if (tab === 'projects') {
         filteredNotifications = notifications.filter(n =>
-          ['task_submission', 'task_approved', 'task_rejected', 'project_pause_requested', 'project_pause_accepted'].includes(n.type)
+          ['task_submission', 'task_approved', 'task_rejected', 'project_pause_requested', 'project_pause_accepted',
+           'milestone_payment_received', 'invoice_paid'].includes(n.type)
         );
       } else if (tab === 'gigs') {
         filteredNotifications = notifications.filter(n =>
@@ -376,6 +411,7 @@ function getNotificationType(eventType: EventType): string {
     'user_logout': 'user_logout',
     'profile_updated': 'profile_updated',
     'milestone_payment_received': 'milestone_payment_received',
+    'milestone_payment_sent': 'milestone_payment_sent',
     'product_approved': 'product_approved',
     'product_rejected': 'product_rejected'
   };
@@ -465,7 +501,7 @@ function groupSimilarEvents(events: EventData[]): EventData[] {
   return [...groupedNotifications, ...ungrouped];
 }
 
-function generateGranularTitle(event: EventData, actor: any, _project?: any, projectTaskData?: any, task?: any): string {
+async function generateGranularTitle(event: EventData, actor: any, _project?: any, projectTaskData?: any, task?: any): Promise<string | null> {
   const actorName = actor?.name || 'Someone';
   const groupCount = event.metadata.groupCount;
 
@@ -473,12 +509,35 @@ function generateGranularTitle(event: EventData, actor: any, _project?: any, pro
     case 'task_submitted':
       return `${actorName} submitted a task`;
     case 'task_approved':
-      // Calculate remaining milestones (only count tasks that are not approved)
-      const remainingTasks = projectTaskData?.tasks?.filter((t: any) => t.status !== 'Approved' || !t.completed).length || 0;
-      if (remainingTasks === 0) {
-        return `${actorName} approved "${event.metadata.taskTitle}". This project is now complete`;
-      } else {
-        return `${actorName} approved "${event.metadata.taskTitle}". Only ${remainingTasks} milestone${remainingTasks !== 1 ? 's' : ''} remain${remainingTasks === 1 ? 's' : ''} for this project`;
+      // Use the new project completion detector for accurate milestone counts
+      try {
+        const { detectProjectCompletion } = await import('../../../lib/notifications/project-completion-detector');
+
+        // Handle both string and number project IDs
+        const projectId = event.context?.projectId;
+        if (!projectId) {
+          throw new Error('No project ID found in event context');
+        }
+
+        const completionStatus = await detectProjectCompletion(
+          projectId,
+          event.metadata.taskId
+        );
+
+        // For task approval notifications, show remaining milestones AFTER this approval
+        const remainingMilestones = Math.max(0, completionStatus.remainingTasks);
+
+        if (remainingMilestones === 0) {
+          // For final tasks, just mention it's the final submission without project completion text
+          // Project completion will be handled by a separate notification
+          return `${actorName} has approved your final submission of "${event.metadata.taskTitle}" for ${event.metadata.projectTitle || 'this project'}. Click here to see its project tracker.`;
+        } else {
+          return `${actorName} has approved your submission of "${event.metadata.taskTitle}" for ${event.metadata.projectTitle || 'this project'}. This project has ${remainingMilestones} milestone${remainingMilestones !== 1 ? 's' : ''} left. Click here to see its project tracker.`;
+        }
+      } catch (error) {
+        console.warn('Failed to detect project completion for notification message:', error);
+        // Fallback to simple message
+        return `${actorName} has approved your submission of "${event.metadata.taskTitle}" for ${event.metadata.projectTitle || 'this project'}. Click here to see its project tracker.`;
       }
     case 'task_rejected':
       return `${actorName} rejected "${event.metadata.taskTitle}". Revisions are required. View notes and resume progress`;
@@ -496,6 +555,8 @@ function generateGranularTitle(event: EventData, actor: any, _project?: any, pro
       return `${actorName} has paused ${event.metadata.projectTitle}`;
     case 'project_reactivated':
       return `${actorName} has re-activated ${event.metadata.projectTitle}. Work can now resume!`;
+    case 'project_completed':
+      return `${event.metadata.projectTitle || 'Project'} has been completed! All tasks have been approved. Click here to see the project summary.`;
     case 'gig_applied':
       if (groupCount && groupCount > 1) {
         return `${actorName} and ${groupCount - 1} others applied to "${event.metadata.gigTitle}"`;
@@ -510,7 +571,17 @@ function generateGranularTitle(event: EventData, actor: any, _project?: any, pro
     case 'invoice_paid':
       return `Your invoice for "${event.metadata.projectTitle || event.metadata.taskTitle || task?.title || 'project work'}" has been paid by ${actorName}`;
     case 'milestone_payment_received':
-      return `Your invoice for "${event.context?.milestoneTitle || task?.title || 'milestone'}" has been paid by ${actorName}`;
+      const organizationName = event.metadata.organizationName || actorName;
+      const amount = event.metadata.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      return `${organizationName} has paid ${amount} for your recent task submission. Click here to view invoice details`;
+    case 'milestone_payment_sent':
+      const freelancerName = event.metadata.freelancerName || 'freelancer';
+      const paidAmount = event.metadata.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      const taskTitle = event.metadata.taskTitle || 'task';
+      const projectTitle = event.metadata.projectTitle || 'this project';
+      const remainingBudget = event.metadata.remainingBudget;
+      const remainingBudgetText = remainingBudget !== undefined ? ` Remaining budget: $${remainingBudget.toLocaleString()}.` : '';
+      return `You just paid ${freelancerName} ${paidAmount} for submitting ${taskTitle} for ${projectTitle}.${remainingBudgetText} Click here to see transaction activity`;
     case 'product_purchased':
       return `You just made a new sale of "${event.metadata.productTitle}"`;
     case 'invoice_created':
@@ -525,13 +596,18 @@ function generateGranularTitle(event: EventData, actor: any, _project?: any, pro
       return `${event.metadata.organizationName || actorName} rejected your proposal`;
     case 'gig_rejected':
       return `${event.metadata.organizationName || actorName} rejected your application for "${event.metadata.gigTitle}"`;
+    case 'rating_prompt_freelancer':
+      return `Rate your experience with ${event.metadata.commissionerName}`;
+    case 'rating_prompt_commissioner':
+      return `Rate ${event.metadata.freelancerName}'s work`;
     default:
       // Skip generic events - they shouldn't reach here if properly filtered
-      return `Activity update`;
+      console.warn(`Unknown notification type: ${event.type}`, event);
+      return null; // Return null to filter out unknown events
   }
 }
 
-function generateGranularMessage(event: EventData, _actor: any, _project?: any, _projectTaskData?: any, task?: any): string {
+function generateGranularMessage(event: EventData, _actor: any, _project?: any, _projectTaskData?: any, task?: any): string | null {
   switch (event.type) {
     case 'task_submitted':
       return `"${event.metadata.taskTitle}" is awaiting your review`;
@@ -567,7 +643,17 @@ function generateGranularMessage(event: EventData, _actor: any, _project?: any, 
     case 'invoice_created':
       return `Invoice automatically generated for milestone completion`;
     case 'milestone_payment_received':
-      return `Payment of $${event.metadata.amount} for "${event.context?.milestoneTitle}" has been received`;
+      const organizationName = event.metadata.organizationName || 'Organization';
+      const amount = event.metadata.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      return `${organizationName} has paid ${amount} for your recent task submission. Click here to view invoice details`;
+    case 'milestone_payment_sent':
+      const freelancerName = event.metadata.freelancerName || 'freelancer';
+      const paidAmount = event.metadata.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      const taskTitle = event.metadata.taskTitle || 'task';
+      const projectTitle = event.metadata.projectTitle || 'this project';
+      const remainingBudget = event.metadata.remainingBudget;
+      const remainingBudgetText = remainingBudget !== undefined ? ` Remaining budget: $${remainingBudget.toLocaleString()}.` : '';
+      return `You just paid ${freelancerName} ${paidAmount} for submitting ${taskTitle} for ${projectTitle}.${remainingBudgetText} Click here to see transaction activity`;
     case 'product_purchased':
       return 'New sale on your storefront';
     case 'message_sent':
@@ -585,13 +671,16 @@ function generateGranularMessage(event: EventData, _actor: any, _project?: any, 
     case 'rating_prompt_commissioner':
       return event.metadata.message || `Rate ${event.metadata.freelancerName}'s work on ${event.metadata.projectTitle}`;
     default:
-      return 'Activity update';
+      console.warn(`Unknown notification message type: ${event.type}`, event);
+      return null; // Return null to filter out unknown events
   }
 }
 
 function generateNotificationLink(event: EventData, _project?: any, _task?: any): string {
   switch (event.type) {
     case 'task_approved':
+      // Always navigate to project tracking page for task approvals
+      return `/freelancer-dashboard/projects-and-invoices/project-tracking/${event.context?.projectId}`;
     case 'task_rejected':
     case 'task_rejected_with_comment':
       // Navigate to project tracking page
@@ -604,19 +693,31 @@ function generateNotificationLink(event: EventData, _project?: any, _task?: any)
       // Navigate to project tracking page with dynamic route
       return `/freelancer-dashboard/projects-and-invoices/project-tracking/${event.context?.projectId}`;
     case 'invoice_paid':
-    case 'milestone_payment_received':
       // Navigate to specific invoice if available, otherwise invoices page
       if (event.context?.invoiceNumber || event.metadata?.invoiceNumber) {
         const invoiceNumber = event.context?.invoiceNumber || event.metadata?.invoiceNumber;
         return `/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${invoiceNumber}`;
       }
       return `/freelancer-dashboard/projects-and-invoices/invoices`;
+    case 'milestone_payment_received':
+      // Navigate to invoice page to see invoice details
+      const invoiceNumber = event.metadata.invoiceNumber || event.context?.invoiceNumber;
+      if (invoiceNumber) {
+        return `/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${invoiceNumber}`;
+      }
+      return `/freelancer-dashboard/projects-and-invoices/invoices`;
+    case 'milestone_payment_sent':
+      // Navigate to payments page to see transaction activity
+      return `/commissioner-dashboard/payments`;
     case 'invoice_created':
       // Navigate to the auto-generated invoice
       return `/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${event.context?.invoiceId}`;
     case 'gig_applied':
-      // Navigate to gig applications page for commissioners
-      return `/commissioner-dashboard/gigs/applications?gigId=${event.context?.gigId}`;
+      // Navigate to job listings page for commissioners
+      if (event.context?.gigId) {
+        return `/commissioner-dashboard/job-listings?gigId=${event.context.gigId}`;
+      }
+      return `/commissioner-dashboard/job-listings`;
     case 'gig_request_sent':
       // Navigate to gig requests page with details open
       return `/freelancer-dashboard/gig-requests?requestId=${event.context?.requestId}&open=true`;
@@ -624,11 +725,20 @@ function generateNotificationLink(event: EventData, _project?: any, _task?: any)
       // Navigate to product inventory page
       return `/freelancer-dashboard/storefront/product-inventory`;
     case 'rating_prompt_freelancer':
-      // Navigate to project tracking page where rating UI will be available
-      return `/freelancer-dashboard/projects-and-invoices/project-tracking/${event.context?.projectId}`;
+      // Navigate to completed projects tab where rating UI will be available
+      return `/freelancer-dashboard/projects-and-invoices/project-list?status=completed`;
     case 'rating_prompt_commissioner':
-      // Navigate to project tracking page where rating UI will be available
-      return `/commissioner-dashboard/projects-and-invoices/project-tracking/${event.context?.projectId}`;
+      // Navigate to completed projects page where rating UI will be available
+      return `/commissioner-dashboard/projects-and-invoices/project-list?status=completed`;
+    case 'task_submitted':
+      // Navigate to tasks to review page for commissioners
+      if (event.context?.projectId && event.context?.taskId) {
+        return `/commissioner-dashboard/projects-and-invoices/tasks-to-review?projectId=${event.context.projectId}&taskId=${event.context.taskId}`;
+      }
+      return `/commissioner-dashboard/projects-and-invoices/tasks-to-review`;
+    case 'gig_rejected':
+      // Navigate to gig explore page to see available gigs
+      return `/freelancer-dashboard/gigs/explore-gigs`;
     default:
       return '#';
   }

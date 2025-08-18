@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755452388354_1755452023437",
+  "timestamp": "2025-08-17T17:33:43.437Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1755452388354,
+  "metadata": {
+    "taskId": 1755452388354,
+    "taskTitle": "Phase 3: Algorithms corrupt curated",
+    "projectTitle": "Web 3 Graphic Design Asssets ",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-002",
+    "taskId": 1755452388354
+  }
+}

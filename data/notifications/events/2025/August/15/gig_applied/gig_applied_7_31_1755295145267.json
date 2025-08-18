@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_7_31_1755295145267",
+  "timestamp": "2025-08-15T21:59:05.267Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "7",
+  "metadata": {
+    "gigTitle": "Digital Signage Content Management",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 7,
+    "applicationId": 1755193217241
+  }
+}

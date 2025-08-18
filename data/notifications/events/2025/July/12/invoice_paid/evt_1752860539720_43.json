@@ -1,0 +1,21 @@
+{
+  "id": "evt_1752860539720_43",
+  "timestamp": "2025-07-13T00:00:00.000Z",
+  "type": "invoice_paid",
+  "notificationType": 41,
+  "actorId": 33,
+  "targetId": 31,
+  "entityType": 5,
+  "entityId": "CUSTOM-001-M1",
+  "metadata": {
+    "invoiceNumber": "CUSTOM-001-M1",
+    "projectTitle": "Custom Brand Consultation",
+    "taskTitle": "Brand strategy consultation",
+    "amount": 1200,
+    "description": "Brand strategy consultation"
+  },
+  "context": {
+    "projectId": null,
+    "invoiceId": "CUSTOM-001-M1"
+  }
+}

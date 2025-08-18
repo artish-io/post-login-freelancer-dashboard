@@ -3,6 +3,7 @@ import path from 'path';
 import { readFile } from 'fs/promises';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { fetchWalletSummary, isWalletLedgerReadsEnabled, centsToDisplay } from '@/lib/wallet/adapters';
 import {
   parseISO,
   subDays,
@@ -34,6 +35,28 @@ export async function GET(req: Request) {
     const userId = parseInt(session.user.id);
     const url = new URL(req.url);
     const range = url.searchParams.get('range') || 'month';
+
+    // Use new wallet ledger reads if enabled
+    if (isWalletLedgerReadsEnabled()) {
+      console.log('🔄 Using wallet ledger reads for summary');
+      const summary = await fetchWalletSummary(userId, range);
+
+      return NextResponse.json({
+        range: summary.range,
+        currentTotal: centsToDisplay(summary.totalEarningsCents),
+        lastWeekTotal: centsToDisplay(summary.totalEarningsCents), // TODO: Implement weekly calculation
+        previousTotal: centsToDisplay(summary.previousTotalCents),
+        monthlyGrowthPercent: 0, // TODO: Implement growth calculation
+        dailyBreakdown: summary.dailyBreakdown,
+        // Additional fields for new format
+        totalEarningsCents: summary.totalEarningsCents,
+        previousTotalCents: summary.previousTotalCents,
+        availableBalanceCents: summary.availableBalanceCents,
+        transactionCount: summary.transactionCount
+      });
+    }
+
+    // Fallback to legacy implementation
 
     const historyRaw = await readFile(HISTORY_PATH, 'utf-8');
     const history: Transaction[] = JSON.parse(historyRaw);

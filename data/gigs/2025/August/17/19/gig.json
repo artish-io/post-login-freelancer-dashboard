@@ -1,0 +1,33 @@
+{
+  "id": 19,
+  "title": "Test Gig",
+  "organizationId": 1,
+  "commissionerId": 1,
+  "category": "Design",
+  "subcategory": "Logo Design",
+  "tags": [
+    "Design",
+    "Branding"
+  ],
+  "hourlyRateMin": 5.68,
+  "hourlyRateMax": 11.36,
+  "description": "Test gig description",
+  "deliveryTimeWeeks": 2.142857142857143,
+  "estimatedHours": 88,
+  "status": "Available",
+  "toolsRequired": [
+    "Figma",
+    "Illustrator"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "startType": "Immediately",
+  "endDate": "2025-09-01",
+  "lowerBudget": 500,
+  "upperBudget": 1000,
+  "postedDate": "2025-08-17",
+  "notes": "Budget range: $500 - $1,000",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

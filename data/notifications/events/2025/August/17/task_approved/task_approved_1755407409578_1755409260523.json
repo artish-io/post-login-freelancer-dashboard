@@ -1,0 +1,20 @@
+{
+  "id": "task_approved_1755407409578_1755409260523",
+  "timestamp": "2025-08-17T05:41:00.523Z",
+  "type": "task_approved",
+  "notificationType": 2,
+  "actorId": 35,
+  "targetId": 1,
+  "entityType": 1,
+  "entityId": 1755407409578,
+  "metadata": {
+    "taskTitle": "Testing & Launch",
+    "projectTitle": "Landing Page for Ticket Announcement",
+    "action": "approve",
+    "invoiceGenerated": true
+  },
+  "context": {
+    "projectId": "Z-003",
+    "taskId": 1755407409578
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "id": 21,
+  "title": "Landing Page for 2Baba 40-Year Concert",
+  "organizationId": 4,
+  "commissionerId": "35",
+  "category": "Engineering",
+  "subcategory": "Frontend Development",
+  "tags": [
+    "Frontend Development",
+    "UI/UX Design"
+  ],
+  "hourlyRateMin": 37.5,
+  "hourlyRateMax": 56.25,
+  "description": "We’re looking for a skilled frontend designer to create a vibrant, high-converting landing page for 2Baba’s 20-year anniversary concert ticket sales. The page should capture the energy of the milestone event while making ticket purchase seamless and mobile-friendly. The design will serve as both a celebration of 2Baba’s legacy and a powerful tool for driving sales.",
+  "deliveryTimeWeeks": 2,
+  "estimatedHours": 80,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "VS Code",
+    "Figma",
+    "React"
+  ],
+  "executionMethod": "milestone",
+  "invoicingMethod": "milestone",
+  "milestones": [
+    {
+      "id": "27f9dd42-7dd6-4fa1-9d94-a7c1931ce9d8",
+      "title": "Wireframe & Visual Design ",
+      "description": "Develop page layout, color schemes, and branding concepts aligned with 2Baba’s anniversary theme.\n",
+      "startDate": "2025-08-17T04:00:00.000Z",
+      "endDate": "2025-08-21T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "4365b0e2-875e-4ec5-8e70-27e3ebb0a600",
+      "title": "Frontend Development",
+      "description": "Build a fully responsive landing page with integrated ticketing functionality and smooth user flow.",
+      "startDate": "2025-08-22T04:00:00.000Z",
+      "endDate": "2025-08-27T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "dc022264-e450-4fe2-ada1-b718ee1d7a9e",
+      "title": "Testing & Launch",
+      "description": "Optimize for performance, test across devices, and deliver a polished page ready for live ticket sales.",
+      "startDate": "2025-08-28T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 3000,
+  "upperBudget": 4500,
+  "postedDate": "2025-08-17",
+  "notes": "Budget range: $3,000 - $4,500",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false,
+  "briefFile": {
+    "name": "Alberta Aid Assessment Details.pdf",
+    "size": 52543,
+    "type": "application/pdf"
+  }
+}

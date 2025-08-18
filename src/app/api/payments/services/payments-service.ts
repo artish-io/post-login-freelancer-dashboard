@@ -137,6 +137,7 @@ export class PaymentsService {
     freelancerId: number;
     projectId: string;
     source: string;
+    invoiceType?: 'milestone' | 'completion'; // Add this parameter
   }): Promise<{ success: boolean; paymentId?: string; amount?: number; error?: string }> {
     try {
       console.log(`💳 Processing payment:`, {
@@ -145,8 +146,36 @@ export class PaymentsService {
         from: `Commissioner ${params.commissionerId}`,
         to: `Freelancer ${params.freelancerId}`,
         project: params.projectId,
-        source: params.source
+        source: params.source,
+        invoiceType: params.invoiceType
       });
+
+      // Derive invoiceType from project if not provided
+      let actualInvoiceType = params.invoiceType;
+      if (!actualInvoiceType) {
+        try {
+          const { UnifiedStorageService } = await import('../../../../lib/storage/unified-storage-service');
+          const project = await UnifiedStorageService.getProjectById(params.projectId);
+          if (project) {
+            actualInvoiceType = project.invoicingMethod;
+            console.log(`📋 Derived invoiceType from project: ${actualInvoiceType}`);
+          }
+        } catch (projectError) {
+          console.warn('Failed to derive invoiceType from project:', projectError);
+        }
+      } else {
+        // Validate provided invoiceType against project's actual invoicing method
+        try {
+          const { UnifiedStorageService } = await import('../../../../lib/storage/unified-storage-service');
+          const project = await UnifiedStorageService.getProjectById(params.projectId);
+          if (project && project.invoicingMethod !== actualInvoiceType) {
+            console.warn(`⚠️ Provided invoiceType '${actualInvoiceType}' mismatches project's actual invoicing method '${project.invoicingMethod}'. Using project's method.`);
+            actualInvoiceType = project.invoicingMethod;
+          }
+        } catch (projectError) {
+          console.warn('Failed to validate invoiceType against project:', projectError);
+        }
+      }
 
       // Call test gateway to actually process the payment
       const { processMockPayment } = await import('../utils/gateways/test-gateway');
@@ -181,6 +210,28 @@ export class PaymentsService {
 
       console.log(`📄 Invoice ${params.invoiceNumber} status updated to 'paid'`);
 
+      // Update project's paidToDate field
+      try {
+        const { UnifiedStorageService } = await import('../../../../lib/storage/unified-storage-service');
+        const project = await UnifiedStorageService.getProjectById(params.projectId);
+
+        if (project) {
+          const currentPaidToDate = Number(project.paidToDate) || 0;
+          const newPaidToDate = currentPaidToDate + params.amount;
+
+          await UnifiedStorageService.writeProject({
+            ...project,
+            paidToDate: newPaidToDate,
+            updatedAt: new Date().toISOString()
+          });
+
+          console.log(`💰 Project ${params.projectId} paidToDate updated: ${currentPaidToDate} -> ${newPaidToDate}`);
+        }
+      } catch (projectUpdateError) {
+        console.error('⚠️ Failed to update project paidToDate:', projectUpdateError);
+        // Don't fail the payment if project update fails - log and continue
+      }
+
       // Record transaction in hierarchical storage
       try {
         const { HierarchicalTransactionService } = await import('../../../../lib/storage/hierarchical-transaction-service');
@@ -208,6 +259,27 @@ export class PaymentsService {
       } catch (transactionError) {
         console.error('⚠️ Failed to record transaction in hierarchical storage:', transactionError);
         // Don't fail the payment if transaction recording fails - log and continue
+      }
+
+      // 🔔 Only emit bus event for milestone-based projects
+      if (actualInvoiceType === 'milestone') {
+        try {
+          const busModule = await import('../../../../lib/events/bus');
+          await busModule.emit('invoice.paid', {
+            actorId: params.commissionerId,
+            targetId: params.freelancerId,
+            projectId: params.projectId,
+            invoiceNumber: params.invoiceNumber,
+            amount: params.amount,
+            projectTitle: undefined, // Could be fetched if needed
+          });
+          console.log(`🔔 Emitted invoice.paid event for milestone project ${params.projectId}`);
+        } catch (busError) {
+          console.warn('[payments.service] bus emit failed:', busError);
+          // Don't fail the payment if bus emission fails
+        }
+      } else {
+        console.log(`ℹ️ Skipping payment notification for ${actualInvoiceType}-based project`);
       }
 
       return {

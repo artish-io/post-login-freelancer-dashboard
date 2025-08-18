@@ -1,0 +1,25 @@
+{
+  "taskId": 1755414226149,
+  "projectId": "Z-004",
+  "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+  "organizationId": 4,
+  "projectTypeTags": [
+    "Frontend Development",
+    "UI/UX Design"
+  ],
+  "title": "Frontend Development",
+  "status": "Approved",
+  "completed": true,
+  "order": 2,
+  "link": "bit.ly3343",
+  "dueDate": "2025-08-17T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Build a fully responsive landing page with integrated ticketing functionality and smooth user flow.",
+  "submittedDate": "2025-08-17T06:53:53.069Z",
+  "approvedDate": "2025-08-17T07:02:39.569Z",
+  "createdDate": "2025-08-17T06:51:19.657Z",
+  "lastModified": "2025-08-17T07:02:39.569Z"
+}

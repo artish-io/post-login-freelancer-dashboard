@@ -1,0 +1,25 @@
+{
+  "taskId": 1755407948690,
+  "projectId": "Z-003",
+  "projectTitle": "Landing Page for Ticket Announcement",
+  "organizationId": 4,
+  "projectTypeTags": [
+    "Frontend Development",
+    "UI/UX Design"
+  ],
+  "title": "Frontend Development",
+  "status": "Approved",
+  "completed": true,
+  "order": 2,
+  "link": "bit.ly2343434",
+  "dueDate": "2025-08-17T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 2,
+  "description": "Build a fully responsive landing page with integrated ticketing functionality and smooth user flow.",
+  "submittedDate": "2025-08-17T05:06:47.143Z",
+  "approvedDate": "2025-08-17T05:34:33.529Z",
+  "createdDate": "2025-08-17T05:03:24.179Z",
+  "lastModified": "2025-08-17T05:34:33.529Z"
+}

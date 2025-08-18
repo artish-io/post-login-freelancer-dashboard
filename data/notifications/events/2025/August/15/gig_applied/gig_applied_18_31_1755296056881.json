@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_18_31_1755296056881",
+  "timestamp": "2025-08-15T22:14:16.881Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "18",
+  "metadata": {
+    "gigTitle": "Product Specification for Data Farm Handbook Cover Graphic",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 18,
+    "applicationId": 1755193217243
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "milestone_payment_sent_Z-003_1755408875323",
+  "timestamp": "2025-08-17T05:34:35.323Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 10,
+  "entityId": "Z-003_Frontend Development",
+  "metadata": {
+    "taskTitle": "Frontend Development",
+    "amount": 1500,
+    "freelancerName": "Tobi Philly",
+    "invoiceNumber": "TB-003",
+    "projectBudget": 4500,
+    "projectTitle": "Landing Page for Ticket Announcement",
+    "priority": "medium",
+    "remainingBudget": 3000
+  },
+  "context": {
+    "projectId": "Z-003",
+    "taskTitle": "Frontend Development",
+    "invoiceNumber": "TB-003",
+    "freelancerId": 1
+  }
+}

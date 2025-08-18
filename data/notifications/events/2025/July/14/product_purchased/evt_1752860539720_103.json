@@ -1,0 +1,18 @@
+{
+  "id": "evt_1752860539720_103",
+  "timestamp": "2025-07-15T00:00:00.000Z",
+  "type": "product_purchased",
+  "notificationType": 50,
+  "actorId": 8,
+  "targetId": 32,
+  "entityType": 6,
+  "entityId": "#102001",
+  "metadata": {
+    "productTitle": "Project Management Templates",
+    "amount": 25,
+    "buyerName": "Emily Rodriguez"
+  },
+  "context": {
+    "productId": "#102001"
+  }
+}

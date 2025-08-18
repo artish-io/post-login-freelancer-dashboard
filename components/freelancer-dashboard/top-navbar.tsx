@@ -30,12 +30,23 @@ export default function TopNavbar({
     const fetchProfile = async () => {
       try {
         const res = await fetch(`/api/user/profile/${session.user.id}`);
-        const data = await res.json();
 
-        setName(data.name || 'User');
+        if (!res.ok) {
+          console.warn(`Profile API returned ${res.status}: ${res.statusText}`);
+          // Use fallback values
+          setName(session.user.name || 'User');
+          setAvatar('/avatar.png');
+          return;
+        }
+
+        const data = await res.json();
+        setName(data.name || session.user.name || 'User');
         setAvatar(data.avatar || '/avatar.png');
       } catch (error) {
         console.error('Failed to fetch avatar for top navbar:', error);
+        // Use fallback values from session
+        setName(session.user.name || 'User');
+        setAvatar('/avatar.png');
       }
     };
 

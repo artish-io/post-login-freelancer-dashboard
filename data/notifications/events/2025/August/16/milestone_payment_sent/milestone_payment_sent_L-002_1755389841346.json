@@ -1,0 +1,24 @@
+{
+  "id": "milestone_payment_sent_L-002_1755389841346",
+  "timestamp": "2025-08-17T00:17:21.346Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 32,
+  "targetId": 32,
+  "entityType": 10,
+  "entityId": "L-002_Initial research and data collections",
+  "metadata": {
+    "taskTitle": "Initial research and data collections",
+    "amount": 5000,
+    "freelancerName": "Margsate Flether",
+    "invoiceNumber": "NM-002",
+    "priority": "medium",
+    "remainingBudget": 5000
+  },
+  "context": {
+    "projectId": "L-002",
+    "taskTitle": "Initial research and data collections",
+    "invoiceNumber": "NM-002",
+    "freelancerId": 31
+  }
+}

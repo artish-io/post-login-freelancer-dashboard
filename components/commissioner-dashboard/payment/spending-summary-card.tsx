@@ -20,20 +20,23 @@ type Props = {
   isCleanVersion?: boolean;
 };
 
-export default function SpendingSummaryCard({ 
-  range = 'month', 
-  onToggleChart, 
+export default function SpendingSummaryCard({
+  range = 'month',
+  onToggleChart,
   showChart = false,
-  isCleanVersion = false 
+  isCleanVersion = false
 }: Props) {
   const [totalSpending, setTotalSpending] = useState<number>(0);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [summary, setSummary] = useState<SpendingSummary | null>(null);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
 
   useEffect(() => {
     const fetchSpendingSummary = async () => {
       try {
-        const res = await fetch(`/api/commissioner-dashboard/payments/spending-summary?range=${range}`);
+        // Add timestamp to prevent caching
+        const timestamp = Date.now();
+        const res = await fetch(`/api/commissioner-dashboard/payments/spending-summary?range=${range}&t=${timestamp}`);
         const data: SpendingSummary = await res.json();
 
         setTotalSpending(data.currentTotal);
@@ -45,7 +48,16 @@ export default function SpendingSummaryCard({
       }
     };
     fetchSpendingSummary();
-  }, [range]);
+  }, [range, refreshKey]);
+
+  // Auto-refresh every 30 seconds to catch new payments
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRefreshKey(prev => prev + 1);
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

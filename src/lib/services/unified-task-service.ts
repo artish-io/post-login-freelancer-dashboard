@@ -99,7 +99,8 @@ export class UnifiedTaskService {
       rejected: false,
       submittedDate: new Date().toISOString(),
       lastModified: new Date().toISOString(),
-      version: (task.version || 1) + 1,
+      // Only increment version if task was previously rejected (resubmission)
+      version: task.rejected ? (task.version || 1) + 1 : (task.version || 1),
       link: options.referenceUrl || task.link
     };
 

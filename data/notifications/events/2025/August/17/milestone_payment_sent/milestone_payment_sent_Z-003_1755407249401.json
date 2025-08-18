@@ -1,0 +1,24 @@
+{
+  "id": "milestone_payment_sent_Z-003_1755407249401",
+  "timestamp": "2025-08-17T05:07:29.401Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 10,
+  "entityId": "Z-003_Wireframe & Visual Design",
+  "metadata": {
+    "taskTitle": "Wireframe & Visual Design",
+    "amount": 1500,
+    "freelancerName": "Tobi Philly",
+    "invoiceNumber": "TB-001",
+    "priority": "medium",
+    "remainingBudget": 3000
+  },
+  "context": {
+    "projectId": "Z-003",
+    "taskTitle": "Wireframe & Visual Design",
+    "invoiceNumber": "TB-001",
+    "freelancerId": 1
+  }
+}

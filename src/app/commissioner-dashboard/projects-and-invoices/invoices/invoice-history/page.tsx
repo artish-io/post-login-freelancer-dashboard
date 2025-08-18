@@ -197,7 +197,14 @@ export default function InvoiceHistoryPage() {
         filtered.sort((a, b) => a.invoiceNumber.localeCompare(b.invoiceNumber));
         break;
       case 'date-desc':
-        filtered.sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime());
+        filtered.sort((a, b) => {
+          // Prioritize timestamp fields (with time) over issueDate (date only) for accurate "recently sent" ordering
+          const aTimestamp = (a as any).createdAt || (a as any).generatedAt || (a as any).sentDate || (a as any).updatedAt;
+          const bTimestamp = (b as any).createdAt || (b as any).generatedAt || (b as any).sentDate || (b as any).updatedAt;
+          const aDate = aTimestamp ? new Date(aTimestamp).getTime() : new Date(a.issueDate).getTime();
+          const bDate = bTimestamp ? new Date(bTimestamp).getTime() : new Date(b.issueDate).getTime();
+          return bDate - aDate; // Most recent first
+        });
         break;
       case 'amount-desc':
         filtered.sort((a, b) => b.totalAmount - a.totalAmount);
@@ -206,7 +213,14 @@ export default function InvoiceHistoryPage() {
         filtered.sort((a, b) => a.freelancer.name.localeCompare(b.freelancer.name));
         break;
       default:
-        filtered.sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime());
+        filtered.sort((a, b) => {
+          // Prioritize timestamp fields (with time) over issueDate (date only) for accurate "recently sent" ordering
+          const aTimestamp = (a as any).createdAt || (a as any).generatedAt || (a as any).sentDate || (a as any).updatedAt;
+          const bTimestamp = (b as any).createdAt || (b as any).generatedAt || (b as any).sentDate || (b as any).updatedAt;
+          const aDate = aTimestamp ? new Date(aTimestamp).getTime() : new Date(a.issueDate).getTime();
+          const bDate = bTimestamp ? new Date(bTimestamp).getTime() : new Date(b.issueDate).getTime();
+          return bDate - aDate; // Most recent first
+        });
         break;
     }
 

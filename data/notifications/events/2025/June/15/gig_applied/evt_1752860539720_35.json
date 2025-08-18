@@ -1,0 +1,18 @@
+{
+  "id": "evt_1752860539720_35",
+  "timestamp": "2025-06-16T00:00:00.000Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 29,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": 5,
+  "metadata": {
+    "gigTitle": "Interactive Park Map Web App",
+    "applicationMessage": "Application submitted"
+  },
+  "context": {
+    "gigId": 5,
+    "applicationId": 1
+  }
+}

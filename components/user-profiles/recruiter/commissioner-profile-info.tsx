@@ -101,44 +101,48 @@ export default function CommissionerProfileInfo({
           {canEdit && !showAddResponsibility && (
             <button
               onClick={() => setShowAddResponsibility(true)}
-              className="inline-flex items-center gap-2 px-3 py-2 border-2 border-dashed border-gray-300 text-gray-500 rounded-full text-sm hover:border-gray-400 hover:text-gray-700 transition-colors"
+              className="inline-flex items-center justify-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 border-2 border-dashed border-gray-300 text-gray-500 rounded-full text-sm sm:text-base hover:border-gray-400 hover:text-gray-700 transition-colors min-w-fit"
             >
-              <div className="w-4 h-4 rounded-full bg-[#FCD5E3] flex items-center justify-center">
-                <Plus className="w-3 h-3" />
+              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#FCD5E3] flex items-center justify-center">
+                <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
               </div>
-              Add
+              <span className="text-center font-medium">Add</span>
             </button>
           )}
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 sm:gap-3">
           {localResponsibilities.map((responsibility, index) => (
             <div
               key={index}
-              className="group flex items-center gap-2 px-3 py-2 bg-[#FCD5E3] rounded-full"
+              className="group inline-flex items-center justify-center px-3 py-2 sm:px-4 sm:py-2.5 rounded-full border border-white/20 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
+              style={{
+                backgroundColor: '#FCD5E3',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+              }}
             >
-              <span className="text-sm font-medium text-gray-800">
+              <span className="text-sm sm:text-base font-medium text-gray-800 whitespace-nowrap">
                 {responsibility}
               </span>
               {canEdit && (
                 <button
                   onClick={() => handleRemoveResponsibility(responsibility)}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600"
+                  className="opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600 flex items-center justify-center ml-2"
                 >
-                  <X className="w-3 h-3" />
+                  <X className="w-3 h-3 sm:w-4 sm:h-4" />
                 </button>
               )}
             </div>
           ))}
 
           {showAddResponsibility && (
-            <div className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-full">
+            <div className="flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 bg-gray-100 rounded-full border border-white/20 backdrop-blur-sm min-w-fit">
               <input
                 type="text"
                 value={newResponsibility}
                 onChange={(e) => setNewResponsibility(e.target.value)}
                 placeholder="Add responsibility..."
-                className="bg-transparent text-sm outline-none min-w-[120px]"
+                className="bg-transparent text-sm sm:text-base outline-none min-w-[120px] sm:min-w-[140px] text-center font-medium"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
                     handleAddResponsibility();
@@ -151,18 +155,18 @@ export default function CommissionerProfileInfo({
               />
               <button
                 onClick={handleAddResponsibility}
-                className="text-green-600 hover:text-green-700 transition-colors"
+                className="text-green-600 hover:text-green-700 transition-colors flex items-center justify-center"
               >
-                <Plus size={14} />
+                <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
               <button
                 onClick={() => {
                   setShowAddResponsibility(false);
                   setNewResponsibility('');
                 }}
-                className="text-gray-600 hover:text-red-600 transition-colors"
+                className="text-gray-600 hover:text-red-600 transition-colors flex items-center justify-center"
               >
-                <X size={14} />
+                <X className="w-3 h-3 sm:w-4 sm:h-4" />
               </button>
             </div>
           )}

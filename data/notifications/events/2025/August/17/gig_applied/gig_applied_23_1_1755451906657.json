@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_23_1_1755451906657",
+  "timestamp": "2025-08-17T17:31:46.657Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "23",
+  "metadata": {
+    "gigTitle": "Web 3 Graphic Design Asssets ",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 23,
+    "applicationId": 1755193217247
+  }
+}

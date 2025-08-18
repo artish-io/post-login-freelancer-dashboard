@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_15_31_1755289776579",
+  "timestamp": "2025-08-15T20:29:36.579Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "15",
+  "metadata": {
+    "gigTitle": "Market Research for Longer Divide",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 15,
+    "applicationId": 1755193217240
+  }
+}

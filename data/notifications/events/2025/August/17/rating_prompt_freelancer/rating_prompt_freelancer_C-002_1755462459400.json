@@ -1,0 +1,25 @@
+{
+  "id": "rating_prompt_freelancer_C-002_1755462459400",
+  "timestamp": "2025-08-17T20:27:39.400Z",
+  "type": "rating_prompt_freelancer",
+  "notificationType": 140,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 1,
+  "entityId": "C-002",
+  "metadata": {
+    "projectTitle": "Web 3 Graphic Design Asssets ",
+    "commissionerName": "Matte Hannery",
+    "completedTaskTitle": "Phase 3: Algorithms corrupt curated",
+    "message": "All tasks for Web 3 Graphic Design Asssets  have been approved. Click here to rate your collaboration with Matte Hannery.",
+    "ratingSubjectId": 34,
+    "ratingSubjectType": "commissioner",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "C-002",
+    "ratingSubjectUserId": 34,
+    "ratingSubjectUserType": "commissioner",
+    "action": "rate_commissioner"
+  }
+}

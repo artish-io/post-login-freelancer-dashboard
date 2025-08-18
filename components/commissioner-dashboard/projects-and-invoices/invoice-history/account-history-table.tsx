@@ -67,7 +67,7 @@ export default function AccountHistoryTable({ projects, onProjectClick, loading 
         <AnimatePresence mode="wait">
           {projects.map((project, index) => (
             <motion.div
-              key={project.invoiceNumber}
+              key={`project-${project.invoiceNumber}-${project.projectId}-${index}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}

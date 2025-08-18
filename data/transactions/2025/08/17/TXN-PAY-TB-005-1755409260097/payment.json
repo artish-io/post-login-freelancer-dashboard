@@ -1,0 +1,19 @@
+{
+  "userId": 1,
+  "type": "payment",
+  "amount": 1500,
+  "currency": "USD",
+  "timestamp": "2025-08-17T05:41:00.097Z",
+  "status": "completed",
+  "invoiceNumber": "TB-005",
+  "projectId": "Z-003",
+  "commissionerId": 35,
+  "freelancerId": 1,
+  "source": "auto_milestone",
+  "paymentMethod": "mock",
+  "gatewayTransactionId": "TXN-TB-005",
+  "description": "Payment for invoice TB-005",
+  "transactionId": "TXN-PAY-TB-005-1755409260097",
+  "createdAt": "2025-08-17T05:41:00.097Z",
+  "updatedAt": "2025-08-17T05:41:00.097Z"
+}

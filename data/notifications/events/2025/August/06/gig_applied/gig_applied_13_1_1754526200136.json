@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_13_1_1754526200136",
+  "timestamp": "2025-08-07T00:23:20.136Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "13",
+  "metadata": {
+    "gigTitle": "Event Venue 3D Visualization",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 13,
+    "applicationId": 19
+  }
+}

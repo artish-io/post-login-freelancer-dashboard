@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 export interface NotificationData {
   id: string;
-  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'project_pause_requested' | 'project_pause_refused' | 'project_paused' | 'project_pause_reminder' | 'project_activated' | 'project_reactivated' | 'gig_request' | 'gig_request_accepted' | 'gig_rejected' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase' | 'task_submitted' | 'job_application' | 'invoice_reminder' | 'invoice_overdue_reminder' | 'milestone_payment_received' | 'task_rejected_with_comment';
+  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'project_pause_requested' | 'project_pause_refused' | 'project_paused' | 'project_pause_reminder' | 'project_activated' | 'project_reactivated' | 'gig_request' | 'gig_request_accepted' | 'gig_rejected' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase' | 'task_submitted' | 'job_application' | 'invoice_reminder' | 'invoice_overdue_reminder' | 'milestone_payment_received' | 'milestone_payment_sent' | 'task_rejected_with_comment';
   title: string;
   message: string;
   timestamp: string;
@@ -92,6 +92,10 @@ const getNotificationIcon = (type: string, notification: NotificationData): stri
       return '/icons/invoice-reminder.png';
     case 'invoice_overdue_reminder':
       return '/icons/invoice-overdue.png';
+    case 'milestone_payment_received':
+      return '/icons/new-payment.png';
+    case 'milestone_payment_sent':
+      return '/icons/new-payment.png';
     case 'project_accepted':
       return '/icons/project-accepted.png';
     default:
