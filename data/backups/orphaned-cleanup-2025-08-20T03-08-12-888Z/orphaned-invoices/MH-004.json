@@ -1,0 +1,15 @@
+{
+  "invoiceNumber": "MH-004",
+  "projectId": "C-005",
+  "freelancerId": 1,
+  "commissionerId": 34,
+  "totalAmount": 300,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-20T02:53:34.702Z",
+  "createdAt": "2025-08-20T02:53:34.702Z",
+  "paidDate": "2025-08-20T02:53:35.210Z",
+  "updatedAt": "2025-08-20T02:53:35.597Z"
+}

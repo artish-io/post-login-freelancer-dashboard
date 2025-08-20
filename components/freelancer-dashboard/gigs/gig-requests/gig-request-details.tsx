@@ -74,9 +74,30 @@ const GigRequestDetails: React.FC<Props> = ({ request }) => {
 
       if (res.ok) {
         const result = await res.json();
-        showSuccessToast('Offer Accepted', `Offer accepted successfully! Project #${result.projectId} has been created.`);
-        setShowAcceptModal(false);
 
+        // 🚀 ENHANCED SUCCESS HANDLING: Different messages for completion vs milestone projects
+        if (result.invoicingMethod === 'completion') {
+          // Completion project with upfront payment
+          if (result.upfrontPayment?.status === 'paid') {
+            showSuccessToast(
+              'Offer Accepted & Payment Processed',
+              `Project #${result.projectId} created successfully! Upfront payment of $${result.upfrontPayment.amount} has been processed.`
+            );
+          } else {
+            // This shouldn't happen due to backend guards, but handle gracefully
+            showErrorToast(
+              'Payment Processing Failed',
+              'Project creation failed due to payment processing issues. Please try again.'
+            );
+            setSubmitting(false);
+            return;
+          }
+        } else {
+          // Milestone project (standard flow)
+          showSuccessToast('Offer Accepted', `Offer accepted successfully! Project #${result.projectId} has been created.`);
+        }
+
+        setShowAcceptModal(false);
         // Trigger a page refresh to update the UI state
         window.location.reload();
       } else {

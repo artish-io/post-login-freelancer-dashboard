@@ -449,7 +449,7 @@ export async function executeCommissionerMatchingTransaction(
             projectId: results.create_project?.projectId || 0,
             freelancerId: params.freelancerId,
             commissionerId: params.commissionerId,
-            taskTitle: 'Upfront Payment',
+            taskTitle: '12% Upfront Payment',
             projectTitle: params.gigData.title,
             invoiceType: 'completion' as const,
             amount: (params.gigData.totalBudget || 5000) * 0.12 // 12% upfront

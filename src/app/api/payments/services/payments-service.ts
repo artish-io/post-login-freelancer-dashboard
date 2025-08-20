@@ -182,7 +182,7 @@ export class PaymentsService {
 
       const mockInvoice = {
         invoiceNumber: params.invoiceNumber,
-        projectId: parseInt(params.projectId) || 0, // Convert string to number for interface
+        projectId: params.projectId, // Keep as string - project IDs can be alphanumeric like "Z-005"
         freelancerId: params.freelancerId,
         commissionerId: params.commissionerId,
         totalAmount: params.amount

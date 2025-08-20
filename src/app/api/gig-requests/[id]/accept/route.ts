@@ -235,46 +235,137 @@ export async function POST(
     const milestones = (gigData as any).milestones;
     const milestoneCount = milestones && Array.isArray(milestones) ? milestones.length : 1;
 
-    // Create new project with all required fields
-    const newProject = {
-      projectId: newProjectId,
-      id: newProjectId, // Fix Issue 2: Add 'id' field for frontend compatibility
-      title: gigRequest.title || gigData.title,
-      description: gigData.description,
-      organizationId: gigRequest.organizationId,
-      typeTags: gigData.tags || [],
-      manager: {
-        name: manager.name,
-        title: manager.title,
-        avatar: manager.avatar,
-        email: manager.email
-      },
-      commissionerId: gigRequest.commissionerId,
-      freelancerId: gigRequest.freelancerId,
-      status: 'ongoing' as const,
-      dueDate: (gigData as any).endDate || new Date(Date.now() + (gigData.deliveryTimeWeeks || 4) * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      totalTasks: milestoneCount,
-      invoicingMethod: (gigData as any).executionMethod || (gigData as any).invoicingMethod || 'completion', // CRITICAL: Use executionMethod from gig
-      budget: {
-        lower: (gigData as any).lowerBudget || gigRequest.budget || 0,
-        upper: (gigData as any).upperBudget || gigRequest.budget || 0,
-        currency: 'USD'
-      },
-      gigId: gigId, // Link to original gig (may be null for standalone requests)
-      createdAt: new Date().toISOString()
-    };
+    // 🚀 CRITICAL FIX: Determine invoicing method and create project accordingly
+    const invoicingMethod = (gigData as any).executionMethod || (gigData as any).invoicingMethod || 'completion';
+    const totalBudget = (gigData as any).upperBudget || gigRequest.budget || 0;
 
-    console.log(`🔍 Creating project:`, {
-      projectId: newProject.projectId,
-      title: newProject.title,
-      freelancerId: newProject.freelancerId,
-      commissionerId: newProject.commissionerId,
-      status: newProject.status,
-      totalTasks: newProject.totalTasks
-    });
+    console.log(`🔍 Creating ${invoicingMethod} project with budget: $${totalBudget}`);
 
-    // Save project using unified storage
-    await UnifiedStorageService.writeProject(newProject);
+    let newProject: any;
+
+    try {
+
+    if (invoicingMethod === 'completion') {
+      // 🔒 COMPLETION-BASED: Use completion project creation with upfront payment
+      try {
+        const completionProjectData = {
+          title: gigRequest.title || gigData.title,
+          description: gigData.description || gigRequest.notes || '',
+          totalBudget: totalBudget,
+          totalTasks: milestoneCount,
+          executionMethod: 'completion',
+          invoicingMethod: 'completion',
+          freelancerId: gigRequest.freelancerId,
+          commissionerId: gigRequest.commissionerId,
+          organizationId: gigRequest.organizationId,
+          gigId: gigId, // Link to original gig
+          dueDate: (gigData as any).endDate || new Date(Date.now() + (gigData.deliveryTimeWeeks || 4) * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+        };
+
+        console.log(`🔄 Calling completion project creation API...`);
+
+        // Call completion project creation route (includes upfront payment)
+        const completionResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/projects/completion/create`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': request.headers.get('Authorization') || ''
+          },
+          body: JSON.stringify(completionProjectData)
+        });
+
+        if (!completionResponse.ok) {
+          const errorText = await completionResponse.text();
+          console.error(`❌ Completion API failed with status ${completionResponse.status}:`, errorText);
+          throw new Error(`Completion project creation failed: ${errorText}`);
+        }
+
+        const completionResult = await completionResponse.json();
+
+        if (!completionResult.success) {
+          console.error('❌ Completion result failed:', completionResult);
+          throw new Error('Completion project creation failed: ' + (completionResult.error || 'Unknown error'));
+        }
+
+        newProject = {
+          ...completionResult.data.project,
+          // Ensure compatibility with existing frontend expectations
+          id: completionResult.data.project.projectId,
+          organizationId: gigRequest.organizationId,
+          typeTags: gigData.tags || [],
+          manager: {
+            name: manager.name,
+            title: manager.title,
+            avatar: manager.avatar,
+            email: manager.email
+          },
+          gigId: gigId
+        };
+
+        // 🛡️ CRITICAL GUARD: Verify upfront payment was successful
+        if (!newProject.upfrontPaid) {
+          console.error('❌ Upfront payment verification failed');
+          throw new Error('Upfront payment failed - project activation incomplete');
+        }
+
+        console.log(`✅ Completion project created successfully:`, {
+          projectId: newProject.projectId,
+          upfrontAmount: newProject.upfrontAmount,
+          upfrontPaid: newProject.upfrontPaid
+        });
+
+      } catch (error) {
+        console.error('❌ Completion project creation failed:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        throw new Error(`Failed to create completion project: ${errorMessage}`);
+      }
+
+    } else {
+      // 🔄 MILESTONE-BASED: Use existing milestone project creation
+      newProject = {
+        projectId: newProjectId,
+        id: newProjectId,
+        title: gigRequest.title || gigData.title,
+        description: gigData.description,
+        organizationId: gigRequest.organizationId,
+        typeTags: gigData.tags || [],
+        manager: {
+          name: manager.name,
+          title: manager.title,
+          avatar: manager.avatar,
+          email: manager.email
+        },
+        commissionerId: gigRequest.commissionerId,
+        freelancerId: gigRequest.freelancerId,
+        status: 'ongoing' as const,
+        dueDate: (gigData as any).endDate || new Date(Date.now() + (gigData.deliveryTimeWeeks || 4) * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        totalTasks: milestoneCount,
+        invoicingMethod: 'milestone',
+        budget: {
+          lower: (gigData as any).lowerBudget || gigRequest.budget || 0,
+          upper: (gigData as any).upperBudget || gigRequest.budget || 0,
+          currency: 'USD'
+        },
+        gigId: gigId,
+        createdAt: new Date().toISOString()
+      };
+
+      // Save milestone project using unified storage
+      await UnifiedStorageService.writeProject(newProject);
+      console.log(`✅ Milestone project created: ${newProject.projectId}`);
+    }
+
+    } catch (projectCreationError) {
+      console.error('❌ Project creation failed:', projectCreationError);
+      const errorMessage = projectCreationError instanceof Error ? projectCreationError.message : 'Unknown error';
+
+      return NextResponse.json({
+        success: false,
+        error: 'Failed to create project',
+        details: errorMessage,
+        invoicingMethod: invoicingMethod
+      }, { status: 400 });
+    }
 
     // Generate tasks from gig milestones or create default task
     const allProjects = await UnifiedStorageService.listProjects();
@@ -441,12 +532,34 @@ export async function POST(
       // Don't fail the main operation if event logging fails
     }
 
-    return NextResponse.json({
+    // 🎯 ENHANCED SUCCESS RESPONSE: Include payment information for completion projects
+    const responseData: any = {
       success: true,
-      message: 'Gig request accepted successfully and project created',
-      projectId: newProjectId,
-      request: gigRequest
-    });
+      projectId: newProject.projectId,
+      request: gigRequest,
+      invoicingMethod: newProject.invoicingMethod
+    };
+
+    if (invoicingMethod === 'completion') {
+      // Include upfront payment details for completion projects
+      responseData.message = 'Gig request accepted and upfront payment processed successfully';
+      responseData.upfrontPayment = {
+        amount: newProject.upfrontAmount,
+        status: newProject.upfrontPaid ? 'paid' : 'failed',
+        remainingBudget: newProject.remainingBudget
+      };
+      responseData.completionProject = {
+        upfrontPaid: newProject.upfrontPaid,
+        totalBudget: newProject.totalBudget,
+        upfrontAmount: newProject.upfrontAmount,
+        remainingBudget: newProject.remainingBudget
+      };
+    } else {
+      // Standard message for milestone projects
+      responseData.message = 'Gig request accepted successfully and project created';
+    }
+
+    return NextResponse.json(responseData);
   } catch (error) {
     console.error('Error accepting gig request:', error);
     return NextResponse.json(

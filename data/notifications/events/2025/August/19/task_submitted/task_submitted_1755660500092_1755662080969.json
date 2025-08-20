@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755660500092_1755662080969",
+  "timestamp": "2025-08-20T03:54:40.969Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1755660500092,
+  "metadata": {
+    "taskId": 1755660500092,
+    "taskTitle": "Phase One: Test Test Test",
+    "projectTitle": "Market Research for Web 3",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-005",
+    "taskId": 1755660500092
+  }
+}

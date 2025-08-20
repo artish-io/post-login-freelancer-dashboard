@@ -1,0 +1,19 @@
+{
+  "userId": 25,
+  "type": "payment",
+  "amount": 2904,
+  "currency": "USD",
+  "timestamp": "2025-08-20T08:08:49.425Z",
+  "status": "cancelled",
+  "invoiceNumber": "TB-012",
+  "projectId": "Z-005",
+  "commissionerId": 35,
+  "freelancerId": 25,
+  "source": "auto_milestone",
+  "paymentMethod": "mock",
+  "gatewayTransactionId": "TXN-TB-012",
+  "description": "CANCELLED: Premature final payment - task 2 still ongoing",
+  "transactionId": "TXN-PAY-TB-012-1755677329425",
+  "createdAt": "2025-08-20T08:08:49.425Z",
+  "updatedAt": "2025-08-20T08:08:49.425Z"
+}

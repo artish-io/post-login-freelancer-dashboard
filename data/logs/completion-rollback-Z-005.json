@@ -1,0 +1,56 @@
+{
+  "rollbackId": "ROLLBACK-Z-005-20250820",
+  "projectId": "Z-005",
+  "reason": "Premature final payment - task 2 still ongoing",
+  "rollbackDate": "2025-08-20T12:00:00.000Z",
+  "originalIssue": "System incorrectly triggered 88% final payment when only 1 of 2 tasks was approved",
+  "actionsPerformed": [
+    {
+      "action": "cancelled_invoice",
+      "file": "data/invoices/2025/August/19/Z-005/TB-012.json",
+      "details": "Changed status from 'paid' to 'cancelled', added cancellation reason"
+    },
+    {
+      "action": "updated_project_paid_amount",
+      "file": "data/projects/2025/08/20/Z-005/project.json", 
+      "details": "Reduced paidToDate from $2904 to $396 (only upfront payment)"
+    },
+    {
+      "action": "cancelled_transaction",
+      "file": "data/transactions/2025/08/20/TXN-PAY-TB-012-1755677329425/payment.json",
+      "details": "Changed status from 'completed' to 'cancelled'"
+    },
+    {
+      "action": "adjusted_wallet_balance",
+      "file": "data/payments/wallets.json",
+      "details": "Reduced freelancer (userId: 25) balance from $3564 to $660 (removed $2904 premature payment)"
+    },
+    {
+      "action": "marked_task_for_manual_invoice",
+      "file": "data/project-tasks/2025/08/20/Z-005/1755677555674-task.json",
+      "details": "Added manualInvoiceEligible: true, invoicePaid: false to approved task"
+    }
+  ],
+  "currentProjectState": {
+    "totalBudget": 3300,
+    "upfrontPaid": 396,
+    "remainingBudget": 2904,
+    "tasksTotal": 2,
+    "tasksApproved": 1,
+    "tasksOngoing": 1,
+    "readyForFinalPayout": false
+  },
+  "nextSteps": [
+    "Task 1 (Phase 1: Love Is Weyland) is approved and eligible for manual invoice creation",
+    "Task 2 (Phase 2: Child Prodigies and Silence) is still ongoing",
+    "Final payment should only trigger when Task 2 is also approved",
+    "Manual invoice for Task 1 should be calculated as: $2904 ÷ 2 remaining tasks = $1452"
+  ],
+  "verificationChecks": {
+    "projectStatus": "ongoing",
+    "invoiceIntegrity": "clean - no conflicting invoices",
+    "walletBalance": "corrected - removed premature payment",
+    "taskStates": "accurate - 1 approved, 1 ongoing",
+    "manualInvoiceEligibility": "ready for testing"
+  }
+}

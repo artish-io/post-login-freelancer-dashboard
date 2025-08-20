@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755620562276_1755638618251",
+  "timestamp": "2025-08-19T21:23:38.251Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1755620562276,
+  "metadata": {
+    "taskId": 1755620562276,
+    "taskTitle": "Phase 3: Anora is encouraged to create",
+    "projectTitle": "Design System For Icons Accenture",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-004",
+    "taskId": 1755620562276
+  }
+}

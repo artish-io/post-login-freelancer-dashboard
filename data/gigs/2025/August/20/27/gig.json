@@ -1,0 +1,45 @@
+{
+  "id": 27,
+  "title": "Marketing for 2Baba 40-Year Concert",
+  "organizationId": 3,
+  "commissionerId": "34",
+  "category": "Marketing",
+  "subcategory": "Event Marketing",
+  "tags": [
+    "Design"
+  ],
+  "hourlyRateMin": 62.5,
+  "hourlyRateMax": 75,
+  "description": "As an exotic dancer working in a strip club, Anora is encouraged to create an alter-ego, a construct that can appeal to the gendered expectations of the patrons who visit the strip club where she works. She creates Ani, a soft-spoken, coquettish femme who uses a practiced facade of submissiveness to coax dollars out of her patrons.",
+  "deliveryTimeWeeks": 0.42857142857142855,
+  "estimatedHours": 24,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Canva"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "1229c618-efb1-42e8-b361-b6748a127585",
+      "title": "Initial Research ",
+      "description": "Four horsemen.The club has clearly delineated rules by which the performers and patrons must abide, for good reason as Anora comes to find out.",
+      "startDate": "2025-08-20T04:00:00.000Z",
+      "endDate": "2025-08-22T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-22T04:00:00.000Z",
+  "lowerBudget": 1500,
+  "upperBudget": 1800,
+  "postedDate": "2025-08-20",
+  "notes": "Budget range: $1,500 - $1,800",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false,
+  "briefFile": {
+    "name": "transcript-Wed Aug 13 2025 11_12_37 GMT-0400 (Eastern Daylight Time).txt",
+    "size": 264,
+    "type": "text/plain"
+  }
+}

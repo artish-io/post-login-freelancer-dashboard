@@ -1,0 +1,47 @@
+[
+  {
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-005",
+    "context": {
+      "upfrontAmount": 396,
+      "projectTitle": "UX Research for Project: Y.U.T.A.N.I",
+      "remainingBudget": 2904,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "timestamp": "2025-08-20T07:12:10.341Z"
+  },
+  {
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-005",
+    "context": {
+      "upfrontAmount": 396,
+      "projectTitle": "UX Research for Project: Y.U.T.A.N.I",
+      "remainingBudget": 2904,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "timestamp": "2025-08-20T07:18:57.452Z"
+  },
+  {
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-005",
+    "context": {
+      "upfrontAmount": 396,
+      "projectTitle": "UX Research for Project: Y.U.T.A.N.I",
+      "remainingBudget": 2904,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "timestamp": "2025-08-20T07:37:17.082Z"
+  }
+]

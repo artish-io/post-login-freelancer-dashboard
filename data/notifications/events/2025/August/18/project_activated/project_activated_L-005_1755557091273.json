@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_L-005_1755557091273",
+  "timestamp": "2025-08-18T22:44:51.273Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 32,
+  "targetId": 31,
+  "entityType": 2,
+  "entityId": "L-005",
+  "metadata": {
+    "projectTitle": "Social Media Campaign Marketing",
+    "gigTitle": "Social Media Campaign Marketing",
+    "taskCount": 3,
+    "commissionerName": "Neilsan Mando",
+    "organizationName": "Lagos State Parks Services"
+  },
+  "context": {
+    "projectId": "L-005",
+    "gigId": 24,
+    "applicationId": 1755193217248
+  }
+}

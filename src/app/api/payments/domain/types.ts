@@ -33,7 +33,7 @@ export type TxStatus = 'processing' | 'paid' | 'failed';
 // ---------------- Primary records (cross-module DTOs) ----------------
 export interface InvoiceLike {
   invoiceNumber: string;
-  projectId: number;
+  projectId: string | number; // Support both string (e.g., "Z-005") and number project IDs
   freelancerId: number;
   commissionerId: number;
   totalAmount: number;
@@ -48,7 +48,7 @@ export interface InvoiceLike {
 }
 
 export interface ProjectLike {
-  projectId: number;
+  projectId: string | number; // Support both string and number project IDs
   status: ProjectStatus;
   invoicingMethod: InvoicingMethod;
   currency?: Currency;
@@ -59,7 +59,7 @@ export interface ProjectLike {
 
 export interface TaskLike {
   id: number | string;
-  projectId: number;
+  projectId: string | number; // Support both string and number project IDs
   status: TaskStatus;
   completed?: boolean; // some UIs set this flag alongside status
   [key: string]: any;
@@ -88,7 +88,7 @@ export interface TransactionRecord {
   timestamp: string; // ISO
   // Optional linkages
   invoiceNumber?: string;
-  projectId?: number;
+  projectId?: string | number; // Support both string and number project IDs
   freelancerId?: number;
   commissionerId?: number;
   productId?: string;
@@ -136,8 +136,8 @@ export function normalizeTaskStatus(s: any): TaskStatus {
  * Utility to check final-payment eligibility for completion-based projects.
  * Returns true only if at least one task exists and all are complete/approved.
  */
-export function allTasksEligibleForFinal(tasks: TaskLike[], projectId: number): boolean {
-  const relevant = tasks.filter(t => Number(t.projectId) === Number(projectId));
+export function allTasksEligibleForFinal(tasks: TaskLike[], projectId: string | number): boolean {
+  const relevant = tasks.filter(t => String(t.projectId) === String(projectId));
   if (relevant.length === 0) return false;
   return relevant.every(t => {
     const st = normalizeTaskStatus(t.status);

@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_25_31_1755560724400",
+  "timestamp": "2025-08-18T23:45:24.400Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "25",
+  "metadata": {
+    "gigTitle": "Experiential Marketing for TechCabal Ignite 2025",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 25,
+    "applicationId": 1755193217249
+  }
+}

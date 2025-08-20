@@ -166,7 +166,20 @@ export async function POST(request: Request) {
         const commissionerInvoices = existingInvoices.filter(inv =>
           inv.invoiceNumber.startsWith(initials)
         );
-        const nextNumber = String(commissionerInvoices.length + 1).padStart(3, '0');
+
+        // Find the highest existing number for this commissioner's initials
+        let highestNumber = 0;
+        for (const invoice of commissionerInvoices) {
+          const numberPart = invoice.invoiceNumber.split('-')[1];
+          if (numberPart && /^\d+$/.test(numberPart)) {
+            const num = parseInt(numberPart, 10);
+            if (num > highestNumber) {
+              highestNumber = num;
+            }
+          }
+        }
+
+        const nextNumber = String(highestNumber + 1).padStart(3, '0');
 
         invoiceNumber = `${initials}-${nextNumber}`;
         console.log(`📋 Generated invoice number: ${invoiceNumber} for commissioner ${commissioner.name}`);

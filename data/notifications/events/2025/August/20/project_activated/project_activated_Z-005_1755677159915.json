@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_Z-005_1755677159915",
+  "timestamp": "2025-08-20T08:05:59.915Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "Z-005",
+  "metadata": {
+    "projectTitle": "UX Research for Project: Y.U.T.A.N.I",
+    "gigTitle": "UX Research for Project: Y.U.T.A.N.I",
+    "taskCount": 2,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group"
+  },
+  "context": {
+    "projectId": "Z-005",
+    "gigId": 29,
+    "applicationId": 1755193217258
+  }
+}

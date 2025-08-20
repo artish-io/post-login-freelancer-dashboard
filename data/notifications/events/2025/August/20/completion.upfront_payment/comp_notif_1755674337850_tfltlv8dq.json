@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1755674337850_tfltlv8dq",
+  "type": "completion.upfront_payment",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-005",
+  "message": "You sent Lucas Meyer an invoice for your recently activated UX Research for Project: Y.U.T.A.N.I project. This project has a budget of $2904 left. Click here to view invoice details",
+  "context": {
+    "upfrontAmount": 396,
+    "projectTitle": "UX Research for Project: Y.U.T.A.N.I",
+    "remainingBudget": 2904,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "read": false,
+  "createdAt": "2025-08-20T07:18:57.850Z",
+  "timestamp": "2025-08-20T07:18:57.850Z",
+  "subsystem": "completion_invoicing"
+}

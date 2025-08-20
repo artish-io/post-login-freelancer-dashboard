@@ -255,19 +255,19 @@ export async function GET(request: NextRequest) {
         organization: shouldUseOrgLogo(event.type) ? organization : undefined,
         project: event.context?.projectId ? {
           id: event.context.projectId,
-          title: event.metadata.projectTitle || 'Unknown Project'
+          title: event.metadata?.projectTitle || 'Unknown Project'
         } : undefined,
         gig: event.context?.gigId ? {
           id: event.context.gigId,
-          title: event.metadata.gigTitle || 'Unknown Gig'
+          title: event.metadata?.gigTitle || 'Unknown Gig'
         } : undefined,
         context: event.context, // Add the context field for navigation
         metadata: event.metadata, // Add the metadata field for additional data
         isFromNetwork: isFromNetwork(event, parseInt(userId)),
-        priority: event.metadata.priority || 'medium',
+        priority: event.metadata?.priority || 'medium',
         iconPath: iconPath,
         notificationType: event.notificationType,
-        groupCount: event.metadata.groupCount || 1,
+        groupCount: event.metadata?.groupCount || 1,
         link: generateNotificationLink(event, project, task),
         actionTaken: NotificationStorage.isActioned(event.id, parseInt(userId))
       };
@@ -413,9 +413,19 @@ function getNotificationType(eventType: EventType): string {
     'milestone_payment_received': 'milestone_payment_received',
     'milestone_payment_sent': 'milestone_payment_sent',
     'product_approved': 'product_approved',
-    'product_rejected': 'product_rejected'
+    'product_rejected': 'product_rejected',
+
+    // Completion notification types
+    'completion.project_activated': 'completion_project_activated',
+    'completion.upfront_payment': 'completion_upfront_payment',
+    'completion.task_approved': 'completion_task_approved',
+    'completion.invoice_received': 'completion_invoice_received',
+    'completion.invoice_paid': 'completion_invoice_paid',
+    'completion.project_completed': 'completion_project_completed',
+    'completion.final_payment': 'completion_final_payment',
+    'completion.rating_prompt': 'completion_rating_prompt'
   };
-  
+
   return typeMap[eventType] || eventType;
 }
 
@@ -503,7 +513,7 @@ function groupSimilarEvents(events: EventData[]): EventData[] {
 
 async function generateGranularTitle(event: EventData, actor: any, _project?: any, projectTaskData?: any, task?: any): Promise<string | null> {
   const actorName = actor?.name || 'Someone';
-  const groupCount = event.metadata.groupCount;
+  const groupCount = event.metadata?.groupCount || 1;
 
   switch (event.type) {
     case 'task_submitted':
@@ -521,7 +531,7 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
 
         const completionStatus = await detectProjectCompletion(
           projectId,
-          event.metadata.taskId
+          event.metadata?.taskId
         );
 
         // For task approval notifications, show remaining milestones AFTER this approval
@@ -530,62 +540,62 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
         if (remainingMilestones === 0) {
           // For final tasks, just mention it's the final submission without project completion text
           // Project completion will be handled by a separate notification
-          return `${actorName} has approved your final submission of "${event.metadata.taskTitle}" for ${event.metadata.projectTitle || 'this project'}. Click here to see its project tracker.`;
+          return `${actorName} has approved your final submission of "${event.metadata?.taskTitle || 'task'}" for ${event.metadata?.projectTitle || 'this project'}. Click here to see its project tracker.`;
         } else {
-          return `${actorName} has approved your submission of "${event.metadata.taskTitle}" for ${event.metadata.projectTitle || 'this project'}. This project has ${remainingMilestones} milestone${remainingMilestones !== 1 ? 's' : ''} left. Click here to see its project tracker.`;
+          return `${actorName} has approved your submission of "${event.metadata?.taskTitle || 'task'}" for ${event.metadata?.projectTitle || 'this project'}. This project has ${remainingMilestones} milestone${remainingMilestones !== 1 ? 's' : ''} left. Click here to see its project tracker.`;
         }
       } catch (error) {
         console.warn('Failed to detect project completion for notification message:', error);
         // Fallback to simple message
-        return `${actorName} has approved your submission of "${event.metadata.taskTitle}" for ${event.metadata.projectTitle || 'this project'}. Click here to see its project tracker.`;
+        return `${actorName} has approved your submission of "${event.metadata?.taskTitle || 'task'}" for ${event.metadata?.projectTitle || 'this project'}. Click here to see its project tracker.`;
       }
     case 'task_rejected':
-      return `${actorName} rejected "${event.metadata.taskTitle}". Revisions are required. View notes and resume progress`;
+      return `${actorName} rejected "${event.metadata?.taskTitle || 'task'}". Revisions are required. View notes and resume progress`;
     case 'task_rejected_with_comment':
-      return `${actorName} rejected "${event.metadata.taskTitle}". Revisions are required. View notes and resume progress`;
+      return `${actorName} rejected "${event.metadata?.taskTitle || 'task'}". Revisions are required. View notes and resume progress`;
     case 'task_completed':
       return 'Task marked as completed';
     case 'project_pause_requested':
-      return `${actorName} has requested a pause for ${event.metadata.projectTitle}. Click to view the project tracker and respond.`;
+      return `${actorName} has requested a pause for ${event.metadata?.projectTitle || 'this project'}. Click to view the project tracker and respond.`;
     case 'project_pause_accepted':
       return 'Project pause request approved';
     case 'project_activated':
-      return `${actorName} accepted your application for ${event.metadata.gigTitle}`;
+      return `${actorName} accepted your application for ${event.metadata?.gigTitle || 'gig'}`;
     case 'project_paused':
-      return `${actorName} has paused ${event.metadata.projectTitle}`;
+      return `${actorName} has paused ${event.metadata?.projectTitle || 'this project'}`;
     case 'project_reactivated':
-      return `${actorName} has re-activated ${event.metadata.projectTitle}. Work can now resume!`;
+      return `${actorName} has re-activated ${event.metadata?.projectTitle || 'this project'}. Work can now resume!`;
     case 'project_completed':
-      return `${event.metadata.projectTitle || 'Project'} has been completed! All tasks have been approved. Click here to see the project summary.`;
+      return `${event.metadata?.projectTitle || 'Project'} has been completed! All tasks have been approved. Click here to see the project summary.`;
     case 'gig_applied':
       if (groupCount && groupCount > 1) {
-        return `${actorName} and ${groupCount - 1} others applied to "${event.metadata.gigTitle}"`;
+        return `${actorName} and ${groupCount - 1} others applied to "${event.metadata?.gigTitle || 'gig'}"`;
       }
-      return `${actorName} applied for ${event.metadata.gigTitle}`;
+      return `${actorName} applied for ${event.metadata?.gigTitle || 'gig'}`;
     case 'gig_request_sent':
-      return `${event.metadata.organizationName || actorName} sent you a gig request for "${event.metadata.gigTitle}"`;
+      return `${event.metadata?.organizationName || actorName} sent you a gig request for "${event.metadata?.gigTitle || 'gig'}"`;
     case 'gig_request_accepted':
       return `${actorName} accepted your gig request`;
     case 'invoice_sent':
       return `${actorName} sent you a new invoice`;
     case 'invoice_paid':
-      return `Your invoice for "${event.metadata.projectTitle || event.metadata.taskTitle || task?.title || 'project work'}" has been paid by ${actorName}`;
+      return `Your invoice for "${event.metadata?.projectTitle || event.metadata?.taskTitle || task?.title || 'project work'}" has been paid by ${actorName}`;
     case 'milestone_payment_received':
-      const organizationName = event.metadata.organizationName || actorName;
-      const amount = event.metadata.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      const organizationName = event.metadata?.organizationName || actorName;
+      const amount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
       return `${organizationName} has paid ${amount} for your recent task submission. Click here to view invoice details`;
     case 'milestone_payment_sent':
-      const freelancerName = event.metadata.freelancerName || 'freelancer';
-      const paidAmount = event.metadata.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
-      const taskTitle = event.metadata.taskTitle || 'task';
-      const projectTitle = event.metadata.projectTitle || 'this project';
-      const remainingBudget = event.metadata.remainingBudget;
+      const freelancerName = event.metadata?.freelancerName || 'freelancer';
+      const paidAmount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      const taskTitle = event.metadata?.taskTitle || 'task';
+      const projectTitle = event.metadata?.projectTitle || 'this project';
+      const remainingBudget = event.metadata?.remainingBudget;
       const remainingBudgetText = remainingBudget !== undefined ? ` Remaining budget: $${remainingBudget.toLocaleString()}.` : '';
       return `You just paid ${freelancerName} ${paidAmount} for submitting ${taskTitle} for ${projectTitle}.${remainingBudgetText} Click here to see transaction activity`;
     case 'product_purchased':
-      return `You just made a new sale of "${event.metadata.productTitle}"`;
+      return `You just made a new sale of "${event.metadata?.productTitle || 'product'}"`;
     case 'invoice_created':
-      return `Auto-invoice generated for "${event.metadata.taskTitle}" - $${event.metadata.amount}`;
+      return `Auto-invoice generated for "${event.metadata?.taskTitle || 'task'}" - $${event.metadata?.amount || 0}`;
     case 'message_sent':
       return `New message from ${actorName}`;
     case 'proposal_sent':
@@ -593,13 +603,32 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
     case 'proposal_accepted':
       return `Your proposal has been accepted`;
     case 'proposal_rejected':
-      return `${event.metadata.organizationName || actorName} rejected your proposal`;
+      return `${event.metadata?.organizationName || actorName} rejected your proposal`;
     case 'gig_rejected':
-      return `${event.metadata.organizationName || actorName} rejected your application for "${event.metadata.gigTitle}"`;
+      return `${event.metadata?.organizationName || actorName} rejected your application for "${event.metadata?.gigTitle || 'gig'}"`;
     case 'rating_prompt_freelancer':
-      return `Rate your experience with ${event.metadata.commissionerName}`;
+      return `Rate your experience with ${event.metadata?.commissionerName || 'the commissioner'}`;
     case 'rating_prompt_commissioner':
-      return `Rate ${event.metadata.freelancerName}'s work`;
+      return `Rate ${event.metadata?.freelancerName || 'the freelancer'}'s work`;
+
+    // Completion notification types
+    case 'completion.project_activated':
+      return `${actorName} accepted your application`;
+    case 'completion.upfront_payment':
+      return `${actorName} paid upfront payment`;
+    case 'completion.task_approved':
+      return `${actorName} approved your task`;
+    case 'completion.invoice_received':
+      return `${actorName} sent you an invoice`;
+    case 'completion.invoice_paid':
+      return `${actorName} paid your invoice`;
+    case 'completion.project_completed':
+      return `Project completed`;
+    case 'completion.final_payment':
+      return `${actorName} sent final payment`;
+    case 'completion.rating_prompt':
+      return `Rate your experience`;
+
     default:
       // Skip generic events - they shouldn't reach here if properly filtered
       console.warn(`Unknown notification type: ${event.type}`, event);
@@ -610,7 +639,7 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
 function generateGranularMessage(event: EventData, _actor: any, _project?: any, _projectTaskData?: any, task?: any): string | null {
   switch (event.type) {
     case 'task_submitted':
-      return `"${event.metadata.taskTitle}" is awaiting your review`;
+      return `"${event.metadata?.taskTitle || 'Task'}" is awaiting your review`;
     case 'task_approved':
       return `Task approved and milestone completed`;
     case 'task_rejected':
@@ -618,58 +647,77 @@ function generateGranularMessage(event: EventData, _actor: any, _project?: any, 
     case 'task_rejected_with_comment':
       return `Task rejected with feedback`;
     case 'task_completed':
-      return `"${event.metadata.taskTitle}" has been marked as completed`;
+      return `"${event.metadata?.taskTitle || 'Task'}" has been marked as completed`;
     case 'project_pause_requested':
-      return event.metadata.pauseReason || 'Project pause requested';
+      return event.metadata?.pauseReason || 'Project pause requested';
     case 'project_pause_accepted':
-      return `Your request to pause the ${event.metadata.projectTitle} project has been approved`;
+      return `Your request to pause the ${event.metadata?.projectTitle || 'project'} project has been approved`;
     case 'project_activated':
-      const taskCount = event.metadata.taskCount || 1;
-      const dueDate = event.metadata.dueDate || 'the deadline';
+      const taskCount = event.metadata?.taskCount || 1;
+      const dueDate = event.metadata?.dueDate || 'the deadline';
       return `This project is now active and includes ${taskCount} milestone${taskCount !== 1 ? 's' : ''} due by ${dueDate}`;
     case 'gig_applied':
-      if (event.metadata.groupCount && event.metadata.groupCount > 1) {
-        return `${event.metadata.groupCount} applications received for "${event.metadata.gigTitle}"`;
+      if (event.metadata?.groupCount && event.metadata.groupCount > 1) {
+        return `${event.metadata.groupCount} applications received for "${event.metadata?.gigTitle || 'gig'}"`;
       }
-      return `New application for "${event.metadata.gigTitle}"`;
+      return `New application for "${event.metadata?.gigTitle || 'gig'}"`;
     case 'gig_request_sent':
-      return `You have been invited to apply for ${event.metadata.gigTitle}`;
+      return `You have been invited to apply for ${event.metadata?.gigTitle || 'gig'}`;
     case 'gig_request_accepted':
-      return `Gig request for "${event.metadata.gigTitle}" has been accepted`;
+      return `Gig request for "${event.metadata?.gigTitle || 'gig'}" has been accepted`;
     case 'invoice_sent':
-      return `Invoice ${event.metadata.invoiceNumber} for ${event.metadata.projectTitle}`;
+      return `Invoice ${event.metadata?.invoiceNumber || 'INV-XXX'} for ${event.metadata?.projectTitle || 'project'}`;
     case 'invoice_paid':
-      return `Payment received for ${event.metadata.projectTitle || 'project'}`;
+      return `Payment received for ${event.metadata?.projectTitle || 'project'}`;
     case 'invoice_created':
       return `Invoice automatically generated for milestone completion`;
     case 'milestone_payment_received':
-      const organizationName = event.metadata.organizationName || 'Organization';
-      const amount = event.metadata.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      const organizationName = event.metadata?.organizationName || 'Organization';
+      const amount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
       return `${organizationName} has paid ${amount} for your recent task submission. Click here to view invoice details`;
     case 'milestone_payment_sent':
-      const freelancerName = event.metadata.freelancerName || 'freelancer';
-      const paidAmount = event.metadata.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
-      const taskTitle = event.metadata.taskTitle || 'task';
-      const projectTitle = event.metadata.projectTitle || 'this project';
-      const remainingBudget = event.metadata.remainingBudget;
+      const freelancerName = event.metadata?.freelancerName || 'freelancer';
+      const paidAmount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      const taskTitle = event.metadata?.taskTitle || 'task';
+      const projectTitle = event.metadata?.projectTitle || 'this project';
+      const remainingBudget = event.metadata?.remainingBudget;
       const remainingBudgetText = remainingBudget !== undefined ? ` Remaining budget: $${remainingBudget.toLocaleString()}.` : '';
       return `You just paid ${freelancerName} ${paidAmount} for submitting ${taskTitle} for ${projectTitle}.${remainingBudgetText} Click here to see transaction activity`;
     case 'product_purchased':
       return 'New sale on your storefront';
     case 'message_sent':
-      return event.metadata.messagePreview || 'New message';
+      return event.metadata?.messagePreview || 'New message';
     case 'proposal_sent':
-      return `New project proposal for ${event.metadata.proposalTitle || 'project'}`;
+      return `New project proposal for ${event.metadata?.proposalTitle || 'project'}`;
     case 'proposal_accepted':
-      return `Your proposal for "${event.metadata.proposalTitle}" has been accepted and a project has been created`;
+      return `Your proposal for "${event.metadata?.proposalTitle || 'project'}" has been accepted and a project has been created`;
     case 'proposal_rejected':
-      return event.metadata.rejectionReason || 'No reason provided';
+      return event.metadata?.rejectionReason || 'No reason provided';
     case 'gig_rejected':
-      return event.metadata.rejectionMessage || 'You will be able to re-apply if this gig listing is still active after 21 days.';
+      return event.metadata?.rejectionMessage || 'You will be able to re-apply if this gig listing is still active after 21 days.';
     case 'rating_prompt_freelancer':
-      return event.metadata.message || `Rate your experience working with ${event.metadata.commissionerName} on ${event.metadata.projectTitle}`;
+      return event.metadata?.message || `Rate your experience working with ${event.metadata?.commissionerName || 'the commissioner'} on ${event.metadata?.projectTitle || 'this project'}`;
     case 'rating_prompt_commissioner':
-      return event.metadata.message || `Rate ${event.metadata.freelancerName}'s work on ${event.metadata.projectTitle}`;
+      return event.metadata?.message || `Rate ${event.metadata?.freelancerName || 'the freelancer'}'s work on ${event.metadata?.projectTitle || 'this project'}`;
+
+    // Completion notification types
+    case 'completion.project_activated':
+      return `Your application has been accepted and the project is now active`;
+    case 'completion.upfront_payment':
+      return `Upfront payment received for your newly activated project`;
+    case 'completion.task_approved':
+      return `Your task submission has been approved`;
+    case 'completion.invoice_received':
+      return `New invoice received for review`;
+    case 'completion.invoice_paid':
+      return `Your invoice has been paid`;
+    case 'completion.project_completed':
+      return `All project tasks have been completed`;
+    case 'completion.final_payment':
+      return `Final payment has been processed`;
+    case 'completion.rating_prompt':
+      return `Please rate your experience with this project`;
+
     default:
       console.warn(`Unknown notification message type: ${event.type}`, event);
       return null; // Return null to filter out unknown events
@@ -701,7 +749,7 @@ function generateNotificationLink(event: EventData, _project?: any, _task?: any)
       return `/freelancer-dashboard/projects-and-invoices/invoices`;
     case 'milestone_payment_received':
       // Navigate to invoice page to see invoice details
-      const invoiceNumber = event.metadata.invoiceNumber || event.context?.invoiceNumber;
+      const invoiceNumber = event.metadata?.invoiceNumber || event.context?.invoiceNumber;
       if (invoiceNumber) {
         return `/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${invoiceNumber}`;
       }

@@ -4,7 +4,7 @@
   "timestamp": "2025-07-07T17:30:00Z",
   "text": "Payment processed successfully! Thanks for the quick turnaround on the invoice. Looking forward to the next project.",
   "read": {
-    "31": false,
+    "31": true,
     "35": true
   },
   "isEncrypted": false,

@@ -1,0 +1,28 @@
+{
+  "projectId": "C-004",
+  "title": "Design System For Icons Accenture",
+  "description": "As an exotic dancer working in a strip club, Anora is encouraged to create an alter-ego, a construct that can appeal to the gendered expectations of the patrons who visit the strip club where she works. She creates Ani, a soft-spoken, coquettish femme who uses a practised facade of submissiveness to coax dollars out of her patrons.",
+  "organizationId": 3,
+  "commissionerId": 34,
+  "freelancerId": 31,
+  "status": "ongoing",
+  "dueDate": "2025-08-22T04:00:00.000Z",
+  "invoicingMethod": "completion",
+  "totalBudget": 1500,
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-19T16:15:28.374Z",
+  "updatedAt": "2025-08-19T16:15:28.374Z",
+  "category": "Design",
+  "subcategory": "Brand Design",
+  "tags": [
+    "Design",
+    "UI/UX Design"
+  ],
+  "toolsRequired": [
+    "Figma",
+    "Canva"
+  ],
+  "estimatedHours": 24,
+  "deliveryTimeWeeks": 0.42857142857142855
+}

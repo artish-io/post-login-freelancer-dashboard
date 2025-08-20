@@ -87,7 +87,7 @@ export function logInvoiceTransition(
   actorId: number | string,
   subsystem: string = Subsystems.INVOICES_UPDATE,
   metadata?: {
-    projectId?: number;
+    projectId?: string | number; // Support both string and number project IDs
     amount?: number;
     currency?: string;
     integration?: string;
@@ -107,7 +107,7 @@ export function logTaskTransition(
   actorId: number | string,
   subsystem: string = Subsystems.TASKS_APPROVE,
   metadata?: {
-    projectId?: number;
+    projectId?: string | number; // Support both string and number project IDs
     taskTitle?: string;
     rejectionReason?: string;
   }

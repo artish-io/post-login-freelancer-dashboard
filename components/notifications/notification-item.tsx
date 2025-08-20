@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 export interface NotificationData {
   id: string;
-  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'project_pause_requested' | 'project_pause_refused' | 'project_paused' | 'project_pause_reminder' | 'project_activated' | 'project_reactivated' | 'gig_request' | 'gig_request_accepted' | 'gig_rejected' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase' | 'task_submitted' | 'job_application' | 'invoice_reminder' | 'invoice_overdue_reminder' | 'milestone_payment_received' | 'milestone_payment_sent' | 'task_rejected_with_comment';
+  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'project_pause_requested' | 'project_pause_refused' | 'project_paused' | 'project_pause_reminder' | 'project_activated' | 'project_reactivated' | 'gig_request' | 'gig_request_accepted' | 'gig_rejected' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase' | 'task_submitted' | 'job_application' | 'invoice_reminder' | 'invoice_overdue_reminder' | 'milestone_payment_received' | 'milestone_payment_sent' | 'task_rejected_with_comment' | 'completion_project_activated' | 'completion_upfront_payment' | 'completion_task_approved' | 'completion_invoice_received' | 'completion_invoice_paid' | 'completion_project_completed' | 'completion_final_payment' | 'completion_rating_prompt';
   title: string;
   message: string;
   timestamp: string;
@@ -98,6 +98,25 @@ const getNotificationIcon = (type: string, notification: NotificationData): stri
       return '/icons/new-payment.png';
     case 'project_accepted':
       return '/icons/project-accepted.png';
+
+    // Completion notification icons
+    case 'completion_project_activated':
+      return '/icons/project-activated.png';
+    case 'completion_upfront_payment':
+      return '/icons/new-payment.png';
+    case 'completion_task_approved':
+      return '/icons/task-approved.png';
+    case 'completion_invoice_received':
+      return '/icons/new-invoice.png';
+    case 'completion_invoice_paid':
+      return '/icons/new-payment.png';
+    case 'completion_project_completed':
+      return '/icons/project-completed.png';
+    case 'completion_final_payment':
+      return '/icons/new-payment.png';
+    case 'completion_rating_prompt':
+      return '/icons/rating-prompt.png';
+
     default:
       return '/icons/notification-default.png';
   }

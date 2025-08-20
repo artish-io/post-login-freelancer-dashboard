@@ -135,6 +135,7 @@ async function generateInvoice(request: InvoiceGenerationRequest): Promise<Invoi
       invoiceType: request.invoiceType,
       milestones: [{
         description: request.taskTitle,
+        title: request.taskTitle,
         rate: amount,
         taskId: request.taskId,
         approvedAt: new Date().toISOString()
@@ -322,13 +323,55 @@ async function getPaidTasksCount(projectId: number): Promise<number> {
 }
 
 /**
- * Generate unique invoice number
+ * Generate unique invoice number using commissioner initials format (MH-XXX)
  */
 async function generateUniqueInvoiceNumber(request: InvoiceGenerationRequest): Promise<string> {
+  try {
+    // Get commissioner data using hierarchical storage
+    const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+    const commissioner = await UnifiedStorageService.getUserById(request.commissionerId);
+
+    if (commissioner?.name) {
+      // Extract initials from commissioner name
+      const initials = commissioner.name
+        .split(' ')
+        .map((word: string) => word.charAt(0).toUpperCase())
+        .join('');
+
+      // Get existing invoices to determine next number
+      const { getAllInvoices } = await import('@/lib/invoice-storage');
+      const existingInvoices = await getAllInvoices({ commissionerId: request.commissionerId });
+      const commissionerInvoices = existingInvoices.filter(inv =>
+        inv.invoiceNumber.startsWith(initials)
+      );
+
+      // Find the highest existing number for this commissioner's initials
+      let highestNumber = 0;
+      for (const invoice of commissionerInvoices) {
+        const numberPart = invoice.invoiceNumber.split('-')[1];
+        if (numberPart && /^\d+$/.test(numberPart)) {
+          const num = parseInt(numberPart, 10);
+          if (num > highestNumber) {
+            highestNumber = num;
+          }
+        }
+      }
+
+      const nextNumber = String(highestNumber + 1).padStart(3, '0');
+
+      const invoiceNumber = `${initials}-${nextNumber}`;
+      console.log(`📋 ROBUST SERVICE: Generated invoice number: ${invoiceNumber} for commissioner ${commissioner.name}`);
+      return invoiceNumber;
+    }
+  } catch (error) {
+    console.warn('⚠️ ROBUST SERVICE: Could not generate custom invoice number, using fallback:', error);
+  }
+
+  // Fallback to old format if commissioner data is not available
   const prefix = request.invoiceType === 'completion' ? 'COMP' : 'MILE';
   const timestamp = Date.now();
   const random = Math.floor(Math.random() * 1000);
-  
+
   return `${prefix}_${request.projectId}_${request.taskId}_${timestamp}_${random}`;
 }
 

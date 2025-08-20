@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_29_31_1755672905900",
+  "timestamp": "2025-08-20T06:55:05.900Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "29",
+  "metadata": {
+    "gigTitle": "UX Research for Project: Y.U.T.A.N.I",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 29,
+    "applicationId": 1755193217256
+  }
+}

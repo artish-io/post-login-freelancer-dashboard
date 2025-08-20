@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_28_1_1755658405721",
+  "timestamp": "2025-08-20T02:53:25.721Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "28",
+  "metadata": {
+    "gigTitle": "Market Research for Web 3",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 28,
+    "applicationId": 1755193217253
+  }
+}

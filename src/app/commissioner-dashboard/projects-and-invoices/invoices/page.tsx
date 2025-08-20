@@ -154,7 +154,7 @@ export default function CommissionerInvoicePreviewPage() {
         <div className="lg:col-span-2 space-y-4">
           <h3 className="text-md font-semibold text-gray-700">Work Details</h3>
           <InvoiceTaskList
-            tasks={invoiceData.milestones.map((milestone, index) => ({
+            tasks={(invoiceData.milestones || []).map((milestone, index) => ({
               id: index + 1,
               title: milestone.description,
               order: `Milestone ${index + 1}`,
@@ -163,7 +163,7 @@ export default function CommissionerInvoicePreviewPage() {
             readOnly={true}
           />
           <div className="flex justify-end pt-4 text-lg font-semibold text-gray-800 border-t">
-            Total: ${invoiceData.totalAmount?.toFixed(2) || '0.00'}
+            Total: ${invoiceData.totalAmount?.toFixed(2) || (invoiceData.milestones || []).reduce((sum, milestone) => sum + (milestone.rate || 0), 0).toFixed(2) || '0.00'}
           </div>
         </div>
 

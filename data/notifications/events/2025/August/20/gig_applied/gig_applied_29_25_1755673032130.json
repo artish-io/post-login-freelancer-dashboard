@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_29_25_1755673032130",
+  "timestamp": "2025-08-20T06:57:12.130Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "29",
+  "metadata": {
+    "gigTitle": "UX Research for Project: Y.U.T.A.N.I",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 29,
+    "applicationId": 1755193217258
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_C-005_1755660380461",
+  "timestamp": "2025-08-20T03:26:20.462Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "C-005",
+  "metadata": {
+    "projectTitle": "Market Research for Web 3",
+    "gigTitle": "Market Research for Web 3",
+    "taskCount": 1,
+    "commissionerName": "Matte Hannery",
+    "organizationName": "Corlax Wellness"
+  },
+  "context": {
+    "projectId": "C-005",
+    "gigId": 28,
+    "applicationId": 1755193217253
+  }
+}

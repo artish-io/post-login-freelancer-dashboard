@@ -1,0 +1,29 @@
+{
+  "invoiceNumber": "MH-005",
+  "projectId": "C-006",
+  "freelancerId": 1,
+  "commissionerId": 34,
+  "projectTitle": "Marketing for 2Baba 40-Year Concert",
+  "totalAmount": 216,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-20T05:21:36.221Z",
+  "dueDate": "2025-09-03T05:21:36.221Z",
+  "createdAt": "2025-08-20T05:21:36.221Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 216,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 205.2,
+    "platformFee": 10.8
+  },
+  "paidDate": "2025-08-20T05:21:36.726Z",
+  "updatedAt": "2025-08-20T05:21:36.727Z"
+}

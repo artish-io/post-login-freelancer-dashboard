@@ -84,8 +84,10 @@ async function handleProposalAcceptance(
         invoiceType: 'auto_completion' as const,
         milestones: [
           {
-            description: 'Upfront payment (12% of total project)',
+            description: '12% Upfront Payment',
+            title: '12% Upfront Payment',
             rate: proposal!.upfrontAmount,
+            taskId: 'upfront'
           },
         ],
         createdAt: new Date().toISOString(),

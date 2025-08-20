@@ -1,0 +1,19 @@
+{
+  "userId": 1,
+  "type": "payment",
+  "amount": 1584,
+  "currency": "USD",
+  "timestamp": "2025-08-20T05:23:42.736Z",
+  "status": "completed",
+  "invoiceNumber": "COMP_C-006_1755667525144_1755667421871_725",
+  "projectId": "C-006",
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "source": "auto_milestone",
+  "paymentMethod": "mock",
+  "gatewayTransactionId": "TXN-COMP_C-006_1755667525144_1755667421871_725",
+  "description": "Payment for invoice COMP_C-006_1755667525144_1755667421871_725",
+  "transactionId": "TXN-PAY-COMPC-00617556675251-1755667422736",
+  "createdAt": "2025-08-20T05:23:42.736Z",
+  "updatedAt": "2025-08-20T05:23:42.736Z"
+}

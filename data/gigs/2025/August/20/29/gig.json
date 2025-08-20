@@ -1,0 +1,47 @@
+{
+  "id": 29,
+  "title": "UX Research for Project: Y.U.T.A.N.I",
+  "organizationId": 4,
+  "commissionerId": "35",
+  "category": "Design",
+  "subcategory": "UI/UX Design",
+  "tags": [
+    "User Research"
+  ],
+  "hourlyRateMin": 93.75,
+  "hourlyRateMax": 103.13,
+  "description": "Project Y.U.T.A.N.I is the week leading to the Oscars, and the weeks after its groundbreaking 5 Oscar sweep for auteur Sean Baker and lead Mikey Madison, conversations about the ethics of Anora, a film that explores the complexities of sex work, divided intellectual public discourse. ",
+  "deliveryTimeWeeks": 0.7142857142857143,
+  "estimatedHours": 32,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Figma"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "c3dc2aa3-93fc-4df5-8ad1-0c3e23d18d73",
+      "title": "Phase 1: Love Is Weyland",
+      "description": "As an exotic dancer working in a strip club, Anora is encouraged to create an alter-ego, a construct that can appeal to the gendered expectations of the patrons who visit the strip club where she works. She creates Ani, a soft-spoken, coquettish femme who uses a practiced facade of submissiveness to coax dollars out of her patrons. The club has clearly delineated rules by which the performers and patrons must abide, for good reason as Anora comes to find out. ",
+      "startDate": "2025-08-21T04:00:00.000Z",
+      "endDate": "2025-08-23T04:00:00.000Z"
+    },
+    {
+      "id": "6f11acae-3260-4cd1-ab2c-3567bd09a06f",
+      "title": "Phase 2: Child Prodigies and Silence",
+      "description": "a soft-spoken, coquettish femme who uses a practiced facade of submissiveness to coax dollars out of her patrons. The club has clearly delineated rules by which the performers and patrons must abide, for good reason as Anora comes to find out. ",
+      "startDate": "2025-08-24T04:00:00.000Z",
+      "endDate": "2025-08-25T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-25T04:00:00.000Z",
+  "lowerBudget": 3000,
+  "upperBudget": 3300,
+  "postedDate": "2025-08-20",
+  "notes": "Budget range: $3,000 - $3,300",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

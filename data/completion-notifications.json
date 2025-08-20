@@ -1,0 +1,56 @@
+[
+  {
+    "id": "comp_upfront_1755666619098",
+    "type": "completion.upfront_payment",
+    "actorId": 34,
+    "targetId": 1,
+    "projectId": "C-005",
+    "message": "Corlax Wellness has paid $300 upfront for your newly activated Market Research for Web 3 project. This project has a budget of $2200 left. Click here to view invoice details",
+    "context": {
+      "upfrontAmount": 300,
+      "projectTitle": "Market Research for Web 3",
+      "remainingBudget": 2200,
+      "orgName": "Corlax Wellness",
+      "freelancerName": "Tobi Philly",
+      "commissionerName": "Matte Hannery"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T05:10:19.098Z"
+  },
+  {
+    "id": "comp_notif_1755676638758_28n30xz8n",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-005",
+    "message": "Zynate Events Group has paid $396 upfront for your newly activated UX Research for Project: Y.U.T.A.N.I project. This project has a budget of $2904 left. Click here to view invoice details",
+    "context": {
+      "upfrontAmount": 396,
+      "projectTitle": "UX Research for Project: Y.U.T.A.N.I",
+      "remainingBudget": 2904,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T07:57:18.758Z"
+  },
+  {
+    "id": "comp_notif_1755676639220_fl7nl8nmr",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-005",
+    "message": "You sent Lucas Meyer an invoice for your recently activated UX Research for Project: Y.U.T.A.N.I project. This project has a budget of $2904 left. Click here to view invoice details",
+    "context": {
+      "upfrontAmount": 396,
+      "projectTitle": "UX Research for Project: Y.U.T.A.N.I",
+      "remainingBudget": 2904,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T07:57:19.220Z"
+  }
+]

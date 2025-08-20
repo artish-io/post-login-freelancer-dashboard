@@ -210,7 +210,7 @@ export default function PayInvoicePage() {
         <div className="lg:col-span-2 space-y-4">
           <h3 className="text-md font-semibold text-gray-700">Work Details</h3>
           <InvoiceTaskList
-            tasks={invoiceData.milestones.map((milestone, index) => ({
+            tasks={(invoiceData.milestones || []).map((milestone, index) => ({
               id: index + 1,
               title: milestone.description,
               order: `Milestone ${index + 1}`,

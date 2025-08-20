@@ -59,7 +59,7 @@ export default function InvoicePreview({ invoice, userType }: InvoicePreviewProp
   }
 
   // Transform milestones to tasks format
-  const tasks = invoice.milestones.map((milestone, index) => ({
+  const tasks = (invoice.milestones || []).map((milestone, index) => ({
     id: index + 1,
     title: milestone.description,
     order: `Milestone ${index + 1}`,

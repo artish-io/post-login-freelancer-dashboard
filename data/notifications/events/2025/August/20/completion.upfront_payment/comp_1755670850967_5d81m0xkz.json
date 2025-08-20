@@ -1,0 +1,18 @@
+{
+  "id": "comp_1755670850967_5d81m0xkz",
+  "type": "completion.upfront_payment",
+  "actorId": 35,
+  "targetId": 31,
+  "projectId": "Z-005",
+  "message": "Completion event: completion.upfront_payment",
+  "context": {
+    "upfrontAmount": 230.4,
+    "projectTitle": "Corporate Event Photography Package",
+    "remainingBudget": 1689.6,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "timestamp": "2025-08-20T06:20:50.250Z",
+  "subsystem": "completion_invoicing"
+}

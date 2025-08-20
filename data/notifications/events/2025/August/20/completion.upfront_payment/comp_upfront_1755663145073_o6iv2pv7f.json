@@ -1,0 +1,18 @@
+{
+  "id": "comp_upfront_1755663145073_o6iv2pv7f",
+  "type": "completion.upfront_payment",
+  "actorId": 34,
+  "targetId": 1,
+  "projectId": "C-005",
+  "message": "Corlax Wellness has paid $300 upfront for your newly activated Market Research for Web 3 project. This project has a budget of $2200 left. Click here to view invoice details",
+  "context": {
+    "upfrontAmount": 300,
+    "projectTitle": "Market Research for Web 3",
+    "remainingBudget": 2200,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-20T04:12:25.073Z",
+  "subsystem": "completion_invoicing"
+}

@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-08-20T03:08:12.894Z",
+  "totalInvoices": 1,
+  "invoices": [
+    {
+      "invoiceNumber": "MH-004",
+      "projectId": "C-005",
+      "reason": "Project has no tasks or does not exist",
+      "originalPath": "/Users/toyesokunbi/artish-web/data/invoices/2025/August/19/C-005/MH-004.json"
+    }
+  ]
+}

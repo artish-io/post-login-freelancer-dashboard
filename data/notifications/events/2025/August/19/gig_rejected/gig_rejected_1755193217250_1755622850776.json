@@ -1,0 +1,21 @@
+{
+  "id": "gig_rejected_1755193217250_1755622850776",
+  "timestamp": "2025-08-19T17:00:50.776Z",
+  "type": "gig_rejected",
+  "notificationType": 61,
+  "actorId": "34",
+  "targetId": 31,
+  "entityType": 3,
+  "entityId": "26",
+  "metadata": {
+    "gigTitle": "Design System For Icons Accenture",
+    "organizationName": "Corlax Wellness",
+    "rejectionMessage": "Corlax Wellness has rejected your application for \"Design System For Icons Accenture\". You will be able to re-apply if this gig listing is still active after 21 days.",
+    "cooldownUntil": "2025-09-09T17:00:50.776Z"
+  },
+  "context": {
+    "gigId": 26,
+    "applicationId": 1755193217250,
+    "organizationId": 3
+  }
+}

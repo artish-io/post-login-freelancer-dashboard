@@ -43,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${bodoniModa.variable}`}>
+    <html lang="en" className={`${jakarta.variable} ${bodoniModa.variable}`} suppressHydrationWarning={true}>
       <head>
         <link
           rel="preload"
@@ -55,7 +55,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body className="font-jakarta antialiased">
+      <body className="font-jakarta antialiased" suppressHydrationWarning={true}>
         <Suspense fallback={null}>
           <NavigationProgress />
         </Suspense>

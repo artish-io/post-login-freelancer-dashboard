@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755296082735_1755641858575",
+  "timestamp": "2025-08-19T22:17:38.575Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1755296082735,
+  "metadata": {
+    "taskId": 1755296082735,
+    "taskTitle": "Discover Call and Initial Concept",
+    "projectTitle": "Product Specification for Data Farm Handbook",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-001",
+    "taskId": 1755296082735
+  }
+}

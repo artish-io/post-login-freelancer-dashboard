@@ -20,7 +20,7 @@ export interface TransactionRecord {
   currency?: string;              // ISO 4217 currency code (e.g., 'USD', 'EUR', 'NGN')
   // Optional linkages
   invoiceNumber?: string;
-  projectId?: number;
+  projectId?: string | number;    // Support both string (e.g., "Z-005") and number project IDs
   freelancerId?: number;
   commissionerId?: number;
   productId?: string;             // for storefront purchases
@@ -87,8 +87,8 @@ export async function listByInvoiceNumber(invoiceNumber: string): Promise<Transa
 
 export async function listByProject(projectId: number | string): Promise<TransactionRecord[]> {
   const items = await readAllTransactions();
-  const id = Number(projectId);
-  return items.filter(tx => Number(tx.projectId) === id);
+  // Compare as strings to handle both numeric and alphanumeric project IDs
+  return items.filter(tx => String(tx.projectId) === String(projectId));
 }
 
 export async function listByUser(userId: number | string): Promise<TransactionRecord[]> {

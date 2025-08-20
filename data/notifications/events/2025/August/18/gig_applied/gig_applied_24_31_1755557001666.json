@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_24_31_1755557001666",
+  "timestamp": "2025-08-18T22:43:21.666Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "24",
+  "metadata": {
+    "gigTitle": "Social Media Campaign Marketing",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 24,
+    "applicationId": 1755193217248
+  }
+}

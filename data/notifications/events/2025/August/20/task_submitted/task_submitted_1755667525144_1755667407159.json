@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755667525144_1755667407159",
+  "timestamp": "2025-08-20T05:23:27.159Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1755667525144,
+  "metadata": {
+    "taskId": 1755667525144,
+    "taskTitle": "Initial Research ",
+    "projectTitle": "Marketing for 2Baba 40-Year Concert",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-006",
+    "taskId": 1755667525144
+  }
+}

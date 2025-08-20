@@ -60,7 +60,17 @@ export const NOTIFICATION_TYPES = {
 
   // Rating notifications (140-149)
   RATING_PROMPT_FREELANCER: 140,
-  RATING_PROMPT_COMMISSIONER: 141
+  RATING_PROMPT_COMMISSIONER: 141,
+
+  // Completion notifications (150-169) - Completion-based project events
+  COMPLETION_PROJECT_ACTIVATED: 150,
+  COMPLETION_UPFRONT_PAYMENT: 151,
+  COMPLETION_TASK_APPROVED: 152,
+  COMPLETION_INVOICE_RECEIVED: 153,
+  COMPLETION_INVOICE_PAID: 154,
+  COMPLETION_PROJECT_COMPLETED: 155,
+  COMPLETION_FINAL_PAYMENT: 156,
+  COMPLETION_RATING_PROMPT: 157
 } as const;
 
 // User type targeting for notifications
@@ -133,7 +143,11 @@ export type EventType =
   // System events
   | 'user_login' | 'user_logout' | 'profile_updated'
   // Rating events
-  | 'rating_prompt_freelancer' | 'rating_prompt_commissioner';
+  | 'rating_prompt_freelancer' | 'rating_prompt_commissioner'
+  // Completion events
+  | 'completion.project_activated' | 'completion.upfront_payment' | 'completion.task_approved'
+  | 'completion.invoice_received' | 'completion.invoice_paid' | 'completion.project_completed'
+  | 'completion.final_payment' | 'completion.rating_prompt';
 
 export type EntityType =
   | 'task' | 'project' | 'gig' | 'message' | 'invoice' | 'product' | 'proposal' | 'user' | 'organization' | 'milestone';
@@ -216,7 +230,17 @@ function getNotificationTypeNumber(eventType: EventType): number {
 
     // Rating events
     'rating_prompt_freelancer': NOTIFICATION_TYPES.RATING_PROMPT_FREELANCER,
-    'rating_prompt_commissioner': NOTIFICATION_TYPES.RATING_PROMPT_COMMISSIONER
+    'rating_prompt_commissioner': NOTIFICATION_TYPES.RATING_PROMPT_COMMISSIONER,
+
+    // Completion events
+    'completion.project_activated': NOTIFICATION_TYPES.COMPLETION_PROJECT_ACTIVATED,
+    'completion.upfront_payment': NOTIFICATION_TYPES.COMPLETION_UPFRONT_PAYMENT,
+    'completion.task_approved': NOTIFICATION_TYPES.COMPLETION_TASK_APPROVED,
+    'completion.invoice_received': NOTIFICATION_TYPES.COMPLETION_INVOICE_RECEIVED,
+    'completion.invoice_paid': NOTIFICATION_TYPES.COMPLETION_INVOICE_PAID,
+    'completion.project_completed': NOTIFICATION_TYPES.COMPLETION_PROJECT_COMPLETED,
+    'completion.final_payment': NOTIFICATION_TYPES.COMPLETION_FINAL_PAYMENT,
+    'completion.rating_prompt': NOTIFICATION_TYPES.COMPLETION_RATING_PROMPT
   };
 
   return mapping[eventType] || 0;

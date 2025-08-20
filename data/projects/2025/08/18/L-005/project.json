@@ -1,0 +1,44 @@
+{
+  "projectId": "L-005",
+  "title": "Social Media Campaign Marketing",
+  "description": "Despite its omnipresence in our lives, desire defies categorisation. Philosophers and psychologists have tried, without success, to define this state of being and map its influence over our choices, but they have managed to reach a consensus on aspects of desire. Philosophers and psychologists have tried, without success, to define this state of being and map its influence over our choices",
+  "organizationId": 1,
+  "commissionerId": 32,
+  "freelancerId": 31,
+  "status": "ongoing",
+  "dueDate": "2025-08-31T04:00:00.000Z",
+  "invoicingMethod": "completion",
+  "totalBudget": 4000,
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-18T22:44:51.266Z",
+  "updatedAt": "2025-08-18T23:08:56.764Z",
+  "category": "Marketing",
+  "subcategory": "Social Media Marketing",
+  "tags": [
+    "Social Media Marketing",
+    "Campaign Strategy"
+  ],
+  "toolsRequired": [
+    "Google Analytics",
+    "TikTok Ads Manager"
+  ],
+  "estimatedHours": 80,
+  "deliveryTimeWeeks": 1.8571428571428572,
+  "upfrontPaid": true,
+  "upfrontAmount": 480,
+  "remainingBudget": 3520,
+  "manualInvoiceAmount": 880,
+  "totalTasks": 4,
+  "completionPayments": {
+    "upfrontCompleted": true,
+    "manualInvoicesCount": 0,
+    "finalPaymentCompleted": false
+  },
+  "retroactiveActivation": {
+    "activatedAt": "2025-08-18T23:08:56.764Z",
+    "activatedBy": "system",
+    "originalCreatedAt": "2025-08-18T22:44:51.266Z",
+    "reason": "Missing upfront payment and notifications generated retroactively"
+  }
+}

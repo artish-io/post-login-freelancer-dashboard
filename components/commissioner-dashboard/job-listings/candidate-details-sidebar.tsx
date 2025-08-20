@@ -16,6 +16,10 @@ interface Application {
   tools: string[];
   submittedAt: string;
   status?: 'pending' | 'accepted' | 'rejected';
+  rejectedAt?: string;
+  rejectionReason?: string;
+  acceptedAt?: string;
+  projectId?: string;
 }
 
 interface GigRequest {
@@ -122,6 +126,20 @@ export default function CandidateDetailsSidebar({
     if (!candidate.application) {
       console.log('❌ [ATOMIC] EARLY EXIT: Application data is missing');
       showErrorToast('Invalid Data', 'Application data is missing.');
+      return;
+    }
+
+    // 🚫 REJECTION GUARD: Prevent matching with rejected applications
+    if (candidate.application.status === 'rejected') {
+      console.log('❌ [ATOMIC] EARLY EXIT: Application is rejected');
+      showErrorToast('Cannot Match', 'This application has been rejected and cannot be matched.');
+      return;
+    }
+
+    // 🚫 ACCEPTED GUARD: Prevent matching with already accepted applications
+    if (candidate.application.status === 'accepted') {
+      console.log('❌ [ATOMIC] EARLY EXIT: Application is already accepted');
+      showErrorToast('Already Matched', 'This application has already been matched with a freelancer.');
       return;
     }
 
@@ -246,7 +264,9 @@ export default function CandidateDetailsSidebar({
       });
 
       console.log('🚨 [ATOMIC] Showing error toast...');
-      showErrorToast('Failed to match with freelancer', 'Please try again or contact support if the issue persists.');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to match with freelancer';
+      const fallbackMessage = 'Please try again or contact support if the issue persists.';
+      showErrorToast('Failed to match with freelancer', errorMessage || fallbackMessage);
     } finally {
       console.log('🔄 [ATOMIC] Finally block: Setting isMatching to FALSE');
       setIsMatching(false);
@@ -355,9 +375,39 @@ export default function CandidateDetailsSidebar({
               {(() => {
                 const isGigRequest = candidate?.type === 'private';
                 const isPublicApplication = candidate?.type === 'public';
+                const isRejectedApplication = candidate?.application?.status === 'rejected';
+
+
 
                 return (
                   <>
+                    {/* 🚫 REJECTION STATUS BANNER: Show rejection status for rejected applications */}
+                    {isPublicApplication && isRejectedApplication && (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                            <UserX className="w-4 h-4 text-red-600" />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-medium text-red-900 mb-1">Application Rejected</h4>
+                            <p className="text-sm text-red-700">
+                              This application was rejected on {candidate.application?.rejectedAt ?
+                                new Date(candidate.application.rejectedAt).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric'
+                                }) : 'an unknown date'}.
+                            </p>
+                            {candidate.application?.rejectionReason && (
+                              <p className="text-xs text-red-600 mt-1">
+                                <strong>Reason:</strong> {candidate.application.rejectionReason}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Freelancer Profile */}
                     <div className="text-center">
                       <div className="relative mx-auto w-20 h-20 mb-4 z-10">
@@ -507,7 +557,7 @@ export default function CandidateDetailsSidebar({
                     <div className="pt-4 border-t border-gray-200 space-y-3">
                       {isPublicApplication && (
                         <>
-                          {/* Reject Button - Only for public applications */}
+                          {/* Reject Button - Only for pending public applications */}
                           {(!candidate.application?.status || candidate.application?.status === 'pending') && (
                             <button
                               onClick={handleRejectApplication}
@@ -528,34 +578,53 @@ export default function CandidateDetailsSidebar({
                             </button>
                           )}
 
-                          {/* Match Button - Only for public applications */}
-                          <button
-                            onClick={() => {
-                              console.log('🖱️ [ATOMIC] MATCH BUTTON CLICKED');
-                              console.log('🔍 [ATOMIC] Button state check:', {
-                                isMatching,
-                                isRejecting,
-                                applicationStatus: candidate.application?.status,
-                                buttonDisabled: isMatching || isRejecting || candidate.application?.status === 'accepted' || candidate.application?.status === 'rejected'
-                              });
-                              handleMatchWithFreelancer();
-                            }}
-                            disabled={isMatching || isRejecting || candidate.application?.status === 'accepted' || candidate.application?.status === 'rejected'}
-                            className="w-full bg-black hover:bg-gray-800 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                          >
-                            {isMatching ? (
-                              <>
-                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                Matching...
-                              </>
-                            ) : candidate.application?.status === 'accepted' ? (
-                              'Already Matched'
-                            ) : candidate.application?.status === 'rejected' ? (
-                              'Application Rejected'
-                            ) : (
-                              'Match With Freelancer →'
-                            )}
-                          </button>
+                          {/* Match Button - Only for pending public applications */}
+                          {(!candidate.application?.status || candidate.application?.status === 'pending') && (
+                            <button
+                              onClick={() => {
+                                console.log('🖱️ [ATOMIC] MATCH BUTTON CLICKED');
+                                console.log('🔍 [ATOMIC] Button state check:', {
+                                  isMatching,
+                                  isRejecting,
+                                  applicationStatus: candidate.application?.status,
+                                  buttonDisabled: isMatching || isRejecting
+                                });
+                                handleMatchWithFreelancer();
+                              }}
+                              disabled={isMatching || isRejecting}
+                              className="w-full bg-black hover:bg-gray-800 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                            >
+                              {isMatching ? (
+                                <>
+                                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                  Matching...
+                                </>
+                              ) : (
+                                'Match With Freelancer →'
+                              )}
+                            </button>
+                          )}
+
+                          {/* Status Display for Non-Pending Applications */}
+                          {candidate.application?.status === 'accepted' && (
+                            <div className="w-full bg-green-100 text-green-800 px-6 py-3 rounded-lg font-medium text-center">
+                              ✅ Application Accepted
+                              {candidate.application.projectId && (
+                                <div className="text-sm mt-1">
+                                  Project #{candidate.application.projectId} created
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {candidate.application?.status === 'rejected' && (
+                            <div className="w-full bg-red-100 text-red-800 px-6 py-3 rounded-lg font-medium text-center">
+                              ❌ Application Rejected
+                              <div className="text-sm mt-1">
+                                This application cannot be matched
+                              </div>
+                            </div>
+                          )}
                         </>
                       )}
 

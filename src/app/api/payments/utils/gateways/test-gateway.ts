@@ -6,7 +6,7 @@ type PaymentPhase = 'trigger' | 'execute';
 
 interface MockInvoice {
   invoiceNumber: string;
-  projectId: number;
+  projectId: string | number; // Support both string (e.g., "Z-005") and number project IDs
   freelancerId: number;
   commissionerId: number;
   totalAmount: number;
@@ -15,7 +15,7 @@ interface MockInvoice {
 interface MockTransaction {
   transactionId: string;
   invoiceNumber: string;
-  projectId: number;
+  projectId: string | number; // Support both string and number project IDs
   freelancerId: number;
   commissionerId: number;
   amount: number;
@@ -41,7 +41,8 @@ export async function processMockPayment(
   try {
     cardInfo = await getDefaultCard(invoice.commissionerId);
   } catch (error) {
-    console.warn('No card found for commissioner, proceeding with mock payment');
+    console.error('No payment method found for commissioner:', invoice.commissionerId);
+    throw new Error('No payment method on file. Please add a payment method to your account before proceeding.');
   }
 
   // Simulate processing delay (only in execute phase)

@@ -1,0 +1,23 @@
+{
+  "taskId": 1755557718218,
+  "projectId": "L-005",
+  "projectTitle": "Social Media Campaign Marketing",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Social Media Marketing",
+    "Campaign Strategy"
+  ],
+  "title": "Phase Two: Despite its omnipresence in our lives",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 2,
+  "link": "",
+  "dueDate": "2025-08-19T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Algorithms, designed to further corporate greed, weaponise desire by surveilling users of tech products and platforms",
+  "createdDate": "2025-08-18T22:44:51.266Z",
+  "lastModified": "2025-08-19T22:29:14.492Z"
+}

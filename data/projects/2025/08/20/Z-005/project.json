@@ -1,0 +1,26 @@
+{
+  "projectId": "Z-005",
+  "title": "UX Research for Project: Y.U.T.A.N.I",
+  "description": "Project Y.U.T.A.N.I is the week leading to the Oscars, and the weeks after its groundbreaking 5 Oscar sweep for auteur Sean Baker and lead Mikey Madison, conversations about the ethics of Anora, a film that explores the complexities of sex work, divided intellectual public discourse. ",
+  "organizationId": 4,
+  "commissionerId": 35,
+  "freelancerId": 25,
+  "status": "ongoing",
+  "dueDate": "2025-08-25T04:00:00.000Z",
+  "invoicingMethod": "completion",
+  "totalBudget": 3300,
+  "paidToDate": 396,
+  "currency": "USD",
+  "createdAt": "2025-08-20T08:05:58.411Z",
+  "updatedAt": "2025-08-20T08:08:49.419Z",
+  "category": "Design",
+  "subcategory": "UI/UX Design",
+  "tags": [
+    "User Research"
+  ],
+  "toolsRequired": [
+    "Figma"
+  ],
+  "estimatedHours": 32,
+  "deliveryTimeWeeks": 0.7142857142857143
+}

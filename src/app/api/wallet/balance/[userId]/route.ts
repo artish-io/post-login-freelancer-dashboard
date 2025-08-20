@@ -32,24 +32,24 @@ export async function GET(
       );
     }
     
-    // Get session for authorization (optional - depends on your auth requirements)
+    // Get session for authorization - REQUIRED for security
     const session = await getServerSession(authOptions);
-    
-    // Optional: Add authorization check
-    // if (!session?.user?.id) {
-    //   return NextResponse.json(
-    //     { error: 'Unauthorized', code: 'UNAUTHORIZED' },
-    //     { status: 401 }
-    //   );
-    // }
-    
-    // Optional: Check if user can access this balance
-    // if (session.user.id !== userId.toString() && session.user.role !== 'admin') {
-    //   return NextResponse.json(
-    //     { error: 'Forbidden', code: 'FORBIDDEN' },
-    //     { status: 403 }
-    //   );
-    // }
+
+    // Authorization check - users can only access their own balance
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized', code: 'UNAUTHORIZED' },
+        { status: 401 }
+      );
+    }
+
+    // Check if user can access this balance - only own balance or admin
+    if (session.user.id !== userId.toString() && session.user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Forbidden', code: 'FORBIDDEN' },
+        { status: 403 }
+      );
+    }
     
     // Get query parameters for additional options
     const url = new URL(request.url);
@@ -154,14 +154,22 @@ export async function POST(
       );
     }
     
-    // Get session for authorization (disabled for testing)
-    // const session = await getServerSession(authOptions);
-    // if (!session?.user?.id) {
-    //   return NextResponse.json(
-    //     { error: 'Unauthorized', code: 'UNAUTHORIZED' },
-    //     { status: 401 }
-    //   );
-    // }
+    // Get session for authorization - REQUIRED for security
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized', code: 'UNAUTHORIZED' },
+        { status: 401 }
+      );
+    }
+
+    // Check if user can refresh this balance - only own balance or admin
+    if (session.user.id !== userId.toString() && session.user.role !== 'admin') {
+      return NextResponse.json(
+        { error: 'Forbidden', code: 'FORBIDDEN' },
+        { status: 403 }
+      );
+    }
     
     // Parse request body for refresh options
     const body = await request.json().catch(() => ({}));

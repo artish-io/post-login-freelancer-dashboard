@@ -181,6 +181,8 @@ export class NotificationStorage {
    * Add a new notification event using granular storage with deduplication
    */
   static addEvent(event: NotificationEvent): void {
+    const startTime = Date.now();
+
     // Check for duplicates using in-memory cache first (fast path)
     const { isDuplicateNotification } = require('./deduplication');
     if (isDuplicateNotification(event)) {
@@ -204,13 +206,89 @@ export class NotificationStorage {
     // Get individual event file path
     const eventFilePath = this.getIndividualEventPath(eventDate, event.type, eventId);
 
-    // Write individual event file (granular storage)
-    fs.writeFileSync(eventFilePath, JSON.stringify(eventWithId, null, 2));
+    // Write individual event file (granular storage) - optimized for speed
+    try {
+      // Use compact JSON for faster writes during auto-rejection scenarios
+      const jsonContent = event.metadata?.autoRejection ?
+        JSON.stringify(eventWithId) : // Compact for auto-rejections
+        JSON.stringify(eventWithId, null, 2); // Pretty for manual events
 
-    const year = eventDate.getFullYear();
-    const month = eventDate.toLocaleDateString('en-US', { month: 'long' });
-    const day = eventDate.getDate().toString().padStart(2, '0');
-    console.log(`📝 Added ${event.type} event (${eventId}) to granular storage: ${year}/${month}/${day}/${event.type}/${eventId}.json`);
+      fs.writeFileSync(eventFilePath, jsonContent);
+
+      const writeTime = Date.now() - startTime;
+      const year = eventDate.getFullYear();
+      const month = eventDate.toLocaleDateString('en-US', { month: 'long' });
+      const day = eventDate.getDate().toString().padStart(2, '0');
+
+      if (event.metadata?.autoRejection) {
+        console.log(`📝 Added auto-rejection event (${eventId}) in ${writeTime}ms: ${year}/${month}/${day}/${event.type}/${eventId}.json`);
+      } else {
+        console.log(`📝 Added ${event.type} event (${eventId}) to granular storage: ${year}/${month}/${day}/${event.type}/${eventId}.json`);
+      }
+    } catch (error) {
+      const writeTime = Date.now() - startTime;
+      console.error(`❌ Failed to write notification event ${eventId} after ${writeTime}ms:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Add multiple notification events in batch for optimal performance
+   * Ideal for auto-rejection scenarios where multiple notifications are sent simultaneously
+   */
+  static addEventsBatch(events: NotificationEvent[]): { successful: number; failed: number; results: Array<{ success: boolean; eventId?: string; error?: string }> } {
+    const batchStartTime = Date.now();
+    console.log(`📦 Starting batch notification delivery for ${events.length} events...`);
+
+    const results: Array<{ success: boolean; eventId?: string; error?: string }> = [];
+    let successful = 0;
+    let failed = 0;
+
+    // Ensure directory exists once for all events
+    this.ensureEventsDirectory();
+
+    events.forEach((event, index) => {
+      const eventStartTime = Date.now();
+      try {
+        // Check for duplicates
+        const { isDuplicateNotification } = require('./deduplication');
+        if (isDuplicateNotification(event)) {
+          console.log(`🔄 [${index + 1}/${events.length}] Skipping duplicate: ${event.type} for target ${event.targetId}`);
+          results.push({ success: false, error: 'Duplicate notification' });
+          failed++;
+          return;
+        }
+
+        const eventDate = new Date(event.timestamp);
+        const eventId = event.id || `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+        const eventWithId = { ...event, id: eventId };
+        const eventFilePath = this.getIndividualEventPath(eventDate, event.type, eventId);
+
+        // Use compact JSON for batch operations
+        fs.writeFileSync(eventFilePath, JSON.stringify(eventWithId));
+
+        const eventTime = Date.now() - eventStartTime;
+        console.log(`   ✅ [${index + 1}/${events.length}] Event ${eventId} delivered in ${eventTime}ms`);
+
+        results.push({ success: true, eventId });
+        successful++;
+
+      } catch (error: any) {
+        const eventTime = Date.now() - eventStartTime;
+        console.error(`   ❌ [${index + 1}/${events.length}] Failed to deliver event after ${eventTime}ms:`, error.message);
+        results.push({ success: false, error: error.message });
+        failed++;
+      }
+    });
+
+    const batchTime = Date.now() - batchStartTime;
+    const avgTime = events.length > 0 ? batchTime / events.length : 0;
+
+    console.log(`📦 Batch delivery completed in ${batchTime}ms (${avgTime.toFixed(1)}ms avg per event)`);
+    console.log(`📊 Results: ${successful} successful, ${failed} failed`);
+
+    return { successful, failed, results };
   }
 
   /**

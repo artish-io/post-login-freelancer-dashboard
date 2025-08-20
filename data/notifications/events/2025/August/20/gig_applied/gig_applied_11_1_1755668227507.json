@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_11_1_1755668227507",
+  "timestamp": "2025-08-20T05:37:07.507Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 31,
+  "entityType": 3,
+  "entityId": "11",
+  "metadata": {
+    "gigTitle": "Landing Page Design",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 11,
+    "applicationId": 1755193217254
+  }
+}

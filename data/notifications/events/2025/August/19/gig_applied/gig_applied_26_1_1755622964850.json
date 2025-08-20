@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_26_1_1755622964850",
+  "timestamp": "2025-08-19T17:02:44.850Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "26",
+  "metadata": {
+    "gigTitle": "Design System For Icons Accenture",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 26,
+    "applicationId": 1755193217251
+  }
+}

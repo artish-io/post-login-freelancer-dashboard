@@ -1,0 +1,18 @@
+{
+  "id": "comp_1755667296941_t1vi8xxli",
+  "type": "completion.upfront_payment",
+  "actorId": 34,
+  "targetId": 1,
+  "projectId": "C-006",
+  "message": "Completion event: completion.upfront_payment",
+  "context": {
+    "upfrontAmount": 216,
+    "projectTitle": "Marketing for 2Baba 40-Year Concert",
+    "remainingBudget": 1584,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-20T05:21:36.732Z",
+  "subsystem": "completion_invoicing"
+}

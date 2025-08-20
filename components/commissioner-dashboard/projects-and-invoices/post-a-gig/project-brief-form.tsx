@@ -497,13 +497,13 @@ export default function ProjectBriefForm({
                 <textarea
                   value={milestone.description}
                   onChange={(e) => updateMilestone(milestone.id, { description: e.target.value })}
-                  placeholder="Write a short and clear description of a project deliverable"
-                  rows={3}
-                  maxLength={150}
+                  placeholder="Write a detailed description of the project deliverable, including specific requirements, expected outcomes, and any important details for this milestone"
+                  rows={6}
+                  maxLength={1000}
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-0 focus:border-[#eb1966] transition text-sm resize-none"
                 />
                 <div className="absolute bottom-3 right-3 text-xs text-gray-500">
-                  {milestone.description.length}/150
+                  {milestone.description.length}/1000
                 </div>
               </div>
             </div>

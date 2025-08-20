@@ -93,9 +93,10 @@ export function getProjectPath(project: { id: string | number; createdAt: string
  */
 export function getTaskPath(task: { id: string | number; projectId: string | number; createdAt: string }): string {
   const date = new Date(task.createdAt);
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-  const day = String(date.getUTCDate()).padStart(2, '0');
+  // Use local time to match resolveCanonicalTasksDir behavior
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
 
   return path.join(
     process.cwd(),
@@ -297,6 +298,77 @@ export class UnifiedStorageService {
   }
 
   /**
+   * Delete a project and its associated tasks
+   */
+  static async deleteProject(projectId: string | number): Promise<void> {
+    try {
+      const projectIdStr = projectId.toString();
+
+      // First, find the project to get its hierarchical path
+      const project = await UnifiedStorageService.readProject(projectIdStr);
+      if (!project) {
+        logger.warn(`Project ${projectIdStr} not found for deletion`);
+        return;
+      }
+
+      // Delete all tasks for this project first
+      const tasks = await UnifiedStorageService.listTasks(projectIdStr);
+      for (const task of tasks) {
+        await UnifiedStorageService.deleteTask(projectIdStr, task.id || task.taskId);
+      }
+
+      // Delete the project file from hierarchical storage
+      const projectPath = getProjectPath({
+        id: projectIdStr,
+        createdAt: project.createdAt
+      });
+
+      try {
+        await fs.unlink(projectPath);
+        logger.info(`Deleted project file: ${projectPath}`);
+      } catch (error: any) {
+        if (error.code !== 'ENOENT') {
+          throw error;
+        }
+        logger.warn(`Project file not found: ${projectPath}`);
+      }
+
+      // Remove from project index
+      const indexPath = path.join(process.cwd(), 'data', 'projects', 'metadata', 'projects-index.json');
+      const metadataIndexPath = path.join(process.cwd(), 'data', 'projects', 'metadata', 'projects-metadata-index.json');
+
+      await withFileLock(indexPath, async () => {
+        // Update main index
+        let index: Record<string, string> = {};
+        if (await fileExists(indexPath)) {
+          const data = await fs.readFile(indexPath, 'utf-8');
+          index = JSON.parse(data);
+        }
+
+        delete index[projectIdStr];
+        await writeJsonAtomic(indexPath, index);
+
+        // Update metadata index
+        let metadataIndex: Record<string, string> = {};
+        if (await fileExists(metadataIndexPath)) {
+          const data = await fs.readFile(metadataIndexPath, 'utf-8');
+          metadataIndex = JSON.parse(data);
+        }
+
+        delete metadataIndex[projectIdStr];
+        await writeJsonAtomic(metadataIndexPath, metadataIndex);
+
+        logger.info(`Removed project ${projectIdStr} from indexes`);
+      });
+
+      logger.info(`Project ${projectIdStr} deleted successfully`);
+    } catch (error) {
+      logger.error(`Error deleting project ${projectId}:`, error);
+      throw error;
+    }
+  }
+
+  /**
    * Read a task by project and task ID
    */
   static async readTask(projectId: string | number, taskId: string | number): Promise<ProjectTask | null> {
@@ -346,11 +418,15 @@ export class UnifiedStorageService {
       // Set lastModified
       validatedTask.lastModified = new Date().toISOString();
 
-      // Write to hierarchical storage
+      // Write to hierarchical storage using project creation date for consistency
+      // Get project to use its creation date for path generation
+      const project = await UnifiedStorageService.readProject(validatedTask.projectId);
+      const projectCreatedAt = project?.createdAt || validatedTask.createdDate;
+
       const taskPath = getTaskPath({
         id: validatedTask.taskId,
         projectId: validatedTask.projectId,
-        createdAt: validatedTask.createdDate
+        createdAt: projectCreatedAt
       });
 
       await atomicWrite(taskPath, validatedTask);
@@ -370,6 +446,74 @@ export class UnifiedStorageService {
    */
   static async saveTask(task: ProjectTask): Promise<void> {
     return await UnifiedStorageService.writeTask(task);
+  }
+
+  /**
+   * Delete a task from a project
+   */
+  static async deleteTask(projectId: string | number, taskId: string | number): Promise<void> {
+    try {
+      const projectIdStr = projectId.toString();
+      const taskIdStr = taskId.toString();
+
+      // First, find the task to get its hierarchical path
+      const task = await UnifiedStorageService.readTask(projectIdStr, taskIdStr);
+      if (!task) {
+        logger.warn(`Task ${taskIdStr} not found in project ${projectIdStr} for deletion`);
+        return;
+      }
+
+      // Delete the task file from hierarchical storage
+      const taskPath = getTaskPath({
+        id: taskIdStr,
+        projectId: projectIdStr,
+        createdAt: task.createdDate || new Date().toISOString()
+      });
+
+      try {
+        await fs.unlink(taskPath);
+        logger.info(`Deleted task file: ${taskPath}`);
+      } catch (error: any) {
+        if (error.code !== 'ENOENT') {
+          throw error;
+        }
+        logger.warn(`Task file not found: ${taskPath}`);
+      }
+
+      // Remove from task index
+      const indexPath = path.join(process.cwd(), 'data', 'project-tasks', 'metadata', 'tasks-index.json');
+      const metadataIndexPath = path.join(process.cwd(), 'data', 'project-tasks', 'metadata', 'tasks-metadata-index.json');
+
+      await withFileLock(indexPath, async () => {
+        // Update main index
+        let index: Record<string, string> = {};
+        if (await fileExists(indexPath)) {
+          const data = await fs.readFile(indexPath, 'utf-8');
+          index = JSON.parse(data);
+        }
+
+        const compositeKey = `${projectIdStr}-${taskIdStr}`;
+        delete index[compositeKey];
+        await writeJsonAtomic(indexPath, index);
+
+        // Update metadata index
+        let metadataIndex: Record<string, string> = {};
+        if (await fileExists(metadataIndexPath)) {
+          const data = await fs.readFile(metadataIndexPath, 'utf-8');
+          metadataIndex = JSON.parse(data);
+        }
+
+        delete metadataIndex[compositeKey];
+        await writeJsonAtomic(metadataIndexPath, metadataIndex);
+
+        logger.info(`Removed task ${taskIdStr} from project ${projectIdStr} indexes`);
+      });
+
+      logger.info(`Task ${taskIdStr} deleted successfully from project ${projectIdStr}`);
+    } catch (error) {
+      logger.error(`Error deleting task ${taskId} from project ${projectId}:`, error);
+      throw error;
+    }
   }
 
   /**
@@ -771,9 +915,11 @@ export class UnifiedStorageService {
 // Note: We need to bind these to maintain the 'this' context
 export const readProject = UnifiedStorageService.readProject.bind(UnifiedStorageService);
 export const writeProject = UnifiedStorageService.writeProject.bind(UnifiedStorageService);
+export const deleteProject = UnifiedStorageService.deleteProject.bind(UnifiedStorageService);
 export const listProjects = UnifiedStorageService.listProjects.bind(UnifiedStorageService);
 export const readTask = UnifiedStorageService.readTask.bind(UnifiedStorageService);
 export const writeTask = UnifiedStorageService.writeTask.bind(UnifiedStorageService);
+export const deleteTask = UnifiedStorageService.deleteTask.bind(UnifiedStorageService);
 export const saveTask = UnifiedStorageService.saveTask.bind(UnifiedStorageService);
 export const getTaskById = UnifiedStorageService.getTaskById.bind(UnifiedStorageService);
 export const getTaskByCompositeId = UnifiedStorageService.getTaskByCompositeId.bind(UnifiedStorageService);

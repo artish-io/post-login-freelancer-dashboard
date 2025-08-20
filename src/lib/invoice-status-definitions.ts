@@ -13,10 +13,12 @@ export type InvoiceStatus =
   | 'cancelled'       // Cancelled by freelancer or system
   | 'overdue';        // Past due date without payment
 
-export type InvoiceType = 
-  | 'manual'          // Manually created by freelancer
-  | 'auto_milestone'  // Auto-generated for milestone completion
-  | 'auto_completion'; // Auto-generated for task completion
+export type InvoiceType =
+  | 'manual'              // Manually created by freelancer
+  | 'auto_milestone'      // Auto-generated for milestone completion
+  | 'auto_completion'     // Auto-generated for task completion
+  | 'completion_upfront'  // Auto-generated upfront payment for completion projects
+  | 'completion_manual';  // Manual invoice for completion project tasks
 
 export interface InvoiceStatusConfig {
   status: InvoiceStatus;

@@ -1,0 +1,18 @@
+{
+  "type": "completion.upfront_payment",
+  "actorId": 35,
+  "targetId": 25,
+  "projectId": "Z-005",
+  "metadata": {
+    "upfrontAmount": 396,
+    "projectTitle": "UX Research for Project: Y.U.T.A.N.I",
+    "remainingBudget": 2904,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "timestamp": "2025-08-20T07:12:10.341Z",
+  "subsystem": "completion_invoicing",
+  "notificationType": 151,
+  "id": "evt_1755673931413_rejmwwz93"
+}

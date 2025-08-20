@@ -163,7 +163,7 @@ export async function saveInvoice(invoice: Invoice): Promise<void> {
 export async function getAllInvoices(filters?: {
   freelancerId?: number | string;
   commissionerId?: number;
-  projectId?: number;
+  projectId?: number | string;
   status?: string;
   startDate?: string;
   endDate?: string;
@@ -195,7 +195,7 @@ export async function getAllInvoices(filters?: {
             if (filters) {
               if (filters.freelancerId && invoice.freelancerId.toString() !== filters.freelancerId.toString()) continue;
               if (filters.commissionerId && invoice.commissionerId !== filters.commissionerId) continue;
-              if (filters.projectId && invoice.projectId !== filters.projectId) continue;
+              if (filters.projectId && invoice.projectId?.toString() !== filters.projectId.toString()) continue;
               if (filters.status && invoice.status !== filters.status) continue;
               
               if (filters.startDate || filters.endDate) {
@@ -251,7 +251,7 @@ export async function getInvoiceByNumber(invoiceNumber: string): Promise<Invoice
 }
 
 // Get invoices by project ID
-export async function getInvoicesByProjectId(projectId: number): Promise<Invoice[]> {
+export async function getInvoicesByProjectId(projectId: number | string): Promise<Invoice[]> {
   return getAllInvoices({ projectId });
 }
 
@@ -271,6 +271,25 @@ export async function updateInvoice(invoiceNumber: string, updates: Partial<Invo
   if (!invoice) return false;
 
   const updatedInvoice = { ...invoice, ...updates, updatedAt: new Date().toISOString() };
+  await saveInvoice(updatedInvoice);
+  return true;
+}
+
+// Update an existing invoice with project context (for handling duplicates)
+export async function updateInvoiceByProjectId(
+  invoiceNumber: string,
+  projectId: string | number,
+  updates: Partial<Invoice>
+): Promise<boolean> {
+  const allInvoices = await getAllInvoices();
+  const targetInvoice = allInvoices.find(inv =>
+    inv.invoiceNumber === invoiceNumber &&
+    inv.projectId?.toString() === projectId.toString()
+  );
+
+  if (!targetInvoice) return false;
+
+  const updatedInvoice = { ...targetInvoice, ...updates, updatedAt: new Date().toISOString() };
   await saveInvoice(updatedInvoice);
   return true;
 }
