@@ -77,6 +77,7 @@ const getNotificationIcon = (type: string, notification: NotificationData): stri
     case 'task_submission':
       return '/icons/task-awaiting-review.png';
     case 'task_approved':
+    case 'completion.task_approved': // Use same icon for completion task approvals
       return '/icons/task-approved.png';
     case 'task_rejected':
       return '/icons/task-rejected.png';
@@ -99,22 +100,30 @@ const getNotificationIcon = (type: string, notification: NotificationData): stri
     case 'project_accepted':
       return '/icons/project-accepted.png';
 
-    // Completion notification icons
+    // Completion notification icons (both underscore and dot notation)
     case 'completion_project_activated':
+    case 'completion.project_activated':
       return '/icons/project-activated.png';
     case 'completion_upfront_payment':
+    case 'completion.upfront_payment':
       return '/icons/new-payment.png';
     case 'completion_task_approved':
+    case 'completion.task_approved':
       return '/icons/task-approved.png';
     case 'completion_invoice_received':
+    case 'completion.invoice_received':
       return '/icons/new-invoice.png';
     case 'completion_invoice_paid':
+    case 'completion.invoice_paid':
       return '/icons/new-payment.png';
     case 'completion_project_completed':
+    case 'completion.project_completed':
       return '/icons/project-completed.png';
     case 'completion_final_payment':
+    case 'completion.final_payment':
       return '/icons/new-payment.png';
     case 'completion_rating_prompt':
+    case 'completion.rating_prompt':
       return '/icons/rating-prompt.png';
 
     default:

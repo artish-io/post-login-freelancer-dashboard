@@ -1,89 +1,165 @@
 import { NextResponse, NextRequest } from 'next/server';
 // ✅ SAFE: Reuse shared infrastructure only
-import { requireSession, assert } from '@/lib/auth/session-guard';
+import { requireSession } from '@/lib/auth/session-guard';
 import { sanitizeApiInput } from '@/lib/security/input-sanitizer';
-import { withErrorHandling, ok, err } from '@/lib/http/envelope';
+import { ok } from '@/lib/http/envelope';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
+
+// Invariant helper for type narrowing
+function invariant<T>(val: T, msg: string, status = 400): asserts val is NonNullable<T> {
+  if (val == null) {
+    const error = new Error(msg);
+    (error as any).status = status;
+    (error as any).code = 'VALIDATION_ERROR';
+    throw error;
+  }
+}
 
 // 🚨 CRITICAL: This is a COMPLETELY NEW route for completion projects only
 // 🛡️ PROTECTED: Does NOT modify src/app/api/project-tasks/submit/route.ts (milestone route)
 
 export async function POST(req: NextRequest) {
-  return withErrorHandling(async () => {
-    const { userId: actorId } = await requireSession(req);
+  try {
+    // 🧪 TEST BYPASS: Allow testing without authentication in development
+    let actorId: number;
+    if (process.env.NODE_ENV === 'development' && req.headers.get('X-Test-Bypass-Auth') === 'true') {
+      console.log('🧪 TEST MODE: Bypassing authentication for completion endpoint testing');
+      actorId = Number(req.headers.get('X-Test-User-ID')) || 35; // Default test commissioner ID
+    } else {
+      const { userId } = await requireSession(req);
+      actorId = userId;
+    }
+
     const body = await req.json();
     const { projectId, taskId, action } = sanitizeApiInput(body);
-    
+
+    // Normalize and validate IDs
+    const normalizedProjectId = String(projectId).trim();
+    const normalizedTaskId = Number(taskId);
+    invariant(normalizedProjectId.length > 0, 'Invalid projectId');
+    invariant(Number.isFinite(normalizedTaskId), 'Invalid taskId');
+
+    console.log(`[COMPLETION_SUBMIT] Processing task ${normalizedTaskId} for project ${normalizedProjectId}`);
+
     // 🛡️ CRITICAL GUARD: Only handle completion projects - prevents milestone contamination
-    const project = await getProjectById(projectId);
-    assert(project, 'Project not found', 404);
+    const project = await UnifiedStorageService.getProjectById(normalizedProjectId);
+    invariant(project, 'Project not found', 404);
 
     if (project.invoicingMethod !== 'completion') {
-      console.error(`[COMPLETION_PAY] GUARD VIOLATION: Attempt to use completion endpoint for ${project.invoicingMethod} project ${projectId}`);
-      assert(false, `GUARD: This endpoint is for completion projects only. Project ${projectId} is ${project.invoicingMethod}-based`, 400);
+      console.error(`[COMPLETION_PAY] GUARD VIOLATION: Attempt to use completion endpoint for ${project.invoicingMethod} project ${normalizedProjectId}`);
+      invariant(false, `GUARD: This endpoint is for completion projects only. Project ${normalizedProjectId} is ${project.invoicingMethod}-based`, 400);
     }
 
-    console.log(`[COMPLETION_PAY] Processing task approval for completion project ${projectId}`);
-    
+    console.log(`[TYPE_GUARD] Confirmed completion project ${normalizedProjectId}`);
+
     if (action !== 'approve') {
-      return NextResponse.json(ok({ 
-        message: 'Only approval actions supported for completion projects',
-        supportedActions: ['approve']
+      return NextResponse.json(ok({
+        message: 'Only approval actions supported for completion projects'
       }));
     }
-    
+
     // 🔒 COMPLETION-SPECIFIC: Approve task without auto-invoice generation
-    const task = await getTaskById(taskId);
-    assert(task, 'Task not found', 404);
-    assert(task.projectId === projectId, 'Task does not belong to project', 400);
-    assert(project.commissionerId === actorId, 'Unauthorized', 403);
-    assert(task.status !== 'Approved', 'Task is already approved', 409);
+    // Use hierarchical storage with string projectId (no numeric coercion)
+    console.log(`[TasksPaths][READ] Attempting to read task ${normalizedTaskId} from project ${normalizedProjectId}`);
+
+    const task = await UnifiedStorageService.readTask(normalizedProjectId, normalizedTaskId);
+
+    if (!task) {
+      // Log path resolution diagnostics before throwing 404
+      console.log(`[TasksPaths][MISS] { kind: 'task', projectId: '${normalizedProjectId}', taskId: ${normalizedTaskId} }`);
+      invariant(false, 'Task not found', 404);
+    }
+
+    // TypeScript assertion: task is guaranteed to be non-null after the invariant check
+    const validTask = task!;
+
+    console.log(`[TasksPaths][READ] Successfully found task ${normalizedTaskId} with status: ${validTask.status}`);
+
+    // Validate task belongs to project (compare as strings to avoid NaN issues)
+    invariant(String(validTask.projectId) === String(normalizedProjectId), 'Task does not belong to project', 400);
+    invariant(project.commissionerId === actorId, 'Unauthorized', 403);
+    invariant(validTask.status !== 'Approved', 'Task is already approved', 409);
     
-    // Update task status
+    // Update task status with atomic write logging
+    const startTs = Date.now();
     const updatedTask = {
-      ...task,
-      status: 'Approved',
+      ...validTask,
+      status: 'Approved' as const,
       approvedAt: new Date().toISOString(),
       approvedBy: actorId,
       // 🔒 COMPLETION-SPECIFIC: Mark as eligible for manual invoice
       manualInvoiceEligible: true,
       invoicePaid: false
     };
-    
-    await updateTask(taskId, updatedTask);
+
+    console.log(`[ATOMIC_WRITE] { op: 'saveTask', projectId: '${normalizedProjectId}', taskId: ${normalizedTaskId}, prevStatus: '${validTask.status}', nextStatus: 'Approved', startTs: ${startTs} }`);
+
+    await UnifiedStorageService.saveTask(updatedTask);
+
+    const endTs = Date.now();
+    console.log(`[ATOMIC_WRITE] { op: 'saveTask', projectId: '${normalizedProjectId}', taskId: ${normalizedTaskId}, endTs: ${endTs}, durationMs: ${endTs - startTs}, ok: true }`);
+
+    // Atomic read-after-write verification
+    const readbackTask = await UnifiedStorageService.readTask(normalizedProjectId, normalizedTaskId);
+    const readbackMatches = readbackTask?.status === 'Approved';
+    console.log(`[ATOMIC_READBACK] { projectId: '${normalizedProjectId}', taskId: ${normalizedTaskId}, status: '${readbackTask?.status}', matches: ${readbackMatches} }`);
+
+    if (!readbackMatches) {
+      console.error(`[ATOMIC_READBACK] Read-after-write verification failed for task ${normalizedTaskId}`);
+      return NextResponse.json({
+        ok: false,
+        code: 'ATOMIC_WRITE_FAILED',
+        message: 'Task update verification failed',
+        status: 500,
+        requestId: crypto.randomUUID()
+      }, { status: 500 });
+    }
 
     // 🔒 COMPLETION-SPECIFIC: Use centralized completion gate to check final payment eligibility
     const { CompletionCalculationService } = await import('@/app/api/payments/services/completion-calculation-service');
-    const completionStatus = await CompletionCalculationService.isProjectReadyForFinalPayout(projectId);
+    const completionStatus = await CompletionCalculationService.isProjectReadyForFinalPayout(normalizedProjectId);
 
-    let finalPaymentResult = null;
+    // 🔍 DIAGNOSTIC: Log completion status details
+    console.log(`[TYPE_GUARD] Completion readiness check for project ${normalizedProjectId}:`, {
+      isReadyForFinalPayout: completionStatus.isReadyForFinalPayout,
+      allTasksApproved: completionStatus.allTasksApproved,
+      hasRemainingBudget: completionStatus.hasRemainingBudget,
+      remainingBudget: completionStatus.remainingBudget,
+      totalTasks: completionStatus.totalTasks,
+      approvedTasks: completionStatus.approvedTasks,
+      reason: completionStatus.reason
+    });
 
     if (completionStatus.isReadyForFinalPayout) {
       // 🔒 COMPLETION-SPECIFIC: Only trigger final payment when gate confirms eligibility
-      console.log(`[COMPLETION_PAY] Triggering final payment for project ${projectId}: ${completionStatus.reason}`);
+      console.log(`[PAY_TRIGGER] ALLOWED: Final payment triggered for completion project ${normalizedProjectId}: ${completionStatus.reason}`);
       try {
         const finalPaymentResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/payments/completion/execute-final`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': req.headers.get('Authorization') || ''
+            'Authorization': req.headers.get('Authorization') || '',
+            // 🔑 CRITICAL: Forward cookies for NextAuth session
+            'Cookie': req.headers.get('Cookie') || ''
           },
-          body: JSON.stringify({ projectId })
+          body: JSON.stringify({ projectId: normalizedProjectId })
         });
 
         if (finalPaymentResponse.ok) {
-          finalPaymentResult = await finalPaymentResponse.json();
+          console.log(`[PAY_TRIGGER] Final payment executed successfully for project ${normalizedProjectId}`);
         } else {
-          console.warn('[COMPLETION_PAY] Final payment trigger failed:', await finalPaymentResponse.text());
+          console.warn(`[PAY_TRIGGER] Final payment trigger failed for project ${normalizedProjectId}:`, await finalPaymentResponse.text());
         }
       } catch (e) {
-        console.warn('[COMPLETION_PAY] Final payment trigger failed:', e);
+        console.warn(`[PAY_TRIGGER] Final payment trigger failed for project ${normalizedProjectId}:`, e);
       }
     } else {
-      console.log(`[COMPLETION_PAY] Final payment not triggered for project ${projectId}: ${completionStatus.reason}`);
+      console.log(`[PAY_TRIGGER] BLOCKED: Final payment not triggered for completion project ${normalizedProjectId}: ${completionStatus.reason}`);
     }
     
     // 🔔 COMPLETION-SPECIFIC: Emit task approval notification
     try {
+      console.log(`[NOTIFY] Sending task approval notification for task ${normalizedTaskId} in project ${normalizedProjectId}`);
       const { handleCompletionNotification } = await import('@/app/api/notifications-v2/completion-handler');
 
       // Always emit task approval notification
@@ -93,112 +169,66 @@ export async function POST(req: NextRequest) {
         targetId: project.freelancerId,
         projectId,
         context: {
-          taskId: updatedTask.id,
+          taskId: String(updatedTask.taskId),
           taskTitle: updatedTask.title,
           projectTitle: project.title,
           commissionerName: 'Commissioner' // TODO: Get actual name
         }
       });
 
+      console.log(`[NOTIFY] Task approval notification sent successfully for task ${normalizedTaskId}`);
       // Note: Project completion and final payment notifications are handled in final payment route
     } catch (e) {
-      console.warn('Completion notification failed:', e);
+      console.warn(`[NOTIFY] Task approval notification failed for task ${normalizedTaskId}:`, e);
     }
     
-    return NextResponse.json(ok({
-      task: {
-        id: updatedTask.id,
-        title: updatedTask.title,
-        status: updatedTask.status,
-        approvedAt: updatedTask.approvedAt,
-        manualInvoiceEligible: updatedTask.manualInvoiceEligible
+    const response = ok({
+      entities: {
+        task: {
+          id: updatedTask.taskId,
+          title: updatedTask.title,
+          status: updatedTask.status,
+          approvedAt: updatedTask.approvedAt,
+          manualInvoiceEligible: updatedTask.manualInvoiceEligible
+        },
+        project: {
+          projectId: normalizedProjectId,
+          allTasksCompleted: completionStatus.allTasksApproved,
+          totalTasks: completionStatus.totalTasks,
+          approvedTasks: completionStatus.approvedTasks,
+          remainingBudget: completionStatus.remainingBudget,
+          readyForFinalPayout: completionStatus.isReadyForFinalPayout
+        }
       },
-      project: {
-        projectId,
-        allTasksCompleted: completionStatus.allTasksApproved,
-        totalTasks: completionStatus.totalTasks,
-        approvedTasks: completionStatus.approvedTasks,
-        remainingBudget: completionStatus.remainingBudget,
-        readyForFinalPayout: completionStatus.isReadyForFinalPayout
-      },
-      finalPayment: finalPaymentResult?.data || null,
+      notificationsQueued: true,
       message: completionStatus.isReadyForFinalPayout
         ? 'Task approved - all conditions met, final payment triggered'
         : `Task approved successfully - ${completionStatus.reason}`
-    }));
-  });
-}
+    });
 
-// Helper functions - NEW, doesn't modify existing functions
-async function getProjectById(projectId: string) {
-  try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectsData = await fs.readFile(projectsPath, 'utf8');
-    const projects = JSON.parse(projectsData);
-    
-    return projects.find((p: any) => p.projectId === projectId);
-  } catch (error) {
-    console.error('Error reading project:', error);
-    return null;
-  }
-}
+    console.log(`[COMPLETION_SUBMIT] Successfully completed task ${normalizedTaskId} approval for project ${normalizedProjectId}`);
+    return NextResponse.json(response);
+  } catch (error: any) {
+    console.error(`[COMPLETION_SUBMIT] Error processing task approval:`, error);
 
-async function getTaskById(taskId: string) {
-  try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    const tasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-    const tasksData = await fs.readFile(tasksPath, 'utf8');
-    const tasks = JSON.parse(tasksData);
-    
-    return tasks.find((t: any) => t.id === taskId);
-  } catch (error) {
-    console.error('Error reading task:', error);
-    return null;
-  }
-}
-
-async function getTasksByProject(projectId: string) {
-  try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    const tasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-    const tasksData = await fs.readFile(tasksPath, 'utf8');
-    const tasks = JSON.parse(tasksData);
-    
-    return tasks.filter((t: any) => t.projectId === projectId);
-  } catch (error) {
-    console.error('Error reading tasks:', error);
-    return [];
-  }
-}
-
-async function updateTask(taskId: string, updates: any) {
-  try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    const tasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-    const tasksData = await fs.readFile(tasksPath, 'utf8');
-    const tasks = JSON.parse(tasksData);
-    
-    const taskIndex = tasks.findIndex((t: any) => t.id === taskId);
-    if (taskIndex !== -1) {
-      tasks[taskIndex] = {
-        ...tasks[taskIndex],
-        ...updates,
-        updatedAt: new Date().toISOString()
-      };
-      
-      await fs.writeFile(tasksPath, JSON.stringify(tasks, null, 2));
+    // Handle custom errors with status codes
+    if (error.status && error.code) {
+      return NextResponse.json({
+        ok: false,
+        requestId: crypto.randomUUID(),
+        code: error.code,
+        message: error.message,
+        status: error.status
+      }, { status: error.status });
     }
-  } catch (error) {
-    console.error('Error updating task:', error);
-    throw error;
+
+    // Handle generic errors
+    return NextResponse.json({
+      ok: false,
+      requestId: crypto.randomUUID(),
+      code: 'INTERNAL_ERROR',
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+      status: 500
+    }, { status: 500 });
   }
 }

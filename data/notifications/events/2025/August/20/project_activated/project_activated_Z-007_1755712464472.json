@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_Z-007_1755712464472",
+  "timestamp": "2025-08-20T17:54:24.472Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "Z-007",
+  "metadata": {
+    "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+    "gigTitle": "Ad Copy for Google Waterloo Launch Event",
+    "taskCount": 3,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group"
+  },
+  "context": {
+    "projectId": "Z-007",
+    "gigId": 31,
+    "applicationId": 1755193217260
+  }
+}

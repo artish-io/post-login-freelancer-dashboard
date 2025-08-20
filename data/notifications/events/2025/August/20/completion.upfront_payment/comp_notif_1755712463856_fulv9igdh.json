@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1755712463856_fulv9igdh",
+  "type": "completion.upfront_payment",
+  "actorId": 35,
+  "targetId": 25,
+  "projectId": "Z-007",
+  "message": "Zynate Events Group has paid $192 upfront for your newly activated Ad Copy for Google Waterloo Launch Event project. This project has a budget of $1408 left. Click here to view invoice details",
+  "context": {
+    "upfrontAmount": 192,
+    "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+    "remainingBudget": 1408,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "read": false,
+  "createdAt": "2025-08-20T17:54:23.856Z",
+  "timestamp": "2025-08-20T17:54:23.856Z",
+  "subsystem": "completion_invoicing"
+}

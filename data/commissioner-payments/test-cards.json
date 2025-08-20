@@ -180,7 +180,7 @@
     "brand": "mastercard",
     "isDefault": true,
     "isActive": true,
-    "availableBalance": 43301.6,
+    "availableBalance": 41409.6,
     "transactionHistory": [
       {
         "transactionId": "TXN-1755674650743",
@@ -247,11 +247,55 @@
         "freelancerId": 25,
         "timestamp": "2025-08-20T08:08:49.397Z",
         "balanceAfter": 43301.6
+      },
+      {
+        "transactionId": "TXN-1755709340265",
+        "amount": -144,
+        "type": "payment",
+        "description": "Payment for invoice TB-013",
+        "invoiceNumber": "TB-013",
+        "projectId": "NaN",
+        "freelancerId": 25,
+        "timestamp": "2025-08-20T17:02:20.265Z",
+        "balanceAfter": 43157.6
+      },
+      {
+        "transactionId": "TXN-1755709410420",
+        "amount": -1056,
+        "type": "payment",
+        "description": "Payment for invoice TB-014",
+        "invoiceNumber": "TB-014",
+        "projectId": "Z-006",
+        "freelancerId": 25,
+        "timestamp": "2025-08-20T17:03:30.420Z",
+        "balanceAfter": 42101.6
+      },
+      {
+        "transactionId": "TXN-1755712463445",
+        "amount": -192,
+        "type": "payment",
+        "description": "Payment for invoice TB-015",
+        "invoiceNumber": "TB-015",
+        "projectId": "NaN",
+        "freelancerId": 25,
+        "timestamp": "2025-08-20T17:54:23.445Z",
+        "balanceAfter": 41909.6
+      },
+      {
+        "transactionId": "TXN-1755721488867",
+        "amount": -500,
+        "type": "payment",
+        "description": "Payment for invoice TB-016",
+        "invoiceNumber": "TB-016",
+        "projectId": "Z-008",
+        "freelancerId": 25,
+        "timestamp": "2025-08-20T20:24:48.867Z",
+        "balanceAfter": 41409.6
       }
     ],
     "createdAt": "2025-08-20T05:45:11.483Z",
     "lastUsed": null,
-    "updatedAt": "2025-08-20T08:08:49.396Z"
+    "updatedAt": "2025-08-20T20:24:48.867Z"
   },
   {
     "id": "card_test_036",

@@ -1,0 +1,47 @@
+{
+  "id": 30,
+  "title": "Brand Design For Logic Brigde",
+  "organizationId": 4,
+  "commissionerId": "35",
+  "category": "Design",
+  "subcategory": "Graphic Design",
+  "tags": [
+    "Brand Design"
+  ],
+  "hourlyRateMin": 25,
+  "hourlyRateMax": 30,
+  "description": "In the week leading to the Oscars, and the weeks after its groundbreaking 5 Oscar sweep for auteur Sean Baker and lead Mikey Madison, conversations about the ethics of Anora, a film that explores the complexities of sex work, divided intellectual public discourse.",
+  "deliveryTimeWeeks": 0.8571428571428571,
+  "estimatedHours": 40,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Canva"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "a918157d-cfc6-4382-82cd-c21ca4c50584",
+      "title": "Phase One: Foldable Dust",
+      "description": "Conversations about the ethics of Anora, a film that explores the complexities of sex work, divided intellectual public discourse.",
+      "startDate": "2025-08-21T04:00:00.000Z",
+      "endDate": "2025-08-23T04:00:00.000Z"
+    },
+    {
+      "id": "21173f78-13e3-487b-b697-f6a7e5a162f2",
+      "title": "Phase Two: Pixel Logos and Risk",
+      "description": "Mikey Madison, conversations about the ethics of Anora, a film that explores the complexities of sex work, divided intellectual public discourse.",
+      "startDate": "2025-08-24T04:00:00.000Z",
+      "endDate": "2025-08-26T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-26T04:00:00.000Z",
+  "lowerBudget": 1000,
+  "upperBudget": 1200,
+  "postedDate": "2025-08-20",
+  "notes": "Budget range: $1,000 - $1,200",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

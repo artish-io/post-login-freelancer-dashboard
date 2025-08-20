@@ -1,0 +1,22 @@
+{
+  "id": "milestone_payment_Z-008_1755721488887",
+  "timestamp": "2025-08-20T20:24:48.887Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 35,
+  "targetId": 25,
+  "entityType": 10,
+  "entityId": "Z-008_God Abeg No Code Regression Test",
+  "metadata": {
+    "milestoneTitle": "God Abeg No Code Regression Test",
+    "amount": 500,
+    "organizationName": "Zynate Events Group",
+    "invoiceNumber": "TB-016",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "Z-008",
+    "milestoneTitle": "God Abeg No Code Regression Test",
+    "invoiceNumber": "TB-016"
+  }
+}

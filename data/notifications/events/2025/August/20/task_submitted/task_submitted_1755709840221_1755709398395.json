@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755709840221_1755709398395",
+  "timestamp": "2025-08-20T17:03:18.395Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 25,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1755709840221,
+  "metadata": {
+    "taskId": 1755709840221,
+    "taskTitle": "Phase One: Foldable Dust",
+    "projectTitle": "Brand Design For Logic Brigde",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-006",
+    "taskId": 1755709840221
+  }
+}

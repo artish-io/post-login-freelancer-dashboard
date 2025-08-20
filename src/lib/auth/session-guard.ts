@@ -4,7 +4,14 @@ import { NextRequest } from 'next/server';
 
 export async function requireSession(req: NextRequest) {
   // For NextAuth in API routes, we need to pass the request and response objects
-  const session = await getServerSession(authOptions);
+  // Create a mock response object for getServerSession
+  const mockRes = {
+    getHeader: () => null,
+    setHeader: () => {},
+    setCookie: () => {},
+  };
+
+  const session = await getServerSession(req as any, mockRes as any, authOptions);
 
   console.log('🔐 Session check:', {
     hasSession: !!session,

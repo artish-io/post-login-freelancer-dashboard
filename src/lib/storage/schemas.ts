@@ -75,8 +75,12 @@ export const ProjectTaskSchema = z.object({
   approvedDate: z.string().datetime().optional(),
   rejectedDate: z.string().datetime().optional(),
   createdDate: z.string().datetime(),
-  lastModified: z.string().datetime()
-}).strict();
+  lastModified: z.string().datetime(),
+  // 🔒 COMPLETION-SPECIFIC: Additional fields for completion projects
+  manualInvoiceEligible: z.boolean().optional(),
+  invoicePaid: z.boolean().optional(),
+  approvedBy: z.number().int().positive().optional()
+}).passthrough(); // Allow additional fields for extensibility
 
 /**
  * Validation error type

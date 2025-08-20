@@ -271,5 +271,26 @@
       "taskId": 1755452388354,
       "invoiceId": "MH-003"
     }
+  },
+  {
+    "id": "evt_1755721488352_invoice_auto",
+    "timestamp": "2025-08-20T20:24:48.352Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 25,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-016",
+    "metadata": {
+      "taskTitle": "Phase One: God Abeg Bro",
+      "projectTitle": "God Abeg No Code Regression Test",
+      "amount": 500,
+      "invoiceNumber": "TB-016"
+    },
+    "context": {
+      "projectId": "Z-008",
+      "taskId": 1755721494701,
+      "invoiceId": "TB-016"
+    }
   }
 ]

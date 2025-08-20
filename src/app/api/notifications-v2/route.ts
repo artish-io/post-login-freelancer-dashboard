@@ -88,6 +88,11 @@ export async function GET(request: NextRequest) {
         return true;
       }
 
+      // Special case: completion.upfront_payment notifications for commissioners are self-notifications
+      if (event.type === 'completion.upfront_payment' && event.targetId === parseInt(userId) && event.actorId === parseInt(userId)) {
+        return true;
+      }
+
       // User is the target of the event AND not the actor (no self-notifications)
       if (event.targetId === parseInt(userId) && event.actorId !== parseInt(userId)) return true;
 
@@ -231,7 +236,12 @@ export async function GET(request: NextRequest) {
       }
 
       const title = await generateGranularTitle(event, actor, project, projectTaskData, task);
-      const message = generateGranularMessage(event, actor, project, projectTaskData, task);
+      // Use pre-generated message from completion notifications if available and not a fallback message
+      const preGeneratedMessage = (event as any).message;
+      const isFallbackMessage = preGeneratedMessage && preGeneratedMessage.startsWith('Completion event:');
+      const message = (preGeneratedMessage && !isFallbackMessage)
+        ? preGeneratedMessage
+        : generateGranularMessage(event, actor, project, projectTaskData, task);
 
       // Filter out notifications with null title or message (unknown event types)
       if (title === null || message === null) {
@@ -615,7 +625,9 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
     case 'completion.project_activated':
       return `${actorName} accepted your application`;
     case 'completion.upfront_payment':
-      return `${actorName} paid upfront payment`;
+      // Use organization name for upfront payments as specified by user
+      const orgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || actorName;
+      return `${orgName} paid upfront payment`;
     case 'completion.task_approved':
       return `${actorName} approved your task`;
     case 'completion.invoice_received':
@@ -704,7 +716,17 @@ function generateGranularMessage(event: EventData, _actor: any, _project?: any, 
     case 'completion.project_activated':
       return `Your application has been accepted and the project is now active`;
     case 'completion.upfront_payment':
-      return `Upfront payment received for your newly activated project`;
+      // Generate detailed message with budget information
+      const upfrontAmt = (event.metadata as any)?.upfrontAmount || (event.context as any)?.upfrontAmount || 0;
+      const remainingBudgetAmt = (event.metadata as any)?.remainingBudget || (event.context as any)?.remainingBudget || 0;
+      const projTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'your project';
+      const orgNameForUpfront = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
+
+      if (upfrontAmt && remainingBudgetAmt) {
+        return `${orgNameForUpfront} has paid $${upfrontAmt} upfront for your newly activated ${projTitle} project. This project has a budget of $${remainingBudgetAmt} left. Click here to view invoice details`;
+      } else {
+        return `Upfront payment received for your newly activated project`;
+      }
     case 'completion.task_approved':
       return `Your task submission has been approved`;
     case 'completion.invoice_received':

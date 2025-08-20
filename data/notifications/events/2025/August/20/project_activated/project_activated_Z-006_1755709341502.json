@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_Z-006_1755709341502",
+  "timestamp": "2025-08-20T17:02:21.502Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "Z-006",
+  "metadata": {
+    "projectTitle": "Brand Design For Logic Brigde",
+    "gigTitle": "Brand Design For Logic Brigde",
+    "taskCount": 2,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group"
+  },
+  "context": {
+    "projectId": "Z-006",
+    "gigId": 30,
+    "applicationId": 1755193217259
+  }
+}

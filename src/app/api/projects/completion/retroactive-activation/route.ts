@@ -59,11 +59,13 @@ export async function POST(req: NextRequest) {
     try {
       const upfrontResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/payments/completion/execute-upfront`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          'Authorization': req.headers.get('Authorization') || ''
+          'Authorization': req.headers.get('Authorization') || '',
+          // 🔑 CRITICAL: Forward cookies for NextAuth session
+          'Cookie': req.headers.get('Cookie') || ''
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           projectId,
           retroactive: true // Flag to indicate this is a retroactive payment
         })

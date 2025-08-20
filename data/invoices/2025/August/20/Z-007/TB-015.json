@@ -1,0 +1,29 @@
+{
+  "invoiceNumber": "TB-015",
+  "projectId": "Z-007",
+  "freelancerId": 25,
+  "commissionerId": 35,
+  "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+  "totalAmount": 192,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-20T17:54:22.871Z",
+  "dueDate": "2025-09-03T17:54:22.871Z",
+  "createdAt": "2025-08-20T17:54:22.871Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 192,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 182.4,
+    "platformFee": 9.6
+  },
+  "paidDate": "2025-08-20T17:54:23.446Z",
+  "updatedAt": "2025-08-20T17:54:23.792Z"
+}

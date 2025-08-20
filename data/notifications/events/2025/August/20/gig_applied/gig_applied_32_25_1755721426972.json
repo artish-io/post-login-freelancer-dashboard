@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_32_25_1755721426972",
+  "timestamp": "2025-08-20T20:23:46.972Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "32",
+  "metadata": {
+    "gigTitle": "God Abeg No Code Regression Test",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 32,
+    "applicationId": 1755193217261
+  }
+}

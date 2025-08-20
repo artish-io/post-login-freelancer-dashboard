@@ -1,0 +1,27 @@
+{
+  "projectId": "Z-007",
+  "title": "Ad Copy for Google Waterloo Launch Event",
+  "description": "We’re looking for a sharp ad copywriter to craft compelling copy for a fall Google Pixel launch event in Waterloo. This is a short-term project focused on event ads, taglines, and campaign messaging that highlight the Pixel’s unique features. Ideal candidates can quickly capture brand voice, generate engaging ad concepts, and deliver polished copy on tight timelines.”",
+  "organizationId": 4,
+  "commissionerId": 35,
+  "freelancerId": 25,
+  "status": "ongoing",
+  "dueDate": "2025-08-25T04:00:00.000Z",
+  "invoicingMethod": "completion",
+  "totalBudget": 1600,
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-20T17:54:17.057Z",
+  "updatedAt": "2025-08-20T17:54:17.058Z",
+  "category": "Writing",
+  "subcategory": "Copywriting",
+  "tags": [
+    "Copywriting"
+  ],
+  "toolsRequired": [
+    "Google Docs",
+    "Notion"
+  ],
+  "estimatedHours": 32,
+  "deliveryTimeWeeks": 0.7142857142857143
+}

@@ -1,0 +1,22 @@
+{
+  "taskId": 1755713134668,
+  "projectId": "Z-007",
+  "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+  "organizationId": 4,
+  "projectTypeTags": [
+    "Copywriting"
+  ],
+  "title": "Phase Three: Analytics and Review ",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 3,
+  "link": "",
+  "dueDate": "2025-08-25T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Incorporate client feedback and polish copy for final approval. This stage ensures all messaging is consistent, accurate, and event-ready.",
+  "createdDate": "2025-08-20T17:54:17.057Z",
+  "lastModified": "2025-08-20T17:54:17.059Z"
+}

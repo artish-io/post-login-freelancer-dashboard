@@ -56,9 +56,15 @@ export async function executeTaskApprovalTransaction(
   params: TaskApprovalTransaction
 ): Promise<TransactionResult> {
   const transactionId = `task_approval_${params.taskId}_${Date.now()}`;
-  
+
   console.log(`🔄 Starting task approval transaction ${transactionId}...`);
-  
+  console.log(`[EXEC_PATH] Transaction params:`, {
+    taskId: params.taskId,
+    projectId: params.projectId,
+    generateInvoice: params.generateInvoice,
+    invoiceType: params.invoiceType
+  });
+
   const steps: TransactionStep[] = [];
   const completedSteps: string[] = [];
   const results: Record<string, any> = {};
@@ -100,6 +106,8 @@ export async function executeTaskApprovalTransaction(
     
     // Step 3: Generate invoice if requested
     if (params.generateInvoice) {
+      console.log(`[PAY_TRIGGER] Invoice generation requested for ${params.invoiceType} project`);
+
       steps.push({
         id: 'generate_invoice',
         type: 'invoice_generation',
@@ -165,10 +173,18 @@ export async function executeTaskApprovalTransaction(
 
     // Step 4: Execute payment for the generated invoice (only if invoice was generated)
     if (params.generateInvoice) {
-      steps.push({
-      id: 'execute_payment',
-      operation: async () => {
-        console.log(`💳 Executing payment for task ${params.taskId}...`);
+      // 🛡️ CRITICAL COMPLETION GUARD: Block payment execution for completion projects
+      if (params.invoiceType === 'completion') {
+        console.log(`[TYPE_GUARD] BLOCKING payment execution for completion project ${params.projectId} - individual task approvals should not trigger payments`);
+        console.log(`[PAY_TRIGGER] Completion project payment blocked - use dedicated completion payment endpoints instead`);
+        // Skip payment execution step for completion projects
+      } else {
+        console.log(`[PAY_TRIGGER] Payment execution allowed for ${params.invoiceType} project ${params.projectId}`);
+
+        steps.push({
+        id: 'execute_payment',
+        operation: async () => {
+          console.log(`💳 Executing payment for task ${params.taskId}...`);
 
         // Get the generated invoice number from the previous step
         const invoiceResult = results['generate_invoice'];
@@ -284,6 +300,7 @@ export async function executeTaskApprovalTransaction(
       description: `Execute payment for task ${params.taskId}`,
       data: { taskId: params.taskId }
     });
+      } // End of milestone payment execution block
     }
 
     // Step 4: Check for project auto-completion

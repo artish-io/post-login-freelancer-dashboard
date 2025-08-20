@@ -269,7 +269,9 @@ export async function POST(
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': request.headers.get('Authorization') || ''
+            'Authorization': request.headers.get('Authorization') || '',
+            // 🔑 CRITICAL: Forward cookies for NextAuth session
+            'Cookie': request.headers.get('Cookie') || ''
           },
           body: JSON.stringify(completionProjectData)
         });

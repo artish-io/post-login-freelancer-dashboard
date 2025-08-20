@@ -1,0 +1,26 @@
+{
+  "id": "milestone_payment_sent_Z-008_1755721488888",
+  "timestamp": "2025-08-20T20:24:48.888Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 5,
+  "entityId": "Z-008_500",
+  "metadata": {
+    "taskTitle": "God Abeg No Code Regression Test",
+    "projectTitle": "God Abeg No Code Regression Test",
+    "projectId": "Z-008",
+    "taskId": 1755721488888,
+    "freelancerName": "Lucas Meyer",
+    "amount": 500,
+    "invoiceNumber": "TB-016",
+    "remainingBudget": 500,
+    "projectBudget": 1500
+  },
+  "context": {
+    "projectId": 8,
+    "taskId": 1755721488888,
+    "invoiceNumber": "TB-016"
+  }
+}

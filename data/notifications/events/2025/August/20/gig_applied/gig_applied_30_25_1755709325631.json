@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_30_25_1755709325631",
+  "timestamp": "2025-08-20T17:02:05.631Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "30",
+  "metadata": {
+    "gigTitle": "Brand Design For Logic Brigde",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 30,
+    "applicationId": 1755193217259
+  }
+}

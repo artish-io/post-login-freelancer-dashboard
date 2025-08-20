@@ -1,0 +1,29 @@
+{
+  "invoiceNumber": "TB-013",
+  "projectId": "Z-006",
+  "freelancerId": 25,
+  "commissionerId": 35,
+  "projectTitle": "Brand Design For Logic Brigde",
+  "totalAmount": 144,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-20T17:02:19.762Z",
+  "dueDate": "2025-09-03T17:02:19.762Z",
+  "createdAt": "2025-08-20T17:02:19.762Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 144,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 136.8,
+    "platformFee": 7.2
+  },
+  "paidDate": "2025-08-20T17:02:20.267Z",
+  "updatedAt": "2025-08-20T17:02:20.274Z"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "milestone_payment_sent_Z-008_1755721494701_1755721489135",
+  "timestamp": "2025-08-20T20:24:49.135Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 5,
+  "entityId": "Z-008_1755721494701",
+  "metadata": {
+    "taskTitle": "Phase One: God Abeg Bro",
+    "projectTitle": "God Abeg No Code Regression Test",
+    "projectId": "Z-008",
+    "taskId": 1755721494701,
+    "freelancerName": "Freelancer",
+    "amount": 0,
+    "invoiceNumber": "TB-016",
+    "remainingBudget": 1000,
+    "projectBudget": 1500
+  },
+  "context": {
+    "projectId": "Z-008",
+    "taskId": 1755721494701,
+    "invoiceNumber": "TB-016"
+  }
+}

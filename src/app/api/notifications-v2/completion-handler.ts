@@ -199,19 +199,37 @@ function generateNotificationMessage(event: CompletionEvent): string {
   const finalAmount = event.context.finalAmount || 0;
   const taskTitle = event.context.taskTitle || 'Task';
   const invoiceNumber = event.context.invoiceNumber || '';
+  const orgName = event.context.orgName || 'Organization';
+  const freelancerName = event.context.freelancerName || 'Freelancer';
+  const commissionerName = event.context.commissionerName || 'Commissioner';
+  const totalTasks = event.context.totalTasks || 4;
+  const finalPercent = event.context.finalPercent || 88;
 
   switch (event.type) {
     case 'completion.project_activated':
-      return `${projectTitle} activated with $${upfrontAmount} upfront payment (12% of total budget)`;
+      return `${commissionerName} accepted your application for ${projectTitle}. This project is now active and includes ${totalTasks} milestones due by the deadline`;
+
+    case 'completion.upfront_payment':
+      // Use organization name for payer as specified by user
+      return `${orgName} has paid $${upfrontAmount} upfront for your newly activated ${projectTitle} project. This project has a budget of $${event.context.remainingBudget || 0} left. Click here to view invoice details`;
+
+    case 'completion.task_approved':
+      return `${commissionerName} has approved your submission for "${taskTitle}" in ${projectTitle}. Task approved and milestone completed. Click here to see its project tracker.`;
 
     case 'completion.invoice_received':
-      return `Manual invoice received for "${taskTitle}": $${amount}. Invoice #${invoiceNumber}`;
+      return `${freelancerName} sent you a $${amount} invoice for ${taskTitle}. Click here to review.`;
 
     case 'completion.invoice_paid':
-      return `Invoice paid for "${taskTitle}": $${amount}. Invoice #${invoiceNumber}`;
+      return `${orgName} paid you $${amount} for ${invoiceNumber}. Click here to view details.`;
 
     case 'completion.project_completed':
-      return `${projectTitle} completed with final payment: $${finalAmount} (remaining 88% of budget)`;
+      return `All tasks for ${projectTitle} have been completed and approved. Project is now complete.`;
+
+    case 'completion.final_payment':
+      return `${orgName} has paid you $${finalAmount} for ${projectTitle} final payment (remaining ${finalPercent}% of budget). Click here to view invoice details.`;
+
+    case 'completion.rating_prompt':
+      return `Rate your experience with ${commissionerName}. All tasks for ${projectTitle} have been approved. Click here to rate your collaboration.`;
 
     default:
       return `Completion event: ${event.type}`;

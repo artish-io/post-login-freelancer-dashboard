@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_Z-008_1755721438382",
+  "timestamp": "2025-08-20T20:23:58.382Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "Z-008",
+  "metadata": {
+    "projectTitle": "God Abeg No Code Regression Test",
+    "gigTitle": "God Abeg No Code Regression Test",
+    "taskCount": 3,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group"
+  },
+  "context": {
+    "projectId": "Z-008",
+    "gigId": 32,
+    "applicationId": 1755193217261
+  }
+}

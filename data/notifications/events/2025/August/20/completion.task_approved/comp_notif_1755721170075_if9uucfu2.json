@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1755721170075_if9uucfu2",
+  "type": "completion.task_approved",
+  "actorId": 35,
+  "targetId": 25,
+  "projectId": "Z-007",
+  "message": "Tilly Burzinsky has approved your submission for \"Phase Two:  Campaign messaging A/B Test\" in Ad Copy for Google Waterloo Launch Event. Task approved and milestone completed. Click here to see its project tracker.",
+  "context": {
+    "taskId": "1755712887816",
+    "taskTitle": "Phase Two:  Campaign messaging A/B Test",
+    "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Lucas Meyer"
+  },
+  "read": false,
+  "createdAt": "2025-08-20T20:19:30.075Z",
+  "timestamp": "2025-08-20T20:19:30.075Z",
+  "subsystem": "completion_invoicing"
+}

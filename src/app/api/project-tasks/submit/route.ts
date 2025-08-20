@@ -21,12 +21,22 @@ import {
 
 async function handleTaskOperation(request: NextRequest) {
   try {
-    // 🔒 Auth - get session and validate
-    const { userId: actorId } = await requireSession(request);
+    // 🧪 TEST BYPASS: Allow testing without authentication in development
+    let actorId: number;
+    if (process.env.NODE_ENV === 'development' && request.headers.get('X-Test-Bypass-Auth') === 'true') {
+      console.log('🧪 TEST MODE: Bypassing authentication for task operation testing');
+      actorId = Number(request.headers.get('X-Test-User-ID')) || 35; // Default test commissioner ID
+    } else {
+      // 🔒 Auth - get session and validate
+      const { userId } = await requireSession(request);
+      actorId = userId;
+    }
 
     const { taskId, projectId, action, referenceUrl, feedback } = await request.json();
 
+    // Basic ID validation
     assert(taskId && action, ErrorCodes.MISSING_REQUIRED_FIELD, 400, 'Missing required fields: taskId, action');
+    assert(Number.isFinite(Number(taskId)), ErrorCodes.INVALID_INPUT, 400, 'Invalid taskId: must be a number');
 
     // Validate action type
     const validActions = ['submit', 'approve', 'reject'];
@@ -36,6 +46,14 @@ async function handleTaskOperation(request: NextRequest) {
     if ((action === 'submit' || action === 'reject') && !projectId) {
       return NextResponse.json(
         err(ErrorCodes.MISSING_REQUIRED_FIELD, 'projectId is required for submit and reject actions', 400),
+        { status: 400 }
+      );
+    }
+
+    // Validate projectId when provided
+    if (projectId && String(projectId).trim().length === 0) {
+      return NextResponse.json(
+        err(ErrorCodes.INVALID_INPUT, 'Invalid projectId: cannot be empty', 400),
         { status: 400 }
       );
     }
@@ -64,9 +82,83 @@ async function handleTaskOperation(request: NextRequest) {
         }
         const project = await UnifiedStorageService.getProjectById(task.projectId);
 
-        // 🛡️ MILESTONE GUARD: For milestone-based projects, ensure invoice generation
+        // 🛡️ CRITICAL PROJECT TYPE GUARD: Separate completion and milestone flows
+        console.log(`[TYPE_GUARD] Task approval for project ${task.projectId}, type: ${project!.invoicingMethod}`);
+
+        if (project!.invoicingMethod === 'completion') {
+          // 🔒 COMPLETION PROJECTS: Route to dedicated completion endpoint to prevent early payment
+          const normalizedProjectId = String(task.projectId);
+          const normalizedTaskId = Number(taskId);
+
+          console.log(`[DELEGATE_COMPLETION] Routing completion project ${normalizedProjectId} task ${normalizedTaskId} to dedicated completion endpoint`);
+
+          try {
+            // Build robust base URL from request with fallback to env
+            const protocol = request.headers.get('x-forwarded-proto') || 'http';
+            const host = request.headers.get('host') || 'localhost:3000';
+            const baseUrl = process.env.NEXTAUTH_URL || `${protocol}://${host}`;
+            const delegateUrl = `${baseUrl}/api/project-tasks/completion/submit`;
+
+            console.log(`[DELEGATE_COMPLETION] Forwarding to: ${delegateUrl}`);
+
+            const completionResponse = await fetch(delegateUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': request.headers.get('Authorization') || '',
+                'User-Agent': request.headers.get('User-Agent') || 'internal-delegation',
+                // 🔑 CRITICAL: Forward cookies for NextAuth session
+                'Cookie': request.headers.get('Cookie') || '',
+                // 🧪 CRITICAL: Forward test headers for development testing
+                'X-Test-Bypass-Auth': request.headers.get('X-Test-Bypass-Auth') || '',
+                'X-Test-User-ID': request.headers.get('X-Test-User-ID') || ''
+              },
+              body: JSON.stringify({
+                projectId: normalizedProjectId,
+                taskId: normalizedTaskId,
+                action: 'approve'
+              })
+            });
+
+            // Propagate exact status and body from downstream
+            if (completionResponse.ok) {
+              const completionResult = await completionResponse.json();
+              console.log(`[DELEGATE_COMPLETION] Success: task ${normalizedTaskId} in project ${normalizedProjectId}`);
+              return NextResponse.json(completionResult, { status: completionResponse.status });
+            } else {
+              // Read response body and propagate error with same status
+              const contentType = completionResponse.headers.get('content-type');
+              let errorData;
+
+              if (contentType?.includes('application/json')) {
+                try {
+                  errorData = await completionResponse.json();
+                } catch {
+                  errorData = { message: 'Invalid JSON response from completion endpoint' };
+                }
+              } else {
+                const errorText = await completionResponse.text();
+                errorData = { message: errorText || 'Unknown error from completion endpoint' };
+              }
+
+              console.error(`[DELEGATE_COMPLETION] Failed: task ${normalizedTaskId} in project ${normalizedProjectId}, status ${completionResponse.status}:`, errorData);
+              return NextResponse.json(
+                err(ErrorCodes.INTERNAL_ERROR, `Completion endpoint failed: ${errorData.message}`, completionResponse.status),
+                { status: completionResponse.status }
+              );
+            }
+          } catch (error) {
+            console.error(`[DELEGATE_COMPLETION] Network error routing to completion endpoint:`, error);
+            return NextResponse.json(
+              err(ErrorCodes.INTERNAL_ERROR, 'Failed to route to completion endpoint', 500),
+              { status: 500 }
+            );
+          }
+        }
+
+        // 🛡️ MILESTONE GUARD: For milestone-based projects, ensure invoice generation and payment
         const isMilestoneProject = project!.invoicingMethod === 'milestone';
-        const shouldGenerateInvoice = isMilestoneProject || project!.invoicingMethod === 'completion';
+        console.log(`[TYPE_GUARD] Processing milestone project ${task.projectId}, will generate invoice and execute payment`);
 
         const transactionParams = {
           taskId: Number(taskId),
@@ -75,8 +167,8 @@ async function handleTaskOperation(request: NextRequest) {
           commissionerId: project!.commissionerId!,
           taskTitle: task!.title,
           projectTitle: project!.title,
-          generateInvoice: shouldGenerateInvoice,
-          invoiceType: isMilestoneProject ? 'milestone' as const : 'completion' as const
+          generateInvoice: true, // Always generate invoice for milestone projects
+          invoiceType: 'milestone' as const
         };
 
         const transactionResult = await executeTaskApprovalTransaction(transactionParams);
@@ -287,16 +379,63 @@ async function handleTaskOperation(request: NextRequest) {
             taskData.taskId
           );
 
-          if (completionStatus.isComplete && completionStatus.isFinalTask) {
-            // Get project and user data for rating notifications
-            const { UnifiedStorageService } = await import('../../../../lib/storage/unified-storage-service');
-            const project = await UnifiedStorageService.getProjectById(taskData.projectId);
+          // Get project data for both milestone and completion projects
+          const { UnifiedStorageService } = await import('../../../../lib/storage/unified-storage-service');
+          const project = await UnifiedStorageService.getProjectById(taskData.projectId);
 
-            if (project) {
-              // Verify this is actually a milestone-based project before sending rating notifications
-              const isMilestoneProject = project.invoicingMethod === 'milestone';
+          if (project) {
+            const isMilestoneProject = project.invoicingMethod === 'milestone';
+            const isCompletionProject = project.invoicingMethod === 'completion';
 
-              if (isMilestoneProject && project.freelancerId && project.commissionerId) {
+            // 🔔 COMPLETION-SPECIFIC: Handle completion project notifications
+            if (isCompletionProject) {
+              try {
+                const { handleCompletionNotification } = await import('../../../../app/api/notifications-v2/completion-handler');
+
+                // Always emit task approval notification for completion projects
+                await handleCompletionNotification({
+                  type: 'completion.task_approved',
+                  actorId: result.task.approvedBy || 0,
+                  targetId: project.freelancerId,
+                  projectId: taskData.projectId,
+                  context: {
+                    taskId: taskData.taskId,
+                    taskTitle: taskData.title,
+                    projectTitle: project.title
+                  }
+                });
+
+                console.log(`🔔 Sent completion task approval notification for project ${taskData.projectId}`);
+
+                // If this was the final task, trigger final payment and completion notifications
+                if (completionStatus.isFinalTask) {
+                  console.log(`🎯 Final task detected for completion project ${taskData.projectId} - triggering final payment`);
+
+                  try {
+                    const finalPaymentResponse = await fetch(`${process.env.NEXTAUTH_URL}/api/payments/completion/execute-final`, {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({ projectId: taskData.projectId })
+                    });
+
+                    if (finalPaymentResponse.ok) {
+                      console.log(`💰 Final payment triggered for completion project ${taskData.projectId}`);
+                    } else {
+                      console.warn('Final payment trigger failed:', await finalPaymentResponse.text());
+                    }
+                  } catch (e) {
+                    console.warn('Final payment trigger failed:', e);
+                  }
+                }
+              } catch (e) {
+                console.warn('Completion notification failed:', e);
+              }
+            }
+            // 🔔 MILESTONE-SPECIFIC: Handle milestone project notifications (existing logic)
+            else if (isMilestoneProject && completionStatus.isComplete && completionStatus.isFinalTask) {
+              if (project.freelancerId && project.commissionerId) {
                 const userNames = await getUserNamesForRating(project.freelancerId, project.commissionerId);
 
                 // For final tasks, the rating notifications should be combined with project completion
@@ -312,8 +451,6 @@ async function handleTaskOperation(request: NextRequest) {
                 });
 
                 console.log(`🎉 Final task approved - sent completion and rating notifications for milestone project ${taskData.projectId}`);
-              } else {
-                console.log(`ℹ️ Skipping rating notifications for non-milestone project ${taskData.projectId}`);
               }
             }
           }

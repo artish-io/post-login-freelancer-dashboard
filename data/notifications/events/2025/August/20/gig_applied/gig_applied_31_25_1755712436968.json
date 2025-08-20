@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_31_25_1755712436968",
+  "timestamp": "2025-08-20T17:53:56.968Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "31",
+  "metadata": {
+    "gigTitle": "Ad Copy for Google Waterloo Launch Event",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 31,
+    "applicationId": 1755193217260
+  }
+}

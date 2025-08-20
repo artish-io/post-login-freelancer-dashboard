@@ -52,5 +52,239 @@
     },
     "read": false,
     "createdAt": "2025-08-20T07:57:19.220Z"
+  },
+  {
+    "id": "comp_notif_1755681004173_9zgoywx5c",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-005",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase 1: Love Is Weyland\" in UX Research for Project: Y.U.T.A.N.I. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1755677555674",
+      "taskTitle": "Phase 1: Love Is Weyland",
+      "projectTitle": "UX Research for Project: Y.U.T.A.N.I",
+      "commissionerName": "Tilly Burzinsky",
+      "freelancerName": "Lucas Meyer",
+      "orgName": "Zynate Events Group"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T09:10:04.173Z"
+  },
+  {
+    "id": "comp_notif_1755709340337_7wo0bu6jh",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-006",
+    "message": "Zynate Events Group has paid $144 upfront for your newly activated Brand Design For Logic Brigde project. This project has a budget of $1056 left. Click here to view invoice details",
+    "context": {
+      "upfrontAmount": 144,
+      "projectTitle": "Brand Design For Logic Brigde",
+      "remainingBudget": 1056,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T17:02:20.337Z"
+  },
+  {
+    "id": "comp_notif_1755709340344_fsyg9fxle",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-006",
+    "message": "You sent Lucas Meyer an invoice for your recently activated Brand Design For Logic Brigde project. This project has a budget of $1056 left. Click here to view invoice details",
+    "context": {
+      "upfrontAmount": 144,
+      "projectTitle": "Brand Design For Logic Brigde",
+      "remainingBudget": 1056,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T17:02:20.344Z"
+  },
+  {
+    "id": "comp_notif_1755712463856_fulv9igdh",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-007",
+    "message": "Zynate Events Group has paid $192 upfront for your newly activated Ad Copy for Google Waterloo Launch Event project. This project has a budget of $1408 left. Click here to view invoice details",
+    "context": {
+      "upfrontAmount": 192,
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "remainingBudget": 1408,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T17:54:23.856Z"
+  },
+  {
+    "id": "comp_notif_1755712463875_80jy1k0xn",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-007",
+    "message": "You sent Lucas Meyer an invoice for your recently activated Ad Copy for Google Waterloo Launch Event project. This project has a budget of $1408 left. Click here to view invoice details",
+    "context": {
+      "upfrontAmount": 192,
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "remainingBudget": 1408,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T17:54:23.875Z"
+  },
+  {
+    "id": "comp_notif_1755720443140_vdu0ar8qx",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-007",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase One: Ads and Taglines\" in Ad Copy for Google Waterloo Launch Event. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1755713116959",
+      "taskTitle": "Phase One: Ads and Taglines",
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T20:07:23.140Z"
+  },
+  {
+    "id": "comp_notif_1755720443220_d0pc8lfii",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-007",
+    "message": "You approved \"Phase One: Ads and Taglines\" in Ad Copy for Google Waterloo Launch Event. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1755713116959",
+      "taskTitle": "Phase One: Ads and Taglines",
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T20:07:23.220Z"
+  },
+  {
+    "id": "comp_notif_1755720512122_4mcc3r8je",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-007",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase One: Ads and Taglines\" in Ad Copy for Google Waterloo Launch Event. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1755713116959",
+      "taskTitle": "Phase One: Ads and Taglines",
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T20:08:32.122Z"
+  },
+  {
+    "id": "comp_notif_1755720512125_pu92l3xr9",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-007",
+    "message": "You approved \"Phase One: Ads and Taglines\" in Ad Copy for Google Waterloo Launch Event. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1755713116959",
+      "taskTitle": "Phase One: Ads and Taglines",
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T20:08:32.125Z"
+  },
+  {
+    "id": "comp_notif_1755720571626_u7qhse9rw",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-007",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase One: Ads and Taglines\" in Ad Copy for Google Waterloo Launch Event. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1755713116959",
+      "taskTitle": "Phase One: Ads and Taglines",
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T20:09:31.626Z"
+  },
+  {
+    "id": "comp_notif_1755720571653_fsj9s27zd",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-007",
+    "message": "You approved \"Phase One: Ads and Taglines\" in Ad Copy for Google Waterloo Launch Event. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1755713116959",
+      "taskTitle": "Phase One: Ads and Taglines",
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T20:09:31.653Z"
+  },
+  {
+    "id": "comp_notif_1755721170075_if9uucfu2",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-007",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase Two:  Campaign messaging A/B Test\" in Ad Copy for Google Waterloo Launch Event. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1755712887816",
+      "taskTitle": "Phase Two:  Campaign messaging A/B Test",
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T20:19:30.075Z"
+  },
+  {
+    "id": "comp_notif_1755721170079_5amv4f2q2",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-007",
+    "message": "You approved \"Phase Two:  Campaign messaging A/B Test\" in Ad Copy for Google Waterloo Launch Event. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1755712887816",
+      "taskTitle": "Phase Two:  Campaign messaging A/B Test",
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-20T20:19:30.079Z"
   }
 ]

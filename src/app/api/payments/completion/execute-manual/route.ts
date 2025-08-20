@@ -17,8 +17,14 @@ export async function POST(req: NextRequest) {
     // ✅ SAFE: Reuse auth infrastructure
     const { userId: commissionerId } = await requireSession(req);
     const body = await req.json();
-    const { invoiceNumber } = sanitizeApiInput(body);
+    const { invoiceNumber, manualTrigger = true } = sanitizeApiInput(body);
+
+    // 🔍 DIAGNOSTIC: Log manual payment trigger
+    console.log(`[EDGE_CASE] Manual payment execution triggered for invoice ${invoiceNumber}, manualTrigger: ${manualTrigger}`);
     
+    // 🛡️ MANUAL TRIGGER GUARD: Ensure this is an explicit manual action
+    assert(manualTrigger === true, 'Manual trigger flag required for edge-case payouts', 400);
+
     // ✅ SAFE: Get invoice and validate ownership
     const invoice = await getInvoiceByNumber(invoiceNumber);
     assert(invoice, 'Invoice not found', 404);
@@ -44,6 +50,7 @@ export async function POST(req: NextRequest) {
     }
 
     console.log(`[REMAINDER_BUDGET] Manual payment validated for project ${invoice.projectId}: $${invoice.totalAmount} from remaining $${budgetValidation.currentRemainingBudget}`);
+    console.log(`[EDGE_CASE] Pro-rata manual payout: $${invoice.totalAmount} for task ${invoice.taskId || 'unknown'} with manual trigger`);
 
     // ✅ SAFE: Process payment using existing infrastructure
     const paymentRecord = await processMockPayment({
@@ -64,7 +71,9 @@ export async function POST(req: NextRequest) {
     const wallet = await getWallet(invoice.freelancerId, 'freelancer', 'USD');
     const updatedWallet = PaymentsService.creditWallet(wallet, invoice.totalAmount);
     await upsertWallet(updatedWallet);
-    
+
+    console.log(`[EDGE_CASE] Atomic budget update: wallet credited $${invoice.totalAmount}, new balance: $${updatedWallet.availableBalance}`);
+
     const transaction = PaymentsService.buildTransaction({
       invoiceNumber,
       projectId: invoice.projectId,
@@ -73,6 +82,8 @@ export async function POST(req: NextRequest) {
       totalAmount: invoice.totalAmount
     }, 'execute', 'mock');
     await appendTransaction(transaction);
+
+    console.log(`[EDGE_CASE] Transaction recorded with source: manual, amount: $${invoice.totalAmount}`);
     
     // 🔒 COMPLETION-SPECIFIC: Mark task as paid
     if (invoice.taskId) {
