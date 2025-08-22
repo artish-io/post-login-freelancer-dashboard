@@ -1,8 +1,9 @@
 // src/lib/fs-json.ts
+import 'server-only';
 
 /**
  * File System JSON Utilities
- * 
+ *
  * Provides atomic JSON file operations with error handling and directory creation.
  * Used throughout the application for reading and writing JSON data files.
  */

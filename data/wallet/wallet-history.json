@@ -373,5 +373,19 @@
     "invoiceNumber": "MGL327001",
     "description": "Payment for Motion Graphics Video for Healthcare App",
     "source": "project_payment"
+  },
+  {
+    "id": 1755830156726,
+    "userId": 25,
+    "commissionerId": 35,
+    "organizationId": null,
+    "projectId": "Z-007",
+    "type": "credit",
+    "amount": 1337.6,
+    "currency": "USD",
+    "date": "2025-08-22T02:35:56.726Z",
+    "source": "project_payment",
+    "description": "Payment for Ad Copy for Google Waterloo Launch Event",
+    "invoiceNumber": "TB-012"
   }
 ]

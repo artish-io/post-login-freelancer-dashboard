@@ -373,11 +373,30 @@ export default function ProjectSummaryTable({
     fetchProjects();
   }, [viewType, maxItems, session]);
 
-  const handleProjectClick = (projectId: number) => {
+  const handleProjectClick = (projectId: number | string) => {
+    // Guard against invalid project IDs
+    if (!projectId || (typeof projectId !== 'string' && typeof projectId !== 'number')) {
+      console.warn('[PROJECT_NAV:BAD_ID]', { projectId });
+      return;
+    }
+
+    // Keep projectId as string for navigation
+    const projectIdStr = projectId.toString();
+
+    // Log navigation attempt
+    fetch('/api/logs/append', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        file: 'data/logs/project-nav.log',
+        entry: `[${new Date().toISOString()}] [PROJECT_NAV:CLICK] ${JSON.stringify({ projectId: projectIdStr, viewType })}`
+      })
+    }).catch(console.warn);
+
     if (viewType === 'freelancer') {
-      router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking?id=${projectId}`);
+      router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking/${encodeURIComponent(projectIdStr)}`);
     } else {
-      router.push(`/commissioner-dashboard/projects-and-invoices/project-tracking?id=${projectId}`);
+      router.push(`/commissioner-dashboard/projects-and-invoices/project-tracking/${encodeURIComponent(projectIdStr)}`);
     }
   };
 

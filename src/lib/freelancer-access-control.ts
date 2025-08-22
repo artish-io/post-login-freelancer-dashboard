@@ -13,7 +13,7 @@ export interface SessionUser {
 }
 
 export interface Project {
-  projectId: number;
+  projectId: string | number;
   freelancerId: number;
   assignedFreelancerId?: number;
   commissionerId?: number;
@@ -26,7 +26,7 @@ export interface Project {
 }
 
 export interface ProjectTask {
-  projectId: number;
+  projectId: string | number;
   freelancerId?: number;
   assignedFreelancerId?: number;
 }

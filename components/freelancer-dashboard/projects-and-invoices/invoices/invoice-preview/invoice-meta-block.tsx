@@ -12,7 +12,7 @@ export default function InvoiceMetaBlock({
   billedToAddress,
 }: InvoiceMetaProps) {
   return (
-    <div className="w-full bg-pink-100 rounded-xl px-6 py-5 flex justify-between items-start">
+    <div className="w-full rounded-xl px-6 py-5 flex justify-between items-start" style={{ backgroundColor: '#FCD5E3' }}>
       {/* Left: Invoice Number */}
       <div className="space-y-1">
         <p className="text-sm text-gray-800">Invoice Number:</p>

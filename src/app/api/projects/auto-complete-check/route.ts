@@ -18,20 +18,20 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const projectId = searchParams.get('projectId');
 
-    if (!projectId) {
+    if (typeof projectId !== 'string' || projectId.trim() === '') {
       return NextResponse.json({
         success: false,
-        error: 'Missing projectId parameter'
+        error: 'Invalid projectId parameter'
       }, { status: 400 });
     }
 
     console.log(`🔍 Checking completion eligibility for project ${projectId}...`);
-    
-    const eligibilityCheck = await checkProjectCompletionEligibility(Number(projectId));
-    
+
+    const eligibilityCheck = await checkProjectCompletionEligibility(projectId);
+
     return NextResponse.json({
       success: true,
-      projectId: Number(projectId),
+      projectId: projectId,
       eligibility: eligibilityCheck,
       message: eligibilityCheck.shouldComplete 
         ? 'Project is eligible for auto-completion'
@@ -52,16 +52,16 @@ export async function POST(request: Request) {
   try {
     const { projectId } = await request.json();
 
-    if (!projectId) {
+    if (typeof projectId !== 'string' || projectId.trim() === '') {
       return NextResponse.json({
         success: false,
-        error: 'Missing projectId in request body'
+        error: 'Invalid projectId in request body'
       }, { status: 400 });
     }
 
     console.log(`🚀 Triggering auto-completion for project ${projectId}...`);
-    
-    const completionResult = await checkAndAutoCompleteProject(Number(projectId));
+
+    const completionResult = await checkAndAutoCompleteProject(projectId);
     
     return NextResponse.json({
       success: true,

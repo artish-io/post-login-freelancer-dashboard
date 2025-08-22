@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import CommissionerHeader from '../../../../../../../components/commissioner-dashboard/commissioner-header';
 import InvoicePreview from '../../../../../../../components/freelancer-dashboard/projects-and-invoices/invoices/invoice-preview/invoice-preview';
+import CommissionerInvoiceActions from '../../../../../../../components/commissioner-dashboard/projects-and-invoices/invoices/commissioner-invoice-actions';
 
 type Invoice = {
   invoiceNumber: string;
@@ -156,9 +157,15 @@ export default function CommissionerInvoicePreviewPage() {
 
       {/* Invoice Preview */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <InvoicePreview 
-          invoice={invoiceData} 
+        <InvoicePreview
+          invoice={invoiceData}
           userType="commissioner"
+          actionButtons={
+            <CommissionerInvoiceActions
+              invoiceData={invoiceData}
+              invoiceNumber={invoiceNumber}
+            />
+          }
         />
       </div>
     </div>

@@ -1,4 +1,5 @@
 // src/lib/invoice-storage.ts
+import 'server-only';
 import { readFile, writeFile, readdir, stat } from 'fs/promises';
 import path from 'path';
 
@@ -7,7 +8,7 @@ import { InvoiceStatus, InvoiceType } from './invoice-status-definitions';
 export interface Invoice {
   invoiceNumber: string;
   freelancerId: number | string;
-  projectId: number | null;
+  projectId: string | number | null;
   commissionerId: number;
   projectTitle: string;
   milestoneDescription?: string;

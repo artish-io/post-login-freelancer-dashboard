@@ -114,7 +114,14 @@
   {
     "userId": 35,
     "contacts": [
-      1
+      1,
+      25
+    ]
+  },
+  {
+    "userId": 25,
+    "contacts": [
+      35
     ]
   }
 ]

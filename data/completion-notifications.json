@@ -286,5 +286,41 @@
     },
     "read": false,
     "createdAt": "2025-08-20T20:19:30.079Z"
+  },
+  {
+    "id": "comp_notif_1755862473217_vnitmcaqf",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-009",
+    "message": "Zynate Events Group has paid $216 upfront for your newly activated Project Content Specification Flow project. This project has a budget of $1584 left. Click here to view invoice details",
+    "context": {
+      "upfrontAmount": 216,
+      "projectTitle": "Project Content Specification Flow",
+      "remainingBudget": 1584,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T11:34:33.217Z"
+  },
+  {
+    "id": "comp_notif_1755862473223_e05vvq498",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-009",
+    "message": "You sent Lucas Meyer an invoice for your recently activated Project Content Specification Flow project. This project has a budget of $1584 left. Click here to view invoice details",
+    "context": {
+      "upfrontAmount": 216,
+      "projectTitle": "Project Content Specification Flow",
+      "remainingBudget": 1584,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T11:34:33.223Z"
   }
 ]

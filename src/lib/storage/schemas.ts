@@ -11,7 +11,7 @@ import { z } from 'zod';
  * Project Schema
  */
 export const ProjectSchema = z.object({
-  projectId: z.union([z.number().int().positive(), z.string().min(1)]),
+  projectId: z.string().min(1),
   title: z.string().min(1, 'Project title is required'),
   description: z.string().optional(),
   organizationId: z.number().int().positive().optional(),
@@ -55,7 +55,7 @@ export const ProjectSchema = z.object({
  */
 export const ProjectTaskSchema = z.object({
   taskId: z.number().int().positive(),
-  projectId: z.union([z.number().int().positive(), z.string().min(1)]),
+  projectId: z.string().min(1),
   projectTitle: z.string().min(1),
   organizationId: z.number().int().nonnegative().optional(),
   projectTypeTags: z.array(z.string()).optional(),

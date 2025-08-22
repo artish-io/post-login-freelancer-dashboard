@@ -78,7 +78,7 @@ export default function CommissionerProjectTrackingDynamicPage() {
         {/* Action Buttons - Below timeline on mobile, sidebar on desktop */}
         <div className="w-full lg:w-[280px] shrink-0 order-2 lg:order-2">
           <div className="lg:sticky lg:top-[200px] flex justify-center lg:justify-start">
-            <CommissionerProjectActionButtons projectId={projectId} onNotesClick={handleShowNotes} projectStatus={status} />
+            <CommissionerProjectActionButtons projectId={projectId} onNotesClick={handleShowNotes} />
           </div>
         </div>
       </div>

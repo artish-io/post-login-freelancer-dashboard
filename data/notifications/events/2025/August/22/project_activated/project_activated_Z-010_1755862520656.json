@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_Z-010_1755862520656",
+  "timestamp": "2025-08-22T11:35:20.656Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "Z-010",
+  "metadata": {
+    "projectTitle": "Project Test: ARTISH implements Tow Distinct",
+    "gigTitle": "Project Test: ARTISH implements Tow Distinct",
+    "taskCount": 2,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group"
+  },
+  "context": {
+    "projectId": "Z-010",
+    "gigId": 34,
+    "applicationId": 1755193217263
+  }
+}

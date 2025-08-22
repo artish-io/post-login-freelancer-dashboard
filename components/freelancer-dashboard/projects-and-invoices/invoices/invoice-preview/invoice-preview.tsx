@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+
 import FreelancerInfoBox from './freelancer-info-box';
 import ClientDetailsBox from './client-details-box';
 import InvoiceMetaBlock from './invoice-meta-block';
@@ -45,10 +45,31 @@ type Invoice = {
 interface InvoicePreviewProps {
   invoice: Invoice;
   userType: 'freelancer' | 'commissioner';
+  actionButtons?: React.ReactNode;
 }
 
-export default function InvoicePreview({ invoice, userType }: InvoicePreviewProps) {
-  const [loading, setLoading] = useState(false);
+// Helper function to get appropriate status text based on user type
+function getStatusDisplayText(status: string, userType: 'freelancer' | 'commissioner'): string {
+  if (userType === 'commissioner') {
+    switch (status) {
+      case 'sent':
+        return 'Pending';
+      case 'draft':
+        return 'Draft';
+      case 'paid':
+        return 'Paid';
+      case 'cancelled':
+        return 'Cancelled';
+      default:
+        return status.charAt(0).toUpperCase() + status.slice(1);
+    }
+  } else {
+    // Freelancer perspective - keep original status text
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  }
+}
+
+export default function InvoicePreview({ invoice, userType, actionButtons }: InvoicePreviewProps) {
 
   if (!invoice) {
     return (
@@ -108,7 +129,7 @@ export default function InvoicePreview({ invoice, userType }: InvoicePreviewProp
           </div>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-4">
           <InvoiceDatesDisplay 
             invoiceDate={invoice.issueDate} 
             dueDate={invoice.dueDate} 
@@ -118,27 +139,35 @@ export default function InvoicePreview({ invoice, userType }: InvoicePreviewProp
           <div className="bg-gray-50 rounded-lg p-4">
             <div className="text-sm text-gray-600 mb-2">Status</div>
             <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-              invoice.status === 'paid' 
-                ? 'bg-green-100 text-green-800' 
+              invoice.status === 'paid'
+                ? 'bg-green-100 text-green-800'
                 : invoice.status === 'sent'
-                ? 'bg-blue-100 text-blue-800'
+                ? 'bg-yellow-100 text-yellow-800'
+                : invoice.status === 'draft'
+                ? 'bg-gray-100 text-gray-800'
                 : 'bg-gray-100 text-gray-800'
             }`}>
-              {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+              {getStatusDisplayText(invoice.status, userType)}
             </div>
           </div>
 
-          {/* Commissioner-specific actions */}
-          {userType === 'commissioner' && invoice.status === 'sent' && (
+          {/* Commissioner-specific info banner (non-blocking) */}
+          {userType === 'commissioner' && (invoice.status === 'sent' || invoice.status === 'draft') && (
             <div className="bg-blue-50 rounded-lg p-4">
               <div className="text-sm text-blue-800 font-medium mb-2">
-                Payment Required
+                {invoice.status === 'draft' ? 'Draft Invoice' : 'Payment Pending'}
               </div>
               <div className="text-sm text-blue-600">
-                This invoice is awaiting payment. Please process payment to complete the transaction.
+                {invoice.status === 'draft'
+                  ? 'This invoice is in draft status and can be paid when ready.'
+                  : 'This invoice is pending payment. Please process payment to complete the transaction.'
+                }
               </div>
             </div>
           )}
+
+          {/* Custom Action Buttons */}
+          {actionButtons && actionButtons}
         </div>
       </div>
     </div>

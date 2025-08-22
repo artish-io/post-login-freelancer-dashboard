@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { NotificationStorage } from '@/lib/notifications/notification-storage';
-import { NOTIFICATION_TYPES, ENTITY_TYPES } from '@/lib/events/event-logger';
+import { EventType, NOTIFICATION_TYPES, ENTITY_TYPES } from '@/lib/events/event-logger';
 import fs from 'fs';
 import path from 'path';
 
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get project details
-    const project = await readProject(projectId);
+    const project = await UnifiedStorageService.readProject(projectId);
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
@@ -68,28 +68,34 @@ export async function POST(request: NextRequest) {
 
     if (recentReminders.length >= 3) {
       // Auto-pause the project after 3rd reminder using unified storage
-      const project = await UnifiedStorageService.readProject(projectId);
-      if (project) {
-        await UnifiedStorageService.writeProject({
-          ...project,
-          status: 'paused',
-          updatedAt: new Date().toISOString()
-        });
+      const pauseProject = await UnifiedStorageService.readProject(projectId);
+      if (!pauseProject) {
+        return NextResponse.json({ error: 'Project not found for auto-pause' }, { status: 404 });
       }
 
+      await UnifiedStorageService.writeProject({
+        ...pauseProject,
+        status: 'paused',
+        updatedAt: new Date().toISOString()
+      });
+
       // Create auto-pause notification for freelancer
+      if (typeof pauseProject.commissionerId !== 'number') {
+        return NextResponse.json({ error: 'Invalid commissionerId for auto-pause' }, { status: 400 });
+      }
+
       const autoPauseEvent = {
         id: `project_auto_pause_${projectId}_${Date.now()}`,
         timestamp: new Date().toISOString(),
-        type: 'project_paused',
+        type: 'project_paused' as EventType,
         notificationType: NOTIFICATION_TYPES.PROJECT_PAUSED,
-        actorId: project.commissionerId, // System acts as commissioner
+        actorId: pauseProject.commissionerId, // System acts as commissioner
         targetId: freelancerId,
         entityType: ENTITY_TYPES.PROJECT,
         entityId: projectId.toString(),
         metadata: {
           projectTitle,
-          message: `${project.commissionerName || 'Commissioner'} has paused ${projectTitle}. But not to worry, you will receive an update when they unpause it for work to continue!`,
+          message: `${pauseProject.commissionerName || 'Commissioner'} has paused ${projectTitle}. But not to worry, you will receive an update when they unpause it for work to continue!`,
           autoPaused: true
         },
         context: {
@@ -122,10 +128,14 @@ export async function POST(request: NextRequest) {
     saveReminderData(reminderData);
 
     // Create reminder notification for commissioner
+    if (typeof project.commissionerId !== 'number') {
+      return NextResponse.json({ error: 'Invalid commissionerId for reminder' }, { status: 400 });
+    }
+
     const reminderEvent = {
       id: `project_pause_reminder_${projectId}_${Date.now()}`,
       timestamp: new Date().toISOString(),
-      type: 'project_pause_reminder',
+      type: 'project_pause_reminder' as EventType,
       notificationType: NOTIFICATION_TYPES.PROJECT_PAUSE_REMINDER,
       actorId: freelancerId,
       targetId: project.commissionerId,

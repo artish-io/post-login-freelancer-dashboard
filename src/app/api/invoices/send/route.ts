@@ -106,39 +106,66 @@ export async function POST(request: Request) {
     const freelancer = users.find((user: any) => user.id === freelancerId);
     const freelancerName = freelancer?.name || 'A freelancer';
 
-    // Create notification for commissioner
-    const notificationId = `evt_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-    const newNotification = {
-      id: notificationId,
-      timestamp: new Date().toISOString(),
-      type: "invoice_sent",
-      notificationType: 40, // INVOICE_SENT notification type
-      actorId: freelancerId,
-      targetId: commissionerId,
-      entityType: 3, // Invoice entity type
-      entityId: invoiceNumber,
-      metadata: {
-        invoiceNumber: invoiceNumber,
-        projectTitle: invoice.projectTitle,
-        amount: invoice.totalAmount,
-        milestoneDescription: invoice.milestoneDescription,
-        freelancerName: freelancerName
-      },
-      context: {
-        projectId: invoice.projectId,
-        invoiceNumber: invoiceNumber
-      }
-    };
+    // Calculate approved tasks count and validate invoice eligibility
+    const approvedTasks = (invoice.milestones || []).filter(milestone =>
+      milestone.approvedAt || milestone.taskId === 'upfront'
+    );
+    const approvedTasksCount = approvedTasks.length;
+    const invoiceValue = invoice.totalAmount;
 
-    // Add notification to the log
-    notifications.unshift(newNotification);
+    // Log invoice received event
+    console.log(`[INVOICE_RECEIVED] ${JSON.stringify({
+      invoiceNumber,
+      projectId: invoice.projectId,
+      amount_due: invoiceValue,
+      approved_tasks: approvedTasksCount
+    })}`);
+
+    // Only send notification if invoice has approved tasks and amount > 0
+    if (approvedTasksCount > 0 && invoiceValue > 0) {
+      // Create notification for commissioner with exact copy as specified
+      const notificationId = `evt_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+      const newNotification = {
+        id: notificationId,
+        timestamp: new Date().toISOString(),
+        type: "invoice_sent",
+        notificationType: 40, // INVOICE_SENT notification type
+        actorId: freelancerId,
+        targetId: commissionerId,
+        entityType: 3, // Invoice entity type
+        entityId: invoiceNumber,
+        metadata: {
+          invoiceNumber: invoiceNumber,
+          projectTitle: invoice.projectTitle,
+          amount: invoiceValue,
+          approvedTasksCount: approvedTasksCount,
+          freelancerName: freelancerName,
+          notificationText: `${freelancerName} sent you an invoice for $${invoiceValue} for ${approvedTasksCount} approved task${approvedTasksCount !== 1 ? 's' : ''}, of your active project, ${invoice.projectTitle}.`
+        },
+        context: {
+          projectId: invoice.projectId,
+          invoiceNumber: invoiceNumber
+        }
+      };
+
+      // Add notification to the log
+      notifications.unshift(newNotification);
+    }
+
+      // Add notification to the log
+      notifications.unshift(newNotification);
+    }
 
     // SIMULATION: Save updated data
     // TODO: In production, also update payment gateway records
-    await Promise.all([
-      saveInvoice(updatedInvoice),
-      fs.writeFile(notificationsPath, JSON.stringify(notifications, null, 2))
-    ]);
+    const savePromises = [saveInvoice(updatedInvoice)];
+
+    // Only save notifications if we created one
+    if (approvedTasksCount > 0 && invoiceValue > 0) {
+      savePromises.push(fs.writeFile(notificationsPath, JSON.stringify(notifications, null, 2)));
+    }
+
+    await Promise.all(savePromises);
 
     return NextResponse.json({ 
       success: true, 

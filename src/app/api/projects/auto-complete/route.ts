@@ -10,12 +10,12 @@ export async function POST(request: Request) {
   try {
     const { projectId } = await request.json();
 
-    if (!projectId) {
-      return NextResponse.json({ error: 'Missing projectId' }, { status: 400 });
+    if (typeof projectId !== 'string' || projectId.trim() === '') {
+      return NextResponse.json({ error: 'Invalid projectId' }, { status: 400 });
     }
 
     // Read project from unified storage
-    const project = await UnifiedStorageService.readProject(Number(projectId));
+    const project = await UnifiedStorageService.readProject(projectId);
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }

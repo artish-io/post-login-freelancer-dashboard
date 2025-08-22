@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import InvoiceHistoryTable from '../../../../../../components/commissioner-dashboard/projects-and-invoices/invoice-history/invoice-history-table';
 import AccountHistoryTable from '../../../../../../components/commissioner-dashboard/projects-and-invoices/invoice-history/account-history-table';
@@ -39,6 +39,7 @@ type InvoiceWithFreelancer = Invoice & {
 
 export default function InvoiceHistoryPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const { data: session, status: sessionStatus } = useSession();
   const [invoices, setInvoices] = useState<InvoiceWithFreelancer[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<InvoiceWithFreelancer[]>([]);
@@ -229,7 +230,7 @@ export default function InvoiceHistoryPage() {
 
   const handleInvoiceClick = (invoice: InvoiceWithFreelancer) => {
     // Navigate to invoice detail page
-    window.location.href = `/commissioner-dashboard/projects-and-invoices/invoices?invoice=${invoice.invoiceNumber}`;
+    router.push(`/commissioner-dashboard/projects-and-invoices/invoices/invoice/${invoice.invoiceNumber}`);
   };
 
   const handleProjectClick = (project: any) => {
@@ -238,12 +239,12 @@ export default function InvoiceHistoryPage() {
     const parentInvoiceNumber = project.parentInvoiceNumber;
 
     if (parentInvoiceNumber) {
-      window.location.href = `/commissioner-dashboard/projects-and-invoices/invoices/project?parentInvoice=${parentInvoiceNumber}`;
+      router.push(`/commissioner-dashboard/projects-and-invoices/invoices/project?parentInvoice=${parentInvoiceNumber}`);
     } else if (projectId) {
-      window.location.href = `/commissioner-dashboard/projects-and-invoices/invoices/project?projectId=${projectId}`;
+      router.push(`/commissioner-dashboard/projects-and-invoices/invoices/project?projectId=${projectId}`);
     } else {
       // Fallback to individual invoice view
-      window.location.href = `/commissioner-dashboard/projects-and-invoices/invoices?invoice=${project.invoiceNumber}`;
+      router.push(`/commissioner-dashboard/projects-and-invoices/invoices/invoice/${project.invoiceNumber}`);
     }
   };
 

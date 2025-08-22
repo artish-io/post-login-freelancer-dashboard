@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -76,6 +77,7 @@ interface InvoiceHistoryPanelProps {
 }
 
 export default function InvoiceHistoryPanel({ commissionerId }: InvoiceHistoryPanelProps) {
+  const router = useRouter();
   const [invoices, setInvoices] = useState<InvoiceWithFreelancer[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -146,7 +148,7 @@ export default function InvoiceHistoryPanel({ commissionerId }: InvoiceHistoryPa
 
   const handleInvoiceClick = (invoice: InvoiceWithFreelancer) => {
     // Navigate to commissioner invoice preview page
-    window.location.href = `/commissioner-dashboard/projects-and-invoices/invoices?invoice=${invoice.invoiceNumber}`;
+    router.push(`/commissioner-dashboard/projects-and-invoices/invoices/invoice/${invoice.invoiceNumber}`);
   };
 
   if (loading) {
@@ -179,7 +181,7 @@ export default function InvoiceHistoryPanel({ commissionerId }: InvoiceHistoryPa
               {invoices.length} {invoices.length === 1 ? 'invoice' : 'invoices'}
             </span>
             <button
-              onClick={() => window.location.href = `/commissioner-dashboard/projects-and-invoices/invoices/invoice-history?commissionerId=${commissionerId}`}
+              onClick={() => router.push(`/commissioner-dashboard/projects-and-invoices/invoices/invoice-history?commissionerId=${commissionerId}`)}
               className="text-sm text-pink-600 hover:text-pink-700 font-medium transition-colors"
             >
               View All

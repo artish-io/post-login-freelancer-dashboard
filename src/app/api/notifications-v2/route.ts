@@ -83,8 +83,8 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      // Special case: milestone_payment_sent notifications are self-notifications for commissioners
-      if (event.type === 'milestone_payment_sent' && event.targetId === parseInt(userId)) {
+      // Special case: milestone_payment_sent and payment_sent notifications are self-notifications for commissioners
+      if ((event.type === 'milestone_payment_sent' || event.type === 'payment_sent') && event.targetId === parseInt(userId)) {
         return true;
       }
 
@@ -422,6 +422,7 @@ function getNotificationType(eventType: EventType): string {
     'profile_updated': 'profile_updated',
     'milestone_payment_received': 'milestone_payment_received',
     'milestone_payment_sent': 'milestone_payment_sent',
+    'payment_sent': 'payment_sent',
     'product_approved': 'product_approved',
     'product_rejected': 'product_rejected',
 
@@ -587,7 +588,15 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
     case 'gig_request_accepted':
       return `${actorName} accepted your gig request`;
     case 'invoice_sent':
-      return `${actorName} sent you a new invoice`;
+      // Use the custom notification text if available, otherwise fall back to default
+      if (event.metadata?.notificationText) {
+        return event.metadata.notificationText;
+      }
+      // Fallback format for older notifications
+      const invoiceAmount = event.metadata?.amount ? `$${event.metadata.amount}` : '';
+      const tasksCount = event.metadata?.approvedTasksCount || 1;
+      const invoiceProjectTitle = event.metadata?.projectTitle || 'project';
+      return `${actorName} sent you an invoice for ${invoiceAmount} for ${tasksCount} approved task${tasksCount !== 1 ? 's' : ''}, of your active project, ${invoiceProjectTitle}.`;
     case 'invoice_paid':
       return `Your invoice for "${event.metadata?.projectTitle || event.metadata?.taskTitle || task?.title || 'project work'}" has been paid by ${actorName}`;
     case 'milestone_payment_received':
@@ -602,6 +611,17 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
       const remainingBudget = event.metadata?.remainingBudget;
       const remainingBudgetText = remainingBudget !== undefined ? ` Remaining budget: $${remainingBudget.toLocaleString()}.` : '';
       return `You just paid ${freelancerName} ${paidAmount} for submitting ${taskTitle} for ${projectTitle}.${remainingBudgetText} Click here to see transaction activity`;
+    case 'payment_sent':
+      // Use the custom notification text if available, otherwise fall back to default
+      if (event.metadata?.notificationText) {
+        return event.metadata.notificationText;
+      }
+      // Fallback format
+      const paymentFreelancerName = event.metadata?.freelancerName || 'freelancer';
+      const paymentAmount = event.metadata?.amount ? `$${event.metadata.amount}` : 'payment';
+      const paymentProjectTitle = event.metadata?.projectTitle || 'project';
+      const paymentRemainingBudget = event.metadata?.remainingBudget || 'unknown';
+      return `You just paid ${paymentFreelancerName} ${paymentAmount} for their work on ${paymentProjectTitle}. This project has a remaining budget of ${paymentRemainingBudget} left.`;
     case 'product_purchased':
       return `You just made a new sale of "${event.metadata?.productTitle || 'product'}"`;
     case 'invoice_created':
@@ -777,6 +797,7 @@ function generateNotificationLink(event: EventData, _project?: any, _task?: any)
       }
       return `/freelancer-dashboard/projects-and-invoices/invoices`;
     case 'milestone_payment_sent':
+    case 'payment_sent':
       // Navigate to payments page to see transaction activity
       return `/commissioner-dashboard/payments`;
     case 'invoice_created':

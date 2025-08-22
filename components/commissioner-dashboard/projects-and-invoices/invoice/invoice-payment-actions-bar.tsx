@@ -43,7 +43,10 @@ export default function InvoicePaymentActionsBar({
           }`}
         >
           <CreditCard className="w-4 h-4" />
-          {loading ? 'Processing...' : invoiceData?.status === 'paid' ? 'Already Paid' : 'Pay Invoice'}
+          {loading ? 'Processing...' :
+           invoiceData?.status === 'paid' ? 'Already Paid' :
+           (invoiceData?.paidAmount && invoiceData?.paidAmount > 0) ? 'Pay Remaining' :
+           'Pay Invoice'}
         </Button>
       </div>
 

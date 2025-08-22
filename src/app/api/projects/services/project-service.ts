@@ -97,17 +97,19 @@ export class ProjectService {
       // Additional metadata from gig
       organizationId: gig.organizationId,
       description: gig.description,
-      category: gig.category,
-      subcategory: gig.subcategory,
-      tags: gig.tags,
-      toolsRequired: gig.toolsRequired,
-      estimatedHours: gig.estimatedHours,
-      deliveryTimeWeeks: gig.deliveryTimeWeeks,
+      // Note: category/subcategory not in ProjectRecord type, stored in typeTags instead
+      typeTags: gig.tags,
       dueDate,
     };
 
     // Generate default tasks based on gig type
     const tasks = this.generateDefaultTasks(finalProjectId, gig);
+
+    // Add totalTasks to project based on generated tasks count
+    const projectWithTotalTasks = {
+      ...project,
+      totalTasks: tasks.length
+    };
 
     // Mark gig as unavailable
     const gigUpdate: Partial<GigLike> = {
@@ -115,7 +117,7 @@ export class ProjectService {
     };
 
     return {
-      project,
+      project: projectWithTotalTasks,
       tasks,
       gigUpdate,
     };
@@ -149,15 +151,17 @@ export class ProjectService {
   /**
    * Generate default tasks based on gig configuration
    */
-  private static generateDefaultTasks(projectId: number, gig: GigLike): TaskRecord[] {
+  private static generateDefaultTasks(projectId: string, gig: GigLike): TaskRecord[] {
     const tasks: TaskRecord[] = [];
     const now = new Date().toISOString();
 
     if (gig.milestones && gig.milestones.length > 0) {
       // Create tasks from milestones
       gig.milestones.forEach((milestone, index) => {
+        const taskId = this.generateTaskId();
         tasks.push({
-          id: this.generateTaskId(),
+          id: taskId,
+          taskId: taskId,
           projectId,
           title: milestone.title,
           status: index === 0 ? 'Ongoing' : 'Ongoing', // First task starts as ongoing
@@ -168,7 +172,7 @@ export class ProjectService {
           updatedAt: now,
           description: milestone.description,
           order: index + 1,
-          milestoneId: milestone.id,
+          // Note: milestoneId not in TaskRecord type, can be stored in description or custom field
         });
       });
     } else {
@@ -182,9 +186,11 @@ export class ProjectService {
         for (let i = 0; i < milestoneCount; i++) {
           const taskDueDate = new Date();
           taskDueDate.setDate(taskDueDate.getDate() + (i + 1) * taskDuration);
+          const taskId = this.generateTaskId();
 
           tasks.push({
-            id: this.generateTaskId(),
+            id: taskId,
+            taskId: taskId,
             projectId,
             title: `Milestone ${i + 1}`,
             status: i === 0 ? 'Ongoing' : 'Ongoing',
@@ -199,8 +205,10 @@ export class ProjectService {
         }
       } else {
         // Create single completion task
+        const taskId = this.generateTaskId();
         tasks.push({
-          id: this.generateTaskId(),
+          id: taskId,
+          taskId: taskId,
           projectId,
           title: `Complete ${gig.title}`,
           status: 'Ongoing',

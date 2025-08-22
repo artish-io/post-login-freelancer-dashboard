@@ -74,9 +74,18 @@ export async function GET(request: Request) {
           }
         });
 
-      // Count available tasks for invoicing (must be approved AND completed AND not invoiced)
+      // Count available tasks for invoicing
+      // For completion projects: only need status === 'Approved' (completed field is not used)
+      // For milestone projects: need both status === 'Approved' AND completed === true
       const availableTasks = tasks.filter((task: any) => {
-        const isTaskEligible = task.status === 'Approved' && task.completed === true;
+        // Check if this is a completion project
+        const isCompletionProject = p.invoicingMethod === 'completion';
+
+        // Different eligibility criteria based on project type
+        const isTaskEligible = isCompletionProject
+          ? task.status === 'Approved'  // Completion: only need approval status
+          : task.status === 'Approved' && task.completed === true;  // Milestone: need both
+
         const hasNoInvoice = !invoicedTaskIds.has(task.id) &&
                             !invoicedTaskTitles.has(task.title) &&
                             !task.invoicePaid;

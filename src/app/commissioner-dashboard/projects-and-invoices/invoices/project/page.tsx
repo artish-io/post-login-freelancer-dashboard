@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -39,6 +39,7 @@ type InvoiceWithFreelancer = Invoice & {
 
 export default function ProjectInvoiceOverviewPage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const { data: session } = useSession();
   const [projectInvoices, setProjectInvoices] = useState<InvoiceWithFreelancer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -119,7 +120,7 @@ export default function ProjectInvoiceOverviewPage() {
   }, [projectId, parentInvoiceNumber]);
 
   const handleInvoiceClick = (invoice: InvoiceWithFreelancer) => {
-    window.location.href = `/commissioner-dashboard/projects-and-invoices/invoices?invoice=${invoice.invoiceNumber}`;
+    router.push(`/commissioner-dashboard/projects-and-invoices/invoices/invoice/${invoice.invoiceNumber}`);
   };
 
   if (loading) {

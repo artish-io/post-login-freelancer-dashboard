@@ -40,8 +40,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const projectId = searchParams.get('projectId');
 
-    if (!projectId) {
-      return NextResponse.json({ error: 'Project ID is required' }, { status: 400 });
+    if (typeof projectId !== 'string' || projectId.trim() === '') {
+      return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 });
     }
 
     // Get all events to find pending pause requests for this project
@@ -49,9 +49,9 @@ export async function GET(request: NextRequest) {
     
     // Find the most recent pause request for this project
     const pauseRequests = allEvents
-      .filter(event => 
-        event.type === 'project_pause_requested' && 
-        event.context?.projectId === parseInt(projectId)
+      .filter(event =>
+        event.type === 'project_pause_requested' &&
+        event.context?.projectId?.toString() === projectId
       )
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
@@ -62,12 +62,16 @@ export async function GET(request: NextRequest) {
     const latestRequest = pauseRequests[0];
     
     // Check if this request has been actioned by any commissioner
-    const isActioned = NotificationStorage.isActioned(latestRequest.id, latestRequest.targetId);
+    const isActioned = NotificationStorage.isActioned(latestRequest.id, latestRequest.targetId || 0);
     
     if (isActioned) {
       const status = isActioned === 'approve' ? 'approved' : 'refused';
 
       // Write to project-tracker-log if not already logged
+      if (typeof latestRequest.actorId !== 'number') {
+        return NextResponse.json({ error: 'Invalid actorId in pause request' }, { status: 400 });
+      }
+
       await appendToProjectTrackerLog(latestRequest.actorId, {
         id: latestRequest.id,
         status,

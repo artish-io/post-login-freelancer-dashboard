@@ -1,0 +1,20 @@
+{
+  "projectId": "Z-009",
+  "title": "Project Content Specification Flow",
+  "description": "ARTISH implements two distinct invoicing and payment execution methods that control how projects are structured, payments are processed, and workflows are managed. This documentation provides a granular, code-annotated analysis of both systems from gig matching through final invoice execution.",
+  "organizationId": 4,
+  "typeTags": [
+    "Marketing"
+  ],
+  "commissionerId": 35,
+  "freelancerId": 25,
+  "status": "ongoing",
+  "dueDate": "2025-08-27T04:00:00.000Z",
+  "totalTasks": 2,
+  "invoicingMethod": "completion",
+  "totalBudget": 1800,
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-22T11:34:30.094Z",
+  "updatedAt": "2025-08-22T11:34:30.094Z"
+}

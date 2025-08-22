@@ -1,0 +1,29 @@
+{
+  "invoiceNumber": "TB-017",
+  "projectId": "Z-009",
+  "freelancerId": 25,
+  "commissionerId": 35,
+  "projectTitle": "Project Content Specification Flow",
+  "totalAmount": 216,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-22T11:34:32.593Z",
+  "dueDate": "2025-09-05T11:34:32.593Z",
+  "createdAt": "2025-08-22T11:34:32.593Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 216,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 205.2,
+    "platformFee": 10.8
+  },
+  "paidDate": "2025-08-22T11:34:33.106Z",
+  "updatedAt": "2025-08-22T11:34:33.114Z"
+}

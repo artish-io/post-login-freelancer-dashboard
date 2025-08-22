@@ -85,6 +85,7 @@ export async function POST(req: NextRequest) {
     const updatedTask = {
       ...validTask,
       status: 'Approved' as const,
+      completed: true, // 🔒 COMPLETION-SPECIFIC: For completion projects, approved = completed
       approvedAt: new Date().toISOString(),
       approvedBy: actorId,
       // 🔒 COMPLETION-SPECIFIC: Mark as eligible for manual invoice
@@ -208,18 +209,19 @@ export async function POST(req: NextRequest) {
 
     console.log(`[COMPLETION_SUBMIT] Successfully completed task ${normalizedTaskId} approval for project ${normalizedProjectId}`);
     return NextResponse.json(response);
-  } catch (error: any) {
-    console.error(`[COMPLETION_SUBMIT] Error processing task approval:`, error);
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : 'Unknown error';
+    console.error(`[COMPLETION_SUBMIT] Error processing task approval:`, msg);
 
     // Handle custom errors with status codes
-    if (error.status && error.code) {
+    if (error && typeof error === 'object' && 'status' in error && 'code' in error) {
       return NextResponse.json({
         ok: false,
         requestId: crypto.randomUUID(),
-        code: error.code,
-        message: error.message,
-        status: error.status
-      }, { status: error.status });
+        code: (error as any).code,
+        message: (error as any).message || msg,
+        status: (error as any).status
+      }, { status: (error as any).status });
     }
 
     // Handle generic errors
@@ -227,7 +229,7 @@ export async function POST(req: NextRequest) {
       ok: false,
       requestId: crypto.randomUUID(),
       code: 'INTERNAL_ERROR',
-      message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+      message: process.env.NODE_ENV === 'development' ? msg : 'Internal server error',
       status: 500
     }, { status: 500 });
   }

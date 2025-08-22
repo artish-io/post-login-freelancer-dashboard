@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FileText, MessageSquareText, CreditCard, PauseCircle, Play, Star } from 'lucide-react';
 import RatingModal from '../../../shared/rating-modal';
@@ -13,6 +14,7 @@ type Props = {
 
 export default function CommissionerProjectActionButtons({ projectId, onNotesClick }: Props) {
   const { data: session } = useSession();
+  const router = useRouter();
   const [freelancerId, setFreelancerId] = useState<number | null>(null);
   const [latestUnpaidInvoice, setLatestUnpaidInvoice] = useState<string | null>(null);
   const [payInvoiceEnabled, setPayInvoiceEnabled] = useState(false);
@@ -50,71 +52,109 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
           }
         }
 
-        // Fetch invoices and project tasks to validate payment eligibility
-        const [invoicesRes, projectTasksRes] = await Promise.all([
-          fetch(`/api/invoices`),
-          fetch(`/api/project-tasks`)
-        ]);
+        // Check for unpaid invoices using hierarchical storage
+        try {
+          const invoicesRes = await fetch(`/api/invoices/by-project?projectId=${projectId}`);
 
-        if (invoicesRes.ok && projectTasksRes.ok) {
-          const invoices = await invoicesRes.json();
-          const projectTasksData = await projectTasksRes.json();
+          if (invoicesRes.ok) {
+            const invoices = await invoicesRes.json();
 
-          // Find project tasks
-          const projectTasks = projectTasksData.find((pt: any) => pt.projectId === projectId);
-
-          if (projectTasks) {
-            // Get approved tasks that don't have paid invoices
-            const approvedTasks = projectTasks.tasks.filter((task: any) => task.status === 'Approved');
-
-            // Find invoices for approved tasks that are ready for payment
-            const eligibleInvoices = invoices.filter((inv: any) => {
-              if (inv.projectId !== projectId || inv.status !== 'sent') return false;
-
-              // For completion-based projects, ensure the invoice corresponds to an approved task
-              const correspondingTask = approvedTasks.find((task: any) =>
-                task.order === inv.milestoneNumber ||
-                inv.milestoneDescription.includes(task.title) ||
-                task.title.includes(inv.milestoneDescription)
+            // For completion projects, check for unpaid invoices
+            if (project?.invoicingMethod === 'completion') {
+              const unpaidInvoices = invoices.filter((inv: any) =>
+                inv.status === 'sent' || inv.status === 'draft'
               );
 
-              return correspondingTask !== undefined;
-            });
+              if (unpaidInvoices.length > 0) {
+                // Sort by issue date to get the latest unpaid invoice
+                unpaidInvoices.sort((a: any, b: any) =>
+                  new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime()
+                );
+                setLatestUnpaidInvoice(unpaidInvoices[0].invoiceNumber);
+                setPayInvoiceEnabled(true);
 
-            if (eligibleInvoices.length > 0) {
-              // Sort by milestone number to get the latest eligible invoice
-              eligibleInvoices.sort((a: any, b: any) => b.milestoneNumber - a.milestoneNumber);
-              setLatestUnpaidInvoice(eligibleInvoices[0].invoiceNumber);
-              setPayInvoiceEnabled(true);
+                // Log the action
+                fetch('/api/logs/append', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    file: 'data/logs/project-nav.log',
+                    entry: `[${new Date().toISOString()}] [PAYINV:UI:ENABLED] ${JSON.stringify({ projectId, invoiceNumber: unpaidInvoices[0].invoiceNumber })}`
+                  })
+                }).catch(console.warn);
+              } else {
+                setPayInvoiceEnabled(false);
+              }
             } else {
-              setPayInvoiceEnabled(false);
+              // For milestone projects, use existing logic
+              const projectTasksRes = await fetch(`/api/project-tasks`);
+              if (projectTasksRes.ok) {
+                const projectTasksData = await projectTasksRes.json();
+                const projectTasks = projectTasksData.find((pt: any) => pt.projectId === projectId);
+
+                if (projectTasks) {
+                  const approvedTasks = projectTasks.tasks.filter((task: any) => task.status === 'Approved');
+                  const eligibleInvoices = invoices.filter((inv: any) => {
+                    if (inv.projectId !== projectId || inv.status !== 'sent') return false;
+                    const correspondingTask = approvedTasks.find((task: any) =>
+                      task.order === inv.milestoneNumber ||
+                      inv.milestoneDescription.includes(task.title) ||
+                      task.title.includes(inv.milestoneDescription)
+                    );
+                    return correspondingTask !== undefined;
+                  });
+
+                  if (eligibleInvoices.length > 0) {
+                    eligibleInvoices.sort((a: any, b: any) => b.milestoneNumber - a.milestoneNumber);
+                    setLatestUnpaidInvoice(eligibleInvoices[0].invoiceNumber);
+                    setPayInvoiceEnabled(true);
+                  } else {
+                    setPayInvoiceEnabled(false);
+                  }
+                } else {
+                  setPayInvoiceEnabled(false);
+                }
+              }
             }
           } else {
             setPayInvoiceEnabled(false);
           }
+        } catch (error) {
+          console.error('Error checking invoices:', error);
+          setPayInvoiceEnabled(false);
+        }
 
-          // Check rating eligibility
-          if (project && project.status?.toLowerCase() === 'completed') {
-            // Check if all tasks are completed using the already fetched projectTasks
-            if (projectTasks) {
-              const allTasksComplete = projectTasks.tasks.length > 0 &&
-                projectTasks.tasks.every((t: any) => t.completed === true && t.status === 'Approved');
+        // Check rating eligibility
+        if (project && project.status?.toLowerCase() === 'completed') {
+          // For rating, we need to check project tasks
+          try {
+            const projectTasksRes = await fetch(`/api/project-tasks`);
+            if (projectTasksRes.ok) {
+              const projectTasksData = await projectTasksRes.json();
+              const projectTasks = projectTasksData.find((pt: any) => pt.projectId === projectId);
 
-              if (allTasksComplete) {
-                setCanRate(true);
+              if (projectTasks) {
+                const allTasksComplete = projectTasks.tasks.length > 0 &&
+                  projectTasks.tasks.every((t: any) => t.completed === true && t.status === 'Approved');
 
-                // Check if already rated
-                try {
-                  const ratingRes = await fetch(
-                    `/api/ratings/exists?projectId=${projectId}&subjectUserId=${project.freelancerId}&subjectUserType=freelancer`
-                  );
-                  const ratingData = await ratingRes.json();
-                  setHasRated(ratingData.success && ratingData.data.exists);
-                } catch (ratingError) {
-                  console.error('Error checking rating status:', ratingError);
+                if (allTasksComplete) {
+                  setCanRate(true);
+
+                  // Check if already rated
+                  try {
+                    const ratingRes = await fetch(
+                      `/api/ratings/exists?projectId=${projectId}&subjectUserId=${project.freelancerId}&subjectUserType=freelancer`
+                    );
+                    const ratingData = await ratingRes.json();
+                    setHasRated(ratingData.success && ratingData.data.exists);
+                  } catch (ratingError) {
+                    console.error('Error checking rating status:', ratingError);
+                  }
                 }
               }
             }
+          } catch (error) {
+            console.error('Error checking rating eligibility:', error);
           }
         }
       } catch (error) {
@@ -165,8 +205,28 @@ export default function CommissionerProjectActionButtons({ projectId, onNotesCli
       return;
     }
 
+    // Log the click action
+    fetch('/api/logs/append', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        file: 'data/logs/project-nav.log',
+        entry: `[${new Date().toISOString()}] [PAYINV:UI:CLICK] ${JSON.stringify({ projectId, invoiceNumber: latestUnpaidInvoice })}`
+      })
+    }).catch(console.warn);
+
+    // Log the navigation
+    fetch('/api/logs/append', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        file: 'data/logs/project-nav.log',
+        entry: `[${new Date().toISOString()}] [PAYINV:UI:NAV] ${JSON.stringify({ projectId, invoiceNumber: latestUnpaidInvoice })}`
+      })
+    }).catch(console.warn);
+
     // Navigate to pay-invoice page with the latest unpaid invoice
-    window.location.href = `/commissioner-dashboard/projects-and-invoices/invoices/pay-invoice?invoice=${latestUnpaidInvoice}`;
+    router.push(`/commissioner-dashboard/projects-and-invoices/invoices/pay-invoice?invoice=${latestUnpaidInvoice}`);
   };
 
   const handlePauseProject = async () => {

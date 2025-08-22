@@ -1,3 +1,5 @@
+import 'server-only';
+
 /**
  * Unified Storage Service
  *
@@ -20,7 +22,7 @@ import { format } from 'date-fns';
 import { z } from 'zod';
 
 // Throttle warnings to prevent spam
-const warnedProjects = new Set<number>();
+const warnedProjects = new Set<string>();
 
 // Import schemas
 import { ProjectSchema, ProjectTaskSchema, parseProject, parseTask } from './schemas';
@@ -251,11 +253,12 @@ export class UnifiedStorageService {
 
       // Graceful degradation - project not found but don't spam logs
       // This is normal in production when users delete/archive projects
-      if (!warnedProjects.has(projectId)) {
+      const projectIdStr = projectId.toString();
+      if (!warnedProjects.has(projectIdStr)) {
         logger.info(`[UnifiedStorage] Project ${projectId} not found (may have been deleted/archived)`);
-        warnedProjects.add(projectId);
+        warnedProjects.add(projectIdStr);
         // Clear the warning after 5 minutes to allow retry
-        setTimeout(() => warnedProjects.delete(projectId), 5 * 60 * 1000);
+        setTimeout(() => warnedProjects.delete(projectIdStr), 5 * 60 * 1000);
       }
       return null;
     } catch (error) {
@@ -519,7 +522,7 @@ export class UnifiedStorageService {
   /**
    * Get a task by composite ID (projectId, taskId) - PREFERRED METHOD
    */
-  static async getTaskByCompositeId(projectId: number, taskId: number): Promise<ProjectTask | null> {
+  static async getTaskByCompositeId(projectId: string | number, taskId: number): Promise<ProjectTask | null> {
     try {
       // Import tasks-paths utilities dynamically to avoid circular dependency
       const { readProjectTasks } = await import('./tasks-paths');

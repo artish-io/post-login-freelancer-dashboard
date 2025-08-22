@@ -12,7 +12,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Missing projectIds' }, { status: 400 });
   }
 
-  const projectIds = projectIdsParam.split(',').map(id => parseInt(id, 10)).filter(Boolean);
+  const projectIds = projectIdsParam.split(',').map(id => id.trim()).filter(Boolean);
 
   console.log('🟢 [API] Parsed projectIds:', projectIds);
 

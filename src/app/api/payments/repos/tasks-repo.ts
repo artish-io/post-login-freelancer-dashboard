@@ -14,7 +14,7 @@ import type { ProjectTask } from '@/lib/storage/schemas';
 export interface TaskRecord {
   id?: number;
   taskId: number;
-  projectId: number;
+  projectId: number | string;
   projectTitle?: string;
   organizationId?: number;
   projectTypeTags?: string[];
@@ -194,7 +194,7 @@ export async function saveTask(task: TaskRecord): Promise<TaskRecord> {
     // Convert to unified format
     const unifiedTask: ProjectTask = {
       taskId: task.taskId,
-      projectId: task.projectId,
+      projectId: task.projectId.toString(),
       projectTitle: task.projectTitle || '',
       organizationId: task.organizationId,
       projectTypeTags: task.projectTypeTags,

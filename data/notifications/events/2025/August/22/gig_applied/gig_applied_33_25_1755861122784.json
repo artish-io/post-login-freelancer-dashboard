@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_33_25_1755861122784",
+  "timestamp": "2025-08-22T11:12:02.784Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "33",
+  "metadata": {
+    "gigTitle": "Project Content Specification Flow",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 33,
+    "applicationId": 1755193217262
+  }
+}

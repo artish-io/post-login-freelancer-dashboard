@@ -11,8 +11,8 @@ export async function GET(
   try {
     const { id } = await params;
 
-    const projectId = parseInt(id);
-    if (isNaN(projectId)) {
+    const projectId = id; // Keep as string to support IDs like "Z-007"
+    if (!projectId || typeof projectId !== 'string' || !projectId.trim()) {
       return NextResponse.json({ error: 'Invalid project ID' }, { status: 400 });
     }
 

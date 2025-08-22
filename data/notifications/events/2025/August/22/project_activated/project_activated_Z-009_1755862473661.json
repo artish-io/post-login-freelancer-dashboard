@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_Z-009_1755862473661",
+  "timestamp": "2025-08-22T11:34:33.661Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "Z-009",
+  "metadata": {
+    "projectTitle": "Project Content Specification Flow",
+    "gigTitle": "Project Content Specification Flow",
+    "taskCount": 2,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group"
+  },
+  "context": {
+    "projectId": "Z-009",
+    "gigId": 33,
+    "applicationId": 1755193217262
+  }
+}

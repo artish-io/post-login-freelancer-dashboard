@@ -61,11 +61,11 @@ export async function GET(request: Request) {
         if (match) {
           eligibleInvoices.push({
             invoiceNumber: String(match.invoiceNumber),
-            taskId: task.id,
+            taskId: task.id || task.taskId,
             taskTitle: (task as any).title,
             taskOrder,
             amount: Number(match.totalAmount ?? 0),
-            milestoneNumber: match.milestoneNumber,
+            milestoneNumber: (match as any).milestoneNumber,
             status: String(match.status),
           });
         }

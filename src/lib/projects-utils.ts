@@ -4,10 +4,10 @@ import path from 'path';
 import { promises as fsPromises } from 'fs';
 
 // Throttle warnings to prevent spam
-const warnedProjects = new Set<number>();
+const warnedProjects = new Set<string>();
 
 export interface Project {
-  projectId: number;
+  projectId: string;
   title: string;
   description: string;
   organizationId: number;
@@ -51,7 +51,7 @@ export function parseProjectDate(dateString: string): { year: string; month: str
 /**
  * Generate project file path based on creation date and project ID
  */
-export function getProjectFilePath(createdAt: string, projectId: number): string {
+export function getProjectFilePath(createdAt: string, projectId: string | number): string {
   const { year, month, day } = parseProjectDate(createdAt);
   return path.join(
     process.cwd(),
@@ -107,7 +107,7 @@ export async function saveProject(project: Project): Promise<void> {
 /**
  * Update projects index with project location
  */
-export async function updateProjectsIndex(projectId: number, createdAt: string): Promise<void> {
+export async function updateProjectsIndex(projectId: string | number, createdAt: string): Promise<void> {
   const indexPath = getProjectMetadataPath();
   const indexDir = path.dirname(indexPath);
   
@@ -132,7 +132,7 @@ export async function updateProjectsIndex(projectId: number, createdAt: string):
 /**
  * Read a single project from hierarchical structure
  */
-export async function readProject(projectId: number): Promise<Project | null> {
+export async function readProject(projectId: string | number): Promise<Project | null> {
   try {
     // First, get the creation date from the index
     const indexPath = getProjectMetadataPath();
@@ -159,10 +159,11 @@ export async function readProject(projectId: number): Promise<Project | null> {
       }
 
       // Use throttled warning only if project truly doesn't exist
-      if (!warnedProjects.has(projectId)) {
+      const projectIdStr = projectId.toString();
+      if (!warnedProjects.has(projectIdStr)) {
         console.warn(`[readProject] Project ${projectId} not found anywhere. Available projects: ${Object.keys(index).slice(0, 10).join(', ')}${Object.keys(index).length > 10 ? '...' : ''}`);
-        warnedProjects.add(projectId);
-        setTimeout(() => warnedProjects.delete(projectId), 5 * 60 * 1000);
+        warnedProjects.add(projectIdStr);
+        setTimeout(() => warnedProjects.delete(projectIdStr), 5 * 60 * 1000);
       }
       return null;
     }
@@ -229,7 +230,7 @@ export async function readAllProjects(): Promise<Project[]> {
 /**
  * Update project data
  */
-export async function updateProject(projectId: number, updates: Partial<Project>): Promise<void> {
+export async function updateProject(projectId: string | number, updates: Partial<Project>): Promise<void> {
   const existingProject = await readProject(projectId);
   
   if (!existingProject) {
@@ -315,7 +316,7 @@ export async function getProjectsByCommissioner(commissionerId: number): Promise
 /**
  * Remove a project from the index (auto-healing)
  */
-export async function removeProjectFromIndex(projectId: number): Promise<void> {
+export async function removeProjectFromIndex(projectId: string | number): Promise<void> {
   try {
     const indexPath = getProjectMetadataPath();
 

@@ -53,7 +53,9 @@ export async function POST(request: Request) {
     }
 
     // 🔒 SECURITY: Verify only the commissioner can pay their own invoices
-    if (commissionerId !== sessionUserId) {
+    const commissionerIdNum = parseInt(commissionerId);
+    if (commissionerIdNum !== sessionUserId) {
+      console.log(`[PAY_AUTH_ERROR] Commissioner ID mismatch: ${commissionerIdNum} !== ${sessionUserId}`);
       return NextResponse.json({
         error: 'Unauthorized: You can only pay invoices for your own projects'
       }, { status: 403 });
@@ -81,9 +83,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invoice is already paid' }, { status: 400 });
     }
 
-    // Check if invoice is in sent status (ready for payment)
-    if (invoice.status !== 'sent') {
-      return NextResponse.json({ error: 'Invoice must be sent before it can be paid' }, { status: 400 });
+    // Check if invoice is in payable status (sent or draft)
+    if (!['sent', 'draft'].includes(invoice.status)) {
+      return NextResponse.json({ error: 'Invoice must be sent or draft to be paid' }, { status: 400 });
     }
 
     // Validate payment amount matches invoice total
@@ -95,25 +97,67 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    // TODO: PAYMENT GATEWAY INTEGRATION
-    // const paymentResult = await processPayment({
-    //   amount: invoice.totalAmount * 100, // Convert to cents for Stripe
-    //   currency: currency,
-    //   paymentMethodId: paymentMethodId,
-    //   freelancerAccountId: freelancer.stripeAccountId,
-    //   platformFeePercent: 5, // 5% platform fee
-    //   metadata: {
-    //     invoiceNumber: invoiceNumber,
-    //     projectId: invoice.projectId,
-    //     freelancerId: invoice.freelancerId,
-    //     commissionerId: commissionerId
-    //   }
-    // });
+    // SIMULATION: Process payment using test cards
+    const testCardsPath = path.join(process.cwd(), 'data/commissioner-payments/test-cards.json');
+    let testCards = [];
+    try {
+      const testCardsData = await fs.readFile(testCardsPath, 'utf-8');
+      testCards = JSON.parse(testCardsData);
+    } catch (error) {
+      console.error('Failed to load test cards:', error);
+      return NextResponse.json({ error: 'Payment system unavailable' }, { status: 500 });
+    }
 
-    // SIMULATION: Process payment
+    // Find commissioner's test card
+    const commissionerCard = testCards.find((card: any) =>
+      card.commissionerId === sessionUserId && card.isActive && card.isDefault
+    );
+
+    if (!commissionerCard) {
+      return NextResponse.json({
+        error: 'No active payment method found. Please add a payment method.'
+      }, { status: 400 });
+    }
+
+    // Check if card has sufficient balance
+    if (commissionerCard.availableBalance < invoice.totalAmount) {
+      return NextResponse.json({
+        error: `Insufficient funds. Available: $${commissionerCard.availableBalance}, Required: $${invoice.totalAmount}`
+      }, { status: 400 });
+    }
+
     const simulatedPaymentId = `pay_sim_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
     const platformFee = Math.round(invoice.totalAmount * 0.05 * 100) / 100; // 5% platform fee
     const freelancerAmount = Math.round((invoice.totalAmount - platformFee) * 100) / 100;
+
+    // Update card balance and transaction history
+    const newBalance = commissionerCard.availableBalance - invoice.totalAmount;
+    const cardTransaction = {
+      transactionId: `TXN-${Date.now()}`,
+      amount: -invoice.totalAmount,
+      type: 'payment',
+      description: `Payment for invoice ${invoiceNumber}`,
+      invoiceNumber: invoiceNumber,
+      projectId: invoice.projectId?.toString() || 'NaN',
+      freelancerId: invoice.freelancerId,
+      timestamp: new Date().toISOString(),
+      balanceAfter: newBalance
+    };
+
+    // Update the card data
+    const updatedCard = {
+      ...commissionerCard,
+      availableBalance: newBalance,
+      transactionHistory: [...commissionerCard.transactionHistory, cardTransaction],
+      lastUsed: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    // Update test cards file
+    const updatedTestCards = testCards.map((card: any) =>
+      card.id === commissionerCard.id ? updatedCard : card
+    );
+    await fs.writeFile(testCardsPath, JSON.stringify(updatedTestCards, null, 2));
 
     // Update invoice status to 'paid'
     const updatedInvoice = {
@@ -132,8 +176,7 @@ export async function POST(request: Request) {
       updatedAt: new Date().toISOString()
     };
 
-    // Get commissioner info for notification
-    const commissionerIdNum = parseInt(commissionerId);
+    // Get commissioner info for notification (reuse commissionerIdNum from earlier)
     const commissioner = users.find((user: any) => user.id === commissionerIdNum);
     const commissionerName = commissioner?.name || 'A commissioner';
 
@@ -168,8 +211,54 @@ export async function POST(request: Request) {
       }
     };
 
-    // Add notification using the new partitioned storage system
+    // Add freelancer notification using the new partitioned storage system
     NotificationStorage.addEvent(newNotification);
+
+    // Create notification for commissioner about their payment
+    const commissionerNotificationId = `evt_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    const freelancer = users.find((user: any) => user.id === parseInt(invoice.freelancerId));
+    const freelancerName = freelancer?.name || 'A freelancer';
+
+    // Get project info for remaining budget calculation
+    let remainingBudget = 'unknown';
+    try {
+      const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+      const project = await UnifiedStorageService.readProject(invoice.projectId?.toString() || '');
+      if (project) {
+        const currentPaidToDate = project.paidToDate || 0;
+        const totalBudget = project.totalBudget || 0;
+        const newPaidToDate = currentPaidToDate + amount;
+        remainingBudget = `$${(totalBudget - newPaidToDate).toFixed(2)}`;
+      }
+    } catch (error) {
+      console.error('Failed to calculate remaining budget for notification:', error);
+    }
+
+    const commissionerNotification = {
+      id: commissionerNotificationId,
+      timestamp: new Date().toISOString(),
+      type: "payment_sent",
+      notificationType: 42, // PAYMENT_SENT notification type
+      actorId: commissionerIdNum,
+      targetId: commissionerIdNum, // Commissioner notifies themselves
+      entityType: 3, // Invoice entity type
+      entityId: invoiceNumber,
+      metadata: {
+        invoiceNumber: invoiceNumber,
+        projectTitle: invoice.projectTitle,
+        amount: amount,
+        freelancerName: freelancerName,
+        remainingBudget: remainingBudget,
+        notificationText: `You just paid ${freelancerName} $${amount} for their work on ${invoice.projectTitle}. This project has a remaining budget of ${remainingBudget} left.`
+      },
+      context: {
+        projectId: invoice.projectId,
+        invoiceNumber: invoiceNumber
+      }
+    };
+
+    // Add commissioner notification
+    NotificationStorage.addEvent(commissionerNotification);
 
     // CRITICAL: Create wallet transaction for freelancer
     const walletHistoryPath = path.join(process.cwd(), 'data/wallet/wallet-history.json');
@@ -205,6 +294,41 @@ export async function POST(request: Request) {
 
     // Save updated invoice data
     await saveInvoice(updatedInvoice);
+
+    // Update project paidToDate (CRITICAL FIX)
+    if (invoice.projectId) {
+      try {
+        const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+        const projectIdStr = invoice.projectId.toString();
+        console.log(`🔍 Attempting to read project: ${projectIdStr}`);
+
+        const project = await UnifiedStorageService.readProject(projectIdStr);
+        console.log(`🔍 Project found:`, project ? { id: project.projectId, currentPaidToDate: project.paidToDate } : 'null');
+
+        if (project) {
+          const currentPaidToDate = project.paidToDate || 0;
+          const paymentAmount = amount || invoice.totalAmount || 0;
+          const newPaidToDate = currentPaidToDate + paymentAmount;
+
+          console.log(`🔍 Payment calculation: ${currentPaidToDate} + ${paymentAmount} = ${newPaidToDate}`);
+
+          await UnifiedStorageService.writeProject({
+            ...project,
+            paidToDate: newPaidToDate,
+            updatedAt: new Date().toISOString()
+          });
+
+          console.log(`💰 Updated project ${invoice.projectId} paidToDate: $${currentPaidToDate} → $${newPaidToDate}`);
+        } else {
+          console.error(`❌ Project ${projectIdStr} not found`);
+        }
+      } catch (error) {
+        console.error('Failed to update project paidToDate:', error);
+        console.error('Error details:', error);
+      }
+    } else {
+      console.error('❌ No projectId found in invoice:', invoice);
+    }
 
     return NextResponse.json({
       success: true,

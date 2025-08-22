@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_34_25_1755861137604",
+  "timestamp": "2025-08-22T11:12:17.604Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "34",
+  "metadata": {
+    "gigTitle": "Project Test: ARTISH implements Tow Distinct",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 34,
+    "applicationId": 1755193217263
+  }
+}

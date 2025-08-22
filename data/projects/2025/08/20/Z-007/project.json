@@ -9,10 +9,11 @@
   "dueDate": "2025-08-25T04:00:00.000Z",
   "invoicingMethod": "completion",
   "totalBudget": 1600,
-  "paidToDate": 0,
+  "totalTasks": 3,
+  "paidToDate": 1130.66,
   "currency": "USD",
   "createdAt": "2025-08-20T17:54:17.057Z",
-  "updatedAt": "2025-08-20T17:54:17.058Z",
+  "updatedAt": "2025-08-22T03:15:07.198Z",
   "category": "Writing",
   "subcategory": "Copywriting",
   "tags": [

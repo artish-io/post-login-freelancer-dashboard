@@ -180,7 +180,7 @@
     "brand": "mastercard",
     "isDefault": true,
     "isActive": true,
-    "availableBalance": 41409.6,
+    "availableBalance": 39785.6,
     "transactionHistory": [
       {
         "transactionId": "TXN-1755674650743",
@@ -291,11 +291,33 @@
         "freelancerId": 25,
         "timestamp": "2025-08-20T20:24:48.867Z",
         "balanceAfter": 41409.6
+      },
+      {
+        "transactionId": "TXN-1755830156724",
+        "amount": -1408,
+        "type": "payment",
+        "description": "Payment for invoice TB-012",
+        "invoiceNumber": "TB-012",
+        "projectId": "Z-007",
+        "freelancerId": 25,
+        "timestamp": "2025-08-22T02:35:56.724Z",
+        "balanceAfter": 40001.6
+      },
+      {
+        "transactionId": "TXN-1755862473105",
+        "amount": -216,
+        "type": "payment",
+        "description": "Payment for invoice TB-017",
+        "invoiceNumber": "TB-017",
+        "projectId": "NaN",
+        "freelancerId": 25,
+        "timestamp": "2025-08-22T11:34:33.105Z",
+        "balanceAfter": 39785.6
       }
     ],
     "createdAt": "2025-08-20T05:45:11.483Z",
-    "lastUsed": null,
-    "updatedAt": "2025-08-20T20:24:48.867Z"
+    "lastUsed": "2025-08-22T02:35:56.724Z",
+    "updatedAt": "2025-08-22T11:34:33.105Z"
   },
   {
     "id": "card_test_036",

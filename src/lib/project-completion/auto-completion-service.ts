@@ -13,7 +13,7 @@ import { readProject } from '../projects-utils';
 import { readProjectTasks } from '../project-tasks/hierarchical-storage';
 
 export interface ProjectCompletionResult {
-  projectId: number;
+  projectId: string | number;
   previousStatus: string;
   newStatus: string;
   allTasksApproved: boolean;
@@ -37,7 +37,7 @@ export interface ProjectCompletionCheck {
 /**
  * Check if a project should be auto-completed based on task status
  */
-export async function checkProjectCompletionEligibility(projectId: number): Promise<ProjectCompletionCheck> {
+export async function checkProjectCompletionEligibility(projectId: string | number): Promise<ProjectCompletionCheck> {
   try {
     // Get project information
     const project = await readProject(projectId);
@@ -120,7 +120,7 @@ export async function checkProjectCompletionEligibility(projectId: number): Prom
 /**
  * Auto-complete a project if all tasks are approved
  */
-export async function autoCompleteProject(projectId: number): Promise<ProjectCompletionResult> {
+export async function autoCompleteProject(projectId: string | number): Promise<ProjectCompletionResult> {
   try {
     console.log(`🔍 Checking auto-completion for project ${projectId}...`);
 
@@ -192,7 +192,7 @@ export async function autoCompleteProject(projectId: number): Promise<ProjectCom
 /**
  * Check and auto-complete project if eligible (safe wrapper)
  */
-export async function checkAndAutoCompleteProject(projectId: number): Promise<ProjectCompletionResult> {
+export async function checkAndAutoCompleteProject(projectId: string | number): Promise<ProjectCompletionResult> {
   try {
     return await autoCompleteProject(projectId);
   } catch (error) {
@@ -213,7 +213,7 @@ export async function checkAndAutoCompleteProject(projectId: number): Promise<Pr
 /**
  * Batch check and auto-complete multiple projects
  */
-export async function batchAutoCompleteProjects(projectIds: number[]): Promise<ProjectCompletionResult[]> {
+export async function batchAutoCompleteProjects(projectIds: (string | number)[]): Promise<ProjectCompletionResult[]> {
   const results: ProjectCompletionResult[] = [];
   
   for (const projectId of projectIds) {
@@ -241,7 +241,7 @@ export async function batchAutoCompleteProjects(projectIds: number[]): Promise<P
 /**
  * Find all projects that are eligible for auto-completion
  */
-export async function findProjectsEligibleForCompletion(): Promise<number[]> {
+export async function findProjectsEligibleForCompletion(): Promise<(string | number)[]> {
   try {
     // This would need to be implemented based on your project storage structure
     // For now, return empty array - this should be implemented when you have

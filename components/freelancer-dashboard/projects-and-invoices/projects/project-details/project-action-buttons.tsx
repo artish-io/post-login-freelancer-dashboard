@@ -159,28 +159,58 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
       return;
     }
 
+    // Validate projectId
+    if (!projectId || typeof projectId !== 'string') {
+      showErrorToast('Invalid Project ID', 'Project ID must be a valid string');
+      return;
+    }
+
     setGenerating(true);
     try {
-      const res = await fetch('/api/invoices/generate-for-project', {
+      // First, fetch project data to determine invoicing method
+      const projectRes = await fetch(`/api/projects/${projectId}`);
+      if (!projectRes.ok) {
+        throw new Error('Failed to fetch project data');
+      }
+      const project = await projectRes.json();
+
+      // Branch by project method
+      const endpoint = project.invoicingMethod === 'completion'
+        ? '/api/invoices/generate-for-project/completion'
+        : '/api/invoices/generate-for-project'; // existing milestone route
+
+      const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          projectId: projectId,
-          freelancerId: Number(session.user.id)
-        }),
+          projectId,
+          freelancerId: session?.user?.id
+        })
       });
 
-      const result = await res.json();
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        showErrorToast('Invoice Generation Failed', data?.error || 'Failed to generate invoice');
+        return;
+      }
 
-      if (res.ok) {
-        // Redirect to send-invoice page
-        router.push(`/freelancer-dashboard/projects-and-invoices/invoices/send-invoice/${result.invoiceNumber}`);
+      // Navigate on success (works for both new invoices and existing drafts)
+      if (data.success && data.invoiceNumber) {
+        // Only show toast for new invoices, not existing drafts
+        if (data.existingDraft || data.wasExisting) {
+          // Just navigate silently for existing drafts
+        } else {
+          // Show success toast only for new invoice creation
+          showSuccessToast('Invoice Generated', 'New invoice created successfully');
+        }
+        router.push(`/freelancer-dashboard/projects-and-invoices/invoices/send-invoice/${encodeURIComponent(data.invoiceNumber)}`);
       } else {
-        throw new Error(result.error || 'Failed to generate invoice');
+        showErrorToast('Invoice Generation Failed', 'Invalid response from server');
       }
     } catch (error) {
       console.error('Error generating invoice:', error);
-      showErrorToast('Invoice Generation Failed', error instanceof Error ? error.message : 'Unknown error');
+      const message = error instanceof Error ? error.message : 'Failed to generate invoice';
+      showErrorToast('Invoice Generation Failed', message);
     } finally {
       setGenerating(false);
     }

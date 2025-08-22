@@ -133,7 +133,7 @@ export type EventType =
   // Message events
   | 'message_sent' | 'message_read'
   // Invoice events - More granular
-  | 'invoice_created' | 'invoice_sent' | 'invoice_paid' | 'invoice_overdue' | 'milestone_payment_received' | 'milestone_payment_sent'
+  | 'invoice_created' | 'invoice_sent' | 'invoice_paid' | 'invoice_overdue' | 'milestone_payment_received' | 'milestone_payment_sent' | 'payment_sent'
   // Storefront events
   | 'product_purchased' | 'product_downloaded' | 'review_posted' | 'product_approved' | 'product_rejected'
   // Proposal events

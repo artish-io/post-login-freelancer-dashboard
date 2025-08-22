@@ -1,0 +1,47 @@
+{
+  "id": 33,
+  "title": "Project Content Specification Flow",
+  "organizationId": 4,
+  "commissionerId": "35",
+  "category": "Writing",
+  "subcategory": "Content Writing",
+  "tags": [
+    "Marketing"
+  ],
+  "hourlyRateMin": 46.88,
+  "hourlyRateMax": 56.25,
+  "description": "ARTISH implements two distinct invoicing and payment execution methods that control how projects are structured, payments are processed, and workflows are managed. This documentation provides a granular, code-annotated analysis of both systems from gig matching through final invoice execution.",
+  "deliveryTimeWeeks": 0.7142857142857143,
+  "estimatedHours": 32,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Google Docs"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "8820cf48-2e96-4435-9252-ea60a0e8dff6",
+      "title": "Phase One: This documentation provides",
+      "description": "This documentation provides a granular, code-annotated analysis of both systems from gig matching through final invoice execution.",
+      "startDate": "2025-08-23T04:00:00.000Z",
+      "endDate": "2025-08-24T04:00:00.000Z"
+    },
+    {
+      "id": "982632aa-b091-44cc-a180-24bce3a0dca4",
+      "title": "Phase Two: Execution methods",
+      "description": "Execution methods that control how projects are structured, payments are processed, and workflows are managed.",
+      "startDate": "2025-08-25T04:00:00.000Z",
+      "endDate": "2025-08-27T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-27T04:00:00.000Z",
+  "lowerBudget": 1500,
+  "upperBudget": 1800,
+  "postedDate": "2025-08-22",
+  "notes": "Budget range: $1,500 - $1,800",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}
