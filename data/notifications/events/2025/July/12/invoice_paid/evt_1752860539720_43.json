@@ -12,7 +12,8 @@
     "projectTitle": "Custom Brand Consultation",
     "taskTitle": "Brand strategy consultation",
     "amount": 1200,
-    "description": "Brand strategy consultation"
+    "description": "Brand strategy consultation",
+    "organizationName": "Urbana Channel Studios"
   },
   "context": {
     "projectId": null,

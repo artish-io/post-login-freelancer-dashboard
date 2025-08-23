@@ -12,11 +12,15 @@
     "gigTitle": "Product Specification for Data Farm Handbook",
     "taskCount": 2,
     "commissionerName": "Tilly Burzinsky",
-    "organizationName": "Zynate Events Group"
+    "organizationName": "Zynate Events Group",
+    "dueDate": "2025-08-22T04:00:00.000Z"
   },
   "context": {
     "projectId": "Z-001",
     "gigId": 17,
-    "applicationId": 1755193217242
-  }
+    "applicationId": 1755193217242,
+    "dueDate": "2025-08-22T04:00:00.000Z"
+  },
+  "updatedAt": "2025-08-23T10:09:08.464Z",
+  "projectActivationDateNote": "Fixed project activation date enrichment: dueDate: 2025-08-22T04:00:00.000Z, context.dueDate: 2025-08-22T04:00:00.000Z"
 }

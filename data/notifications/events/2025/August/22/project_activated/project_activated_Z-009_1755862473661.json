@@ -12,11 +12,15 @@
     "gigTitle": "Project Content Specification Flow",
     "taskCount": 2,
     "commissionerName": "Tilly Burzinsky",
-    "organizationName": "Zynate Events Group"
+    "organizationName": "Zynate Events Group",
+    "dueDate": "2025-08-27T04:00:00.000Z"
   },
   "context": {
     "projectId": "Z-009",
     "gigId": 33,
-    "applicationId": 1755193217262
-  }
+    "applicationId": 1755193217262,
+    "dueDate": "2025-08-27T04:00:00.000Z"
+  },
+  "updatedAt": "2025-08-23T10:09:08.467Z",
+  "projectActivationDateNote": "Fixed project activation date enrichment: dueDate: 2025-08-27T04:00:00.000Z, context.dueDate: 2025-08-27T04:00:00.000Z"
 }

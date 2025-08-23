@@ -384,19 +384,15 @@ export class CompletionCalculationService {
   
   private static async getInvoicesByProject(projectId: string, invoiceType: string, status?: string) {
     try {
-      const fs = await import('fs').promises;
-      const path = await import('path');
-      
-      const invoicesPath = path.join(process.cwd(), 'data', 'invoices.json');
-      const invoicesData = await fs.readFile(invoicesPath, 'utf8');
-      const invoices = JSON.parse(invoicesData);
-      
-      return invoices.filter((inv: any) => {
-        const matchesProject = inv.projectId === projectId;
+      // ✅ FIXED: Use hierarchical storage instead of flat file
+      const { getAllInvoices } = await import('@/lib/invoice-storage');
+      const allInvoices = await getAllInvoices({ projectId });
+
+      return allInvoices.filter((inv: any) => {
         const matchesType = inv.invoiceType === invoiceType;
         const matchesStatus = status ? inv.status === status : true;
-        
-        return matchesProject && matchesType && matchesStatus;
+
+        return matchesType && matchesStatus;
       });
     } catch (error) {
       console.error('Error reading invoices:', error);
@@ -410,14 +406,9 @@ export class CompletionCalculationService {
 
   private static async getProjectById(projectId: string) {
     try {
-      const fs = await import('fs').promises;
-      const path = await import('path');
-
-      const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-      const projectsData = await fs.readFile(projectsPath, 'utf8');
-      const projects = JSON.parse(projectsData);
-
-      return projects.find((p: any) => p.projectId === projectId);
+      // ✅ FIXED: Use hierarchical storage instead of flat file
+      const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+      return await UnifiedStorageService.readProject(projectId);
     } catch (error) {
       console.error('Error reading project:', error);
       return null;
@@ -426,14 +417,9 @@ export class CompletionCalculationService {
 
   private static async getTasksByProject(projectId: string) {
     try {
-      const fs = await import('fs').promises;
-      const path = await import('path');
-      
-      const tasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-      const tasksData = await fs.readFile(tasksPath, 'utf8');
-      const tasks = JSON.parse(tasksData);
-      
-      return tasks.filter((t: any) => t.projectId === projectId);
+      // ✅ FIXED: Use hierarchical storage instead of flat file
+      const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+      return await UnifiedStorageService.getTasksByProject(projectId);
     } catch (error) {
       console.error('Error reading tasks:', error);
       return [];

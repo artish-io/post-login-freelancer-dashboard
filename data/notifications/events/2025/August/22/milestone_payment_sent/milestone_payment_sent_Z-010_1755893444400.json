@@ -1,0 +1,30 @@
+{
+  "id": "milestone_payment_sent_Z-010_1755893444400",
+  "timestamp": "2025-08-22T20:10:44.400Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 5,
+  "entityId": "Z-010_900",
+  "metadata": {
+    "taskTitle": "Project Test: ARTISH implements Tow Distinct",
+    "projectTitle": "Project Test: ARTISH implements Tow Distinct",
+    "projectId": "Z-010",
+    "taskId": 1755893444400,
+    "freelancerName": "Lucas Meyer",
+    "amount": 900,
+    "invoiceNumber": "TB-020",
+    "remainingBudget": 0,
+    "projectBudget": 1800
+  },
+  "context": {
+    "projectId": 10,
+    "taskId": 1755893444400,
+    "invoiceNumber": "TB-020"
+  },
+  "title": "You just paid Lucas Meyer $900",
+  "message": "You just paid Lucas Meyer $900 for submitting Project Test: ARTISH implements Tow Distinct for Project Test: ARTISH implements Tow Distinct. Remaining budget: $0. Click here to see transaction activity",
+  "updatedAt": "2025-08-23T02:09:19.801Z",
+  "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue"
+}

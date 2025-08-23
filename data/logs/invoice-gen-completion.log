@@ -263,3 +263,71 @@
 {"ts":"2025-08-21T18:52:17.797Z","stage":"FILTER_DEDUP","projectId":"Z-007","available":2,"alreadyInvoicedById":1,"alreadyInvoicedByTitle":1,"excludedDrafts":true}
 {"ts":"2025-08-21T18:52:17.797Z","stage":"RATE_OK","projectId":"Z-007","ratePerTask":704,"upfront":192,"pool":1408,"totalBudget":1600,"base":2,"calculation":"1408 ÷ 2 = 704"}
 {"ts":"2025-08-21T18:52:17.799Z","stage":"EXISTING_DRAFT_FOUND","projectId":"Z-007","existingInvoiceNumber":"TB-012"}
+{"ts":"2025-08-22T21:07:01.877Z","stage":"START","projectId":"Z-009","freelancerId":25}
+{"ts":"2025-08-22T21:07:01.878Z","stage":"READ_PROJECT_OK","projectId":"Z-009","invoicingMethod":"completion"}
+{"ts":"2025-08-22T21:07:01.880Z","stage":"READ_TASKS_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T21:07:01.880Z","stage":"FILTER_APPROVED","projectId":"Z-009","total":2,"approved":1}
+{"ts":"2025-08-22T21:07:01.884Z","stage":"LIST_INVOICES_OK","projectId":"Z-009","count":1}
+{"ts":"2025-08-22T21:07:01.884Z","stage":"FILTER_DEDUP","projectId":"Z-009","available":1,"alreadyInvoicedById":1,"alreadyInvoicedByTitle":1,"excludedDrafts":true}
+{"ts":"2025-08-22T21:07:01.884Z","stage":"RATE_OK","projectId":"Z-009","ratePerTask":792,"upfront":216,"pool":1584,"totalBudget":1800,"base":2,"calculation":"1584 ÷ 2 = 792"}
+{"ts":"2025-08-22T21:07:02.858Z","stage":"BUILD_OK","projectId":"Z-009","invoiceNumber":"TB-016","milestones":1}
+{"ts":"2025-08-22T21:07:02.859Z","stage":"WRITE_OK","projectId":"Z-009","invoiceNumber":"TB-016"}
+{"ts":"2025-08-22T21:07:02.859Z","stage":"DONE","projectId":"Z-009","invoiceNumber":"TB-016","success":true}
+{"ts":"2025-08-22T21:07:19.195Z","stage":"START","projectId":"Z-009","freelancerId":25}
+{"ts":"2025-08-22T21:07:19.195Z","stage":"READ_PROJECT_OK","projectId":"Z-009","invoicingMethod":"completion"}
+{"ts":"2025-08-22T21:07:19.196Z","stage":"READ_TASKS_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T21:07:19.196Z","stage":"FILTER_APPROVED","projectId":"Z-009","total":2,"approved":1}
+{"ts":"2025-08-22T21:07:19.198Z","stage":"LIST_INVOICES_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T21:07:19.199Z","stage":"FILTER_DEDUP","projectId":"Z-009","available":1,"alreadyInvoicedById":1,"alreadyInvoicedByTitle":1,"excludedDrafts":true}
+{"ts":"2025-08-22T21:07:19.199Z","stage":"RATE_OK","projectId":"Z-009","ratePerTask":792,"upfront":216,"pool":1584,"totalBudget":1800,"base":2,"calculation":"1584 ÷ 2 = 792"}
+{"ts":"2025-08-22T21:07:19.201Z","stage":"EXISTING_DRAFT_FOUND","projectId":"Z-009","existingInvoiceNumber":"TB-016"}
+{"ts":"2025-08-22T21:12:58.069Z","stage":"START","projectId":"Z-009","freelancerId":25}
+{"ts":"2025-08-22T21:12:58.081Z","stage":"READ_PROJECT_OK","projectId":"Z-009","invoicingMethod":"completion"}
+{"ts":"2025-08-22T21:12:58.083Z","stage":"READ_TASKS_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T21:12:58.083Z","stage":"FILTER_APPROVED","projectId":"Z-009","total":2,"approved":1}
+{"ts":"2025-08-22T21:12:58.091Z","stage":"LIST_INVOICES_OK","projectId":"Z-009","count":1}
+{"ts":"2025-08-22T21:12:58.091Z","stage":"FILTER_DEDUP","projectId":"Z-009","available":1,"alreadyInvoicedById":0,"alreadyInvoicedByTitle":0,"excludedDrafts":true}
+{"ts":"2025-08-22T21:12:58.091Z","stage":"RATE_OK","projectId":"Z-009","ratePerTask":792,"upfront":216,"pool":1584,"totalBudget":1800,"base":2,"calculation":"1584 ÷ 2 = 792"}
+{"ts":"2025-08-22T21:12:58.096Z","stage":"EXISTING_DRAFT_FOUND","projectId":"Z-009","existingInvoiceNumber":"TB-016"}
+{"ts":"2025-08-22T23:25:20.808Z","stage":"START","projectId":"Z-009","freelancerId":25}
+{"ts":"2025-08-22T23:25:20.810Z","stage":"READ_PROJECT_OK","projectId":"Z-009","invoicingMethod":"completion"}
+{"ts":"2025-08-22T23:25:20.811Z","stage":"READ_TASKS_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T23:25:20.812Z","stage":"FILTER_APPROVED","projectId":"Z-009","total":2,"approved":1}
+{"ts":"2025-08-22T23:25:20.816Z","stage":"LIST_INVOICES_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T23:25:20.816Z","stage":"FILTER_DEDUP","projectId":"Z-009","available":1,"alreadyInvoicedById":1,"alreadyInvoicedByTitle":1,"excludedDrafts":true}
+{"ts":"2025-08-22T23:25:20.816Z","stage":"RATE_OK","projectId":"Z-009","ratePerTask":792,"upfront":216,"pool":1584,"totalBudget":1800,"base":2,"calculation":"1584 ÷ 2 = 792"}
+{"ts":"2025-08-22T23:25:20.819Z","stage":"EXISTING_DRAFT_FOUND","projectId":"Z-009","existingInvoiceNumber":"TB-016"}
+{"ts":"2025-08-22T23:25:32.127Z","stage":"START","projectId":"Z-009","freelancerId":25}
+{"ts":"2025-08-22T23:25:32.127Z","stage":"READ_PROJECT_OK","projectId":"Z-009","invoicingMethod":"completion"}
+{"ts":"2025-08-22T23:25:32.128Z","stage":"READ_TASKS_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T23:25:32.128Z","stage":"FILTER_APPROVED","projectId":"Z-009","total":2,"approved":1}
+{"ts":"2025-08-22T23:25:32.131Z","stage":"LIST_INVOICES_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T23:25:32.131Z","stage":"FILTER_DEDUP","projectId":"Z-009","available":1,"alreadyInvoicedById":1,"alreadyInvoicedByTitle":1,"excludedDrafts":true}
+{"ts":"2025-08-22T23:25:32.131Z","stage":"RATE_OK","projectId":"Z-009","ratePerTask":792,"upfront":216,"pool":1584,"totalBudget":1800,"base":2,"calculation":"1584 ÷ 2 = 792"}
+{"ts":"2025-08-22T23:25:32.133Z","stage":"EXISTING_DRAFT_FOUND","projectId":"Z-009","existingInvoiceNumber":"TB-016"}
+{"ts":"2025-08-22T23:25:43.868Z","stage":"START","projectId":"Z-009","freelancerId":25}
+{"ts":"2025-08-22T23:25:43.868Z","stage":"READ_PROJECT_OK","projectId":"Z-009","invoicingMethod":"completion"}
+{"ts":"2025-08-22T23:25:43.869Z","stage":"READ_TASKS_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T23:25:43.869Z","stage":"FILTER_APPROVED","projectId":"Z-009","total":2,"approved":1}
+{"ts":"2025-08-22T23:25:43.872Z","stage":"LIST_INVOICES_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T23:25:43.872Z","stage":"FILTER_DEDUP","projectId":"Z-009","available":1,"alreadyInvoicedById":1,"alreadyInvoicedByTitle":1,"excludedDrafts":true}
+{"ts":"2025-08-22T23:25:43.872Z","stage":"RATE_OK","projectId":"Z-009","ratePerTask":792,"upfront":216,"pool":1584,"totalBudget":1800,"base":2,"calculation":"1584 ÷ 2 = 792"}
+{"ts":"2025-08-22T23:25:43.874Z","stage":"EXISTING_DRAFT_FOUND","projectId":"Z-009","existingInvoiceNumber":"TB-016"}
+{"ts":"2025-08-22T23:28:53.492Z","stage":"START","projectId":"Z-009","freelancerId":25}
+{"ts":"2025-08-22T23:28:53.495Z","stage":"READ_PROJECT_OK","projectId":"Z-009","invoicingMethod":"completion"}
+{"ts":"2025-08-22T23:28:53.496Z","stage":"READ_TASKS_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T23:28:53.496Z","stage":"FILTER_APPROVED","projectId":"Z-009","total":2,"approved":1}
+{"ts":"2025-08-22T23:28:53.499Z","stage":"LIST_INVOICES_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T23:28:53.499Z","stage":"FILTER_DEDUP","projectId":"Z-009","available":1,"alreadyInvoicedById":1,"alreadyInvoicedByTitle":1,"excludedDrafts":true}
+{"ts":"2025-08-22T23:28:53.499Z","stage":"RATE_OK","projectId":"Z-009","ratePerTask":792,"upfront":216,"pool":1584,"totalBudget":1800,"base":2,"calculation":"1584 ÷ 2 = 792"}
+{"ts":"2025-08-22T23:28:53.501Z","stage":"EXISTING_DRAFT_FOUND","projectId":"Z-009","existingInvoiceNumber":"TB-016"}
+{"ts":"2025-08-22T23:30:10.206Z","stage":"START","projectId":"Z-009","freelancerId":25}
+{"ts":"2025-08-22T23:30:10.207Z","stage":"READ_PROJECT_OK","projectId":"Z-009","invoicingMethod":"completion"}
+{"ts":"2025-08-22T23:30:10.208Z","stage":"READ_TASKS_OK","projectId":"Z-009","count":2}
+{"ts":"2025-08-22T23:30:10.208Z","stage":"FILTER_APPROVED","projectId":"Z-009","total":2,"approved":1}
+{"ts":"2025-08-22T23:30:10.210Z","stage":"LIST_INVOICES_OK","projectId":"Z-009","count":1}
+{"ts":"2025-08-22T23:30:10.210Z","stage":"FILTER_DEDUP","projectId":"Z-009","available":1,"alreadyInvoicedById":1,"alreadyInvoicedByTitle":1,"excludedDrafts":true}
+{"ts":"2025-08-22T23:30:10.211Z","stage":"RATE_OK","projectId":"Z-009","ratePerTask":792,"upfront":216,"pool":1584,"totalBudget":1800,"base":2,"calculation":"1584 ÷ 2 = 792"}
+{"ts":"2025-08-22T23:30:10.937Z","stage":"BUILD_OK","projectId":"Z-009","invoiceNumber":"TB-C007","milestones":1}
+{"ts":"2025-08-22T23:30:10.938Z","stage":"WRITE_OK","projectId":"Z-009","invoiceNumber":"TB-C007"}
+{"ts":"2025-08-22T23:30:10.938Z","stage":"DONE","projectId":"Z-009","invoiceNumber":"TB-C007","success":true}

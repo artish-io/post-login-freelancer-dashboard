@@ -1,0 +1,22 @@
+{
+  "id": "evt_1755905740588_532",
+  "timestamp": "2025-08-22T23:35:40.589Z",
+  "type": "payment_sent",
+  "notificationType": 42,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "TB-C007",
+  "metadata": {
+    "invoiceNumber": "TB-C007",
+    "projectTitle": "Project Content Specification Flow",
+    "amount": 792,
+    "freelancerName": "Lucas Meyer",
+    "remainingBudget": "$792.00",
+    "notificationText": "You just paid Lucas Meyer $792 for their work on Project Content Specification Flow. This project has a remaining budget of $792.00 left."
+  },
+  "context": {
+    "projectId": "Z-009",
+    "invoiceNumber": "TB-C007"
+  }
+}

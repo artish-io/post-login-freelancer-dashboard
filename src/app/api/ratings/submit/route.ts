@@ -3,12 +3,13 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { writeJsonAtomic, readJson, fileExists } from '@/lib/fs-json';
-import { 
-  ProjectRating, 
-  RatingSubmissionRequest, 
-  generateRatingId, 
+import {
+  ProjectRating,
+  RatingSubmissionRequest,
+  generateRatingId,
   getRatingStoragePath,
-  isValidProjectRating 
+  getHierarchicalRatingStoragePath,
+  isValidProjectRating
 } from '../../../../../types/ratings';
 import path from 'path';
 
@@ -72,16 +73,16 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiError 
       }, { status: 400 });
     }
 
-    // Convert and validate numeric fields
-    const projectId = Number(rawProjectId);
+    // Handle projectId as string or number (support both formats)
+    const projectId = rawProjectId; // Keep as-is, UnifiedStorageService handles both
     const subjectUserId = Number(rawSubjectUserId);
     const rating = Number(rawRating);
 
-    if (isNaN(projectId) || isNaN(subjectUserId)) {
+    if (isNaN(subjectUserId)) {
       return NextResponse.json({
         success: false,
         code: 'INVALID_INPUT',
-        message: 'projectId and subjectUserId must be valid numbers'
+        message: 'subjectUserId must be a valid number'
       }, { status: 400 });
     }
 
@@ -153,8 +154,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiError 
       }, { status: 403 });
     }
 
-    // Check if rating already exists
-    const ratingPath = getRatingStoragePath(projectId, subjectUserType, raterUserId);
+    // Check if rating already exists - use hierarchical storage path
+    const ratingPath = getHierarchicalRatingStoragePath(projectId, project.createdAt, subjectUserType, raterUserId);
     const fullRatingPath = path.join(process.cwd(), ratingPath);
     
     if (await fileExists(fullRatingPath)) {
@@ -191,7 +192,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiError 
           receivedData: newRating,
           validationChecks: {
             hasRatingId: typeof newRating.ratingId === 'string',
-            hasProjectId: typeof newRating.projectId === 'number',
+            hasProjectId: typeof newRating.projectId === 'number' || typeof newRating.projectId === 'string',
             hasRaterUserId: typeof newRating.raterUserId === 'number',
             hasValidRaterUserType: ['freelancer', 'commissioner'].includes(newRating.raterUserType),
             hasSubjectUserId: typeof newRating.subjectUserId === 'number',

@@ -99,6 +99,11 @@ const getNotificationIcon = (type: string, notification: NotificationData): stri
       return '/icons/new-payment.png';
     case 'project_accepted':
       return '/icons/project-accepted.png';
+    case 'project_activated':
+      return '/icons/project-activated.png';
+    case 'rating_prompt_freelancer':
+    case 'rating_prompt_commissioner':
+      return '/icons/rating-prompt.png';
 
     // Completion notification icons (both underscore and dot notation)
     case 'completion_project_activated':

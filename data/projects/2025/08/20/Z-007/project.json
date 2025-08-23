@@ -5,15 +5,15 @@
   "organizationId": 4,
   "commissionerId": 35,
   "freelancerId": 25,
-  "status": "ongoing",
+  "status": "completed",
   "dueDate": "2025-08-25T04:00:00.000Z",
+  "totalTasks": 3,
   "invoicingMethod": "completion",
   "totalBudget": 1600,
-  "totalTasks": 3,
-  "paidToDate": 1130.66,
+  "paidToDate": 1600,
   "currency": "USD",
   "createdAt": "2025-08-20T17:54:17.057Z",
-  "updatedAt": "2025-08-22T03:15:07.198Z",
+  "updatedAt": "2025-08-22T15:01:18.604Z",
   "category": "Writing",
   "subcategory": "Copywriting",
   "tags": [
@@ -24,5 +24,6 @@
     "Notion"
   ],
   "estimatedHours": 32,
-  "deliveryTimeWeeks": 0.7142857142857143
+  "deliveryTimeWeeks": 0.7142857142857143,
+  "completedAt": "2025-08-22T14:35:27.304Z"
 }

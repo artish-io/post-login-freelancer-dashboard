@@ -207,7 +207,21 @@ function generateNotificationMessage(event: CompletionEvent): string {
 
   switch (event.type) {
     case 'completion.project_activated':
-      return `${commissionerName} accepted your application for ${projectTitle}. This project is now active and includes ${totalTasks} milestones due by the deadline`;
+      // Format due date properly if available
+      let dueDateText = 'the deadline';
+      if (event.context?.dueDate) {
+        try {
+          const date = new Date(event.context.dueDate);
+          dueDateText = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        } catch (e) {
+          dueDateText = event.context.dueDate;
+        }
+      }
+      return `${commissionerName} accepted your application for ${projectTitle}. This project is now active and includes ${totalTasks} milestones due by ${dueDateText}`;
 
     case 'completion.upfront_payment':
       // Use organization name for payer as specified by user
@@ -223,7 +237,8 @@ function generateNotificationMessage(event: CompletionEvent): string {
       return `${orgName} paid you $${amount} for ${invoiceNumber}. Click here to view details.`;
 
     case 'completion.project_completed':
-      return `All tasks for ${projectTitle} have been completed and approved. Project is now complete.`;
+      // Let the main API route handle message generation for context-aware messages
+      return null;
 
     case 'completion.final_payment':
       return `${orgName} has paid you $${finalAmount} for ${projectTitle} final payment (remaining ${finalPercent}% of budget). Click here to view invoice details.`;

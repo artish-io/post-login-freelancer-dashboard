@@ -312,5 +312,47 @@
       "taskId": 1755721494701,
       "invoiceId": "TB-016"
     }
+  },
+  {
+    "id": "evt_1755893263546_invoice_auto",
+    "timestamp": "2025-08-22T20:07:43.546Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 25,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-019",
+    "metadata": {
+      "taskTitle": "Phase One: The ARTISH invoicing system",
+      "projectTitle": "Project Test: ARTISH implements Tow Distinct",
+      "amount": 900,
+      "invoiceNumber": "TB-019"
+    },
+    "context": {
+      "projectId": "Z-010",
+      "taskId": 1755863278355,
+      "invoiceId": "TB-019"
+    }
+  },
+  {
+    "id": "evt_1755893443562_invoice_auto",
+    "timestamp": "2025-08-22T20:10:43.562Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 25,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-020",
+    "metadata": {
+      "taskTitle": "Phase Two: Routing projects through",
+      "projectTitle": "Project Test: ARTISH implements Tow Distinct",
+      "amount": 900,
+      "invoiceNumber": "TB-020"
+    },
+    "context": {
+      "projectId": "Z-010",
+      "taskId": 1755863093799,
+      "invoiceId": "TB-020"
+    }
   }
 ]

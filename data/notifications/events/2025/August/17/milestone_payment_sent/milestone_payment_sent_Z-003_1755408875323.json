@@ -22,5 +22,9 @@
     "taskTitle": "Frontend Development",
     "invoiceNumber": "TB-003",
     "freelancerId": 1
-  }
+  },
+  "title": "You just paid Tobi Philly $1,500",
+  "message": "You just paid Tobi Philly $1,500 for submitting Frontend Development for Landing Page for Ticket Announcement. Remaining budget: $3,000. Click here to see transaction activity",
+  "updatedAt": "2025-08-23T02:09:19.771Z",
+  "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue"
 }

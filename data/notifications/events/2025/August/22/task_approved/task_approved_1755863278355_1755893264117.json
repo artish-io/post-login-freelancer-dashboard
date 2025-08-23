@@ -1,0 +1,21 @@
+{
+  "id": "task_approved_1755863278355_1755893264117",
+  "timestamp": "2025-08-22T20:07:44.117Z",
+  "type": "task_approved",
+  "notificationType": 2,
+  "actorId": 35,
+  "targetId": 25,
+  "entityType": 1,
+  "entityId": 1755863278355,
+  "metadata": {
+    "taskId": 1755863278355,
+    "taskTitle": "Phase One: The ARTISH invoicing system",
+    "projectTitle": "Project Test: ARTISH implements Tow Distinct",
+    "action": "approve",
+    "invoiceGenerated": true
+  },
+  "context": {
+    "projectId": "Z-010",
+    "taskId": 1755863278355
+  }
+}

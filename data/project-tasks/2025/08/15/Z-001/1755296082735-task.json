@@ -9,8 +9,8 @@
     "Technical Writing"
   ],
   "title": "Discover Call and Initial Concept",
-  "status": "In review",
-  "completed": false,
+  "status": "Approved",
+  "completed": true,
   "order": 1,
   "link": "bitl.ly3242",
   "dueDate": "2025-08-17T00:00:00.000Z",
@@ -20,6 +20,10 @@
   "version": 1,
   "description": "Urgently need a technical writing brief delivered quickly. Moratoriums and have not used it for over a decade, making them abolitionist in practice.",
   "createdDate": "2025-08-15T22:09:36.439Z",
-  "lastModified": "2025-08-19T22:17:38.536Z",
-  "submittedDate": "2025-08-19T22:17:38.530Z"
+  "lastModified": "2025-08-22T20:30:00.000Z",
+  "submittedDate": "2025-08-19T22:17:38.530Z",
+  "approvedAt": "2025-08-22T20:30:00.000Z",
+  "approvedBy": 35,
+  "manualInvoiceEligible": true,
+  "invoicePaid": false
 }

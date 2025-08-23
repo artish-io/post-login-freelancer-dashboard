@@ -1,0 +1,21 @@
+{
+  "id": "project_completed_Z-004_1755923268200_freelancer",
+  "timestamp": "2025-08-23T04:27:48.200Z",
+  "type": "project_completed",
+  "notificationType": 25,
+  "actorId": 35,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "Z-004",
+  "metadata": {
+    "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+    "commissionerName": "Tilly Burzinsky",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "Z-004"
+  },
+  "iconPath": "/icons/project-completed.png",
+  "updatedAt": "2025-08-23T04:43:33.404Z",
+  "uniformizationNote": "Uniformized project completion format: updated icon to /icons/project-completed.png"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "milestone_payment_received_Z-010_1755863278355_1755893264164",
+  "timestamp": "2025-08-22T20:07:44.164Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 35,
+  "entityType": 5,
+  "entityId": "Z-010_1755863278355",
+  "metadata": {
+    "taskTitle": "Phase One: The ARTISH invoicing system",
+    "projectTitle": "Project Test: ARTISH implements Tow Distinct",
+    "projectId": "Z-010",
+    "taskId": 1755863278355,
+    "invoiceGenerated": true,
+    "amount": 0,
+    "invoiceNumber": "TB-019",
+    "organizationName": "Zynate Events Group",
+    "projectBudget": 1800,
+    "remainingBudget": 0
+  },
+  "context": {
+    "projectId": "Z-010",
+    "taskId": 1755863278355,
+    "invoiceNumber": "TB-019"
+  },
+  "updatedAt": "2025-08-23T05:00:01.747Z",
+  "contextEnrichmentNote": "Fixed project budget enrichment: projectBudget: $1800",
+  "milestonePaymentContextNote": "Fixed milestone payment context: remainingBudget: $0"
+}

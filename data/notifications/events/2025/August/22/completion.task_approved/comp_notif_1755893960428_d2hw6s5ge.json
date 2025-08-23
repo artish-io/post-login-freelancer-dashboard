@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1755893960428_d2hw6s5ge",
+  "type": "completion.task_approved",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-009",
+  "message": "You approved \"Phase One: This documentation provides\" in Project Content Specification Flow. Task approved and milestone completed. Click here to see project tracker.",
+  "context": {
+    "taskId": "1755862619324",
+    "taskTitle": "Phase One: This documentation provides",
+    "projectTitle": "Project Content Specification Flow",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Lucas Meyer"
+  },
+  "read": false,
+  "createdAt": "2025-08-22T20:19:20.428Z",
+  "timestamp": "2025-08-22T20:19:20.428Z",
+  "subsystem": "completion_invoicing"
+}

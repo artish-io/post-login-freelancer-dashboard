@@ -341,14 +341,24 @@ async function generateUniqueInvoiceNumber(request: InvoiceGenerationRequest): P
       // Get existing invoices to determine next number
       const { getAllInvoices } = await import('@/lib/invoice-storage');
       const existingInvoices = await getAllInvoices({ commissionerId: request.commissionerId });
-      const commissionerInvoices = existingInvoices.filter(inv =>
-        inv.invoiceNumber.startsWith(initials)
-      );
 
-      // Find the highest existing number for this commissioner's initials
+      // For completion invoices, only count completion invoices
+      const relevantInvoices = request.invoiceType === 'completion'
+        ? existingInvoices.filter(inv =>
+            inv.invoiceType && (
+              inv.invoiceType.includes('completion') ||
+              inv.invoiceNumber?.includes('-C')
+            )
+          )
+        : existingInvoices.filter(inv =>
+            inv.invoiceNumber.startsWith(initials) && !inv.invoiceNumber.includes('-C')
+          );
+
+      // Find the highest existing number for this commissioner's relevant invoices
       let highestNumber = 0;
-      for (const invoice of commissionerInvoices) {
-        const numberPart = invoice.invoiceNumber.split('-')[1];
+      for (const invoice of relevantInvoices) {
+        const parts = invoice.invoiceNumber.split('-');
+        const numberPart = parts[parts.length - 1]; // Get last part after final dash
         if (numberPart && /^\d+$/.test(numberPart)) {
           const num = parseInt(numberPart, 10);
           if (num > highestNumber) {
@@ -359,7 +369,9 @@ async function generateUniqueInvoiceNumber(request: InvoiceGenerationRequest): P
 
       const nextNumber = String(highestNumber + 1).padStart(3, '0');
 
-      const invoiceNumber = `${initials}-${nextNumber}`;
+      // Use completion prefix for completion invoices
+      const prefix = request.invoiceType === 'completion' ? 'C' : '';
+      const invoiceNumber = `${initials}-${prefix}${nextNumber}`;
       console.log(`📋 ROBUST SERVICE: Generated invoice number: ${invoiceNumber} for commissioner ${commissioner.name}`);
       return invoiceNumber;
     }
@@ -368,7 +380,7 @@ async function generateUniqueInvoiceNumber(request: InvoiceGenerationRequest): P
   }
 
   // Fallback to old format if commissioner data is not available
-  const prefix = request.invoiceType === 'completion' ? 'COMP' : 'MILE';
+  const prefix = request.invoiceType === 'completion' ? 'COMP-C' : 'MILE';
   const timestamp = Date.now();
   const random = Math.floor(Math.random() * 1000);
 

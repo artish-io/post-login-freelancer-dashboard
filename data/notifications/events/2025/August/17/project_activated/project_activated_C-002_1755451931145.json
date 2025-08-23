@@ -12,11 +12,15 @@
     "gigTitle": "Web 3 Graphic Design Asssets ",
     "taskCount": 3,
     "commissionerName": "Matte Hannery",
-    "organizationName": "Corlax Wellness"
+    "organizationName": "Corlax Wellness",
+    "dueDate": "2025-08-31T04:00:00.000Z"
   },
   "context": {
     "projectId": "C-002",
     "gigId": 23,
-    "applicationId": 1755193217247
-  }
+    "applicationId": 1755193217247,
+    "dueDate": "2025-08-31T04:00:00.000Z"
+  },
+  "updatedAt": "2025-08-23T10:09:08.464Z",
+  "projectActivationDateNote": "Fixed project activation date enrichment: dueDate: 2025-08-31T04:00:00.000Z, context.dueDate: 2025-08-31T04:00:00.000Z"
 }

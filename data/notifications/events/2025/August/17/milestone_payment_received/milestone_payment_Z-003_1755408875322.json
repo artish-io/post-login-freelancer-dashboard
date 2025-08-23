@@ -12,11 +12,16 @@
     "amount": 1500,
     "organizationName": "Zynate Events Group",
     "invoiceNumber": "TB-003",
-    "priority": "high"
+    "priority": "high",
+    "projectTitle": "Landing Page for Ticket Announcement",
+    "projectBudget": 4500,
+    "remainingBudget": 0
   },
   "context": {
     "projectId": "Z-003",
     "milestoneTitle": "Frontend Development",
     "invoiceNumber": "TB-003"
-  }
+  },
+  "updatedAt": "2025-08-23T05:00:01.738Z",
+  "milestonePaymentContextNote": "Fixed milestone payment context: projectTitle: Landing Page for Ticket Announcement, projectBudget: $4500, remainingBudget: $0"
 }

@@ -34,6 +34,36 @@ export default function RatingModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [alreadyRated, setAlreadyRated] = useState(false);
+  const [checkingRating, setCheckingRating] = useState(false);
+
+  // Check if rating already exists when modal opens
+  useEffect(() => {
+    if (isOpen && session?.user?.id) {
+      const checkExistingRating = async () => {
+        try {
+          setCheckingRating(true);
+          const response = await fetch(
+            `/api/ratings/exists?projectId=${projectId}&subjectUserId=${subjectUserId}&subjectUserType=${subjectUserType}`
+          );
+          const data = await response.json();
+
+          if (data.success && data.data.exists) {
+            setAlreadyRated(true);
+          } else {
+            setAlreadyRated(false);
+          }
+        } catch (error) {
+          console.error('Error checking existing rating:', error);
+          setAlreadyRated(false);
+        } finally {
+          setCheckingRating(false);
+        }
+      };
+
+      checkExistingRating();
+    }
+  }, [isOpen, projectId, subjectUserId, subjectUserType, session?.user?.id]);
 
   // Reset form when modal opens/closes
   useEffect(() => {
@@ -161,7 +191,30 @@ export default function RatingModal({
             </button>
           </div>
 
-          {success ? (
+          {checkingRating ? (
+            /* Loading State */
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+              </div>
+              <p className="text-gray-600">Checking rating status...</p>
+            </div>
+          ) : alreadyRated ? (
+            /* Already Rated State */
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Star className="w-8 h-8 text-blue-600 fill-current" />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Already Rated</h3>
+              <p className="text-gray-600">You have already rated this {subjectUserType} for this project.</p>
+              <button
+                onClick={onClose}
+                className="mt-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          ) : success ? (
             /* Success State */
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">

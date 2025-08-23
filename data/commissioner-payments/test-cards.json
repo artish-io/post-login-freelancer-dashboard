@@ -180,7 +180,7 @@
     "brand": "mastercard",
     "isDefault": true,
     "isActive": true,
-    "availableBalance": 39785.6,
+    "availableBalance": 36724.26,
     "transactionHistory": [
       {
         "transactionId": "TXN-1755674650743",
@@ -313,11 +313,55 @@
         "freelancerId": 25,
         "timestamp": "2025-08-22T11:34:33.105Z",
         "balanceAfter": 39785.6
+      },
+      {
+        "transactionId": "TXN-1755873327282",
+        "amount": -469.34,
+        "type": "payment",
+        "description": "Payment for invoice TB-018",
+        "invoiceNumber": "TB-018",
+        "projectId": "NaN",
+        "freelancerId": 25,
+        "timestamp": "2025-08-22T14:35:27.282Z",
+        "balanceAfter": 39316.26
+      },
+      {
+        "transactionId": "TXN-1755893264055",
+        "amount": -900,
+        "type": "payment",
+        "description": "Payment for invoice TB-019",
+        "invoiceNumber": "TB-019",
+        "projectId": "Z-010",
+        "freelancerId": 25,
+        "timestamp": "2025-08-22T20:07:44.055Z",
+        "balanceAfter": 38416.26
+      },
+      {
+        "transactionId": "TXN-1755893444073",
+        "amount": -900,
+        "type": "payment",
+        "description": "Payment for invoice TB-020",
+        "invoiceNumber": "TB-020",
+        "projectId": "Z-010",
+        "freelancerId": 25,
+        "timestamp": "2025-08-22T20:10:44.073Z",
+        "balanceAfter": 37516.26
+      },
+      {
+        "transactionId": "TXN-1755905740586",
+        "amount": -792,
+        "type": "payment",
+        "description": "Payment for invoice TB-C007",
+        "invoiceNumber": "TB-C007",
+        "projectId": "Z-009",
+        "freelancerId": 25,
+        "timestamp": "2025-08-22T23:35:40.586Z",
+        "balanceAfter": 36724.26
       }
     ],
     "createdAt": "2025-08-20T05:45:11.483Z",
-    "lastUsed": "2025-08-22T02:35:56.724Z",
-    "updatedAt": "2025-08-22T11:34:33.105Z"
+    "lastUsed": "2025-08-22T23:35:40.586Z",
+    "updatedAt": "2025-08-22T23:35:40.586Z"
   },
   {
     "id": "card_test_036",

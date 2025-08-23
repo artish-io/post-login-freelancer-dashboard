@@ -12,11 +12,15 @@
     "gigTitle": "Landing Page for Ticket Announcement",
     "taskCount": 3,
     "commissionerName": "Tilly Burzinsky",
-    "organizationName": "Zynate Events Group"
+    "organizationName": "Zynate Events Group",
+    "dueDate": "2025-08-24T04:00:00.000Z"
   },
   "context": {
     "projectId": "Z-003",
     "gigId": 20,
-    "applicationId": 1755193217244
-  }
+    "applicationId": 1755193217244,
+    "dueDate": "2025-08-24T04:00:00.000Z"
+  },
+  "updatedAt": "2025-08-23T10:09:08.465Z",
+  "projectActivationDateNote": "Fixed project activation date enrichment: dueDate: 2025-08-24T04:00:00.000Z, context.dueDate: 2025-08-24T04:00:00.000Z"
 }

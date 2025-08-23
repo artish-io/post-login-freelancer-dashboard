@@ -44,7 +44,10 @@ export default function CommissionerProjectTimeline({ projectId }: Props) {
           const transformedTasks = project.tasks.map((task: any) => ({
             id: task.id,
             title: task.title,
-            isCompleted: task.status === 'Approved' && task.completed, // Only show as completed when approved
+            // For completion projects, only need approval status. For milestone projects, need both approval and completion
+            isCompleted: project.invoicingMethod === 'completion'
+              ? task.status === 'Approved'
+              : task.status === 'Approved' && task.completed,
             status: task.status,
             dueDate: task.dueDate,
             description: task.description,

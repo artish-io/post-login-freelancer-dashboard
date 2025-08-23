@@ -20,5 +20,9 @@
     "taskTitle": "Initial research and data collections",
     "invoiceNumber": "NM-002",
     "freelancerId": 31
-  }
+  },
+  "title": "You just paid Margsate Flether $5,000",
+  "message": "You just paid Margsate Flether $5,000 for submitting Initial research and data collections for this project. Remaining budget: $5,000. Click here to see transaction activity",
+  "updatedAt": "2025-08-23T02:09:19.765Z",
+  "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue"
 }

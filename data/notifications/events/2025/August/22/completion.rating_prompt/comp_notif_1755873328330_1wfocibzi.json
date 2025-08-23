@@ -1,0 +1,18 @@
+{
+  "id": "comp_notif_1755873328330_1wfocibzi",
+  "type": "completion.rating_prompt",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-007",
+  "message": "Rate Lucas Meyer's work. You have approved all task milestones for Ad Copy for Google Waterloo Launch Event. Click here to rate their work on this project.",
+  "context": {
+    "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+    "commissionerName": "Tilly Burzinsky",
+    "freelancerName": "Lucas Meyer",
+    "orgName": "Zynate Events Group"
+  },
+  "read": false,
+  "createdAt": "2025-08-22T14:35:28.330Z",
+  "timestamp": "2025-08-22T14:35:28.330Z",
+  "subsystem": "completion_invoicing"
+}

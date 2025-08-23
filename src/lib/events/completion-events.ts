@@ -68,7 +68,6 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.targetId,
       projectId: event.projectId,
-      message: `${commissionerName} accepted your application for ${projectTitle}. This project is now active and includes ${totalTasks} milestones due by the deadline`,
       context: event.context,
       userType: 'freelancer'
     });
@@ -79,7 +78,6 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.actorId, // Self-notification
       projectId: event.projectId,
-      message: `You accepted ${freelancerName}'s application for ${projectTitle}. This project is now active and includes ${totalTasks} milestones due by the deadline`,
       context: event.context,
       userType: 'commissioner'
     });
@@ -151,6 +149,8 @@ export const CompletionEventHandlers = {
     // Dual notifications for invoice payment - both freelancer and commissioner get notified
     const amount = event.context.amount || 0;
     const invoiceNumber = event.context.invoiceNumber || '';
+    const taskTitle = event.context.taskTitle || 'task';
+    const projectTitle = event.context.projectTitle || 'project';
     const orgName = event.context.orgName || 'Organization';
     const freelancerName = event.context.freelancerName || 'Freelancer';
 
@@ -160,7 +160,6 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.targetId,
       projectId: event.projectId,
-      message: `${orgName} paid you $${amount} for ${invoiceNumber}. Click here to view details.`,
       context: event.context,
       userType: 'freelancer'
     });
@@ -171,7 +170,6 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.actorId, // Self-notification
       projectId: event.projectId,
-      message: `You paid ${freelancerName} $${amount} for ${invoiceNumber}. Click here to view transaction details.`,
       context: event.context,
       userType: 'commissioner'
     });
@@ -188,7 +186,6 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.targetId,
       projectId: event.projectId,
-      message: `All tasks for ${projectTitle} have been completed and approved. Project is now complete.`,
       context: event.context,
       userType: 'freelancer'
     });
@@ -199,7 +196,6 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.actorId, // Self-notification
       projectId: event.projectId,
-      message: `You have approved all tasks for ${projectTitle}. Project is now complete.`,
       context: event.context,
       userType: 'commissioner'
     });
@@ -219,7 +215,6 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.targetId,
       projectId: event.projectId,
-      message: `${orgName} has paid you $${finalAmount} for ${projectTitle} final payment (remaining ${finalPercent}% of budget). Click here to view invoice details.`,
       context: event.context,
       userType: 'freelancer'
     });
@@ -230,7 +225,6 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.actorId, // Self-notification
       projectId: event.projectId,
-      message: `You just paid ${freelancerName} $${finalAmount} for completing ${projectTitle}. Remaining budget: $0. Click here to see transaction activity.`,
       context: event.context,
       userType: 'commissioner'
     });
@@ -387,7 +381,8 @@ export function generateCompletionNotificationMessage(event: CompletionEvent): s
 
   switch (event.type) {
     case 'completion.project_activated':
-      return `${commissionerName} accepted your application for ${projectTitle}. This project is now active and includes ${totalTasks} milestones due by the deadline`;
+      // Let the main API route handle message generation for context-aware messages
+      return null;
     case 'completion.upfront_payment':
       return `${orgName} has paid $${event.context.upfrontAmount} upfront for your newly activated ${projectTitle} project. This project has a budget of $${event.context.remainingBudget} left. Click here to view invoice details`;
     case 'completion.task_approved':

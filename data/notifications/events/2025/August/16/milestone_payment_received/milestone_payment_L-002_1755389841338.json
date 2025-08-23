@@ -12,11 +12,16 @@
     "amount": 5000,
     "organizationName": "Lagos State Parks Services",
     "invoiceNumber": "NM-002",
-    "priority": "high"
+    "priority": "high",
+    "projectTitle": "Market Research for Longer Divide",
+    "projectBudget": 10000,
+    "remainingBudget": 0
   },
   "context": {
     "projectId": "L-002",
     "milestoneTitle": "Initial research and data collections",
     "invoiceNumber": "NM-002"
-  }
+  },
+  "updatedAt": "2025-08-23T05:00:01.716Z",
+  "milestonePaymentContextNote": "Fixed milestone payment context: projectTitle: Market Research for Longer Divide, projectBudget: $10000, remainingBudget: $0"
 }

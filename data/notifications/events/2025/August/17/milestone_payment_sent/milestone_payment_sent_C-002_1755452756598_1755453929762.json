@@ -22,5 +22,9 @@
     "projectId": "C-002",
     "taskId": 1755452756598,
     "invoiceNumber": "MH-001"
-  }
+  },
+  "title": "You just paid Tobi Philly $1,000",
+  "message": "You just paid Tobi Philly $1,000 for submitting Phase 1: Cultivating desire is very profitable for Web 3 Graphic Design Asssets . Remaining budget: $2,000. Click here to see transaction activity",
+  "updatedAt": "2025-08-23T02:09:19.770Z",
+  "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue"
 }

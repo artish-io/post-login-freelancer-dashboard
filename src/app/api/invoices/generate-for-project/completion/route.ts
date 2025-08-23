@@ -192,8 +192,8 @@ export async function POST(request: NextRequest) {
       }, { status: 200 });
     }
 
-    // Generate human-friendly invoice number
-    let invoiceNumber = `INV-${projectId}-${Date.now()}`;
+    // Generate human-friendly invoice number with completion prefix
+    let invoiceNumber = `INV-C-${projectId}-${Date.now()}`;
     try {
       // Get commissioner profile for initials
       const usersRes = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/users`);
@@ -207,10 +207,16 @@ export async function POST(request: NextRequest) {
             .join('')
             .slice(0, 2);
 
-          // Get count of existing invoices for this commissioner to generate sequence
+          // Get count of existing COMPLETION invoices for this commissioner to generate sequence
           const commissionerInvoices = await getAllInvoices({ commissionerId: project.commissionerId });
-          const sequence = String(commissionerInvoices.length + 1).padStart(3, '0');
-          invoiceNumber = `${initials}-${sequence}`;
+          const completionInvoices = commissionerInvoices.filter(inv =>
+            inv.invoiceType && (
+              inv.invoiceType.includes('completion') ||
+              inv.invoiceNumber?.includes('-C')
+            )
+          );
+          const sequence = String(completionInvoices.length + 1).padStart(3, '0');
+          invoiceNumber = `${initials}-C${sequence}`;
         }
       }
     } catch (error) {

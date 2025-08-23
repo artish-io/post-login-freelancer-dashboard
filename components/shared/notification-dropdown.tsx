@@ -228,6 +228,8 @@ export default function NotificationDropdown({ dashboardType }: Props) {
         return '/icons/gig-applied.png';
       case 'task_submission':
         return '/icons/task-awaiting-review.png';
+      case 'task_approved':
+        return '/icons/task-approved.png';
       case 'new_gig_request':
         return '/icons/new-gig-request.png';
       case 'proposal_sent':
@@ -238,8 +240,13 @@ export default function NotificationDropdown({ dashboardType }: Props) {
         return '/icons/project-pause.png';
       case 'project_accepted':
         return '/icons/project-accepted.png';
+      case 'project_activated':
+        return '/icons/project-activated.png';
       case 'gig_request':
         return '/icons/gig-request.png';
+      case 'rating_prompt_freelancer':
+      case 'rating_prompt_commissioner':
+        return '/icons/rating-prompt.png';
       default:
         return '/icons/notification-default.png';
     }

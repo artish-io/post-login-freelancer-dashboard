@@ -152,8 +152,8 @@ export async function POST(req: NextRequest) {
     // ✅ SAFE: Create invoice using existing infrastructure
     console.log('📄 UPFRONT PAYMENT: Creating invoice...');
 
-    // Generate invoice number using commissioner initials (same pattern as auto-generate)
-    let invoiceNumber = `COMP-UPF-${projectId}-${Date.now()}`; // Fallback
+    // Generate invoice number using commissioner initials with completion prefix
+    let invoiceNumber = `COMP-UPF-C-${projectId}-${Date.now()}`; // Fallback
 
     try {
       // Get commissioner data using hierarchical storage
@@ -167,17 +167,21 @@ export async function POST(req: NextRequest) {
           .map((word: string) => word.charAt(0).toUpperCase())
           .join('');
 
-        // Get existing invoices to determine next number
+        // Get existing COMPLETION invoices to determine next number
         const { getAllInvoices } = await import('@/lib/invoice-storage');
         const existingInvoices = await getAllInvoices({ commissionerId: project.commissionerId });
-        const commissionerInvoices = existingInvoices.filter(inv =>
-          inv.invoiceNumber.startsWith(initials)
+        const completionInvoices = existingInvoices.filter(inv =>
+          inv.invoiceType && (
+            inv.invoiceType.includes('completion') ||
+            inv.invoiceNumber?.includes('-C')
+          )
         );
 
-        // Find the highest existing number for this commissioner's initials
+        // Find the highest existing number for this commissioner's completion invoices
         let highestNumber = 0;
-        for (const invoice of commissionerInvoices) {
-          const numberPart = invoice.invoiceNumber.split('-')[1];
+        for (const invoice of completionInvoices) {
+          const parts = invoice.invoiceNumber.split('-');
+          const numberPart = parts[parts.length - 1]; // Get last part after final dash
           if (numberPart && /^\d+$/.test(numberPart)) {
             const num = parseInt(numberPart, 10);
             if (num > highestNumber) {
@@ -188,7 +192,7 @@ export async function POST(req: NextRequest) {
 
         const nextNumber = String(highestNumber + 1).padStart(3, '0');
 
-        invoiceNumber = `${initials}-${nextNumber}`;
+        invoiceNumber = `${initials}-C${nextNumber}`;
         console.log(`📋 UPFRONT PAYMENT: Generated invoice number: ${invoiceNumber} for commissioner ${commissioner.name}`);
       }
     } catch (error) {

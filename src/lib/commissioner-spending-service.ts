@@ -51,7 +51,7 @@ export async function getSpendingTransactions(commissionerId: number): Promise<S
       type: 'freelancer_payout' as const,
       amount: invoice.totalAmount,
       currency: 'USD',
-      date: invoice.paidDate || invoice.issueDate,
+      date: invoice.paymentDetails?.processedAt || invoice.paidDate || invoice.sentDate || invoice.generatedAt || invoice.issueDate,
       description: `Payment for ${invoice.projectTitle}`,
       projectName: invoice.projectTitle
     }));

@@ -151,6 +151,7 @@ export default function FreelancerProfilePage() {
   // Transform profile data for components
   const profileHeaderData = {
     id: profile.id.toString(),
+    userId: profile.id, // Add userId for rating fetching
     name: profile.name,
     avatar: profile.avatar,
     location: profile.location || '',

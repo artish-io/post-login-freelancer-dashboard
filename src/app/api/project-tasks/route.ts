@@ -52,6 +52,7 @@ export async function GET() {
           title: project.title || 'Untitled Project',
           organizationId: project.organizationId || 0,
           typeTags: project.typeTags || [],
+          invoicingMethod: project.invoicingMethod, // Include invoicing method for timeline logic
           tasks: transformedTasks
         });
       }
@@ -113,6 +114,7 @@ export async function GET() {
           title: project.title,
           organizationId: project.organizationId,
           typeTags: project.typeTags,
+          invoicingMethod: project.invoicingMethod, // Include invoicing method for timeline logic
           tasks: project.tasks.filter(task => {
             // Guard: Validate task structure
             if (!task || typeof task !== 'object') {

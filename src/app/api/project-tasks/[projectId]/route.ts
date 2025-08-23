@@ -70,6 +70,7 @@ export async function GET(
       title: project.title,
       organizationId: project.organizationId,
       typeTags: project.typeTags,
+      invoicingMethod: project.invoicingMethod, // Include invoicing method for timeline logic
       tasks: legacyTasks
     });
   } catch (error) {

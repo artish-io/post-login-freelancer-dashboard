@@ -12,11 +12,15 @@
     "gigTitle": "UX Research for Project: Y.U.T.A.N.I",
     "taskCount": 2,
     "commissionerName": "Tilly Burzinsky",
-    "organizationName": "Zynate Events Group"
+    "organizationName": "Zynate Events Group",
+    "dueDate": "2025-08-25T04:00:00.000Z"
   },
   "context": {
     "projectId": "Z-005",
     "gigId": 29,
-    "applicationId": 1755193217258
-  }
+    "applicationId": 1755193217258,
+    "dueDate": "2025-08-25T04:00:00.000Z"
+  },
+  "updatedAt": "2025-08-23T10:09:08.466Z",
+  "projectActivationDateNote": "Fixed project activation date enrichment: dueDate: 2025-08-25T04:00:00.000Z, context.dueDate: 2025-08-25T04:00:00.000Z"
 }

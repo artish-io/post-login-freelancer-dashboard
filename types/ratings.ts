@@ -8,9 +8,9 @@
 export interface ProjectRating {
   /** Unique identifier for the rating */
   ratingId: string;
-  
+
   /** ID of the project being rated */
-  projectId: number;
+  projectId: string | number;
   
   /** ID of the user giving the rating */
   raterUserId: number;
@@ -62,7 +62,7 @@ export interface UserRatingsSummary {
 
 export interface RatingSubmissionRequest {
   /** ID of the project being rated */
-  projectId: number;
+  projectId: string | number;
   
   /** ID of the user being rated */
   subjectUserId: number;
@@ -111,7 +111,7 @@ export function isValidProjectRating(data: unknown): data is ProjectRating {
 
   return (
     typeof rating.ratingId === 'string' &&
-    typeof rating.projectId === 'number' &&
+    (typeof rating.projectId === 'number' || typeof rating.projectId === 'string') &&
     typeof rating.raterUserId === 'number' &&
     (rating.raterUserType === 'freelancer' || rating.raterUserType === 'commissioner') &&
     typeof rating.subjectUserId === 'number' &&
@@ -147,14 +147,32 @@ export function isValidUserRatingsSummary(data: unknown): data is UserRatingsSum
 
 /**
  * Generate hierarchical storage path for a rating
+ * This is a simple path - for hierarchical storage, use getHierarchicalRatingStoragePath
  */
-export function getRatingStoragePath(projectId: number, subjectUserType: 'freelancer' | 'commissioner', raterUserId: number): string {
+export function getRatingStoragePath(projectId: string | number, subjectUserType: 'freelancer' | 'commissioner', raterUserId: number): string {
   return `data/projects/${projectId}/ratings/${subjectUserType}/rating-${raterUserId}.json`;
+}
+
+/**
+ * Generate hierarchical storage path for a rating based on project creation date
+ */
+export function getHierarchicalRatingStoragePath(
+  projectId: string | number,
+  projectCreatedAt: string,
+  subjectUserType: 'freelancer' | 'commissioner',
+  raterUserId: number
+): string {
+  const date = new Date(projectCreatedAt);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+
+  return `data/projects/${year}/${month}/${day}/${projectId}/ratings/${subjectUserType}/rating-${raterUserId}.json`;
 }
 
 /**
  * Generate unique rating ID
  */
-export function generateRatingId(projectId: number, raterUserId: number, subjectUserId: number): string {
+export function generateRatingId(projectId: string | number, raterUserId: number, subjectUserId: number): string {
   return `rating-${projectId}-${raterUserId}-${subjectUserId}-${Date.now()}`;
 }

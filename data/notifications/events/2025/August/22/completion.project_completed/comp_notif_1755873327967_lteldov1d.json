@@ -1,0 +1,23 @@
+{
+  "id": "comp_notif_1755873327967_lteldov1d",
+  "type": "completion.project_completed",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-007",
+  "context": {
+    "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+    "freelancerName": "Lucas Meyer",
+    "orgName": "Zynate Events Group",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "read": false,
+  "createdAt": "2025-08-22T14:35:27.967Z",
+  "timestamp": "2025-08-22T14:35:27.967Z",
+  "subsystem": "completion_invoicing",
+  "iconPath": "/icons/project-completed.png",
+  "metadata": {
+    "priority": "high"
+  },
+  "updatedAt": "2025-08-23T04:43:33.400Z",
+  "uniformizationNote": "Uniformized project completion format: updated icon to /icons/project-completed.png, set priority to high"
+}

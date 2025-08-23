@@ -1,0 +1,21 @@
+{
+  "id": "project_completed_L-002_1755923268198_commissioner",
+  "timestamp": "2025-08-23T04:27:48.193Z",
+  "type": "project_completed",
+  "notificationType": 25,
+  "actorId": 32,
+  "targetId": 32,
+  "entityType": 2,
+  "entityId": "L-002",
+  "metadata": {
+    "projectTitle": "Market Research for Longer Divide",
+    "commissionerName": "Neilsan Mando",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "L-002"
+  },
+  "iconPath": "/icons/project-completed.png",
+  "updatedAt": "2025-08-23T04:43:33.403Z",
+  "uniformizationNote": "Uniformized project completion format: updated icon to /icons/project-completed.png"
+}

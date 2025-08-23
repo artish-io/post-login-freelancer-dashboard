@@ -5,16 +5,18 @@
   "organizationId": 4,
   "projectTypeTags": [],
   "title": "Phase Two: Routing projects through",
-  "status": "Ongoing",
-  "completed": false,
+  "status": "Approved",
+  "completed": true,
   "order": 2,
-  "link": "",
+  "link": "bit.ly3443",
   "dueDate": "2025-08-27T04:00:00.000Z",
   "rejected": false,
   "feedbackCount": 0,
   "pushedBack": false,
   "version": 1,
   "description": "Fields act as the primary control mechanisms, routing projects through entirely different workflows while ensuring data consistency and payment integrity across both systems",
+  "submittedDate": "2025-08-22T20:10:33.222Z",
+  "approvedDate": "2025-08-22T20:10:42.814Z",
   "createdDate": "2025-08-22T11:35:20.625Z",
-  "lastModified": "2025-08-22T11:35:20.627Z"
+  "lastModified": "2025-08-22T20:10:42.814Z"
 }

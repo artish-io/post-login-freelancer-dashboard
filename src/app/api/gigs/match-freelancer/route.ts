@@ -654,7 +654,8 @@ async function handleGigMatching(req: Request) {
           gigTitle: gig!.title,
           taskCount: acceptResult.tasks.length,
           commissionerName: manager.name,
-          organizationName: organization.name
+          organizationName: organization.name,
+          dueDate: acceptResult.project.dueDate
         },
         context: {
           projectId: acceptResult.project.projectId,

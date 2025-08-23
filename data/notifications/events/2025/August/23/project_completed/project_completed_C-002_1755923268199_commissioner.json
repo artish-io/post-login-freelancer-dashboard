@@ -1,0 +1,21 @@
+{
+  "id": "project_completed_C-002_1755923268199_commissioner",
+  "timestamp": "2025-08-23T04:27:48.199Z",
+  "type": "project_completed",
+  "notificationType": 25,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 2,
+  "entityId": "C-002",
+  "metadata": {
+    "projectTitle": "Web 3 Graphic Design Asssets ",
+    "commissionerName": "Matte Hannery",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "C-002"
+  },
+  "iconPath": "/icons/project-completed.png",
+  "updatedAt": "2025-08-23T04:43:33.402Z",
+  "uniformizationNote": "Uniformized project completion format: updated icon to /icons/project-completed.png"
+}

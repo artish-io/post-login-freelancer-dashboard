@@ -387,5 +387,19 @@
     "source": "project_payment",
     "description": "Payment for Ad Copy for Google Waterloo Launch Event",
     "invoiceNumber": "TB-012"
+  },
+  {
+    "id": 1755905740590,
+    "userId": 25,
+    "commissionerId": 35,
+    "organizationId": null,
+    "projectId": "Z-009",
+    "type": "credit",
+    "amount": 752.4,
+    "currency": "USD",
+    "date": "2025-08-22T23:35:40.590Z",
+    "source": "project_payment",
+    "description": "Payment for Project Content Specification Flow",
+    "invoiceNumber": "TB-C007"
   }
 ]

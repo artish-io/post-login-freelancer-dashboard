@@ -93,6 +93,16 @@ export async function GET(request: NextRequest) {
         return true;
       }
 
+      // Special case: completion.rating_prompt notifications can be self-notifications for both freelancers and commissioners
+      if (event.type === 'completion.rating_prompt' && event.targetId === parseInt(userId)) {
+        return true;
+      }
+
+      // Special case: completion.final_payment, completion.project_completed, and project_completed notifications can be self-notifications for commissioners
+      if ((event.type === 'completion.final_payment' || event.type === 'completion.project_completed' || event.type === 'project_completed') && event.targetId === parseInt(userId) && event.actorId === parseInt(userId)) {
+        return true;
+      }
+
       // User is the target of the event AND not the actor (no self-notifications)
       if (event.targetId === parseInt(userId) && event.actorId !== parseInt(userId)) return true;
 
@@ -230,18 +240,20 @@ export async function GET(request: NextRequest) {
       } else if (shouldUsePauseIcon(event.type)) {
         iconPath = '/icons/project-pause.png';
       } else if (shouldUseTaskApprovalIcon(event.type)) {
-        iconPath = '/icons/task-awaiting-review.png';
+        iconPath = '/icons/task-approved.png';
       } else if (shouldUseTaskRejectionIcon(event.type)) {
         iconPath = '/icons/task-rejected.png';
+      } else if (shouldUseProjectCompletionIcon(event.type)) {
+        iconPath = '/icons/project-completed.png';
       }
 
-      const title = await generateGranularTitle(event, actor, project, projectTaskData, task);
+      const title = await generateGranularTitle(event, actor, project, projectTaskData, task, parseInt(userId));
       // Use pre-generated message from completion notifications if available and not a fallback message
       const preGeneratedMessage = (event as any).message;
       const isFallbackMessage = preGeneratedMessage && preGeneratedMessage.startsWith('Completion event:');
       const message = (preGeneratedMessage && !isFallbackMessage)
         ? preGeneratedMessage
-        : generateGranularMessage(event, actor, project, projectTaskData, task);
+        : await generateGranularMessage(event, actor, project, projectTaskData, task, parseInt(userId));
 
       // Filter out notifications with null title or message (unknown event types)
       if (title === null || message === null) {
@@ -485,6 +497,14 @@ function shouldUseTaskRejectionIcon(eventType: EventType): boolean {
   ].includes(eventType);
 }
 
+function shouldUseProjectCompletionIcon(eventType: EventType): boolean {
+  return [
+    'project_completed', // Milestone project completion - show project completed icon
+    'completion.project_completed', // Completion project completion - show project completed icon
+    'completion_project_completed' // Legacy completion project completion - show project completed icon
+  ].includes(eventType);
+}
+
 // Group similar events (e.g., multiple gig applications for the same gig)
 function groupSimilarEvents(events: EventData[]): EventData[] {
   const grouped: { [key: string]: EventData[] } = {};
@@ -522,7 +542,7 @@ function groupSimilarEvents(events: EventData[]): EventData[] {
   return [...groupedNotifications, ...ungrouped];
 }
 
-async function generateGranularTitle(event: EventData, actor: any, _project?: any, projectTaskData?: any, task?: any): Promise<string | null> {
+async function generateGranularTitle(event: EventData, actor: any, _project?: any, projectTaskData?: any, task?: any, currentUserId?: number): Promise<string | null> {
   const actorName = actor?.name || 'Someone';
   const groupCount = event.metadata?.groupCount || 1;
 
@@ -530,36 +550,8 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
     case 'task_submitted':
       return `${actorName} submitted a task`;
     case 'task_approved':
-      // Use the new project completion detector for accurate milestone counts
-      try {
-        const { detectProjectCompletion } = await import('../../../lib/notifications/project-completion-detector');
-
-        // Handle both string and number project IDs
-        const projectId = event.context?.projectId;
-        if (!projectId) {
-          throw new Error('No project ID found in event context');
-        }
-
-        const completionStatus = await detectProjectCompletion(
-          projectId,
-          event.metadata?.taskId
-        );
-
-        // For task approval notifications, show remaining milestones AFTER this approval
-        const remainingMilestones = Math.max(0, completionStatus.remainingTasks);
-
-        if (remainingMilestones === 0) {
-          // For final tasks, just mention it's the final submission without project completion text
-          // Project completion will be handled by a separate notification
-          return `${actorName} has approved your final submission of "${event.metadata?.taskTitle || 'task'}" for ${event.metadata?.projectTitle || 'this project'}. Click here to see its project tracker.`;
-        } else {
-          return `${actorName} has approved your submission of "${event.metadata?.taskTitle || 'task'}" for ${event.metadata?.projectTitle || 'this project'}. This project has ${remainingMilestones} milestone${remainingMilestones !== 1 ? 's' : ''} left. Click here to see its project tracker.`;
-        }
-      } catch (error) {
-        console.warn('Failed to detect project completion for notification message:', error);
-        // Fallback to simple message
-        return `${actorName} has approved your submission of "${event.metadata?.taskTitle || 'task'}" for ${event.metadata?.projectTitle || 'this project'}. Click here to see its project tracker.`;
-      }
+      // Use short title format to match V2 style
+      return `${actorName} approved your task`;
     case 'task_rejected':
       return `${actorName} rejected "${event.metadata?.taskTitle || 'task'}". Revisions are required. View notes and resume progress`;
     case 'task_rejected_with_comment':
@@ -577,7 +569,7 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
     case 'project_reactivated':
       return `${actorName} has re-activated ${event.metadata?.projectTitle || 'this project'}. Work can now resume!`;
     case 'project_completed':
-      return `${event.metadata?.projectTitle || 'Project'} has been completed! All tasks have been approved. Click here to see the project summary.`;
+      return `Project completed`;
     case 'gig_applied':
       if (groupCount && groupCount > 1) {
         return `${actorName} and ${groupCount - 1} others applied to "${event.metadata?.gigTitle || 'gig'}"`;
@@ -598,19 +590,18 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
       const invoiceProjectTitle = event.metadata?.projectTitle || 'project';
       return `${actorName} sent you an invoice for ${invoiceAmount} for ${tasksCount} approved task${tasksCount !== 1 ? 's' : ''}, of your active project, ${invoiceProjectTitle}.`;
     case 'invoice_paid':
-      return `Your invoice for "${event.metadata?.projectTitle || event.metadata?.taskTitle || task?.title || 'project work'}" has been paid by ${actorName}`;
+      // Use organization name for invoice payments as specified by user
+      const invoiceOrgName = event.metadata?.organizationName || actorName;
+      const invoicePaidAmount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      return `${invoiceOrgName} paid ${invoicePaidAmount}`;
     case 'milestone_payment_received':
-      const organizationName = event.metadata?.organizationName || actorName;
-      const amount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
-      return `${organizationName} has paid ${amount} for your recent task submission. Click here to view invoice details`;
+      const titleOrgName = event.metadata?.organizationName || actorName;
+      const titleAmount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      return `${titleOrgName} paid ${titleAmount}`;
     case 'milestone_payment_sent':
-      const freelancerName = event.metadata?.freelancerName || 'freelancer';
-      const paidAmount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
-      const taskTitle = event.metadata?.taskTitle || 'task';
-      const projectTitle = event.metadata?.projectTitle || 'this project';
-      const remainingBudget = event.metadata?.remainingBudget;
-      const remainingBudgetText = remainingBudget !== undefined ? ` Remaining budget: $${remainingBudget.toLocaleString()}.` : '';
-      return `You just paid ${freelancerName} ${paidAmount} for submitting ${taskTitle} for ${projectTitle}.${remainingBudgetText} Click here to see transaction activity`;
+      const titleFreelancerName = event.metadata?.freelancerName || 'freelancer';
+      const titlePaidAmount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      return `You just paid ${titleFreelancerName} ${titlePaidAmount}`;
     case 'payment_sent':
       // Use the custom notification text if available, otherwise fall back to default
       if (event.metadata?.notificationText) {
@@ -653,11 +644,41 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
     case 'completion.invoice_received':
       return `${actorName} sent you an invoice`;
     case 'completion.invoice_paid':
-      return `${actorName} paid your invoice`;
+      // Generate context-aware title for invoice payments
+      const compTitleOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || actorName;
+      const compTitleAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
+      const compTitleFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
+
+      // Check if current user is the commissioner (actor) or freelancer (target)
+      const isCompTitleCommissioner = currentUserId === event.actorId;
+
+      if (isCompTitleCommissioner) {
+        // Commissioner title - they made the payment
+        return `You just paid ${compTitleFreelancerName} $${compTitleAmount}`;
+      } else {
+        // Freelancer title - they received the payment
+        return `${compTitleOrgName} paid your invoice`;
+      }
     case 'completion.project_completed':
       return `Project completed`;
+    case 'project_completed':
+      return `Project completed`;
     case 'completion.final_payment':
-      return `${actorName} sent final payment`;
+      // Generate context-aware title for final payments
+      const finalTitleOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || actorName;
+      const finalTitleAmount = (event.metadata as any)?.finalAmount || (event.context as any)?.finalAmount || 0;
+      const finalTitleFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
+
+      // Check if current user is the commissioner (actor) or freelancer (target)
+      const isFinalTitleCommissioner = currentUserId === event.actorId;
+
+      if (isFinalTitleCommissioner) {
+        // Commissioner title - they made the final payment
+        return `You just paid ${finalTitleFreelancerName} $${finalTitleAmount}`;
+      } else {
+        // Freelancer title - they received the final payment
+        return `${finalTitleOrgName} sent final payment`;
+      }
     case 'completion.rating_prompt':
       return `Rate your experience`;
 
@@ -668,12 +689,43 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
   }
 }
 
-function generateGranularMessage(event: EventData, _actor: any, _project?: any, _projectTaskData?: any, task?: any): string | null {
+async function generateGranularMessage(event: EventData, _actor: any, _project?: any, _projectTaskData?: any, task?: any, currentUserId?: number): Promise<string | null> {
   switch (event.type) {
     case 'task_submitted':
       return `"${event.metadata?.taskTitle || 'Task'}" is awaiting your review`;
     case 'task_approved':
-      return `Task approved and milestone completed`;
+      // Generate detailed message with milestone information
+      try {
+        const { detectProjectCompletion } = await import('../../../lib/notifications/project-completion-detector');
+        const actorName = _actor?.name || 'Someone';
+
+        // Handle both string and number project IDs
+        const projectId = event.context?.projectId;
+        if (!projectId) {
+          throw new Error('No project ID found in event context');
+        }
+
+        const completionStatus = await detectProjectCompletion(
+          projectId,
+          event.metadata?.taskId
+        );
+
+        // For task approval notifications, show remaining milestones AFTER this approval
+        const remainingMilestones = Math.max(0, completionStatus.remainingTasks);
+
+        if (remainingMilestones === 0) {
+          // For final tasks, use the standardized V2 format
+          return `${actorName} has approved your submission of "${event.metadata?.taskTitle || 'task'}" for ${event.metadata?.projectTitle || 'this project'}. Task approved and milestone completed. Click here to see its project tracker.`;
+        } else {
+          // Use the standardized V2 format with milestone count
+          return `${actorName} has approved your submission of "${event.metadata?.taskTitle || 'task'}" for ${event.metadata?.projectTitle || 'this project'}. This project has ${remainingMilestones} milestone${remainingMilestones !== 1 ? 's' : ''} left. Task approved and milestone completed. Click here to see its project tracker.`;
+        }
+      } catch (error) {
+        console.warn('Failed to detect project completion for notification message:', error);
+        // Fallback to standardized V2 format
+        const actorName = _actor?.name || 'Someone';
+        return `${actorName} has approved your submission of "${event.metadata?.taskTitle || 'task'}" for ${event.metadata?.projectTitle || 'this project'}. Task approved and milestone completed. Click here to see its project tracker.`;
+      }
     case 'task_rejected':
       return `Task requires revision`;
     case 'task_rejected_with_comment':
@@ -686,8 +738,21 @@ function generateGranularMessage(event: EventData, _actor: any, _project?: any, 
       return `Your request to pause the ${event.metadata?.projectTitle || 'project'} project has been approved`;
     case 'project_activated':
       const taskCount = event.metadata?.taskCount || 1;
-      const dueDate = event.metadata?.dueDate || 'the deadline';
-      return `This project is now active and includes ${taskCount} milestone${taskCount !== 1 ? 's' : ''} due by ${dueDate}`;
+      // Format due date properly if available
+      let dueDateText = 'the deadline';
+      if (event.metadata?.dueDate) {
+        try {
+          const date = new Date(event.metadata.dueDate);
+          dueDateText = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        } catch (e) {
+          dueDateText = event.metadata.dueDate;
+        }
+      }
+      return `This project is now active and includes ${taskCount} milestone${taskCount !== 1 ? 's' : ''} due by ${dueDateText}`;
     case 'gig_applied':
       if (event.metadata?.groupCount && event.metadata.groupCount > 1) {
         return `${event.metadata.groupCount} applications received for "${event.metadata?.gigTitle || 'gig'}"`;
@@ -700,21 +765,49 @@ function generateGranularMessage(event: EventData, _actor: any, _project?: any, 
     case 'invoice_sent':
       return `Invoice ${event.metadata?.invoiceNumber || 'INV-XXX'} for ${event.metadata?.projectTitle || 'project'}`;
     case 'invoice_paid':
-      return `Payment received for ${event.metadata?.projectTitle || 'project'}`;
+      // Enhanced freelancer notification with project name and remaining budget
+      const invoiceMsgOrgName = event.metadata?.organizationName || 'Organization';
+      const invoiceMsgAmount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      const invoiceMsgProjectTitle = event.metadata?.projectTitle || 'project';
+
+      // Calculate remaining budget if we have the data
+      let remainingBudgetText = '';
+      if (event.metadata?.projectBudget && event.metadata?.amount) {
+        const totalBudget = event.metadata.projectBudget;
+        const paidAmount = event.metadata.amount;
+        const remainingBudget = totalBudget - paidAmount;
+        remainingBudgetText = ` This project has a remaining budget of $${remainingBudget.toLocaleString()}.`;
+      }
+
+      return `${invoiceMsgOrgName} has paid ${invoiceMsgAmount} for your recent ${invoiceMsgProjectTitle} task submission.${remainingBudgetText} Click here to view invoice details`;
     case 'invoice_created':
       return `Invoice automatically generated for milestone completion`;
     case 'milestone_payment_received':
-      const organizationName = event.metadata?.organizationName || 'Organization';
-      const amount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
-      return `${organizationName} has paid ${amount} for your recent task submission. Click here to view invoice details`;
+      // Enhanced freelancer notification with project name and remaining budget
+      const milestoneRecOrgName = event.metadata?.organizationName || 'Organization';
+      const milestoneRecAmount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      const milestoneRecProjectTitle = event.metadata?.projectTitle || 'project';
+
+      // Calculate remaining budget if we have the data
+      let milestoneRecRemainingBudgetText = '';
+      if (event.metadata?.projectBudget) {
+        const totalBudget = event.metadata.projectBudget;
+        // Use remainingBudget if provided (from bus system), otherwise calculate from total budget
+        const remainingBudget = event.metadata?.remainingBudget !== undefined
+          ? event.metadata.remainingBudget
+          : (event.metadata?.amount ? totalBudget - event.metadata.amount : totalBudget);
+        milestoneRecRemainingBudgetText = ` This project has a remaining budget of $${remainingBudget.toLocaleString()}.`;
+      }
+
+      return `${milestoneRecOrgName} has paid ${milestoneRecAmount} for your recent ${milestoneRecProjectTitle} task submission.${milestoneRecRemainingBudgetText} Click here to view invoice details`;
     case 'milestone_payment_sent':
-      const freelancerName = event.metadata?.freelancerName || 'freelancer';
-      const paidAmount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
-      const taskTitle = event.metadata?.taskTitle || 'task';
-      const projectTitle = event.metadata?.projectTitle || 'this project';
-      const remainingBudget = event.metadata?.remainingBudget;
-      const remainingBudgetText = remainingBudget !== undefined ? ` Remaining budget: $${remainingBudget.toLocaleString()}.` : '';
-      return `You just paid ${freelancerName} ${paidAmount} for submitting ${taskTitle} for ${projectTitle}.${remainingBudgetText} Click here to see transaction activity`;
+      const milestoneFreelancerName = event.metadata?.freelancerName || 'freelancer';
+      const milestonePaidAmount = event.metadata?.amount ? `$${event.metadata.amount.toLocaleString()}` : 'payment';
+      const milestoneTaskTitle = event.metadata?.taskTitle || 'task';
+      const milestoneProjectTitle = event.metadata?.projectTitle || 'this project';
+      const milestoneRemainingBudget = event.metadata?.remainingBudget;
+      const milestoneRemainingBudgetText = milestoneRemainingBudget !== undefined ? ` Remaining budget: $${milestoneRemainingBudget.toLocaleString()}.` : '';
+      return `You just paid ${milestoneFreelancerName} ${milestonePaidAmount} for submitting ${milestoneTaskTitle} for ${milestoneProjectTitle}.${milestoneRemainingBudgetText} Click here to see transaction activity`;
     case 'product_purchased':
       return 'New sale on your storefront';
     case 'message_sent':
@@ -752,11 +845,72 @@ function generateGranularMessage(event: EventData, _actor: any, _project?: any, 
     case 'completion.invoice_received':
       return `New invoice received for review`;
     case 'completion.invoice_paid':
-      return `Your invoice has been paid`;
+      // Generate context-aware message for manual invoice payments
+      const compInvoiceAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
+      const compTaskTitle = (event.metadata as any)?.taskTitle || (event.context as any)?.taskTitle || 'task';
+      const compProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
+      const compOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
+      const compFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
+      const compRemainingBudget = (event.metadata as any)?.remainingBudget || (event.context as any)?.remainingBudget || 0;
+
+      // Check if current user is the commissioner (actor) or freelancer (target)
+      const isCommissioner = currentUserId === event.actorId;
+
+      if (isCommissioner) {
+        // Commissioner message - they made the payment
+        return `You just paid ${compFreelancerName} $${compInvoiceAmount} for submitting ${compTaskTitle} for ${compProjectTitle}. Remaining budget: $${compRemainingBudget}. Click here to see transaction activity`;
+      } else {
+        // Freelancer message - they received the payment
+        return `${compOrgName} has paid $${compInvoiceAmount} for your recent task submission. Click here to view invoice details`;
+      }
     case 'completion.project_completed':
-      return `All project tasks have been completed`;
+      // Generate context-aware message for project completion
+      const completionProjectTitle = (event.context as any)?.projectTitle || (event.metadata as any)?.projectTitle || 'project';
+      const completionCommissionerName = (event.context as any)?.commissionerName || (event.metadata as any)?.commissionerName || 'Commissioner';
+
+      // Check if current user is the commissioner (actor) or freelancer (target)
+      const isCompletionCommissioner = currentUserId === event.actorId;
+
+      if (isCompletionCommissioner) {
+        // Commissioner message - they approved all tasks
+        return `You have approved all tasks for ${completionProjectTitle}. Project is now complete.`;
+      } else {
+        // Freelancer message - commissioner approved all their tasks
+        return `${completionCommissionerName} has approved all tasks for ${completionProjectTitle}. This project is now complete.`;
+      }
+    case 'project_completed':
+      // Generate context-aware message for milestone project completion
+      const projectCompletedTitle = event.metadata?.projectTitle || 'project';
+      const projectCompletedCommissionerName = event.metadata?.commissionerName || 'Commissioner';
+
+      // Check if current user is the commissioner (actor) or freelancer (target)
+      const isProjectCompletedCommissioner = currentUserId === event.actorId;
+
+      if (isProjectCompletedCommissioner) {
+        // Commissioner message - they approved all tasks
+        return `You have approved all tasks for ${projectCompletedTitle}. Project is now complete.`;
+      } else {
+        // Freelancer message - commissioner approved all their tasks
+        return `${projectCompletedCommissionerName} has approved all tasks for ${projectCompletedTitle}. This project is now complete.`;
+      }
     case 'completion.final_payment':
-      return `Final payment has been processed`;
+      // Generate context-aware message for final payments
+      const finalAmount = (event.metadata as any)?.finalAmount || (event.context as any)?.finalAmount || 0;
+      const finalProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
+      const finalOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
+      const finalFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
+      const finalPercent = (event.metadata as any)?.finalPercent || (event.context as any)?.finalPercent || 88;
+
+      // Check if current user is the commissioner (actor) or freelancer (target)
+      const isFinalCommissioner = currentUserId === event.actorId;
+
+      if (isFinalCommissioner) {
+        // Commissioner message - they made the final payment
+        return `You just paid ${finalFreelancerName} $${finalAmount} for completing ${finalProjectTitle}. Remaining budget: $0. Click here to see transaction activity`;
+      } else {
+        // Freelancer message - they received the final payment
+        return `${finalOrgName} has paid you $${finalAmount} for ${finalProjectTitle} final payment (remaining ${finalPercent}% of budget). Click here to view invoice details`;
+      }
     case 'completion.rating_prompt':
       return `Please rate your experience with this project`;
 

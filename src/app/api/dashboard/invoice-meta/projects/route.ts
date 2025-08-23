@@ -1,9 +1,8 @@
 // src/app/api/dashboard/invoice-meta/projects/route.ts
 
 import { NextResponse } from 'next/server';
-import { readFile } from 'fs/promises';
-import path from 'path';
 import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
+import { getAllInvoices } from '@/lib/invoice-storage';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -25,9 +24,8 @@ export async function GET(request: Request) {
       allTasks.push(...projectTasks);
     }
 
-    // Read invoices (still from legacy file for now)
-    const invoicesData = await readFile(path.join(process.cwd(), 'data', 'invoices.json'), 'utf-8');
-    const allInvoices = JSON.parse(invoicesData);
+    // Read invoices from hierarchical storage
+    const allInvoices = await getAllInvoices();
 
     let filtered = allProjects.filter((p: any) => p.freelancerId === freelancerId);
 

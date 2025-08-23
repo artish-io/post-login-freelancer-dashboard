@@ -289,12 +289,12 @@
     "userId": 25,
     "userType": "freelancer",
     "currency": "USD",
-    "availableBalance": 1212,
+    "availableBalance": 1681.34,
     "pendingWithdrawals": 0,
-    "lifetimeEarnings": 1212,
+    "lifetimeEarnings": 1681.34,
     "totalWithdrawn": 0,
     "holds": 0,
-    "updatedAt": "2025-08-22T11:34:33.115Z"
+    "updatedAt": "2025-08-22T14:35:27.298Z"
   },
   {
     "userId": 26,

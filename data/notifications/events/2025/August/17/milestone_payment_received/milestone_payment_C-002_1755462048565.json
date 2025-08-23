@@ -12,11 +12,16 @@
     "amount": 1000,
     "organizationName": "Corlax Wellness",
     "invoiceNumber": "MH-002",
-    "priority": "high"
+    "priority": "high",
+    "projectTitle": "Web 3 Graphic Design Asssets ",
+    "projectBudget": 3000,
+    "remainingBudget": 0
   },
   "context": {
     "projectId": "C-002",
     "milestoneTitle": "Web 3 Graphic Design Asssets ",
     "invoiceNumber": "MH-002"
-  }
+  },
+  "updatedAt": "2025-08-23T05:00:01.734Z",
+  "milestonePaymentContextNote": "Fixed milestone payment context: projectTitle: Web 3 Graphic Design Asssets , projectBudget: $3000, remainingBudget: $0"
 }

@@ -12,11 +12,15 @@
     "gigTitle": "Experiential Marketing for TechCabal Ignite 2025",
     "taskCount": 3,
     "commissionerName": "Neilsan Mando",
-    "organizationName": "Lagos State Parks Services"
+    "organizationName": "Lagos State Parks Services",
+    "dueDate": "2025-08-25T04:00:00.000Z"
   },
   "context": {
     "projectId": "L-006",
     "gigId": 25,
-    "applicationId": 1755193217249
-  }
+    "applicationId": 1755193217249,
+    "dueDate": "2025-08-25T04:00:00.000Z"
+  },
+  "updatedAt": "2025-08-23T10:09:08.465Z",
+  "projectActivationDateNote": "Fixed project activation date enrichment: dueDate: 2025-08-25T04:00:00.000Z, context.dueDate: 2025-08-25T04:00:00.000Z"
 }

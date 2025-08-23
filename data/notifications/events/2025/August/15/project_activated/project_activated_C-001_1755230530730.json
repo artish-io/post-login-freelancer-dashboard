@@ -12,11 +12,15 @@
     "gigTitle": "Financial Modelling For Series A Fundraising",
     "taskCount": 3,
     "commissionerName": "Matte Hannery",
-    "organizationName": "Corlax Wellness"
+    "organizationName": "Corlax Wellness",
+    "dueDate": "2025-08-31T04:00:00.000Z"
   },
   "context": {
     "projectId": "C-001",
     "gigId": 14,
-    "applicationId": 1755193217239
-  }
+    "applicationId": 1755193217239,
+    "dueDate": "2025-08-31T04:00:00.000Z"
+  },
+  "updatedAt": "2025-08-23T10:09:08.462Z",
+  "projectActivationDateNote": "Fixed project activation date enrichment: dueDate: 2025-08-31T04:00:00.000Z, context.dueDate: 2025-08-31T04:00:00.000Z"
 }

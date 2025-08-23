@@ -15,11 +15,16 @@
     "invoiceGenerated": true,
     "amount": 1000,
     "invoiceNumber": "MH-001",
-    "organizationName": "Corlax Wellness"
+    "organizationName": "Corlax Wellness",
+    "projectBudget": 3000,
+    "remainingBudget": 0
   },
   "context": {
     "projectId": "C-002",
     "taskId": 1755452756598,
     "invoiceNumber": "MH-001"
-  }
+  },
+  "updatedAt": "2025-08-23T05:00:01.741Z",
+  "contextEnrichmentNote": "Fixed project budget enrichment: projectBudget: $3000",
+  "milestonePaymentContextNote": "Fixed milestone payment context: remainingBudget: $0"
 }

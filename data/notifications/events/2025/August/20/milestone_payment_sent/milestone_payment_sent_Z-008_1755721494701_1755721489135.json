@@ -12,8 +12,8 @@
     "projectTitle": "God Abeg No Code Regression Test",
     "projectId": "Z-008",
     "taskId": 1755721494701,
-    "freelancerName": "Freelancer",
-    "amount": 0,
+    "freelancerName": "Lucas Meyer",
+    "amount": 500,
     "invoiceNumber": "TB-016",
     "remainingBudget": 1000,
     "projectBudget": 1500
@@ -22,5 +22,11 @@
     "projectId": "Z-008",
     "taskId": 1755721494701,
     "invoiceNumber": "TB-016"
-  }
+  },
+  "title": "You just paid Lucas Meyer $500",
+  "message": "You just paid Lucas Meyer $500 for submitting Phase One: God Abeg Bro for God Abeg No Code Regression Test. Remaining budget: $1,000. Click here to see transaction activity",
+  "updatedAt": "2025-08-23T03:55:03.540Z",
+  "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue",
+  "enrichmentNote": "Fixed freelancer name enrichment: freelancerName: Lucas Meyer, title and message updated",
+  "contextEnrichmentNote": "Fixed amount enrichment: amount: $500, title and message updated with correct amount"
 }

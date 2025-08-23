@@ -12,11 +12,15 @@
     "gigTitle": "Marketing for 2Baba 40-Year Concert",
     "taskCount": 1,
     "commissionerName": "Matte Hannery",
-    "organizationName": "Corlax Wellness"
+    "organizationName": "Corlax Wellness",
+    "dueDate": "2025-08-22T04:00:00.000Z"
   },
   "context": {
     "projectId": "C-006",
     "gigId": 27,
-    "applicationId": 1755193217252
-  }
+    "applicationId": 1755193217252,
+    "dueDate": "2025-08-22T04:00:00.000Z"
+  },
+  "updatedAt": "2025-08-23T10:09:08.466Z",
+  "projectActivationDateNote": "Fixed project activation date enrichment: dueDate: 2025-08-22T04:00:00.000Z, context.dueDate: 2025-08-22T04:00:00.000Z"
 }

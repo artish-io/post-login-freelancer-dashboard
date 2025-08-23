@@ -11,10 +11,14 @@
     "invoiceNumber": "TB-012",
     "projectTitle": "Ad Copy for Google Waterloo Launch Event",
     "amount": 1408,
-    "commissionerName": "Tilly Burzinsky"
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group",
+    "projectBudget": 1600
   },
   "context": {
     "projectId": "Z-007",
     "invoiceNumber": "TB-012"
-  }
+  },
+  "updatedAt": "2025-08-23T03:55:03.541Z",
+  "contextEnrichmentNote": "Fixed project budget enrichment: projectBudget: $1600"
 }

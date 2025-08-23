@@ -14,6 +14,8 @@ const getNotificationIcon = (type: NotificationData['type']): string => {
       return '/icons/gig-applied.png';
     case 'task_submission':
       return '/icons/task-awaiting-review.png';
+    case 'task_approved':
+      return '/icons/task-approved.png';
     case 'new_gig_request':
       return '/icons/new-gig-request.png';
     case 'proposal_sent':

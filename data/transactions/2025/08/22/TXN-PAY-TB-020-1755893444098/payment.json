@@ -1,0 +1,19 @@
+{
+  "userId": 25,
+  "type": "payment",
+  "amount": 900,
+  "currency": "USD",
+  "timestamp": "2025-08-22T20:10:44.098Z",
+  "status": "completed",
+  "invoiceNumber": "TB-020",
+  "projectId": "Z-010",
+  "commissionerId": 35,
+  "freelancerId": 25,
+  "source": "auto_milestone",
+  "paymentMethod": "mock",
+  "gatewayTransactionId": "TXN-TB-020",
+  "description": "Payment for invoice TB-020",
+  "transactionId": "TXN-PAY-TB-020-1755893444098",
+  "createdAt": "2025-08-22T20:10:44.098Z",
+  "updatedAt": "2025-08-22T20:10:44.098Z"
+}

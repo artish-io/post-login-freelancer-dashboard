@@ -7,6 +7,47 @@ import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
 import { getInitialInvoiceStatus } from '../../../../lib/invoice-status-definitions';
 
 /**
+ * Sync project paidToDate if it's significantly out of sync with actual paid invoices
+ */
+async function syncProjectPaidToDateIfNeeded(projectId: string): Promise<void> {
+  try {
+    // Get project and calculate actual paid amount
+    const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+    const project = await UnifiedStorageService.readProject(projectId);
+
+    if (!project) {
+      console.warn(`[SYNC_PAID_TO_DATE] Project ${projectId} not found`);
+      return;
+    }
+
+    // Calculate total paid from all paid invoices
+    const allInvoices = await getAllInvoices({ projectId });
+    const totalPaidFromInvoices = allInvoices
+      .filter(invoice => invoice.status === 'paid')
+      .reduce((sum, invoice) => sum + (invoice.totalAmount || 0), 0);
+
+    const currentPaidToDate = project.paidToDate || 0;
+    const difference = Math.abs(currentPaidToDate - totalPaidFromInvoices);
+
+    // Only update if there's a significant difference (more than 1 cent)
+    if (difference > 0.01) {
+      const updatedProject = {
+        ...project,
+        paidToDate: Math.round(totalPaidFromInvoices * 100) / 100,
+        updatedAt: new Date().toISOString()
+      };
+
+      await UnifiedStorageService.writeProject(updatedProject);
+
+      console.log(`[SYNC_PAID_TO_DATE] Updated project ${projectId} paidToDate: ${currentPaidToDate} -> ${totalPaidFromInvoices}`);
+    }
+  } catch (error) {
+    console.error(`[SYNC_PAID_TO_DATE] Error syncing project ${projectId}:`, error);
+    // Don't throw - this is a best-effort sync
+  }
+}
+
+/**
  * Auto-Generate Invoice for Completion-Based Projects
  * 
  * This endpoint is called when a task is approved in a completion-based project.
@@ -36,6 +77,9 @@ export async function POST(request: Request) {
     }
 
     console.log(`💰 Auto-generating completion invoice for task ${taskId} in project ${projectId}...`);
+
+    // ✅ ENHANCED: Ensure project paidToDate is synced before generating invoice
+    await syncProjectPaidToDateIfNeeded(projectId);
 
     // Use robust invoice generation service with retry logic
     const { generateInvoiceWithRetry } = await import('../../../../lib/invoices/robust-invoice-service');

@@ -184,7 +184,10 @@ export function registerInvoicePaidToNotifications() {
           p.projectTitle || project.title || 'Task', // milestoneTitle
           invoiceAmount, // Use actual invoice amount
           organizationName, // Use actual organization name
-          p.invoiceNumber
+          p.invoiceNumber,
+          totalBudget, // Add project budget
+          project.title, // Add project title
+          remainingBudget // Add remaining budget
         );
         console.log(`[events.bus] ✅ Created milestone_payment_received notification for freelancer ${p.targetId}`);
 

@@ -104,6 +104,22 @@ export async function POST(req: NextRequest) {
     // 🔔 COMPLETION-SPECIFIC: Emit invoice paid notification
     try {
       const { handleCompletionNotification } = await import('@/app/api/notifications-v2/completion-handler');
+
+      // Get task and project details for notification context
+      const { getProjectTaskById } = await import('@/lib/project-tasks-service');
+      const { getProjectById } = await import('@/lib/projects-service');
+
+      const task = await getProjectTaskById(invoice.taskId);
+      const project = await getProjectById(invoice.projectId);
+
+      // Calculate remaining budget for completion projects
+      let remainingBudget = 0;
+      if (project) {
+        const totalBudget = project.totalBudget || 0;
+        const paidToDate = project.paidToDate || 0;
+        remainingBudget = Math.max(0, totalBudget - paidToDate - invoice.totalAmount);
+      }
+
       await handleCompletionNotification({
         type: 'completion.invoice_paid',
         actorId: commissionerId,
@@ -112,7 +128,10 @@ export async function POST(req: NextRequest) {
         context: {
           invoiceNumber,
           amount: invoice.totalAmount,
-          taskId: invoice.taskId
+          taskId: invoice.taskId,
+          taskTitle: task?.title || 'Task',
+          projectTitle: project?.title || 'Project',
+          remainingBudget
           // orgName will be enriched automatically
         }
       });

@@ -103,7 +103,8 @@ export async function POST(req: NextRequest) {
         projectId,
         context: {
           projectTitle: projectData.title,
-          totalTasks: projectData.totalTasks
+          totalTasks: projectData.totalTasks,
+          dueDate: projectData.dueDate
           // commissionerName and freelancerName will be enriched automatically
         }
       });

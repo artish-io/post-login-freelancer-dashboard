@@ -30,5 +30,17 @@
       "success": true,
       "mockPayment": true
     }
+  },
+  {
+    "transactionId": "TXN-TB-018",
+    "type": "invoice",
+    "integration": "mock",
+    "status": "paid",
+    "invoiceNumber": "TB-018",
+    "projectId": "Z-007",
+    "freelancerId": 25,
+    "commissionerId": 35,
+    "amount": 469.34,
+    "timestamp": "2025-08-22T14:35:27.300Z"
   }
 ]

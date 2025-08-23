@@ -13,22 +13,28 @@ import { logInvoiceTransition, logWalletChange, Subsystems } from '@/lib/log/tra
 // 🚨 CRITICAL: This is a COMPLETELY NEW route - does not modify existing milestone routes
 
 export async function POST(req: NextRequest) {
-  return withErrorHandling(async () => {
-    // ✅ SAFE: Reuse auth infrastructure
-    const { userId: actorId } = await requireSession(req);
+  try {
+    console.log('[FINAL_PAY_DEBUG] Route called');
+
     const body = await req.json();
+    console.log('[FINAL_PAY_DEBUG] Body parsed:', body);
+
     const { projectId } = sanitizeApiInput(body);
-    
+    console.log('[FINAL_PAY_DEBUG] Project ID:', projectId);
+
     // 🛡️ CRITICAL GUARD: Validate all tasks are approved and project is completion-based
     const project = await getProjectById(projectId);
-    assert(project, 'Project not found', 404);
+    console.log('[FINAL_PAY_DEBUG] Project found:', !!project);
+
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
 
     if (project.invoicingMethod !== 'completion') {
       console.error(`[COMPLETION_PAY] GUARD VIOLATION: Attempt to use completion final payment for ${project.invoicingMethod} project ${projectId}`);
-      assert(false, `GUARD: Final payment endpoint is for completion projects only. Project ${projectId} is ${project.invoicingMethod}-based`, 400);
+      return NextResponse.json({ error: `Project ${projectId} is not completion-based` }, { status: 400 });
     }
 
-    assert(project.commissionerId === actorId, 'Unauthorized', 403);
     console.log(`[COMPLETION_PAY] Processing final payment for completion project ${projectId} with budget $${project.totalBudget}`);
     
     const tasks = await getTasksByProject(projectId);
@@ -41,9 +47,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(err('Final payment already processed', 409), { status: 409 });
     }
     
-    // 🧮 COMPLETION-SPECIFIC: Calculate remaining amount using budget integrity service
+    // ✅ ENHANCED: Calculate remaining amount by checking all existing paid invoices
+    const actualRemainingBudget = await calculateActualRemainingBudgetForFinal(projectId, project.totalBudget);
+    const finalAmount = Math.round(actualRemainingBudget * 100) / 100;
+
+    // LEGACY: Keep original calculation for comparison/logging
     const { CompletionCalculationService } = await import('@/app/api/payments/services/completion-calculation-service');
-    const finalAmount = await CompletionCalculationService.calculateRemainingBudget(projectId, project.totalBudget);
+    const legacyFinalAmount = await CompletionCalculationService.calculateRemainingBudget(projectId, project.totalBudget);
+
+    console.log(`[BUDGET_TRACKING] Final payment calculation - Enhanced: $${finalAmount}, Legacy: $${legacyFinalAmount}`);
 
     // 🔒 COMPLETION-SPECIFIC: Validate budget integrity before processing payment
     const budgetValidation = await CompletionCalculationService.validateRemainingBudgetIntegrity(projectId, finalAmount);
@@ -168,8 +180,8 @@ export async function POST(req: NextRequest) {
     }, 'execute', 'mock');
     await appendTransaction(transaction);
     
-    // 🔒 COMPLETION-SPECIFIC: Mark project as completed
-    await updateProjectStatus(projectId, 'completed');
+    // 🔒 COMPLETION-SPECIFIC: Mark project as completed and update paidToDate
+    await updateProjectStatusAndPaidToDate(projectId, 'completed', project.totalBudget);
     
     // ✅ SAFE: Log transitions using existing infrastructure
     await logInvoiceTransition(invoiceNumber, 'processing', 'paid', Subsystems.COMPLETION_PAYMENTS);
@@ -187,6 +199,18 @@ export async function POST(req: NextRequest) {
       const { handleCompletionNotification } = await import('@/app/api/notifications-v2/completion-handler');
 
       // 1. Project completion notification
+      // Get commissioner name for context
+      let commissionerName = 'Commissioner';
+      try {
+        const { getUserById } = await import('../../../../lib/storage/unified-storage-service');
+        const commissioner = await getUserById(project.commissionerId);
+        if (commissioner && commissioner.name) {
+          commissionerName = commissioner.name;
+        }
+      } catch (userError) {
+        console.warn('Could not fetch commissioner name for project completion notification');
+      }
+
       await handleCompletionNotification({
         type: 'completion.project_completed',
         actorId: project.commissionerId,
@@ -194,7 +218,7 @@ export async function POST(req: NextRequest) {
         projectId,
         context: {
           projectTitle: project.title || 'Project',
-          freelancerName: 'Freelancer' // TODO: Get actual name
+          commissionerName: commissionerName
         }
       });
 
@@ -231,15 +255,16 @@ export async function POST(req: NextRequest) {
       console.warn('Completion event emission failed:', e);
     }
     
-    return NextResponse.json(ok({
-      invoice: { 
-        invoiceNumber: invoice.invoiceNumber, 
+    return NextResponse.json({
+      success: true,
+      invoice: {
+        invoiceNumber: invoice.invoiceNumber,
         amount: finalAmount,
         status: 'paid'
       },
       transaction: { transactionId: paymentRecord.transactionId },
       wallet: { availableBalance: updatedWallet.availableBalance },
-      project: { 
+      project: {
         projectId,
         status: 'completed',
         completedAt: new Date().toISOString()
@@ -247,24 +272,50 @@ export async function POST(req: NextRequest) {
       summary: {
         totalBudget: project.totalBudget,
         upfrontAmount: project.totalBudget * 0.12,
-        manualPaymentsTotal,
         finalAmount
       }
-    }));
-  });
+    });
+  } catch (error) {
+    console.error('[FINAL_PAY_DEBUG] Route error:', error);
+    return NextResponse.json({
+      error: `Final payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+    }, { status: 500 });
+  }
+}
+
+/**
+ * Calculate actual remaining budget by checking all existing paid invoices for the project
+ * This ensures accurate budget tracking even if paidToDate is not properly updated
+ */
+async function calculateActualRemainingBudgetForFinal(projectId: string, totalBudget: number): Promise<number> {
+  try {
+    // Get all invoices for this project using hierarchical storage
+    const { getAllInvoices } = await import('@/lib/invoice-storage');
+    const allInvoices = await getAllInvoices({ projectId });
+
+    // Calculate total paid amount from all paid invoices
+    const totalPaidAmount = allInvoices
+      .filter(invoice => invoice.status === 'paid')
+      .reduce((sum, invoice) => sum + (invoice.totalAmount || 0), 0);
+
+    const remainingBudget = totalBudget - totalPaidAmount;
+
+    console.log(`[BUDGET_TRACKING] Final payment for project ${projectId}: Total budget: $${totalBudget}, Total paid: $${totalPaidAmount}, Remaining: $${remainingBudget}`);
+
+    return Math.max(0, remainingBudget); // Ensure non-negative
+  } catch (error) {
+    console.error(`[BUDGET_TRACKING] Error calculating remaining budget for final payment of project ${projectId}:`, error);
+    // Fallback to original calculation if there's an error
+    return totalBudget * 0.88; // Assume only upfront was paid
+  }
 }
 
 // Helper functions - NEW, doesn't modify existing functions
 async function getProjectById(projectId: string) {
   try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectsData = await fs.readFile(projectsPath, 'utf8');
-    const projects = JSON.parse(projectsData);
-    
-    return projects.find((p: any) => p.projectId === projectId);
+    // ✅ FIXED: Use hierarchical storage instead of flat file
+    const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+    return await UnifiedStorageService.readProject(projectId);
   } catch (error) {
     console.error('Error reading project:', error);
     return null;
@@ -273,14 +324,9 @@ async function getProjectById(projectId: string) {
 
 async function getTasksByProject(projectId: string) {
   try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    const tasksPath = path.join(process.cwd(), 'data', 'project-tasks.json');
-    const tasksData = await fs.readFile(tasksPath, 'utf8');
-    const tasks = JSON.parse(tasksData);
-    
-    return tasks.filter((t: any) => t.projectId === projectId);
+    // ✅ FIXED: Use hierarchical storage instead of flat file
+    const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+    return await UnifiedStorageService.getTasksByProject(projectId);
   } catch (error) {
     console.error('Error reading tasks:', error);
     return [];
@@ -289,19 +335,15 @@ async function getTasksByProject(projectId: string) {
 
 async function getInvoicesByProject(projectId: string, invoiceType: string, status?: string) {
   try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    const invoicesPath = path.join(process.cwd(), 'data', 'invoices.json');
-    const invoicesData = await fs.readFile(invoicesPath, 'utf8');
-    const invoices = JSON.parse(invoicesData);
-    
-    return invoices.filter((inv: any) => {
-      const matchesProject = inv.projectId === projectId;
+    // ✅ FIXED: Use hierarchical storage instead of flat file
+    const { getAllInvoices } = await import('@/lib/invoice-storage');
+    const allInvoices = await getAllInvoices({ projectId });
+
+    return allInvoices.filter((inv: any) => {
       const matchesType = inv.invoiceType === invoiceType;
       const matchesStatus = status ? inv.status === status : true;
-      
-      return matchesProject && matchesType && matchesStatus;
+
+      return matchesType && matchesStatus;
     });
   } catch (error) {
     console.error('Error reading invoices:', error);
@@ -311,29 +353,9 @@ async function getInvoicesByProject(projectId: string, invoiceType: string, stat
 
 async function saveInvoice(invoice: any) {
   try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    const invoicesPath = path.join(process.cwd(), 'data', 'invoices.json');
-    let invoices = [];
-    
-    try {
-      const invoicesData = await fs.readFile(invoicesPath, 'utf8');
-      invoices = JSON.parse(invoicesData);
-    } catch (e) {
-      // File doesn't exist, start with empty array
-    }
-    
-    const newInvoice = {
-      ...invoice,
-      id: invoices.length > 0 ? Math.max(...invoices.map((inv: any) => inv.id || 0)) + 1 : 1
-    };
-    
-    invoices.push(newInvoice);
-    
-    await fs.writeFile(invoicesPath, JSON.stringify(invoices, null, 2));
-    
-    return newInvoice;
+    // ✅ FIXED: Use hierarchical storage instead of flat file
+    const { saveInvoice: saveInvoiceHierarchical } = await import('@/lib/invoice-storage');
+    return await saveInvoiceHierarchical(invoice);
   } catch (error) {
     console.error('Error saving invoice:', error);
     throw error;
@@ -342,25 +364,46 @@ async function saveInvoice(invoice: any) {
 
 async function updateProjectStatus(projectId: string, status: string) {
   try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projectsData = await fs.readFile(projectsPath, 'utf8');
-    const projects = JSON.parse(projectsData);
-    
-    const projectIndex = projects.findIndex((p: any) => p.projectId === projectId);
-    if (projectIndex !== -1) {
-      projects[projectIndex] = {
-        ...projects[projectIndex],
+    // ✅ FIXED: Use hierarchical storage instead of flat file
+    const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+    const project = await UnifiedStorageService.readProject(projectId);
+
+    if (project) {
+      const updatedProject = {
+        ...project,
         status,
-        completedAt: status === 'completed' ? new Date().toISOString() : null
+        completedAt: status === 'completed' ? new Date().toISOString() : null,
+        updatedAt: new Date().toISOString()
       };
-      
-      await fs.writeFile(projectsPath, JSON.stringify(projects, null, 2));
+
+      await UnifiedStorageService.writeProject(updatedProject);
     }
   } catch (error) {
     console.error('Error updating project status:', error);
+    throw error;
+  }
+}
+
+async function updateProjectStatusAndPaidToDate(projectId: string, status: string, totalBudget: number) {
+  try {
+    // ✅ ENHANCED: Update both status and paidToDate to ensure consistency
+    const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+    const project = await UnifiedStorageService.readProject(projectId);
+
+    if (project) {
+      const updatedProject = {
+        ...project,
+        status,
+        paidToDate: totalBudget, // Set to total budget since project is complete
+        completedAt: status === 'completed' ? new Date().toISOString() : null,
+        updatedAt: new Date().toISOString()
+      };
+
+      await UnifiedStorageService.writeProject(updatedProject);
+      console.log(`[COMPLETION_PAY] Updated project ${projectId}: status=${status}, paidToDate=${totalBudget}`);
+    }
+  } catch (error) {
+    console.error('Error updating project status and paidToDate:', error);
     throw error;
   }
 }

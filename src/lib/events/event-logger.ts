@@ -608,10 +608,14 @@ class EventLogger {
   }
 
   private async getProjectCommissioner(projectId: number): Promise<number | null> {
-    const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-    const projects = JSON.parse(fs.readFileSync(projectsPath, 'utf-8'));
-    const project = projects.find((p: any) => p.projectId === projectId);
-    return project?.commissionerId || null;
+    try {
+      const { UnifiedStorageService } = await import('../storage/unified-storage-service');
+      const project = await UnifiedStorageService.readProject(String(projectId));
+      return project?.commissionerId || null;
+    } catch (error) {
+      console.error(`Failed to get project commissioner for project ${projectId}:`, error);
+      return null;
+    }
   }
 
   private async getProjectFreelancer(projectId: number): Promise<number | null> {
@@ -626,16 +630,25 @@ class EventLogger {
   }
 
   private async getGigOwner(gigId: number): Promise<number | null> {
-    const gigsPath = path.join(process.cwd(), 'data', 'gigs', 'gigs.json');
-    const gigs = JSON.parse(fs.readFileSync(gigsPath, 'utf-8'));
-    const gig = gigs.find((g: any) => g.id === gigId);
-    return gig?.commissionerId || null;
+    try {
+      const { readGig } = await import('../gigs/hierarchical-storage');
+      const gig = await readGig(gigId);
+      return gig?.commissionerId || null;
+    } catch (error) {
+      console.error(`Failed to get gig owner for gig ${gigId}:`, error);
+      return null;
+    }
   }
 
   private async getOrganization(organizationId: number): Promise<any> {
-    const orgsPath = path.join(process.cwd(), 'data', 'organizations.json');
-    const organizations = JSON.parse(fs.readFileSync(orgsPath, 'utf-8'));
-    return organizations.find((o: any) => o.id === organizationId);
+    try {
+      const { UnifiedStorageService } = await import('../storage/unified-storage-service');
+      const organization = await UnifiedStorageService.getOrganizationById(organizationId);
+      return organization;
+    } catch (error) {
+      console.error(`Failed to get organization ${organizationId}:`, error);
+      return null;
+    }
   }
 
   /**
@@ -680,21 +693,18 @@ export const logTaskApproved = async (commissionerId: number, freelancerId: numb
   let freelancerName = 'Unknown Freelancer';
 
   try {
-    // Read project and user data for metadata
-    const fs = require('fs').promises;
-    const path = require('path');
+    // Read project and user data for metadata using unified storage
+    const { UnifiedStorageService } = await import('../storage/unified-storage-service');
 
-    const [projectData, usersData] = await Promise.all([
+    const [projectData, commissioner, freelancer] = await Promise.all([
       import('@/lib/projects-utils').then(m => m.readProject(projectId)),
-      fs.readFile(path.join(process.cwd(), 'data', 'users.json'), 'utf-8').then((data: string) => JSON.parse(data))
+      UnifiedStorageService.getUserById(commissionerId),
+      UnifiedStorageService.getUserById(freelancerId)
     ]);
 
     if (projectData) {
       projectTitle = projectData.title || 'Unknown Project';
     }
-
-    const commissioner = usersData.find((u: any) => u.id === commissionerId);
-    const freelancer = usersData.find((u: any) => u.id === freelancerId);
 
     if (commissioner) commissionerName = commissioner.name;
     if (freelancer) freelancerName = freelancer.name;
@@ -731,21 +741,18 @@ export const logTaskRejected = async (commissionerId: number, freelancerId: numb
   let freelancerName = 'Unknown Freelancer';
 
   try {
-    // Read project and user data for metadata
-    const fs = require('fs').promises;
-    const path = require('path');
+    // Read project and user data for metadata using unified storage
+    const { UnifiedStorageService } = await import('../storage/unified-storage-service');
 
-    const [projectData, usersData] = await Promise.all([
+    const [projectData, commissioner, freelancer] = await Promise.all([
       import('@/lib/projects-utils').then(m => m.readProject(projectId)),
-      fs.readFile(path.join(process.cwd(), 'data', 'users.json'), 'utf-8').then((data: string) => JSON.parse(data))
+      UnifiedStorageService.getUserById(commissionerId),
+      UnifiedStorageService.getUserById(freelancerId)
     ]);
 
     if (projectData) {
       projectTitle = projectData.title || 'Unknown Project';
     }
-
-    const commissioner = usersData.find((u: any) => u.id === commissionerId);
-    const freelancer = usersData.find((u: any) => u.id === freelancerId);
 
     if (commissioner) commissionerName = commissioner.name;
     if (freelancer) freelancerName = freelancer.name;
@@ -798,7 +805,7 @@ export const logMilestonePayment = (commissionerId: number, freelancerId: number
   });
 };
 
-export const logMilestonePaymentWithOrg = (commissionerId: number, freelancerId: number, projectId: string | number, milestoneTitle: string, amount: number, organizationName: string, invoiceNumber: string) => {
+export const logMilestonePaymentWithOrg = (commissionerId: number, freelancerId: number, projectId: string | number, milestoneTitle: string, amount: number, organizationName: string, invoiceNumber: string, projectBudget?: number, projectTitle?: string, remainingBudget?: number) => {
   return eventLogger.logEvent({
     id: `milestone_payment_${projectId}_${Date.now()}`,
     timestamp: new Date().toISOString(),
@@ -813,6 +820,9 @@ export const logMilestonePaymentWithOrg = (commissionerId: number, freelancerId:
       amount,
       organizationName,
       invoiceNumber,
+      projectBudget,
+      projectTitle,
+      remainingBudget,
       priority: 'high'
     },
     context: {

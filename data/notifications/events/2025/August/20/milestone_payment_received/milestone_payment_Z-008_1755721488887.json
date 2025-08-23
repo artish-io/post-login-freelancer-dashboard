@@ -12,11 +12,16 @@
     "amount": 500,
     "organizationName": "Zynate Events Group",
     "invoiceNumber": "TB-016",
-    "priority": "high"
+    "priority": "high",
+    "projectTitle": "God Abeg No Code Regression Test",
+    "projectBudget": 1500,
+    "remainingBudget": 1000
   },
   "context": {
     "projectId": "Z-008",
     "milestoneTitle": "God Abeg No Code Regression Test",
     "invoiceNumber": "TB-016"
-  }
+  },
+  "updatedAt": "2025-08-23T05:00:01.741Z",
+  "milestonePaymentContextNote": "Fixed milestone payment context: projectTitle: God Abeg No Code Regression Test, projectBudget: $1500, remainingBudget: $1000"
 }

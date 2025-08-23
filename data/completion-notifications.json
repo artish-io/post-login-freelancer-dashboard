@@ -322,5 +322,177 @@
     },
     "read": false,
     "createdAt": "2025-08-22T11:34:33.223Z"
+  },
+  {
+    "id": "comp_notif_1755869626148_i2xd0b6vp",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-007",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase Three: Analytics and Review \" in Ad Copy for Google Waterloo Launch Event. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1755713134668",
+      "taskTitle": "Phase Three: Analytics and Review ",
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T13:33:46.148Z"
+  },
+  {
+    "id": "comp_notif_1755869626154_9hncfesb5",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-007",
+    "message": "You approved \"Phase Three: Analytics and Review \" in Ad Copy for Google Waterloo Launch Event. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1755713134668",
+      "taskTitle": "Phase Three: Analytics and Review ",
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T13:33:46.154Z"
+  },
+  {
+    "id": "comp_notif_1755873327952_b43lezdyb",
+    "type": "completion.project_completed",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-007",
+    "message": "All tasks for Ad Copy for Google Waterloo Launch Event have been completed and approved. Project is now complete.",
+    "context": {
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "freelancerName": "Lucas Meyer",
+      "orgName": "Zynate Events Group",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T14:35:27.952Z"
+  },
+  {
+    "id": "comp_notif_1755873327967_lteldov1d",
+    "type": "completion.project_completed",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-007",
+    "message": "You have approved all tasks for Ad Copy for Google Waterloo Launch Event. Project is now complete.",
+    "context": {
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "freelancerName": "Lucas Meyer",
+      "orgName": "Zynate Events Group",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T14:35:27.967Z"
+  },
+  {
+    "id": "comp_notif_1755873328040_zk5tqtls5",
+    "type": "completion.final_payment",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-007",
+    "message": "Zynate Events Group has paid you $469.34 for Ad Copy for Google Waterloo Launch Event final payment (remaining 29% of budget). Click here to view invoice details.",
+    "context": {
+      "finalAmount": 469.34,
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "finalPercent": 29,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T14:35:28.040Z"
+  },
+  {
+    "id": "comp_notif_1755873328048_kpho3oj9q",
+    "type": "completion.final_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-007",
+    "message": "You just paid Lucas Meyer $469.34 for completing Ad Copy for Google Waterloo Launch Event. Remaining budget: $0. Click here to see transaction activity.",
+    "context": {
+      "finalAmount": 469.34,
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "finalPercent": 29,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T14:35:28.048Z"
+  },
+  {
+    "id": "comp_notif_1755873328301_5ky8rbo6l",
+    "type": "completion.rating_prompt",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-007",
+    "message": "Rate your experience with Tilly Burzinsky. All tasks for Ad Copy for Google Waterloo Launch Event have been approved. Click here to rate your collaboration.",
+    "context": {
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "freelancerName": "Lucas Meyer",
+      "orgName": "Zynate Events Group"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T14:35:28.301Z"
+  },
+  {
+    "id": "comp_notif_1755873328330_1wfocibzi",
+    "type": "completion.rating_prompt",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-007",
+    "message": "Rate Lucas Meyer's work. You have approved all task milestones for Ad Copy for Google Waterloo Launch Event. Click here to rate their work on this project.",
+    "context": {
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "commissionerName": "Tilly Burzinsky",
+      "freelancerName": "Lucas Meyer",
+      "orgName": "Zynate Events Group"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T14:35:28.330Z"
+  },
+  {
+    "id": "comp_notif_1755893960425_5j5dq6j8j",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 25,
+    "projectId": "Z-009",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase One: This documentation provides\" in Project Content Specification Flow. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1755862619324",
+      "taskTitle": "Phase One: This documentation provides",
+      "projectTitle": "Project Content Specification Flow",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T20:19:20.425Z"
+  },
+  {
+    "id": "comp_notif_1755893960428_d2hw6s5ge",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-009",
+    "message": "You approved \"Phase One: This documentation provides\" in Project Content Specification Flow. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1755862619324",
+      "taskTitle": "Phase One: This documentation provides",
+      "projectTitle": "Project Content Specification Flow",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Lucas Meyer"
+    },
+    "read": false,
+    "createdAt": "2025-08-22T20:19:20.428Z"
   }
 ]

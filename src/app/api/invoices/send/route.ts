@@ -107,9 +107,23 @@ export async function POST(request: Request) {
     const freelancerName = freelancer?.name || 'A freelancer';
 
     // Calculate approved tasks count and validate invoice eligibility
-    const approvedTasks = (invoice.milestones || []).filter(milestone =>
-      milestone.approvedAt || milestone.taskId === 'upfront'
-    );
+    // For completion invoices, all milestones represent approved tasks (except upfront)
+    // For milestone invoices, only count milestones with approvedAt
+    const approvedTasks = (invoice.milestones || []).filter(milestone => {
+      if (milestone.taskId === 'upfront') return true; // Upfront payments always count
+
+      // Check if this is a completion invoice by looking at invoice number or type
+      const isCompletionInvoice = invoice.invoiceNumber?.includes('-C') ||
+                                  invoice.invoiceType?.includes('completion');
+
+      if (isCompletionInvoice) {
+        // For completion invoices, all non-upfront milestones represent approved tasks
+        return milestone.taskId !== 'upfront';
+      } else {
+        // For milestone invoices, only count explicitly approved milestones
+        return milestone.approvedAt;
+      }
+    });
     const approvedTasksCount = approvedTasks.length;
     const invoiceValue = invoice.totalAmount;
 
@@ -121,10 +135,13 @@ export async function POST(request: Request) {
       approved_tasks: approvedTasksCount
     })}`);
 
+    // Initialize notification ID (will be used if notification is created)
+    let notificationId = null;
+
     // Only send notification if invoice has approved tasks and amount > 0
     if (approvedTasksCount > 0 && invoiceValue > 0) {
       // Create notification for commissioner with exact copy as specified
-      const notificationId = `evt_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+      notificationId = `evt_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
       const newNotification = {
         id: notificationId,
         timestamp: new Date().toISOString(),
@@ -147,10 +164,6 @@ export async function POST(request: Request) {
           invoiceNumber: invoiceNumber
         }
       };
-
-      // Add notification to the log
-      notifications.unshift(newNotification);
-    }
 
       // Add notification to the log
       notifications.unshift(newNotification);

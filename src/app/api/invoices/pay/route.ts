@@ -187,6 +187,25 @@ export async function POST(request: Request) {
       commissionerName
     });
 
+    // Get organization name and project budget for the notification
+    let organizationName = commissionerName; // Fallback to commissioner name
+    let projectBudget = 0;
+    try {
+      const { getOrganizationByCommissionerId, getProjectById } = await import('../../../lib/storage/unified-storage-service');
+      const organization = await getOrganizationByCommissionerId(commissionerIdNum);
+      if (organization) {
+        organizationName = organization.name;
+      }
+
+      // Get project budget for remaining budget calculation
+      const project = await getProjectById(invoice.projectId);
+      if (project) {
+        projectBudget = project.totalBudget || project.budget?.upper || project.budget?.lower || 0;
+      }
+    } catch (orgError) {
+      console.warn('Could not fetch organization name or project budget for invoice payment notification, using fallbacks');
+    }
+
     // Create notification for freelancer
     const notificationId = `evt_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     const newNotification = {
@@ -203,7 +222,9 @@ export async function POST(request: Request) {
         projectTitle: invoice.projectTitle,
         amount: amount,
         milestoneDescription: invoice.milestoneDescription,
-        commissionerName: commissionerName
+        organizationName: organizationName, // Use organization name instead of commissioner name
+        commissionerName: commissionerName, // Keep commissioner name for backward compatibility
+        projectBudget: projectBudget // Add project budget for remaining budget calculation
       },
       context: {
         projectId: invoice.projectId,

@@ -106,11 +106,55 @@ export async function sendProjectCompletionRatingNotifications(
       }
     };
 
-    // Add both notifications to storage
+    // Create project completion notifications (separate from rating prompts)
+    const projectCompletionFreelancerNotification = {
+      id: `project_completed_${projectId}_${Date.now()}_freelancer`,
+      timestamp,
+      type: 'project_completed' as const,
+      notificationType: NOTIFICATION_TYPES.PROJECT_COMPLETED,
+      actorId: commissionerId, // Commissioner approved all tasks
+      targetId: freelancerId, // Freelancer receives completion notification
+      entityType: ENTITY_TYPES.PROJECT,
+      entityId: projectId.toString(),
+      metadata: {
+        projectTitle,
+        commissionerName,
+        completedTaskTitle,
+        priority: 'high'
+      },
+      context: {
+        projectId
+      }
+    };
+
+    const projectCompletionCommissionerNotification = {
+      id: `project_completed_${projectId}_${Date.now()}_commissioner`,
+      timestamp,
+      type: 'project_completed' as const,
+      notificationType: NOTIFICATION_TYPES.PROJECT_COMPLETED,
+      actorId: commissionerId, // Commissioner approved all tasks
+      targetId: commissionerId, // Commissioner receives completion notification (self-notification)
+      entityType: ENTITY_TYPES.PROJECT,
+      entityId: projectId.toString(),
+      metadata: {
+        projectTitle,
+        commissionerName,
+        completedTaskTitle,
+        priority: 'high'
+      },
+      context: {
+        projectId
+      }
+    };
+
+    // Add all notifications to storage
     NotificationStorage.addEvent(freelancerNotification);
     NotificationStorage.addEvent(commissionerNotification);
+    NotificationStorage.addEvent(projectCompletionFreelancerNotification);
+    NotificationStorage.addEvent(projectCompletionCommissionerNotification);
 
-    console.log(`✅ Sent milestone project completion rating notifications for project ${projectId}`);
+    console.log(`✅ Sent milestone project completion and rating notifications for project ${projectId}`);
+    console.log(`   → Project completion notifications sent to both parties`);
     console.log(`   → Freelancer ${freelancerId} prompted to rate commissioner ${commissionerId}`);
     console.log(`   → Commissioner ${commissionerId} prompted to rate freelancer ${freelancerId}`);
 

@@ -163,8 +163,9 @@ async function collectUserRatings(userId: number, userType: 'freelancer' | 'comm
           for (const project of projects) {
             if (!project.isDirectory()) continue;
             
-            const projectId = Number(project.name);
-            if (isNaN(projectId)) continue;
+            const projectId = project.name;
+            // Skip if project name is empty or invalid
+            if (!projectId || projectId.startsWith('.')) continue;
             
             // Check for ratings directory
             const ratingsPath = path.join(dayPath, project.name, 'ratings', userType);
@@ -216,8 +217,9 @@ async function checkFlatStructureRatings(
         continue;
       }
 
-      const projectId = Number(entry.name);
-      if (isNaN(projectId)) continue;
+      const projectId = entry.name;
+      // Skip if project name is empty or invalid
+      if (!projectId || projectId.startsWith('.')) continue;
 
       // Check for ratings in flat structure
       const ratingsPath = path.join(projectsBasePath, entry.name, 'ratings', userType);

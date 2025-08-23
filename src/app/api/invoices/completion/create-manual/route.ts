@@ -14,6 +14,32 @@ function invariant<T>(value: T | null | undefined, message: string): asserts val
   }
 }
 
+/**
+ * Calculate actual remaining budget by checking all existing paid invoices for the project
+ * This ensures accurate budget tracking even if paidToDate is not properly updated
+ */
+async function calculateActualRemainingBudget(projectId: string, totalBudget: number): Promise<number> {
+  try {
+    // Get all invoices for this project
+    const allInvoices = await getAllInvoices({ projectId });
+
+    // Calculate total paid amount from all paid invoices
+    const totalPaidAmount = allInvoices
+      .filter(invoice => invoice.status === 'paid')
+      .reduce((sum, invoice) => sum + (invoice.totalAmount || 0), 0);
+
+    const remainingBudget = totalBudget - totalPaidAmount;
+
+    console.log(`[BUDGET_TRACKING] Project ${projectId}: Total budget: $${totalBudget}, Total paid: $${totalPaidAmount}, Remaining: $${remainingBudget}`);
+
+    return Math.max(0, remainingBudget); // Ensure non-negative
+  } catch (error) {
+    console.error(`[BUDGET_TRACKING] Error calculating remaining budget for project ${projectId}:`, error);
+    // Fallback to original calculation if there's an error
+    return totalBudget * 0.88; // Assume only upfront was paid
+  }
+}
+
 // 🚨 CRITICAL: This is a COMPLETELY NEW route - does not modify existing invoice routes
 
 export async function POST(req: NextRequest) {
@@ -92,7 +118,16 @@ export async function POST(req: NextRequest) {
 
     console.log(`[COMPLETION_PAY] Manual invoice calculation for project ${normalizedProjectId}: Total budget: $${project?.totalBudget}, Task portion (88%): $${taskPortionBudget}, Total tasks: ${totalTasks}, Amount per task: $${manualInvoiceAmount}`);
 
-    // Validate the calculated amount doesn't exceed remaining budget
+    // ✅ ENHANCED: Calculate actual remaining budget by checking existing invoices
+    const actualRemainingBudget = await calculateActualRemainingBudget(normalizedProjectId, project.totalBudget || 0);
+
+    // Validate the calculated amount doesn't exceed actual remaining budget
+    if (manualInvoiceAmount > actualRemainingBudget) {
+      console.error(`[REMAINDER_BUDGET] Manual invoice amount ($${manualInvoiceAmount}) exceeds actual remaining budget ($${actualRemainingBudget})`);
+      return NextResponse.json(err('INSUFFICIENT_FUNDS', `Cannot create invoice: Amount $${manualInvoiceAmount} exceeds remaining budget $${actualRemainingBudget}`), { status: 400 });
+    }
+
+    // Also run the existing validation for additional checks
     const budgetValidation = await CompletionCalculationService.validateRemainingBudgetIntegrity(normalizedProjectId, manualInvoiceAmount);
     if (!budgetValidation.isValid) {
       console.error(`[REMAINDER_BUDGET] Manual invoice amount validation failed:`, budgetValidation.errors);
@@ -100,12 +135,12 @@ export async function POST(req: NextRequest) {
     }
     
     // ✅ SAFE: Create invoice using existing infrastructure
-    // Generate invoice number using commissioner initials (same pattern as upfront payment)
-    let invoiceNumber = `COMP-MAN-${normalizedProjectId}-${normalizedTaskId}-${Date.now()}`; // Fallback
+    // Generate invoice number using commissioner initials with completion prefix
+    let invoiceNumber = `COMP-MAN-C-${normalizedProjectId}-${normalizedTaskId}-${Date.now()}`; // Fallback
 
     try {
       // Get commissioner data using hierarchical storage
-      const commissioner = await UnifiedStorageService.getUserById(project?.commissionerId);
+      const commissioner = await UnifiedStorageService.getUserById(project?.commissionerId || 0);
 
       if (commissioner?.name) {
         // Extract initials from commissioner name

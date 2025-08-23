@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755713134668_1755869607300",
+  "timestamp": "2025-08-22T13:33:27.300Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 25,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1755713134668,
+  "metadata": {
+    "taskId": 1755713134668,
+    "taskTitle": "Phase Three: Analytics and Review ",
+    "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-007",
+    "taskId": 1755713134668
+  }
+}

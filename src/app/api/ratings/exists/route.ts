@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { readJson, fileExists } from '@/lib/fs-json';
-import { 
-  ProjectRating, 
+import {
+  ProjectRating,
   RatingExistsResponse,
   getRatingStoragePath,
-  isValidProjectRating 
+  getHierarchicalRatingStoragePath,
+  isValidProjectRating
 } from '../../../../../types/ratings';
 import path from 'path';
 
@@ -71,8 +73,18 @@ export async function GET(request: NextRequest): Promise<NextResponse<ApiError |
       }, { status: 400 });
     }
 
-    // Check if rating exists
-    const ratingPath = getRatingStoragePath(projectId, subjectUserType, raterUserId);
+    // Get project data to determine hierarchical path
+    const project = await UnifiedStorageService.readProject(projectId);
+    if (!project) {
+      return NextResponse.json({
+        success: false,
+        code: 'INVALID_INPUT',
+        message: 'Project not found'
+      }, { status: 404 });
+    }
+
+    // Check if rating exists - use hierarchical storage path
+    const ratingPath = getHierarchicalRatingStoragePath(projectId, project.createdAt, subjectUserType, raterUserId);
     const fullRatingPath = path.join(process.cwd(), ratingPath);
     
     const exists = await fileExists(fullRatingPath);

@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1755873328048_kpho3oj9q",
+  "type": "completion.final_payment",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-007",
+  "message": "You just paid Lucas Meyer $469.34 for completing Ad Copy for Google Waterloo Launch Event. Remaining budget: $0. Click here to see transaction activity.",
+  "context": {
+    "finalAmount": 469.34,
+    "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+    "finalPercent": 29,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "read": false,
+  "createdAt": "2025-08-22T14:35:28.048Z",
+  "timestamp": "2025-08-22T14:35:28.048Z",
+  "subsystem": "completion_invoicing"
+}
