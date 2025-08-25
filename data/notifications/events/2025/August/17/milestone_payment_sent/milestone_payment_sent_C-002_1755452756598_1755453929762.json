@@ -15,7 +15,7 @@
     "freelancerName": "Tobi Philly",
     "amount": 1000,
     "invoiceNumber": "MH-001",
-    "remainingBudget": 2000,
+    "remainingBudget": 0,
     "projectBudget": 3000
   },
   "context": {
@@ -25,6 +25,7 @@
   },
   "title": "You just paid Tobi Philly $1,000",
   "message": "You just paid Tobi Philly $1,000 for submitting Phase 1: Cultivating desire is very profitable for Web 3 Graphic Design Asssets . Remaining budget: $2,000. Click here to see transaction activity",
-  "updatedAt": "2025-08-23T02:09:19.770Z",
-  "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue"
+  "updatedAt": "2025-08-23T15:57:32.737Z",
+  "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue",
+  "remainingBudgetFixNote": "Fixed remaining budget calculation: was $2000, corrected to $0 (totalBudget: $3000 - paidToDate: $3000)"
 }

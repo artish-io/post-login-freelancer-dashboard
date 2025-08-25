@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756144484739_279",
+  "timestamp": "2025-08-25T17:54:44.740Z",
+  "type": "payment_sent",
+  "notificationType": 42,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "TB-C008",
+  "metadata": {
+    "invoiceNumber": "TB-C008",
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "amount": 410.6666666666667,
+    "freelancerName": "Margsate Flether",
+    "remainingBudget": "$989.33",
+    "notificationText": "You just paid Margsate Flether $410.6666666666667 for their work on Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series. This project has a remaining budget of $989.33 left."
+  },
+  "context": {
+    "projectId": "Z-011",
+    "invoiceNumber": "TB-C008"
+  }
+}

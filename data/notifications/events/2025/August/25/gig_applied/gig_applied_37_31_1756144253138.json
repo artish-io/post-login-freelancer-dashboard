@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_37_31_1756144253138",
+  "timestamp": "2025-08-25T17:50:53.138Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "37",
+  "metadata": {
+    "gigTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 37,
+    "applicationId": 1755193217266
+  }
+}

@@ -26,7 +26,21 @@ export interface Project {
     avatar: string;
     email: string;
   };
-  createdAt?: string; // We'll add this during migration
+  createdAt?: string;
+
+  // 🛡️ DURATION GUARD: Date separation and duration persistence types
+  gigId?: number;
+  gigPostedDate?: string;
+  projectActivatedAt?: string;
+  originalDuration?: {
+    deliveryTimeWeeks?: number;
+    estimatedHours?: number;
+    originalStartDate?: string;
+    originalEndDate?: string;
+  };
+  // Legacy fields for backward compatibility
+  deliveryTimeWeeks?: number;
+  estimatedHours?: number;
 }
 
 export interface ProjectLocation {

@@ -15,7 +15,7 @@
     "freelancerName": "Lucas Meyer",
     "amount": 900,
     "invoiceNumber": "TB-019",
-    "remainingBudget": 900,
+    "remainingBudget": 0,
     "projectBudget": 1800
   },
   "context": {
@@ -25,8 +25,9 @@
   },
   "title": "You just paid Lucas Meyer $900",
   "message": "You just paid Lucas Meyer $900 for submitting Phase One: The ARTISH invoicing system for Project Test: ARTISH implements Tow Distinct. Remaining budget: $900. Click here to see transaction activity",
-  "updatedAt": "2025-08-23T03:55:03.542Z",
+  "updatedAt": "2025-08-23T15:57:32.743Z",
   "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue",
   "enrichmentNote": "Fixed freelancer name enrichment: freelancerName: Lucas Meyer, title and message updated",
-  "contextEnrichmentNote": "Fixed amount enrichment: amount: $900, title and message updated with correct amount"
+  "contextEnrichmentNote": "Fixed amount enrichment: amount: $900, title and message updated with correct amount",
+  "remainingBudgetFixNote": "Fixed remaining budget calculation: was $900, corrected to $0 (totalBudget: $1800 - paidToDate: $1800)"
 }

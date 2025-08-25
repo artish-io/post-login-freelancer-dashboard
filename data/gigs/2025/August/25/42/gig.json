@@ -1,0 +1,54 @@
+{
+  "id": 42,
+  "title": "Event Marketing For The Dangers of Techno-Feudalism Talk Series",
+  "organizationId": 4,
+  "commissionerId": "35",
+  "category": "Writing",
+  "subcategory": "Content Writing",
+  "tags": [
+    "UI/UX Design"
+  ],
+  "hourlyRateMin": 31.25,
+  "hourlyRateMax": 37.5,
+  "description": "Drive visibility and engagement for a conference uniting thinkers, activists, and academics critiquing techno-feudalism—the consolidation of power by digital platforms and algorithmic systems. I’ll design and execute a multi-channel campaign (social, newsletters, media outreach, partnerships) to highlight the urgency of these conversations and attract the right audience. ",
+  "deliveryTimeWeeks": 0.7142857142857143,
+  "estimatedHours": 32,
+  "status": "Available",
+  "toolsRequired": [
+    "Figma"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "78f97006-c4de-4d32-830f-66089df734d0",
+      "title": "Phase 1 – Positioning & Messaging",
+      "description": "Develop a strong narrative framework that captures the stakes of techno-feudalism (concentration of power, erosion of democracy, worker precarity). Create brand assets, talking points, and media kits that position the conference as the leading forum on the issue.\n\n",
+      "startDate": "2025-08-26T04:00:00.000Z",
+      "endDate": "2025-08-26T04:00:00.000Z"
+    },
+    {
+      "id": "7afebff5-6d1f-4c11-88d1-f04db8e6c845",
+      "title": "Phase 2 – Audience Outreach & Campaign Rollout",
+      "description": "Run digital campaigns targeting academics, journalists, and activists; foster partnerships with progressive organizations; and amplify voices of key speakers through content drops and video teasers. Drive early RSVPs with thought-leadership articles and community engagement.",
+      "startDate": "2025-08-27T04:00:00.000Z",
+      "endDate": "2025-08-28T04:00:00.000Z"
+    },
+    {
+      "id": "ed60294a-6548-4c21-9b55-010e9a3f1439",
+      "title": "Phase 3 – Event Amplification & Legacy Building",
+      "description": "Manage live coverage during the conference (live tweets, recap reels, press placements) and publish a post-event whitepaper or highlight reel. Ensure the conference’s ideas outlast the event itself by building a digital archive and ongoing community channel.",
+      "startDate": "2025-08-29T04:00:00.000Z",
+      "endDate": "2025-08-30T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-30T04:00:00.000Z",
+  "lowerBudget": 1000,
+  "upperBudget": 1200,
+  "postedDate": "2025-08-25",
+  "notes": "Budget range: $1,000 - $1,200",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

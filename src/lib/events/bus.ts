@@ -171,10 +171,11 @@ export function registerInvoicePaidToNotifications() {
         const freelancer = await UnifiedStorageService.getUserById(Number(p.targetId));
         const freelancerName = freelancer?.name || 'Freelancer';
 
-        // Calculate remaining budget (total budget - current paid amount - this payment)
+        // Calculate remaining budget (total budget - paid to date)
+        // Note: paidToDate already includes the current payment that was just processed
         const totalBudget = Number(project.totalBudget) || 0;
         const currentPaidToDate = Number(project.paidToDate) || 0;
-        const remainingBudget = Math.max(0, totalBudget - (currentPaidToDate + invoiceAmount));
+        const remainingBudget = Math.max(0, totalBudget - currentPaidToDate);
 
         // Create milestone_payment_received notification for freelancer
         await logMilestonePaymentWithOrg(

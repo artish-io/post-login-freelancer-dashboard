@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1755961969084_33stfc9zi",
+  "type": "completion.upfront_payment",
+  "actorId": 34,
+  "targetId": 1,
+  "projectId": "C-007",
+  "message": "Corlax Wellness has paid $264 upfront for your newly activated UN End Poverty Collab Landing Page project. This project has a budget of $1936 left. Click here to view invoice details",
+  "context": {
+    "upfrontAmount": 264,
+    "projectTitle": "UN End Poverty Collab Landing Page",
+    "remainingBudget": 1936,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "read": false,
+  "createdAt": "2025-08-23T15:12:49.084Z",
+  "timestamp": "2025-08-23T15:12:49.084Z",
+  "subsystem": "completion_invoicing"
+}

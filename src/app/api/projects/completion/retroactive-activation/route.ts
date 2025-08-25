@@ -259,20 +259,23 @@ async function updateProject(projectId: string, updatedProject: any) {
 
 async function getUserName(userId: number): Promise<string | null> {
   try {
-    // This would typically fetch from user database
-    // For now, return a placeholder
-    return userId === 31 ? 'Sarah Johnson' : userId === 32 ? 'John Smith' : `User ${userId}`;
+    const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+    const user = await UnifiedStorageService.getUserById(userId);
+    return user?.name || null;
   } catch (error) {
+    console.error(`Error fetching user name for ID ${userId}:`, error);
     return null;
   }
 }
 
 async function getOrgName(orgId: number): Promise<string | null> {
   try {
-    // This would typically fetch from organization database
-    // For now, return a placeholder
-    return orgId === 1 ? 'TechCorp' : `Organization ${orgId}`;
+    const { getAllOrganizations } = await import('@/lib/storage/unified-storage-service');
+    const organizations = await getAllOrganizations();
+    const organization = organizations.find((org: any) => org.id === orgId);
+    return organization?.name || null;
   } catch (error) {
+    console.error(`Error fetching organization name for ID ${orgId}:`, error);
     return null;
   }
 }

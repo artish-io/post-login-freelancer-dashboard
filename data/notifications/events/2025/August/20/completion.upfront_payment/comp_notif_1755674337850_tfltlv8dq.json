@@ -4,7 +4,7 @@
   "actorId": 35,
   "targetId": 35,
   "projectId": "Z-005",
-  "message": "You sent Lucas Meyer an invoice for your recently activated UX Research for Project: Y.U.T.A.N.I project. This project has a budget of $2904 left. Click here to view invoice details",
+  "message": "You sent Lucas Meyer a $396 invoice for your recently activated UX Research for Project: Y.U.T.A.N.I project. This project has a budget of $2904 left. Click here to view invoice details",
   "context": {
     "upfrontAmount": 396,
     "projectTitle": "UX Research for Project: Y.U.T.A.N.I",
@@ -16,5 +16,7 @@
   "read": false,
   "createdAt": "2025-08-20T07:18:57.850Z",
   "timestamp": "2025-08-20T07:18:57.850Z",
-  "subsystem": "completion_invoicing"
+  "subsystem": "completion_invoicing",
+  "messageFixNote": "Fixed upfront payment message to include actual dollar amount ($396) instead of generic 'an invoice' text",
+  "updatedAt": "2025-08-23T15:58:12.951Z"
 }

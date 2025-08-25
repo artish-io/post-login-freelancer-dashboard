@@ -3,23 +3,23 @@
     "userId": 1,
     "userType": "freelancer",
     "currency": "USD",
-    "availableBalance": 17089.2,
+    "availableBalance": 17353.2,
     "pendingWithdrawals": 0,
-    "lifetimeEarnings": 17089.2,
+    "lifetimeEarnings": 17353.2,
     "totalWithdrawn": 0,
     "holds": 0,
-    "updatedAt": "2025-08-20T05:45:11.484Z"
+    "updatedAt": "2025-08-23T15:12:49.005Z"
   },
   {
     "userId": 31,
     "userType": "freelancer",
     "currency": "USD",
-    "availableBalance": 11855.4,
+    "availableBalance": 13024.73,
     "pendingWithdrawals": 0,
-    "lifetimeEarnings": 11855.4,
+    "lifetimeEarnings": 13024.73,
     "totalWithdrawn": 0,
     "holds": 0,
-    "updatedAt": "2025-08-20T06:20:50.214Z"
+    "updatedAt": "2025-08-25T19:38:30.388Z"
   },
   {
     "userId": 32,

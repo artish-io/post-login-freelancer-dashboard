@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_38_31_1756150685650",
+  "timestamp": "2025-08-25T19:38:05.650Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "38",
+  "metadata": {
+    "gigTitle": "Communists of Waterloo Marketing",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 38,
+    "applicationId": 1755193217267
+  }
+}

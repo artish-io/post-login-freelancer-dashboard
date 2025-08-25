@@ -1,0 +1,23 @@
+{
+  "id": "project_activated_Z-012_1756150711118",
+  "timestamp": "2025-08-25T19:38:31.118Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 2,
+  "entityId": "Z-012",
+  "metadata": {
+    "projectTitle": "Communists of Waterloo Marketing",
+    "gigTitle": "Communists of Waterloo Marketing",
+    "taskCount": 3,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group",
+    "dueDate": "2025-08-29"
+  },
+  "context": {
+    "projectId": "Z-012",
+    "gigId": 38,
+    "applicationId": 1755193217267
+  }
+}

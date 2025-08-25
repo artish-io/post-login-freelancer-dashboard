@@ -1,0 +1,23 @@
+{
+  "id": "project_activated_Z-013_1756155418329",
+  "timestamp": "2025-08-25T20:56:58.329Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 2,
+  "entityId": "Z-013",
+  "metadata": {
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "gigTitle": "Marketing For Techno-Fedualism Milestones",
+    "taskCount": 3,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group",
+    "dueDate": "2025-08-29"
+  },
+  "context": {
+    "projectId": "Z-013",
+    "gigId": 39,
+    "applicationId": 1755193217270
+  }
+}

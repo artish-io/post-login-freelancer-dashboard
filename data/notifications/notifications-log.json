@@ -1,5 +1,93 @@
 [
   {
+    "id": "evt_1756152084093_160",
+    "timestamp": "2025-08-25T20:01:24.093Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C010",
+    "metadata": {
+      "invoiceNumber": "TB-C010",
+      "projectTitle": "Communists of Waterloo Marketing",
+      "amount": 440,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $440 for 1 approved task, of your active project, Communists of Waterloo Marketing."
+    },
+    "context": {
+      "projectId": "Z-012",
+      "invoiceNumber": "TB-C010"
+    }
+  },
+  {
+    "id": "evt_1756151768806_876",
+    "timestamp": "2025-08-25T19:56:08.806Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C010",
+    "metadata": {
+      "invoiceNumber": "TB-C010",
+      "projectTitle": "Communists of Waterloo Marketing",
+      "amount": 440,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $440 for 1 approved task, of your active project, Communists of Waterloo Marketing."
+    },
+    "context": {
+      "projectId": "Z-012",
+      "invoiceNumber": "TB-C010"
+    }
+  },
+  {
+    "id": "evt_1756150835082_701",
+    "timestamp": "2025-08-25T19:40:35.082Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C010",
+    "metadata": {
+      "invoiceNumber": "TB-C010",
+      "projectTitle": "Communists of Waterloo Marketing",
+      "amount": 440,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $440 for 1 approved task, of your active project, Communists of Waterloo Marketing."
+    },
+    "context": {
+      "projectId": "Z-012",
+      "invoiceNumber": "TB-C010"
+    }
+  },
+  {
+    "id": "evt_1756144421810_885",
+    "timestamp": "2025-08-25T17:53:41.810Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C008",
+    "metadata": {
+      "invoiceNumber": "TB-C008",
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "amount": 410.6666666666667,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $410.6666666666667 for 1 approved task, of your active project, Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series."
+    },
+    "context": {
+      "projectId": "Z-011",
+      "invoiceNumber": "TB-C008"
+    }
+  },
+  {
     "id": "evt_1755827446561_332",
     "timestamp": "2025-08-22T01:50:46.561Z",
     "type": "invoice_sent",
@@ -353,6 +441,69 @@
       "projectId": "Z-010",
       "taskId": 1755863093799,
       "invoiceId": "TB-020"
+    }
+  },
+  {
+    "id": "evt_1755962701774_invoice_auto",
+    "timestamp": "2025-08-23T15:25:01.774Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-006",
+    "metadata": {
+      "taskTitle": "Phase One: Wireframe and Sketches",
+      "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+      "amount": 733.33,
+      "invoiceNumber": "MH-006"
+    },
+    "context": {
+      "projectId": "C-008",
+      "taskId": 1755962967537,
+      "invoiceId": "MH-006"
+    }
+  },
+  {
+    "id": "evt_1755965879195_invoice_auto",
+    "timestamp": "2025-08-23T16:17:59.195Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-007",
+    "metadata": {
+      "taskTitle": "Phase Two: Colour Theory Design ",
+      "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+      "amount": 733.33,
+      "invoiceNumber": "MH-007"
+    },
+    "context": {
+      "projectId": "C-008",
+      "taskId": 1755962425855,
+      "invoiceId": "MH-007"
+    }
+  },
+  {
+    "id": "evt_1755975160446_invoice_auto",
+    "timestamp": "2025-08-23T18:52:40.446Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-008",
+    "metadata": {
+      "taskTitle": "Phase Three: Design and Publishing ",
+      "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+      "amount": 733.33,
+      "invoiceNumber": "MH-008"
+    },
+    "context": {
+      "projectId": "C-008",
+      "taskId": 1755962469192,
+      "invoiceId": "MH-008"
     }
   }
 ]

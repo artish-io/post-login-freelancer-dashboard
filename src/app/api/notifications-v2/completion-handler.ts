@@ -236,6 +236,10 @@ function generateNotificationMessage(event: CompletionEvent): string {
     case 'completion.invoice_paid':
       return `${orgName} paid you $${amount} for ${invoiceNumber}. Click here to view details.`;
 
+    case 'completion.commissioner_payment':
+      const remainingBudget = event.context.remainingBudget || 0;
+      return `${orgName} has paid ${freelancerName} $${amount} for your ongoing ${projectTitle} project. This project has a budget of $${remainingBudget} left. Click here to view invoice details`;
+
     case 'completion.project_completed':
       // Let the main API route handle message generation for context-aware messages
       return null;

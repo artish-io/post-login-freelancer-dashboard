@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756151163451_1756150753270",
+  "timestamp": "2025-08-25T19:39:13.270Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756151163451,
+  "metadata": {
+    "taskId": 1756151163451,
+    "taskTitle": "Phase 1 – Strategy & Asset Development",
+    "projectTitle": "Communists of Waterloo Marketing",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-012",
+    "taskId": 1756151163451
+  }
+}

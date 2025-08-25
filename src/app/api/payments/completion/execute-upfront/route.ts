@@ -244,10 +244,10 @@ export async function POST(req: NextRequest) {
       status: paymentRecord.status
     });
 
-    // ✅ SAFE: Update invoice to paid (using project-aware update to handle duplicates)
+    // ✅ SAFE: Update invoice to paid (using simple update by invoice number)
     console.log('📝 UPFRONT PAYMENT: Updating invoice status to paid...');
-    const { updateInvoiceByProjectId } = await import('@/lib/invoice-storage');
-    const updateSuccess = await updateInvoiceByProjectId(invoiceNumber, projectId, {
+    const { updateInvoice } = await import('@/lib/invoice-storage');
+    const updateSuccess = await updateInvoice(invoiceNumber, {
       status: 'paid',
       paidDate: new Date().toISOString()
     });

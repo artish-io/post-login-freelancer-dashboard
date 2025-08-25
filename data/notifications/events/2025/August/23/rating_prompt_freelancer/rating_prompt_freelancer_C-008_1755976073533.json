@@ -1,0 +1,22 @@
+{
+  "id": "rating_prompt_freelancer_C-008_1755976073533",
+  "timestamp": "2025-08-23T19:07:53.528Z",
+  "type": "rating_prompt_freelancer",
+  "notificationType": 51,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 5,
+  "entityId": "C-008",
+  "metadata": {
+    "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "commissionerName": "Corlax Wellness",
+    "message": "Please rate your experience with this Banners And Web 3 Assests For UN End Poverty Collab ",
+    "ratingSubjectId": 34,
+    "ratingSubjectType": "commissioner",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "C-008",
+    "ratingSubjectId": 34
+  }
+}

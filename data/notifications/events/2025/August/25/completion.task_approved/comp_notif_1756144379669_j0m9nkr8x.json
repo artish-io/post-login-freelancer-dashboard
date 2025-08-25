@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1756144379669_j0m9nkr8x",
+  "type": "completion.task_approved",
+  "actorId": 35,
+  "targetId": 31,
+  "projectId": "Z-011",
+  "message": "Tilly Burzinsky has approved your submission for \"Phase One: Strategy & Asset Development\" in Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series. Task approved and milestone completed. Click here to see its project tracker.",
+  "context": {
+    "taskId": "1756144835739",
+    "taskTitle": "Phase One: Strategy & Asset Development",
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T17:52:59.669Z",
+  "timestamp": "2025-08-25T17:52:59.669Z",
+  "subsystem": "completion_invoicing"
+}

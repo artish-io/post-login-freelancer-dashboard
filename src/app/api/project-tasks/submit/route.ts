@@ -438,6 +438,20 @@ async function handleTaskOperation(request: NextRequest) {
               if (project.freelancerId && project.commissionerId) {
                 const userNames = await getUserNamesForRating(project.freelancerId, project.commissionerId);
 
+                // Update project status to completed for milestone projects
+                try {
+                  const { UnifiedStorageService } = await import('../../../../lib/storage/unified-storage-service');
+                  await UnifiedStorageService.writeProject({
+                    ...project,
+                    status: 'completed',
+                    completedAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString()
+                  });
+                  console.log(`✅ Updated milestone project ${project.projectId} status to completed`);
+                } catch (updateError) {
+                  console.warn('Failed to update milestone project status to completed:', updateError);
+                }
+
                 // For final tasks, the rating notifications should be combined with project completion
                 // This matches the requirement: "project complete + commissioner rating prompt notification"
                 await sendProjectCompletionRatingNotifications({

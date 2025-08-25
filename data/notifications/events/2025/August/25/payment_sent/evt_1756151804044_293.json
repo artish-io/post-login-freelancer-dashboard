@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756151804044_293",
+  "timestamp": "2025-08-25T19:56:44.045Z",
+  "type": "payment_sent",
+  "notificationType": 42,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "TB-C010",
+  "metadata": {
+    "invoiceNumber": "TB-C010",
+    "projectTitle": "Communists of Waterloo Marketing",
+    "amount": 440,
+    "freelancerName": "Margsate Flether",
+    "remainingBudget": "$1060.00",
+    "notificationText": "You just paid Margsate Flether $440 for their work on Communists of Waterloo Marketing. This project has a remaining budget of $1060.00 left."
+  },
+  "context": {
+    "projectId": "Z-012",
+    "invoiceNumber": "TB-C010"
+  }
+}

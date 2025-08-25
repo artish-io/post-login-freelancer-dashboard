@@ -31,6 +31,7 @@ export interface Gig {
     endDate: string;
   }>;
   startType?: 'Immediately' | 'Custom';
+  customStartDate?: string;
   endDate?: string;
   lowerBudget?: number;
   upperBudget?: number;

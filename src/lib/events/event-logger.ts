@@ -36,6 +36,7 @@ export const NOTIFICATION_TYPES = {
   MILESTONE_PAYMENT_RECEIVED: 42,
   MILESTONE_PAYMENT_SENT: 43,
   INVOICE_OVERDUE: 44,
+  COMPLETION_COMMISSIONER_PAYMENT: 45,
 
   // Gig notifications (60-79)
   GIG_APPLICATION_RECEIVED: 60,
@@ -146,8 +147,8 @@ export type EventType =
   | 'rating_prompt_freelancer' | 'rating_prompt_commissioner'
   // Completion events
   | 'completion.project_activated' | 'completion.upfront_payment' | 'completion.task_approved'
-  | 'completion.invoice_received' | 'completion.invoice_paid' | 'completion.project_completed'
-  | 'completion.final_payment' | 'completion.rating_prompt';
+  | 'completion.invoice_received' | 'completion.invoice_paid' | 'completion.commissioner_payment'
+  | 'completion.project_completed' | 'completion.final_payment' | 'completion.rating_prompt';
 
 export type EntityType =
   | 'task' | 'project' | 'gig' | 'message' | 'invoice' | 'product' | 'proposal' | 'user' | 'organization' | 'milestone';

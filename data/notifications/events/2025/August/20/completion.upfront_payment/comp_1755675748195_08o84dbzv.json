@@ -4,7 +4,7 @@
   "actorId": 35,
   "targetId": 25,
   "projectId": "Z-005",
-  "message": "Completion event: completion.upfront_payment",
+  "message": "Zynate Events Group has paid $396 upfront for your newly activated UX Research for Project: Y.U.T.A.N.I project. This project has a budget of $2904 left. Click here to view invoice details",
   "context": {
     "upfrontAmount": 396,
     "projectTitle": "UX Research for Project: Y.U.T.A.N.I",
@@ -14,5 +14,7 @@
     "commissionerName": "Tilly Burzinsky"
   },
   "timestamp": "2025-08-20T07:42:27.625Z",
-  "subsystem": "completion_invoicing"
+  "subsystem": "completion_invoicing",
+  "messageFixNote": "Fixed upfront payment message to include actual dollar amount ($396) instead of generic 'an invoice' text",
+  "updatedAt": "2025-08-23T15:58:12.951Z"
 }

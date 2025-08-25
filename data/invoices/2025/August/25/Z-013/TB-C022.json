@@ -1,0 +1,27 @@
+{
+  "invoiceNumber": "TB-C022",
+  "projectId": "Z-013",
+  "freelancerId": 31,
+  "commissionerId": 35,
+  "projectTitle": "Completion Based Copy Testing",
+  "totalAmount": 192,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "processing",
+  "currency": "USD",
+  "issueDate": "2025-08-25T20:46:02.509Z",
+  "dueDate": "2025-09-08T20:46:02.509Z",
+  "createdAt": "2025-08-25T20:46:02.509Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 192,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 182.4,
+    "platformFee": 9.6
+  }
+}

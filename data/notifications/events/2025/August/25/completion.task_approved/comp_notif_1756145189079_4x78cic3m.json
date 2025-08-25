@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1756145189079_4x78cic3m",
+  "type": "completion.task_approved",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-011",
+  "message": "You approved \"Phase Two: Campaign Activation & Outreach\" in Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series. Task approved and milestone completed. Click here to see project tracker.",
+  "context": {
+    "taskId": "1756145074541",
+    "taskTitle": "Phase Two: Campaign Activation & Outreach",
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T18:06:29.079Z",
+  "timestamp": "2025-08-25T18:06:29.079Z",
+  "subsystem": "completion_invoicing"
+}

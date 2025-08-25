@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_36_1_1755961909189",
+  "timestamp": "2025-08-23T15:11:49.189Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "36",
+  "metadata": {
+    "gigTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 36,
+    "applicationId": 1755193217264
+  }
+}

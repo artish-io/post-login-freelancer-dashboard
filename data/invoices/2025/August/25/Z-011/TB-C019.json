@@ -1,0 +1,29 @@
+{
+  "invoiceNumber": "TB-C019",
+  "projectId": "Z-011",
+  "freelancerId": 31,
+  "commissionerId": 35,
+  "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+  "totalAmount": 168,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-25T17:51:08.617Z",
+  "dueDate": "2025-09-08T17:51:08.617Z",
+  "createdAt": "2025-08-25T17:51:08.617Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 168,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 159.6,
+    "platformFee": 8.4
+  },
+  "paidDate": "2025-08-25T17:51:09.120Z",
+  "updatedAt": "2025-08-25T17:51:09.125Z"
+}

@@ -4,7 +4,7 @@
   "actorId": 35,
   "targetId": 31,
   "projectId": "Z-005",
-  "message": "Completion event: completion.upfront_payment",
+  "message": "Zynate Events Group has paid $230.4 upfront for your newly activated Corporate Event Photography Package project. This project has a budget of $1689.6 left. Click here to view invoice details",
   "context": {
     "upfrontAmount": 230.4,
     "projectTitle": "Corporate Event Photography Package",
@@ -14,5 +14,7 @@
     "commissionerName": "Tilly Burzinsky"
   },
   "timestamp": "2025-08-20T06:20:50.250Z",
-  "subsystem": "completion_invoicing"
+  "subsystem": "completion_invoicing",
+  "messageFixNote": "Fixed upfront payment message to include actual dollar amount ($230.4) instead of generic 'an invoice' text",
+  "updatedAt": "2025-08-23T15:58:12.949Z"
 }

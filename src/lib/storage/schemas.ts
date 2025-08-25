@@ -22,6 +22,17 @@ export const ProjectSchema = z.object({
   dueDate: z.string().optional(), // Allow both date and datetime formats
   totalTasks: z.number().int().nonnegative().optional(),
   invoicingMethod: z.enum(['completion', 'milestone']).default('completion'),
+
+  // 🛡️ DURATION GUARD: Date separation and duration persistence
+  gigId: z.number().int().positive().optional(), // Link to original gig
+  gigPostedDate: z.string().optional(), // When the gig was originally posted
+  projectActivatedAt: z.string().optional(), // When the project was activated (matched)
+  originalDuration: z.object({
+    deliveryTimeWeeks: z.number().nonnegative().optional(),
+    estimatedHours: z.number().nonnegative().optional(),
+    originalStartDate: z.string().optional(), // Original intended start from gig
+    originalEndDate: z.string().optional(), // Original intended end from gig
+  }).optional(),
   totalBudget: z.number().nonnegative().optional(),
   upfrontCommitment: z.number().nonnegative().optional(),
   paidToDate: z.number().nonnegative().optional(),
@@ -79,7 +90,14 @@ export const ProjectTaskSchema = z.object({
   // 🔒 COMPLETION-SPECIFIC: Additional fields for completion projects
   manualInvoiceEligible: z.boolean().optional(),
   invoicePaid: z.boolean().optional(),
-  approvedBy: z.number().int().positive().optional()
+  approvedBy: z.number().int().positive().optional(),
+
+  // 🛡️ DURATION GUARD: Task-level duration information
+  taskActivatedAt: z.string().datetime().optional(), // When this specific task was created/activated
+  originalTaskDuration: z.object({
+    estimatedHours: z.number().nonnegative().optional(),
+    originalDueDate: z.string().optional(), // Original due date from gig milestone
+  }).optional()
 }).passthrough(); // Allow additional fields for extensibility
 
 /**

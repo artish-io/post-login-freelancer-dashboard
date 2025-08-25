@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756152097377_671",
+  "timestamp": "2025-08-25T20:01:37.377Z",
+  "type": "invoice_paid",
+  "notificationType": 41,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 3,
+  "entityId": "TB-C010",
+  "metadata": {
+    "invoiceNumber": "TB-C010",
+    "projectTitle": "Communists of Waterloo Marketing",
+    "amount": 440,
+    "organizationName": "Tilly Burzinsky",
+    "commissionerName": "Tilly Burzinsky",
+    "projectBudget": 0
+  },
+  "context": {
+    "projectId": "Z-012",
+    "invoiceNumber": "TB-C010"
+  }
+}

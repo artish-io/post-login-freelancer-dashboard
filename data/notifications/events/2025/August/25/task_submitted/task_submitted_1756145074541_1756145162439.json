@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756145074541_1756145162439",
+  "timestamp": "2025-08-25T18:06:02.439Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756145074541,
+  "metadata": {
+    "taskId": 1756145074541,
+    "taskTitle": "Phase Two: Campaign Activation & Outreach",
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-011",
+    "taskId": 1756145074541
+  }
+}

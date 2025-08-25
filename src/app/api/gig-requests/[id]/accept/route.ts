@@ -248,6 +248,7 @@ export async function POST(
     if (invoicingMethod === 'completion') {
       // 🔒 COMPLETION-BASED: Use completion project creation with upfront payment
       try {
+        const activationDate = new Date();
         const completionProjectData = {
           title: gigRequest.title || gigData.title,
           description: gigData.description || gigRequest.notes || '',
@@ -259,7 +260,25 @@ export async function POST(
           commissionerId: gigRequest.commissionerId,
           organizationId: gigRequest.organizationId,
           gigId: gigId, // Link to original gig
-          dueDate: (gigData as any).endDate || new Date(Date.now() + (gigData.deliveryTimeWeeks || 4) * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+          // 🛡️ DURATION GUARD: Calculate due date from activation time to preserve project duration
+          dueDate: (() => {
+            const deliveryWeeks = gigData.deliveryTimeWeeks || 4;
+            // Always calculate from activation date, ignoring original endDate to preserve duration
+            return new Date(activationDate.getTime() + deliveryWeeks * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          })(),
+
+          // 🛡️ DURATION GUARD: Clear date separation and duration persistence
+          gigPostedDate: (gigData as any).postedDate,
+          projectActivatedAt: activationDate.toISOString(),
+          originalDuration: {
+            deliveryTimeWeeks: gigData.deliveryTimeWeeks,
+            estimatedHours: (gigData as any).estimatedHours,
+            originalStartDate: (gigData as any).startType === 'Custom' ? (gigData as any).customStartDate : undefined,
+            originalEndDate: (gigData as any).endDate,
+          },
+          // Legacy fields for backward compatibility
+          deliveryTimeWeeks: gigData.deliveryTimeWeeks,
+          estimatedHours: (gigData as any).estimatedHours,
         };
 
         console.log(`🔄 Calling completion project creation API...`);
@@ -340,7 +359,13 @@ export async function POST(
         commissionerId: gigRequest.commissionerId,
         freelancerId: gigRequest.freelancerId,
         status: 'ongoing' as const,
-        dueDate: (gigData as any).endDate || new Date(Date.now() + (gigData.deliveryTimeWeeks || 4) * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        // 🛡️ DURATION GUARD: Calculate due date from activation time to preserve project duration
+        dueDate: (() => {
+          const activationDate = new Date();
+          const deliveryWeeks = gigData.deliveryTimeWeeks || 4;
+          // Always calculate from activation date, ignoring original endDate to preserve duration
+          return new Date(activationDate.getTime() + deliveryWeeks * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        })(),
         totalTasks: milestoneCount,
         invoicingMethod: 'milestone',
         budget: {
@@ -349,7 +374,20 @@ export async function POST(
           currency: 'USD'
         },
         gigId: gigId,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+
+        // 🛡️ DURATION GUARD: Clear date separation and duration persistence
+        gigPostedDate: (gigData as any).postedDate,
+        projectActivatedAt: new Date().toISOString(),
+        originalDuration: {
+          deliveryTimeWeeks: gigData.deliveryTimeWeeks,
+          estimatedHours: (gigData as any).estimatedHours,
+          originalStartDate: (gigData as any).startType === 'Custom' ? (gigData as any).customStartDate : undefined,
+          originalEndDate: (gigData as any).endDate,
+        },
+        // Legacy fields for backward compatibility
+        deliveryTimeWeeks: gigData.deliveryTimeWeeks,
+        estimatedHours: (gigData as any).estimatedHours,
       };
 
       // Save milestone project using unified storage

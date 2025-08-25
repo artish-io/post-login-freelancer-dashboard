@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1755962693371_l6pqwpkon",
+  "type": "completion.task_approved",
+  "actorId": 34,
+  "targetId": 34,
+  "projectId": "C-007",
+  "message": "You approved \"Phase One: SDG Animation\" in UN End Poverty Collab Landing Page. Task approved and milestone completed. Click here to see project tracker.",
+  "context": {
+    "taskId": "1755962435216",
+    "taskTitle": "Phase One: SDG Animation",
+    "projectTitle": "UN End Poverty Collab Landing Page",
+    "commissionerName": "Matte Hannery",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly"
+  },
+  "read": false,
+  "createdAt": "2025-08-23T15:24:53.371Z",
+  "timestamp": "2025-08-23T15:24:53.371Z",
+  "subsystem": "completion_invoicing"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756144708590_1756145171251",
+  "timestamp": "2025-08-25T18:06:11.251Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756144708590,
+  "metadata": {
+    "taskId": 1756144708590,
+    "taskTitle": "Phase Three: Event Engagement & Reporting",
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-011",
+    "taskId": 1756144708590
+  }
+}

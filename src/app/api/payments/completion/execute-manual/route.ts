@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
       Subsystems.COMPLETION_PAYMENTS
     );
     
-    // 🔔 COMPLETION-SPECIFIC: Emit invoice paid notification
+    // 🔔 COMPLETION-SPECIFIC: Emit invoice paid notifications for both freelancer and commissioner
     try {
       const { handleCompletionNotification } = await import('@/app/api/notifications-v2/completion-handler');
 
@@ -120,6 +120,7 @@ export async function POST(req: NextRequest) {
         remainingBudget = Math.max(0, totalBudget - paidToDate - invoice.totalAmount);
       }
 
+      // 1. Notification for freelancer (receiving payment)
       await handleCompletionNotification({
         type: 'completion.invoice_paid',
         actorId: commissionerId,
@@ -132,6 +133,24 @@ export async function POST(req: NextRequest) {
           taskTitle: task?.title || 'Task',
           projectTitle: project?.title || 'Project',
           remainingBudget
+          // orgName will be enriched automatically
+        }
+      });
+
+      // 2. Notification for commissioner (payment confirmation)
+      await handleCompletionNotification({
+        type: 'completion.commissioner_payment',
+        actorId: commissionerId,
+        targetId: commissionerId, // Self-notification
+        projectId: invoice.projectId,
+        context: {
+          invoiceNumber,
+          amount: invoice.totalAmount,
+          taskId: invoice.taskId,
+          taskTitle: task?.title || 'Task',
+          projectTitle: project?.title || 'Project',
+          remainingBudget,
+          freelancerName: 'Freelancer' // Will be enriched automatically
           // orgName will be enriched automatically
         }
       });

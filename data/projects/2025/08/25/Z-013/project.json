@@ -1,0 +1,31 @@
+{
+  "projectId": "Z-013",
+  "title": "Marketing For Techno-Fedualism Milestones",
+  "description": "Drive awareness and ticket sales for “The Philosophy of Absolute Batman”—a thought-provoking panel talk series blending pop culture with ethics, psychology, and design. I’ll develop and run a multi-channel campaign (social teasers, creator partnerships, campus/community outreach, PR, and email) with clear conversion funnels to RSVPs. Expect a launch kit—messaging, assets, ad sets, landing copy—and weekly performance reports optimizing toward CPA, attendance rate, and post-event engagement.",
+  "organizationId": 4,
+  "typeTags": [
+    "Campaign Strategy",
+    "Event Marketing"
+  ],
+  "commissionerId": 35,
+  "freelancerId": 31,
+  "status": "ongoing",
+  "dueDate": "2025-08-29",
+  "totalTasks": 3,
+  "invoicingMethod": "milestone",
+  "gigId": 39,
+  "gigPostedDate": "2025-08-25",
+  "projectActivatedAt": "2025-08-25T20:56:58.317Z",
+  "originalDuration": {
+    "deliveryTimeWeeks": 0.5714285714285714,
+    "estimatedHours": 24,
+    "originalEndDate": "2025-08-29T04:00:00.000Z"
+  },
+  "totalBudget": 1600,
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-25T20:56:58.317Z",
+  "updatedAt": "2025-08-25T20:56:58.317Z",
+  "estimatedHours": 24,
+  "deliveryTimeWeeks": 0.5714285714285714
+}

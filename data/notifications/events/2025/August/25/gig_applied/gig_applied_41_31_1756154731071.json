@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_41_31_1756154731071",
+  "timestamp": "2025-08-25T20:45:31.071Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "41",
+  "metadata": {
+    "gigTitle": "Completion Based Copy Testing",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 41,
+    "applicationId": 1755193217269
+  }
+}

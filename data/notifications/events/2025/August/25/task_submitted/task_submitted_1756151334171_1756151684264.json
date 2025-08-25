@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756151334171_1756151684264",
+  "timestamp": "2025-08-25T19:54:44.264Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756151334171,
+  "metadata": {
+    "taskId": 1756151334171,
+    "taskTitle": "Phase 2 – Campaign Activation & Outreach",
+    "projectTitle": "Communists of Waterloo Marketing",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-012",
+    "taskId": 1756151334171
+  }
+}

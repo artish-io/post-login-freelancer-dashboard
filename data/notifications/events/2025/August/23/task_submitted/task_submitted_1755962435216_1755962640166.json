@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755962435216_1755962640166",
+  "timestamp": "2025-08-23T15:24:00.166Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1755962435216,
+  "metadata": {
+    "taskId": 1755962435216,
+    "taskTitle": "Phase One: SDG Animation",
+    "projectTitle": "UN End Poverty Collab Landing Page",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-007",
+    "taskId": 1755962435216
+  }
+}

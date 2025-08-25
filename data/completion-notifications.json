@@ -494,5 +494,425 @@
     },
     "read": false,
     "createdAt": "2025-08-22T20:19:20.428Z"
+  },
+  {
+    "id": "comp_notif_1755961969084_33stfc9zi",
+    "type": "completion.upfront_payment",
+    "actorId": 34,
+    "targetId": 1,
+    "projectId": "C-007",
+    "message": "Corlax Wellness has paid $264 upfront for your newly activated UN End Poverty Collab Landing Page project. This project has a budget of $1936 left. Click here to view invoice details",
+    "context": {
+      "upfrontAmount": 264,
+      "projectTitle": "UN End Poverty Collab Landing Page",
+      "remainingBudget": 1936,
+      "orgName": "Corlax Wellness",
+      "freelancerName": "Tobi Philly",
+      "commissionerName": "Matte Hannery"
+    },
+    "read": false,
+    "createdAt": "2025-08-23T15:12:49.084Z"
+  },
+  {
+    "id": "comp_notif_1755961969246_drf1lr6by",
+    "type": "completion.upfront_payment",
+    "actorId": 34,
+    "targetId": 34,
+    "projectId": "C-007",
+    "message": "You sent Tobi Philly an invoice for your recently activated UN End Poverty Collab Landing Page project. This project has a budget of $1936 left. Click here to view invoice details",
+    "context": {
+      "upfrontAmount": 264,
+      "projectTitle": "UN End Poverty Collab Landing Page",
+      "remainingBudget": 1936,
+      "orgName": "Corlax Wellness",
+      "freelancerName": "Tobi Philly",
+      "commissionerName": "Matte Hannery"
+    },
+    "read": false,
+    "createdAt": "2025-08-23T15:12:49.246Z"
+  },
+  {
+    "id": "comp_notif_1755962693356_1cggehc5o",
+    "type": "completion.task_approved",
+    "actorId": 34,
+    "targetId": 1,
+    "projectId": "C-007",
+    "message": "Matte Hannery has approved your submission for \"Phase One: SDG Animation\" in UN End Poverty Collab Landing Page. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1755962435216",
+      "taskTitle": "Phase One: SDG Animation",
+      "projectTitle": "UN End Poverty Collab Landing Page",
+      "commissionerName": "Matte Hannery",
+      "orgName": "Corlax Wellness",
+      "freelancerName": "Tobi Philly"
+    },
+    "read": false,
+    "createdAt": "2025-08-23T15:24:53.356Z"
+  },
+  {
+    "id": "comp_notif_1755962693371_l6pqwpkon",
+    "type": "completion.task_approved",
+    "actorId": 34,
+    "targetId": 34,
+    "projectId": "C-007",
+    "message": "You approved \"Phase One: SDG Animation\" in UN End Poverty Collab Landing Page. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1755962435216",
+      "taskTitle": "Phase One: SDG Animation",
+      "projectTitle": "UN End Poverty Collab Landing Page",
+      "commissionerName": "Matte Hannery",
+      "orgName": "Corlax Wellness",
+      "freelancerName": "Tobi Philly"
+    },
+    "read": false,
+    "createdAt": "2025-08-23T15:24:53.371Z"
+  },
+  {
+    "id": "comp_notif_1756144269196_zjmgwzti4",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-011",
+    "message": null,
+    "context": {
+      "upfrontAmount": 168,
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "remainingBudget": 1232,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T17:51:09.196Z"
+  },
+  {
+    "id": "comp_notif_1756144269201_nd42x5r0u",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-011",
+    "message": null,
+    "context": {
+      "upfrontAmount": 168,
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "remainingBudget": 1232,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T17:51:09.201Z"
+  },
+  {
+    "id": "comp_notif_1756144379669_j0m9nkr8x",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-011",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase One: Strategy & Asset Development\" in Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1756144835739",
+      "taskTitle": "Phase One: Strategy & Asset Development",
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T17:52:59.669Z"
+  },
+  {
+    "id": "comp_notif_1756144379672_uva2y0dv4",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-011",
+    "message": "You approved \"Phase One: Strategy & Asset Development\" in Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1756144835739",
+      "taskTitle": "Phase One: Strategy & Asset Development",
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T17:52:59.672Z"
+  },
+  {
+    "id": "comp_notif_1756145188997_r2hfonrlk",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-011",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase Two: Campaign Activation & Outreach\" in Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1756145074541",
+      "taskTitle": "Phase Two: Campaign Activation & Outreach",
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T18:06:28.998Z"
+  },
+  {
+    "id": "comp_notif_1756145189079_4x78cic3m",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-011",
+    "message": "You approved \"Phase Two: Campaign Activation & Outreach\" in Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1756145074541",
+      "taskTitle": "Phase Two: Campaign Activation & Outreach",
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T18:06:29.079Z"
+  },
+  {
+    "id": "comp_notif_1756145193433_142783g4z",
+    "type": "completion.project_completed",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-011",
+    "context": {
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T18:06:33.433Z"
+  },
+  {
+    "id": "comp_notif_1756145193437_z0fd7th4a",
+    "type": "completion.project_completed",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-011",
+    "context": {
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T18:06:33.437Z"
+  },
+  {
+    "id": "comp_notif_1756145193485_rcbi1pulc",
+    "type": "completion.final_payment",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-011",
+    "context": {
+      "finalAmount": 821.33,
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "finalPercent": 59,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T18:06:33.485Z"
+  },
+  {
+    "id": "comp_notif_1756145193637_v2wq9phgl",
+    "type": "completion.final_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-011",
+    "context": {
+      "finalAmount": 821.33,
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "finalPercent": 59,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T18:06:33.637Z"
+  },
+  {
+    "id": "comp_notif_1756145193955_m7azj096z",
+    "type": "completion.rating_prompt",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-011",
+    "message": "Rate your experience with Tilly Burzinsky. All tasks for Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series have been approved. Click here to rate your collaboration.",
+    "context": {
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "commissionerName": "Tilly Burzinsky",
+      "freelancerName": "Margsate Flether",
+      "orgName": "Zynate Events Group"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T18:06:33.955Z"
+  },
+  {
+    "id": "comp_notif_1756145193968_j1grqm34d",
+    "type": "completion.rating_prompt",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-011",
+    "message": "Rate Margsate Flether's work. You have approved all task milestones for Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series. Click here to rate their work on this project.",
+    "context": {
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "commissionerName": "Tilly Burzinsky",
+      "freelancerName": "Margsate Flether",
+      "orgName": "Zynate Events Group"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T18:06:33.968Z"
+  },
+  {
+    "id": "comp_notif_1756145194321_vhl77m6kn",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-011",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase Three: Event Engagement & Reporting\" in Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1756144708590",
+      "taskTitle": "Phase Three: Event Engagement & Reporting",
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T18:06:34.321Z"
+  },
+  {
+    "id": "comp_notif_1756145194401_0izyu5zph",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-011",
+    "message": "You approved \"Phase Three: Event Engagement & Reporting\" in Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1756144708590",
+      "taskTitle": "Phase Three: Event Engagement & Reporting",
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T18:06:34.401Z"
+  },
+  {
+    "id": "comp_notif_1756150710477_72fc0mmbn",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-012",
+    "message": null,
+    "context": {
+      "upfrontAmount": 180,
+      "projectTitle": "Communists of Waterloo Marketing",
+      "remainingBudget": 1320,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T19:38:30.477Z"
+  },
+  {
+    "id": "comp_notif_1756150710502_0x2qqxy8h",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-012",
+    "message": null,
+    "context": {
+      "upfrontAmount": 180,
+      "projectTitle": "Communists of Waterloo Marketing",
+      "remainingBudget": 1320,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T19:38:30.502Z"
+  },
+  {
+    "id": "comp_notif_1756150784178_l9njsmy5y",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-012",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase 1 – Strategy & Asset Development\" in Communists of Waterloo Marketing. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1756151163451",
+      "taskTitle": "Phase 1 – Strategy & Asset Development",
+      "projectTitle": "Communists of Waterloo Marketing",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T19:39:44.178Z"
+  },
+  {
+    "id": "comp_notif_1756150784181_xoeqi9fxz",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-012",
+    "message": "You approved \"Phase 1 – Strategy & Asset Development\" in Communists of Waterloo Marketing. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1756151163451",
+      "taskTitle": "Phase 1 – Strategy & Asset Development",
+      "projectTitle": "Communists of Waterloo Marketing",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T19:39:44.181Z"
+  },
+  {
+    "id": "comp_notif_1756151723961_xe8llom3z",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-012",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase 2 – Campaign Activation & Outreach\" in Communists of Waterloo Marketing. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1756151334171",
+      "taskTitle": "Phase 2 – Campaign Activation & Outreach",
+      "projectTitle": "Communists of Waterloo Marketing",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T19:55:23.961Z"
+  },
+  {
+    "id": "comp_notif_1756151723971_c72yiq9vb",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-012",
+    "message": "You approved \"Phase 2 – Campaign Activation & Outreach\" in Communists of Waterloo Marketing. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1756151334171",
+      "taskTitle": "Phase 2 – Campaign Activation & Outreach",
+      "projectTitle": "Communists of Waterloo Marketing",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T19:55:23.971Z"
   }
 ]

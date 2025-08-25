@@ -1,0 +1,54 @@
+{
+  "id": 35,
+  "title": "UN End Poverty Collab Landing Page",
+  "organizationId": 3,
+  "commissionerId": "34",
+  "category": "Design",
+  "subcategory": "UI/UX Design",
+  "tags": [
+    "Design"
+  ],
+  "hourlyRateMin": 50,
+  "hourlyRateMax": 55,
+  "description": "The United Nations (UN) is a global body focused on ending poverty through its first Sustainable Development Goal (SDG 1), which aims to eradicate extreme poverty by 2030. The UN spearheads efforts to develop inclusive strategies and direct resources to promote universal rights, but progress has faced significant setbacks from the COVID-19 pandemic, which caused the first increase in extreme poverty in decades. While historic gains were made from 1990 to 2014.",
+  "deliveryTimeWeeks": 0.8571428571428571,
+  "estimatedHours": 40,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Figma"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "9b96bd7f-6df5-48e3-ab38-d909afe9f556",
+      "title": "Phase One: SDG Animation",
+      "description": "The central commitment is to \"End poverty in all its forms everywhere,\" under the broader 2030 Agenda for Sustainable Development, adopted by all 193 UN member states. ",
+      "startDate": "2025-08-24T04:00:00.000Z",
+      "endDate": "2025-08-25T04:00:00.000Z"
+    },
+    {
+      "id": "d64b6241-22e6-4898-8eda-4158c6f9e05a",
+      "title": "Phase Two: Advocacy and Resource Mobilization:",
+      "description": "The UN works to build inclusive strategies and direct resources where they are most needed, turning hope into universal rights rather than privileges. ",
+      "startDate": "2025-08-26T04:00:00.000Z",
+      "endDate": "2025-08-27T04:00:00.000Z"
+    },
+    {
+      "id": "5af7595a-f332-4e2b-9712-d8f359c8359a",
+      "title": "Phase Three: Monitoring and Research",
+      "description": "The UN tracks progress and identifies challenges, with ongoing research into the causes and impacts of poverty to develop effective solutions.",
+      "startDate": "2025-08-28T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-29T04:00:00.000Z",
+  "lowerBudget": 2000,
+  "upperBudget": 2200,
+  "postedDate": "2025-08-23",
+  "notes": "Budget range: $2,000 - $2,200",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

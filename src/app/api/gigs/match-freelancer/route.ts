@@ -679,12 +679,27 @@ async function handleGigMatching(req: Request) {
             status: acceptResult.project.status,
             freelancerId: acceptResult.project.freelancerId,
             commissionerId: acceptResult.project.commissionerId,
+            dueDate: acceptResult.project.dueDate,
+
+            // 🛡️ DURATION GUARD: Include date separation fields in response
+            gigId: acceptResult.project.gigId,
+            gigPostedDate: acceptResult.project.gigPostedDate,
+            projectActivatedAt: acceptResult.project.projectActivatedAt,
+            originalDuration: acceptResult.project.originalDuration,
+            // Legacy fields for backward compatibility
+            deliveryTimeWeeks: acceptResult.project.deliveryTimeWeeks,
+            estimatedHours: acceptResult.project.estimatedHours,
           },
           tasks: acceptResult.tasks.map(task => ({
             id: task.id,
             title: task.title,
             status: task.status,
             projectId: task.projectId,
+            dueDate: task.dueDate,
+
+            // 🛡️ DURATION GUARD: Include task-level duration information
+            taskActivatedAt: task.taskActivatedAt,
+            originalTaskDuration: task.originalTaskDuration,
           })),
         },
         message: 'Successfully matched with freelancer and created project',

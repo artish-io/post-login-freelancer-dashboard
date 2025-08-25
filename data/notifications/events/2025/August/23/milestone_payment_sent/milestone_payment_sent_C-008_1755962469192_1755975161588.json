@@ -1,0 +1,30 @@
+{
+  "id": "milestone_payment_sent_C-008_1755962469192_1755975161588",
+  "timestamp": "2025-08-23T18:52:41.588Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "C-008_1755962469192",
+  "metadata": {
+    "taskTitle": "Phase Three: Design and Publishing ",
+    "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "projectId": "C-008",
+    "taskId": 1755962469192,
+    "freelancerName": "Tobi Philly",
+    "amount": 733.33,
+    "invoiceNumber": "MH-008",
+    "remainingBudget": 0.009999999999763531,
+    "projectBudget": 2200
+  },
+  "context": {
+    "projectId": "C-008",
+    "taskId": 1755962469192,
+    "invoiceNumber": "MH-008"
+  },
+  "title": "You just paid Tobi Philly $733.33",
+  "message": "You just paid Tobi Philly $733.33 for submitting Phase Three: Design and Publishing  for Banners And Web 3 Assests For UN End Poverty Collab . Remaining budget: $0.01. Click here to see transaction activity",
+  "updatedAt": "2025-08-23T19:00:00.000Z",
+  "fixNote": "Fixed missing freelancer name and amount data - was showing 'Freelancer payment' instead of actual values"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "comp_invoice_Z-011_TB-021_1756146392828",
+  "type": "completion.invoice_received",
+  "actorId": 31,
+  "targetId": 35,
+  "projectId": "Z-011",
+  "message": "Margsate Flether sent you an invoice for $821.33. You have received an invoice for your ongoing Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series project. Click here to view invoice details",
+  "context": {
+    "invoiceNumber": "TB-021",
+    "amount": 821.33,
+    "taskId": "final",
+    "taskTitle": "Final Payment",
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T18:06:32.828Z",
+  "timestamp": "2025-08-25T18:06:32.828Z",
+  "subsystem": "completion_invoicing"
+}

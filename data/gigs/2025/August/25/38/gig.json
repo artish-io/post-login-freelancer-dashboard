@@ -1,0 +1,56 @@
+{
+  "id": 38,
+  "title": "Communists of Waterloo Marketing",
+  "organizationId": 4,
+  "commissionerId": "35",
+  "category": "Marketing",
+  "subcategory": "Event Marketing",
+  "tags": [
+    "Event Marketing",
+    "Marketing"
+  ],
+  "hourlyRateMin": 54.17,
+  "hourlyRateMax": 62.5,
+  "description": "Drive awareness and ticket sales for “The Philosophy of Absolute Batman”—a thought-provoking panel talk series blending pop culture with ethics, psychology, and design. I’ll develop and run a multi-channel campaign (social teasers, creator partnerships, campus/community outreach, PR, and email) with clear conversion funnels to RSVPs. Expect a launch kit—messaging, assets, ad sets, landing copy—and weekly performance reports optimizing toward CPA, attendance rate, and post-event engagement.",
+  "deliveryTimeWeeks": 0.5714285714285714,
+  "estimatedHours": 24,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Canva",
+    "Google Docs"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "b6edc380-a51e-4adf-aa20-b1956ef45848",
+      "title": "Phase 1 – Strategy & Asset Development",
+      "description": "Research audience segments, define messaging pillars, and create the launch kit (copy, visuals, landing page, social templates, and press outreach materials).\n",
+      "startDate": "2025-08-26T04:00:00.000Z",
+      "endDate": "2025-08-26T04:00:00.000Z"
+    },
+    {
+      "id": "5fadd5f1-a07d-4a8e-a488-19bcb1f51ade",
+      "title": "Phase 2 – Campaign Activation & Outreach",
+      "description": "Run targeted campaigns across social, email, and community channels; activate partnerships with creators, schools, and local groups; and drive RSVP conversions through ad sets and organic buzz.",
+      "startDate": "2025-08-27T04:00:00.000Z",
+      "endDate": "2025-08-27T04:00:00.000Z"
+    },
+    {
+      "id": "02b03209-326d-4b8e-9583-8ca262d481f2",
+      "title": "Phase 3 – Event Engagement & Reporting",
+      "description": "Manage live engagement during the panel series, amplify highlights on digital channels, and deliver a post-event performance report with key metrics, learnings, and recommendations.",
+      "startDate": "2025-08-28T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-29T04:00:00.000Z",
+  "lowerBudget": 1300,
+  "upperBudget": 1500,
+  "postedDate": "2025-08-25",
+  "notes": "Budget range: $1,300 - $1,500",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

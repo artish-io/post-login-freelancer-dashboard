@@ -1,0 +1,12 @@
+{
+  "transactionId": "TXN-TB-C008",
+  "type": "invoice",
+  "integration": "mock",
+  "status": "paid",
+  "invoiceNumber": "TB-C008",
+  "projectId": "Z-011",
+  "freelancerId": 31,
+  "commissionerId": 35,
+  "amount": 410.67,
+  "timestamp": "2025-08-25T17:54:44.738Z"
+}

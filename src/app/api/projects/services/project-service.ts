@@ -32,6 +32,7 @@ export interface GigLike {
     endDate: string;
   }>;
   startType?: 'Immediately' | 'Custom';
+  customStartDate?: string;
   endDate?: string;
   lowerBudget?: number;
   upperBudget?: number;
@@ -78,10 +79,11 @@ export class ProjectService {
     // Generate project ID if not provided
     const finalProjectId = projectId ?? this.generateProjectId(organizationName, existingProjectIds);
 
-    // Calculate due date
-    const dueDate = this.calculateDueDate(gig.deliveryTimeWeeks, gig.endDate);
+    // Calculate due date from activation time (now) to preserve project duration
+    const activationDate = new Date();
+    const dueDate = this.calculateDueDate(gig.deliveryTimeWeeks, gig.endDate, activationDate);
 
-    // Create project record
+    // Create project record with clear date separation and duration persistence
     const project: ProjectRecord = {
       projectId: finalProjectId,
       title: gig.title,
@@ -100,10 +102,24 @@ export class ProjectService {
       // Note: category/subcategory not in ProjectRecord type, stored in typeTags instead
       typeTags: gig.tags,
       dueDate,
+
+      // 🛡️ DURATION GUARD: Clear date separation and duration persistence
+      gigId: gig.id,
+      gigPostedDate: gig.postedDate,
+      projectActivatedAt: activationDate.toISOString(),
+      originalDuration: {
+        deliveryTimeWeeks: gig.deliveryTimeWeeks,
+        estimatedHours: gig.estimatedHours,
+        originalStartDate: gig.startType === 'Custom' ? gig.customStartDate : undefined,
+        originalEndDate: gig.endDate,
+      },
+      // Legacy fields for backward compatibility
+      deliveryTimeWeeks: gig.deliveryTimeWeeks,
+      estimatedHours: gig.estimatedHours,
     };
 
     // Generate default tasks based on gig type
-    const tasks = this.generateDefaultTasks(finalProjectId, gig);
+    const tasks = this.generateDefaultTasks(finalProjectId, gig, activationDate);
 
     // Add totalTasks to project based on generated tasks count
     const projectWithTotalTasks = {
@@ -137,21 +153,33 @@ export class ProjectService {
 
   /**
    * Calculate project due date based on delivery time and optional end date
+   * 🛡️ DURATION GUARD: Always calculate from activation date to preserve project duration
+   * regardless of when the project was originally scheduled to start/end
    */
-  private static calculateDueDate(deliveryTimeWeeks: number, endDate?: string): string {
+  private static calculateDueDate(deliveryTimeWeeks: number, endDate?: string, activationDate?: Date): string {
+    const activationTime = activationDate || new Date();
+
+    // 🛡️ GUARD: Always calculate from activation date to preserve duration
+    // This ensures that if a 3-day project was meant to run Jan 1-3 but gets activated on Jan 3,
+    // it will now run Jan 3-6 (preserving the 3-day duration)
+    if (deliveryTimeWeeks > 0) {
+      const dueDate = new Date(activationTime.getTime() + deliveryTimeWeeks * 7 * 24 * 60 * 60 * 1000);
+      return dueDate.toISOString().split('T')[0]; // Return YYYY-MM-DD format
+    }
+
+    // Fallback: If no delivery time specified, use original endDate or default to 1 week
     if (endDate) {
       return endDate;
     }
 
-    const now = new Date();
-    const dueDate = new Date(now.getTime() + deliveryTimeWeeks * 7 * 24 * 60 * 60 * 1000);
-    return dueDate.toISOString().split('T')[0]; // Return YYYY-MM-DD format
+    const defaultDueDate = new Date(activationTime.getTime() + 7 * 24 * 60 * 60 * 1000);
+    return defaultDueDate.toISOString().split('T')[0];
   }
 
   /**
    * Generate default tasks based on gig configuration
    */
-  private static generateDefaultTasks(projectId: string, gig: GigLike): TaskRecord[] {
+  private static generateDefaultTasks(projectId: string, gig: GigLike, activationDate?: Date): TaskRecord[] {
     const tasks: TaskRecord[] = [];
     const now = new Date().toISOString();
 
@@ -214,11 +242,18 @@ export class ProjectService {
           status: 'Ongoing',
           completed: false,
           assigneeId: undefined,
-          dueDate: this.calculateDueDate(gig.deliveryTimeWeeks, gig.endDate),
+          dueDate: this.calculateDueDate(gig.deliveryTimeWeeks, gig.endDate, activationDate),
           createdAt: now,
           updatedAt: now,
           description: gig.description,
           order: 1,
+
+          // 🛡️ DURATION GUARD: Task-level duration information
+          taskActivatedAt: now,
+          originalTaskDuration: {
+            estimatedHours: gig.estimatedHours,
+            originalDueDate: gig.endDate,
+          },
         });
       }
     }

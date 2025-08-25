@@ -1,0 +1,62 @@
+{
+  "id": 37,
+  "title": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+  "organizationId": 4,
+  "commissionerId": "35",
+  "category": "Marketing",
+  "subcategory": "Event Marketing",
+  "tags": [
+    "Experiential Marketing",
+    "Event Marketing"
+  ],
+  "hourlyRateMin": 49.92,
+  "hourlyRateMax": 58.33,
+  "description": "Drive awareness and ticket sales for “The Philosophy of Absolute Batman”—a thought-provoking panel talk series blending pop culture with ethics, psychology, and design. I’ll develop and run a multi-channel campaign (social teasers, creator partnerships, campus/community outreach, PR, and email) with clear conversion funnels to RSVPs. Expect a launch kit—messaging, assets, ad sets, landing copy—and weekly performance reports optimizing toward CPA, attendance rate, and post-event engagement.",
+  "deliveryTimeWeeks": 0.5714285714285714,
+  "estimatedHours": 24,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Canva",
+    "Google Analytics",
+    "Google Sheets"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "18f1b399-8253-4c2d-8804-821646f178f0",
+      "title": "Phase One: Strategy & Asset Development",
+      "description": "Research audience segments, define messaging pillars, and create the launch kit (copy, visuals, landing page, social templates, and press outreach materials).",
+      "startDate": "2025-08-26T04:00:00.000Z",
+      "endDate": "2025-08-26T04:00:00.000Z"
+    },
+    {
+      "id": "0a25fd60-038a-4079-aeef-d76c339955be",
+      "title": "Phase Two: Campaign Activation & Outreach",
+      "description": "Run targeted campaigns across social, email, and community channels; activate partnerships with creators, schools, and local groups; and drive RSVP conversions through ad sets and organic buzz.",
+      "startDate": "2025-08-27T04:00:00.000Z",
+      "endDate": "2025-08-27T04:00:00.000Z"
+    },
+    {
+      "id": "3325e87e-67de-49c6-8e9b-a3d822e61876",
+      "title": "Phase Three: Event Engagement & Reporting",
+      "description": "Manage live engagement during the panel series, amplify highlights on digital channels, and deliver a post-event performance report with key metrics, learnings, and recommendations.",
+      "startDate": "2025-08-28T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-29T04:00:00.000Z",
+  "lowerBudget": 1198,
+  "upperBudget": 1400,
+  "postedDate": "2025-08-25",
+  "notes": "Budget range: $1,198 - $1,400",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false,
+  "briefFile": {
+    "name": "HFxA (1).pdf",
+    "size": 385938,
+    "type": "application/pdf"
+  }
+}

@@ -15,6 +15,13 @@ export interface Task {
   description?: string;
   briefUrl?: string;
   workingFileUrl?: string;
+
+  // 🛡️ DURATION GUARD: Task-level duration information
+  taskActivatedAt?: string;
+  originalTaskDuration?: {
+    estimatedHours?: number;
+    originalDueDate?: string;
+  };
 }
 
 export interface Project {

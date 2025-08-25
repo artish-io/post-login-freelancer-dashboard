@@ -1,0 +1,30 @@
+{
+  "projectId": "C-007",
+  "title": "UN End Poverty Collab Landing Page",
+  "description": "The United Nations (UN) is a global body focused on ending poverty through its first Sustainable Development Goal (SDG 1), which aims to eradicate extreme poverty by 2030. The UN spearheads efforts to develop inclusive strategies and direct resources to promote universal rights, but progress has faced significant setbacks from the COVID-19 pandemic, which caused the first increase in extreme poverty in decades. While historic gains were made from 1990 to 2014.",
+  "organizationId": 3,
+  "typeTags": [
+    "Design"
+  ],
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "status": "ongoing",
+  "dueDate": "2025-08-29",
+  "totalTasks": 3,
+  "invoicingMethod": "completion",
+  "gigId": 35,
+  "gigPostedDate": "2025-08-23",
+  "projectActivatedAt": "2025-08-23T15:12:46.759Z",
+  "originalDuration": {
+    "deliveryTimeWeeks": 0.8571428571428571,
+    "estimatedHours": 40,
+    "originalEndDate": "2025-08-29T04:00:00.000Z"
+  },
+  "totalBudget": 2200,
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-23T15:12:46.759Z",
+  "updatedAt": "2025-08-23T15:12:46.759Z",
+  "estimatedHours": 40,
+  "deliveryTimeWeeks": 0.8571428571428571
+}

@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756144835739_1756144359330",
+  "timestamp": "2025-08-25T17:52:39.330Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756144835739,
+  "metadata": {
+    "taskId": 1756144835739,
+    "taskTitle": "Phase One: Strategy & Asset Development",
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-011",
+    "taskId": 1756144835739
+  }
+}

@@ -4,7 +4,7 @@
   "actorId": 35,
   "targetId": 35,
   "projectId": "Z-009",
-  "message": "You sent Lucas Meyer an invoice for your recently activated Project Content Specification Flow project. This project has a budget of $1584 left. Click here to view invoice details",
+  "message": "You sent Lucas Meyer a $216 invoice for your recently activated Project Content Specification Flow project. This project has a budget of $1584 left. Click here to view invoice details",
   "context": {
     "upfrontAmount": 216,
     "projectTitle": "Project Content Specification Flow",
@@ -16,5 +16,7 @@
   "read": false,
   "createdAt": "2025-08-22T11:34:33.223Z",
   "timestamp": "2025-08-22T11:34:33.223Z",
-  "subsystem": "completion_invoicing"
+  "subsystem": "completion_invoicing",
+  "messageFixNote": "Fixed upfront payment message to include actual dollar amount ($216) instead of generic 'an invoice' text",
+  "updatedAt": "2025-08-23T15:58:12.956Z"
 }

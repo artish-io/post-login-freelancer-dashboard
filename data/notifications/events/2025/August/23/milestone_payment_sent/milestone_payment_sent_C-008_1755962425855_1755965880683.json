@@ -1,0 +1,30 @@
+{
+  "id": "milestone_payment_sent_C-008_1755962425855_1755965880683",
+  "timestamp": "2025-08-23T16:18:00.683Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "C-008_1755962425855",
+  "metadata": {
+    "taskTitle": "Phase Two: Colour Theory Design ",
+    "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "projectId": "C-008",
+    "taskId": 1755962425855,
+    "freelancerName": "Tobi Philly",
+    "amount": 733.33,
+    "invoiceNumber": "MH-007",
+    "remainingBudget": 733.3399999999999,
+    "projectBudget": 2200
+  },
+  "context": {
+    "projectId": "C-008",
+    "taskId": 1755962425855,
+    "invoiceNumber": "MH-007"
+  },
+  "title": "You just paid Tobi Philly $733.33",
+  "message": "You just paid Tobi Philly $733.33 for submitting Phase Two: Colour Theory Design  for Banners And Web 3 Assests For UN End Poverty Collab . Remaining budget: $733.34. Click here to see transaction activity",
+  "freelancerDataFixNote": "Fixed missing freelancer data: freelancerName: Tobi Philly, amount: $733.33",
+  "updatedAt": "2025-08-23T16:22:31.852Z"
+}

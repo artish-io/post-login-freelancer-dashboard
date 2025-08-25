@@ -1,0 +1,22 @@
+{
+  "id": "comp_notif_1755961969246_drf1lr6by",
+  "type": "completion.upfront_payment",
+  "actorId": 34,
+  "targetId": 34,
+  "projectId": "C-007",
+  "message": "You sent Tobi Philly a $264 invoice for your recently activated UN End Poverty Collab Landing Page project. This project has a budget of $1936 left. Click here to view invoice details",
+  "context": {
+    "upfrontAmount": 264,
+    "projectTitle": "UN End Poverty Collab Landing Page",
+    "remainingBudget": 1936,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "read": false,
+  "createdAt": "2025-08-23T15:12:49.246Z",
+  "timestamp": "2025-08-23T15:12:49.246Z",
+  "subsystem": "completion_invoicing",
+  "messageFixNote": "Fixed upfront payment message to include actual dollar amount ($264) instead of generic 'an invoice' text",
+  "updatedAt": "2025-08-23T15:58:12.957Z"
+}

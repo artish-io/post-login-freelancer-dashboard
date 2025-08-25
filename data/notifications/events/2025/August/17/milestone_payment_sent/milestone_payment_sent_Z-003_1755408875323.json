@@ -15,7 +15,7 @@
     "projectBudget": 4500,
     "projectTitle": "Landing Page for Ticket Announcement",
     "priority": "medium",
-    "remainingBudget": 3000
+    "remainingBudget": 4500
   },
   "context": {
     "projectId": "Z-003",
@@ -25,6 +25,7 @@
   },
   "title": "You just paid Tobi Philly $1,500",
   "message": "You just paid Tobi Philly $1,500 for submitting Frontend Development for Landing Page for Ticket Announcement. Remaining budget: $3,000. Click here to see transaction activity",
-  "updatedAt": "2025-08-23T02:09:19.771Z",
-  "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue"
+  "updatedAt": "2025-08-23T15:57:32.737Z",
+  "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue",
+  "remainingBudgetFixNote": "Fixed remaining budget calculation: was $3000, corrected to $4500 (totalBudget: $4500 - paidToDate: $0)"
 }

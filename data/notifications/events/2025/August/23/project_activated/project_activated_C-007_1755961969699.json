@@ -1,0 +1,23 @@
+{
+  "id": "project_activated_C-007_1755961969699",
+  "timestamp": "2025-08-23T15:12:49.699Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "C-007",
+  "metadata": {
+    "projectTitle": "UN End Poverty Collab Landing Page",
+    "gigTitle": "UN End Poverty Collab Landing Page",
+    "taskCount": 3,
+    "commissionerName": "Matte Hannery",
+    "organizationName": "Corlax Wellness",
+    "dueDate": "2025-08-29"
+  },
+  "context": {
+    "projectId": "C-007",
+    "gigId": 35,
+    "applicationId": 1755193217265
+  }
+}

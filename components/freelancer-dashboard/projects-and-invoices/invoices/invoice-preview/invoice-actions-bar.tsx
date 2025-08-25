@@ -14,6 +14,13 @@ type Props = {
 export default function InvoiceActionsBar({ invoiceData, onSend, onDownload, sending = false }: Props) {
   const router = useRouter();
 
+  console.log('[INVOICE_ACTIONS_BAR] Rendering with props:', {
+    invoiceNumber: invoiceData?.invoiceNumber,
+    sending,
+    hasOnSend: !!onSend,
+    hasOnDownload: !!onDownload
+  });
+
   const handleBack = () => {
     if (!invoiceData?.invoiceNumber) {
       console.warn('⚠️ Missing invoice number for back navigation');
@@ -30,7 +37,10 @@ export default function InvoiceActionsBar({ invoiceData, onSend, onDownload, sen
       {/* Send Invoice */}
       <div className="w-full">
         <Button
-          onClick={onSend}
+          onClick={() => {
+            console.log('[INVOICE_ACTIONS_BAR] Send button clicked');
+            onSend();
+          }}
           variant="primary"
           disabled={sending}
           className="w-full px-5 py-3 text-sm font-medium flex items-center justify-center gap-2"

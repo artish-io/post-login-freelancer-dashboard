@@ -1,0 +1,22 @@
+{
+  "id": "comp_invoice_Z-012_TB-C010_1756151235082",
+  "type": "completion.invoice_received",
+  "actorId": 31,
+  "targetId": 35,
+  "projectId": "Z-012",
+  "message": "Margsate Flether sent you an invoice for $440. You have received an invoice for your ongoing Communists of Waterloo Marketing project. Click here to view invoice details",
+  "context": {
+    "invoiceNumber": "TB-C010",
+    "amount": 440,
+    "taskId": "1756151163451",
+    "taskTitle": "Phase 1 – Strategy & Asset Development",
+    "projectTitle": "Communists of Waterloo Marketing",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T19:40:35.082Z",
+  "timestamp": "2025-08-25T19:40:35.082Z",
+  "subsystem": "completion_invoicing"
+}

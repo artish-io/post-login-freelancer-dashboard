@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_40_31_1756154346941",
+  "timestamp": "2025-08-25T20:39:06.941Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "40",
+  "metadata": {
+    "gigTitle": "Completion-Based Test for Neighbourhood Cafe",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 40,
+    "applicationId": 1755193217268
+  }
+}

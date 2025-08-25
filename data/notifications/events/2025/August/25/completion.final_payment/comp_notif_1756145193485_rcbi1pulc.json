@@ -1,0 +1,19 @@
+{
+  "id": "comp_notif_1756145193485_rcbi1pulc",
+  "type": "completion.final_payment",
+  "actorId": 35,
+  "targetId": 31,
+  "projectId": "Z-011",
+  "context": {
+    "finalAmount": 821.33,
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "finalPercent": 59,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T18:06:33.485Z",
+  "timestamp": "2025-08-25T18:06:33.485Z",
+  "subsystem": "completion_invoicing"
+}

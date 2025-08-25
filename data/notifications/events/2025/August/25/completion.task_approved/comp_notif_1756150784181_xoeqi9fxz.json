@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1756150784181_xoeqi9fxz",
+  "type": "completion.task_approved",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-012",
+  "message": "You approved \"Phase 1 – Strategy & Asset Development\" in Communists of Waterloo Marketing. Task approved and milestone completed. Click here to see project tracker.",
+  "context": {
+    "taskId": "1756151163451",
+    "taskTitle": "Phase 1 – Strategy & Asset Development",
+    "projectTitle": "Communists of Waterloo Marketing",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T19:39:44.181Z",
+  "timestamp": "2025-08-25T19:39:44.181Z",
+  "subsystem": "completion_invoicing"
+}

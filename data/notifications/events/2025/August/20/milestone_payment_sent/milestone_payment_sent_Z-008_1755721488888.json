@@ -15,7 +15,7 @@
     "freelancerName": "Lucas Meyer",
     "amount": 500,
     "invoiceNumber": "TB-016",
-    "remainingBudget": 500,
+    "remainingBudget": 1000,
     "projectBudget": 1500
   },
   "context": {
@@ -25,6 +25,7 @@
   },
   "title": "You just paid Lucas Meyer $500",
   "message": "You just paid Lucas Meyer $500 for submitting God Abeg No Code Regression Test for God Abeg No Code Regression Test. Remaining budget: $500. Click here to see transaction activity",
-  "updatedAt": "2025-08-23T02:09:19.789Z",
-  "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue"
+  "updatedAt": "2025-08-23T15:57:32.741Z",
+  "migrationNote": "Updated to simplified format to fix duplicate caption/sub-caption issue",
+  "remainingBudgetFixNote": "Fixed remaining budget calculation: was $500, corrected to $1000 (totalBudget: $1500 - paidToDate: $500)"
 }

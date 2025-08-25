@@ -1,0 +1,24 @@
+{
+  "id": "milestone_payment_received_C-008_1755962967537_1755962703063",
+  "timestamp": "2025-08-23T15:25:03.063Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 34,
+  "entityType": 5,
+  "entityId": "C-008_1755962967537",
+  "metadata": {
+    "taskTitle": "Phase One: Wireframe and Sketches",
+    "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "projectId": "C-008",
+    "taskId": 1755962967537,
+    "invoiceGenerated": true,
+    "amount": 0,
+    "invoiceNumber": "MH-006",
+    "organizationName": "Corlax Wellness"
+  },
+  "context": {
+    "projectId": "C-008",
+    "taskId": 1755962967537,
+    "invoiceNumber": "MH-006"
+  }
+}

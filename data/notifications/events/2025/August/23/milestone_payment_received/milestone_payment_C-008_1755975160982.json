@@ -1,0 +1,25 @@
+{
+  "id": "milestone_payment_C-008_1755975160982",
+  "timestamp": "2025-08-23T18:52:40.982Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 10,
+  "entityId": "C-008_Banners And Web 3 Assests For UN End Poverty Collab ",
+  "metadata": {
+    "milestoneTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "amount": 733.33,
+    "organizationName": "Corlax Wellness",
+    "invoiceNumber": "MH-008",
+    "projectBudget": 2200,
+    "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "remainingBudget": 0.009999999999763531,
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "C-008",
+    "milestoneTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "invoiceNumber": "MH-008"
+  }
+}

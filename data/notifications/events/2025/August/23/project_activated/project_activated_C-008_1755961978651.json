@@ -1,0 +1,23 @@
+{
+  "id": "project_activated_C-008_1755961978651",
+  "timestamp": "2025-08-23T15:12:58.651Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "C-008",
+  "metadata": {
+    "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "gigTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "taskCount": 3,
+    "commissionerName": "Matte Hannery",
+    "organizationName": "Corlax Wellness",
+    "dueDate": "2025-08-29"
+  },
+  "context": {
+    "projectId": "C-008",
+    "gigId": 36,
+    "applicationId": 1755193217264
+  }
+}

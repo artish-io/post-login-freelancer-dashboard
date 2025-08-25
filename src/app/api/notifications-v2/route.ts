@@ -98,8 +98,8 @@ export async function GET(request: NextRequest) {
         return true;
       }
 
-      // Special case: completion.final_payment, completion.project_completed, and project_completed notifications can be self-notifications for commissioners
-      if ((event.type === 'completion.final_payment' || event.type === 'completion.project_completed' || event.type === 'project_completed') && event.targetId === parseInt(userId) && event.actorId === parseInt(userId)) {
+      // Special case: completion.final_payment, completion.project_completed, completion.commissioner_payment, and project_completed notifications can be self-notifications for commissioners
+      if ((event.type === 'completion.final_payment' || event.type === 'completion.project_completed' || event.type === 'completion.commissioner_payment' || event.type === 'project_completed') && event.targetId === parseInt(userId) && event.actorId === parseInt(userId)) {
         return true;
       }
 
@@ -248,10 +248,12 @@ export async function GET(request: NextRequest) {
       }
 
       const title = await generateGranularTitle(event, actor, project, projectTaskData, task, parseInt(userId));
-      // Use pre-generated message from completion notifications if available and not a fallback message
+      // Always generate messages dynamically for completion notifications to ensure they're context-aware
       const preGeneratedMessage = (event as any).message;
       const isFallbackMessage = preGeneratedMessage && preGeneratedMessage.startsWith('Completion event:');
-      const message = (preGeneratedMessage && !isFallbackMessage)
+      const isCompletionNotification = event.type.startsWith('completion.');
+
+      const message = (preGeneratedMessage && !isFallbackMessage && !isCompletionNotification)
         ? preGeneratedMessage
         : await generateGranularMessage(event, actor, project, projectTaskData, task, parseInt(userId));
 
@@ -444,6 +446,7 @@ function getNotificationType(eventType: EventType): string {
     'completion.task_approved': 'completion_task_approved',
     'completion.invoice_received': 'completion_invoice_received',
     'completion.invoice_paid': 'completion_invoice_paid',
+    'completion.commissioner_payment': 'completion_commissioner_payment',
     'completion.project_completed': 'completion_project_completed',
     'completion.final_payment': 'completion_final_payment',
     'completion.rating_prompt': 'completion_rating_prompt'
@@ -659,6 +662,11 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
         // Freelancer title - they received the payment
         return `${compTitleOrgName} paid your invoice`;
       }
+    case 'completion.commissioner_payment':
+      // Commissioner payment confirmation title
+      const commPaymentAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
+      const commPaymentFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
+      return `You just paid ${commPaymentFreelancerName} $${commPaymentAmount}`;
     case 'completion.project_completed':
       return `Project completed`;
     case 'project_completed':
@@ -834,16 +842,46 @@ async function generateGranularMessage(event: EventData, _actor: any, _project?:
       const remainingBudgetAmt = (event.metadata as any)?.remainingBudget || (event.context as any)?.remainingBudget || 0;
       const projTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'your project';
       const orgNameForUpfront = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
+      const freelancerNameForUpfront = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
 
-      if (upfrontAmt && remainingBudgetAmt) {
-        return `${orgNameForUpfront} has paid $${upfrontAmt} upfront for your newly activated ${projTitle} project. This project has a budget of $${remainingBudgetAmt} left. Click here to view invoice details`;
+      // Check if current user is the commissioner (actor) or freelancer (target)
+      const isUpfrontCommissioner = currentUserId === event.actorId;
+
+      if (isUpfrontCommissioner) {
+        // Commissioner message - they sent the upfront payment
+        return `You sent ${freelancerNameForUpfront} a $${upfrontAmt} invoice for your recently activated ${projTitle} project. This project has a budget of $${remainingBudgetAmt} left. Click here to view invoice details`;
       } else {
-        return `Upfront payment received for your newly activated project`;
+        // Freelancer message - they received the upfront payment
+        if (upfrontAmt && remainingBudgetAmt) {
+          return `${orgNameForUpfront} has paid $${upfrontAmt} upfront for your newly activated ${projTitle} project. This project has a budget of $${remainingBudgetAmt} left. Click here to view invoice details`;
+        } else {
+          return `Upfront payment received for your newly activated project`;
+        }
       }
     case 'completion.task_approved':
-      return `Your task submission has been approved`;
+      // Generate detailed message for task approval notifications
+      const taskApprovalTaskTitle = (event.metadata as any)?.taskTitle || (event.context as any)?.taskTitle || 'task';
+      const taskApprovalProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
+      const taskApprovalCommissionerName = (event.metadata as any)?.commissionerName || (event.context as any)?.commissionerName || 'Commissioner';
+
+      // Check if current user is the commissioner (actor) or freelancer (target)
+      const isTaskApprovalCommissioner = currentUserId === event.actorId;
+
+      if (isTaskApprovalCommissioner) {
+        // Commissioner message - they approved the task
+        return `You approved "${taskApprovalTaskTitle}" in ${taskApprovalProjectTitle}. Task approved and milestone completed. Click here to see project tracker.`;
+      } else {
+        // Freelancer message - their task was approved
+        return `${taskApprovalCommissionerName} has approved your submission for "${taskApprovalTaskTitle}" in ${taskApprovalProjectTitle}. Task approved and milestone completed. Click here to see its project tracker.`;
+      }
     case 'completion.invoice_received':
-      return `New invoice received for review`;
+      // Generate detailed message for invoice received notifications
+      const invoiceRecAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
+      const invoiceRecTaskTitle = (event.metadata as any)?.taskTitle || (event.context as any)?.taskTitle || 'task';
+      const invoiceRecFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
+      const invoiceRecInvoiceNumber = (event.metadata as any)?.invoiceNumber || (event.context as any)?.invoiceNumber || '';
+
+      return `${invoiceRecFreelancerName} sent you a $${invoiceRecAmount} invoice for ${invoiceRecTaskTitle}. Invoice #${invoiceRecInvoiceNumber}. Click here to review.`;
     case 'completion.invoice_paid':
       // Generate context-aware message for manual invoice payments
       const compInvoiceAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
@@ -863,6 +901,15 @@ async function generateGranularMessage(event: EventData, _actor: any, _project?:
         // Freelancer message - they received the payment
         return `${compOrgName} has paid $${compInvoiceAmount} for your recent task submission. Click here to view invoice details`;
       }
+    case 'completion.commissioner_payment':
+      // Generate context-aware message for commissioner payment confirmation
+      const commPaymentAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
+      const commPaymentProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
+      const commPaymentOrgName = (event.metadata as any)?.organizationName || (event.context as any)?.orgName || 'Organization';
+      const commPaymentFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
+      const commPaymentRemainingBudget = (event.metadata as any)?.remainingBudget || (event.context as any)?.remainingBudget || 0;
+
+      return `${commPaymentOrgName} has paid ${commPaymentFreelancerName} $${commPaymentAmount} for your ongoing ${commPaymentProjectTitle} project. This project has a budget of $${commPaymentRemainingBudget} left. Click here to view invoice details`;
     case 'completion.project_completed':
       // Generate context-aware message for project completion
       const completionProjectTitle = (event.context as any)?.projectTitle || (event.metadata as any)?.projectTitle || 'project';
@@ -984,6 +1031,39 @@ function generateNotificationLink(event: EventData, _project?: any, _task?: any)
     case 'gig_rejected':
       // Navigate to gig explore page to see available gigs
       return `/freelancer-dashboard/gigs/explore-gigs`;
+
+    // Completion notification links
+    case 'completion.invoice_received':
+      // Navigate to invoice details page for commissioners (works for both paid and unpaid invoices)
+      const invoiceNum = event.context?.invoiceNumber || event.metadata?.invoiceNumber;
+      if (invoiceNum) {
+        return `/commissioner-dashboard/projects-and-invoices/invoices/invoice/${invoiceNum}`;
+      }
+      return `/commissioner-dashboard/projects-and-invoices/invoices`;
+    case 'completion.invoice_paid':
+      // Navigate to invoice details for freelancers
+      const paidInvoiceNum = event.context?.invoiceNumber || event.metadata?.invoiceNumber;
+      if (paidInvoiceNum) {
+        return `/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${paidInvoiceNum}`;
+      }
+      return `/freelancer-dashboard/projects-and-invoices/invoices`;
+    case 'completion.commissioner_payment':
+      // Navigate to payments page for commissioners
+      return `/commissioner-dashboard/payments`;
+    case 'completion.project_activated':
+    case 'completion.task_approved':
+    case 'completion.project_completed':
+      // Navigate to project tracking page
+      return `/freelancer-dashboard/projects-and-invoices/project-tracking/${event.context?.projectId}`;
+    case 'completion.upfront_payment':
+    case 'completion.final_payment':
+      // Navigate to invoice details for freelancers
+      const completionInvoiceNum = event.context?.invoiceNumber || event.metadata?.invoiceNumber;
+      if (completionInvoiceNum) {
+        return `/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${completionInvoiceNum}`;
+      }
+      return `/freelancer-dashboard/projects-and-invoices/invoices`;
+
     default:
       return '#';
   }

@@ -1,0 +1,29 @@
+{
+  "invoiceNumber": "TB-C022",
+  "projectId": "Z-012",
+  "freelancerId": 31,
+  "commissionerId": 35,
+  "projectTitle": "Communists of Waterloo Marketing",
+  "totalAmount": 180,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-25T19:38:29.877Z",
+  "dueDate": "2025-09-08T19:38:29.877Z",
+  "createdAt": "2025-08-25T19:38:29.877Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 180,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 171,
+    "platformFee": 9
+  },
+  "paidDate": "2025-08-25T19:38:30.381Z",
+  "updatedAt": "2025-08-25T19:38:30.387Z"
+}

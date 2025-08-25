@@ -32,6 +32,14 @@ export async function POST(req: NextRequest) {
     
     // ✅ SAFE: Create project using existing infrastructure pattern
     const projectId = generateProjectId();
+    const activationDate = new Date();
+
+    // 🛡️ DURATION GUARD: Calculate due date from activation time to preserve project duration
+    const dueDate = (() => {
+      const deliveryWeeks = projectData.deliveryTimeWeeks || 4; // Default to 4 weeks if not specified
+      return new Date(activationDate.getTime() + deliveryWeeks * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    })();
+
     const project = {
       projectId,
       title: projectData.title,
@@ -44,8 +52,23 @@ export async function POST(req: NextRequest) {
       status: 'ongoing',
       executionMethod: 'completion', // 🔒 COMPLETION-SPECIFIC
       invoicingMethod: 'completion', // 🔒 COMPLETION-SPECIFIC
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      dueDate, // 🛡️ DURATION GUARD: Due date calculated from activation time
+      createdAt: activationDate.toISOString(),
+      updatedAt: activationDate.toISOString(),
+
+      // 🛡️ DURATION GUARD: Clear date separation and duration persistence
+      gigId: projectData.gigId,
+      gigPostedDate: projectData.gigPostedDate,
+      projectActivatedAt: activationDate.toISOString(),
+      originalDuration: {
+        deliveryTimeWeeks: projectData.deliveryTimeWeeks,
+        estimatedHours: projectData.estimatedHours,
+        originalStartDate: projectData.originalStartDate,
+        originalEndDate: projectData.originalEndDate,
+      },
+      // Legacy fields for backward compatibility
+      deliveryTimeWeeks: projectData.deliveryTimeWeeks,
+      estimatedHours: projectData.estimatedHours,
       // 🔒 COMPLETION-SPECIFIC: Additional fields
       upfrontPaid: false,
       upfrontAmount,

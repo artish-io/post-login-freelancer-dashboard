@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756144484738_607",
+  "timestamp": "2025-08-25T17:54:44.738Z",
+  "type": "invoice_paid",
+  "notificationType": 41,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 3,
+  "entityId": "TB-C008",
+  "metadata": {
+    "invoiceNumber": "TB-C008",
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "amount": 410.6666666666667,
+    "organizationName": "Tilly Burzinsky",
+    "commissionerName": "Tilly Burzinsky",
+    "projectBudget": 0
+  },
+  "context": {
+    "projectId": "Z-011",
+    "invoiceNumber": "TB-C008"
+  }
+}

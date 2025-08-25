@@ -54,38 +54,50 @@ export default function SendInvoicePage() {
 
   useEffect(() => {
     const fetchInvoiceData = async () => {
+      console.log('[SEND_INVOICE_PAGE] Loading invoice:', invoiceNumber);
+      console.log('[SEND_INVOICE_PAGE] Session:', session?.user?.id);
+
       if (!invoiceNumber) {
+        console.error('[SEND_INVOICE_PAGE] No invoice number provided');
         setError('No invoice number provided');
         setLoading(false);
         return;
       }
 
       try {
+        console.log('[SEND_INVOICE_PAGE] Fetching invoice details from API...');
         // Fetch enhanced invoice details (includes freelancer and commissioner info)
         const invoiceRes = await fetch(`/api/invoices/details/${invoiceNumber}`);
+        console.log('[SEND_INVOICE_PAGE] API response status:', invoiceRes.status);
+
         if (!invoiceRes.ok) {
           if (invoiceRes.status === 404) {
+            console.error('[SEND_INVOICE_PAGE] Invoice not found');
             setError('Invoice not found');
           } else {
+            console.error('[SEND_INVOICE_PAGE] Failed to load invoice, status:', invoiceRes.status);
             throw new Error('Failed to load invoice');
           }
           setLoading(false);
           return;
         }
         const invoice = await invoiceRes.json();
+        console.log('[SEND_INVOICE_PAGE] Invoice data loaded:', invoice);
 
         // Verify the current user has access to this invoice
         const currentUserId = session?.user?.id ? parseInt(session.user.id) : null;
         if (currentUserId && invoice.freelancerId !== currentUserId) {
+          console.error('[SEND_INVOICE_PAGE] Access denied - user ID mismatch');
           setError('Access denied - you can only view your own invoices');
           setLoading(false);
           return;
         }
 
+        console.log('[SEND_INVOICE_PAGE] Setting invoice data');
         setInvoiceData(invoice);
 
       } catch (err) {
-        console.error('Error fetching invoice data:', err);
+        console.error('[SEND_INVOICE_PAGE] Error fetching invoice data:', err);
         setError(err instanceof Error ? err.message : 'Failed to load invoice');
       } finally {
         setLoading(false);

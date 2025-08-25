@@ -196,15 +196,25 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
 
       // Navigate on success (works for both new invoices and existing drafts)
       if (data.success && data.invoiceNumber) {
+        console.log('[INVOICE_GENERATION] Success response:', data);
+        console.log('[INVOICE_GENERATION] Navigating to:', `/freelancer-dashboard/projects-and-invoices/invoices/send-invoice/${encodeURIComponent(data.invoiceNumber)}`);
+
         // Only show toast for new invoices, not existing drafts
         if (data.existingDraft || data.wasExisting) {
           // Just navigate silently for existing drafts
+          console.log('[INVOICE_GENERATION] Existing draft found, navigating silently');
         } else {
           // Show success toast only for new invoice creation
+          console.log('[INVOICE_GENERATION] New invoice created, showing success toast');
           showSuccessToast('Invoice Generated', 'New invoice created successfully');
         }
-        router.push(`/freelancer-dashboard/projects-and-invoices/invoices/send-invoice/${encodeURIComponent(data.invoiceNumber)}`);
+
+        // Add a small delay to ensure toast is shown before navigation
+        setTimeout(() => {
+          router.push(`/freelancer-dashboard/projects-and-invoices/invoices/send-invoice/${encodeURIComponent(data.invoiceNumber)}`);
+        }, 100);
       } else {
+        console.error('[INVOICE_GENERATION] Invalid response:', data);
         showErrorToast('Invoice Generation Failed', 'Invalid response from server');
       }
     } catch (error) {

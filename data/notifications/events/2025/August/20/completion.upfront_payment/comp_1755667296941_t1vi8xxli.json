@@ -4,7 +4,7 @@
   "actorId": 34,
   "targetId": 1,
   "projectId": "C-006",
-  "message": "Completion event: completion.upfront_payment",
+  "message": "Corlax Wellness has paid $216 upfront for your newly activated Marketing for 2Baba 40-Year Concert project. This project has a budget of $1584 left. Click here to view invoice details",
   "context": {
     "upfrontAmount": 216,
     "projectTitle": "Marketing for 2Baba 40-Year Concert",
@@ -14,5 +14,7 @@
     "commissionerName": "Matte Hannery"
   },
   "timestamp": "2025-08-20T05:21:36.732Z",
-  "subsystem": "completion_invoicing"
+  "subsystem": "completion_invoicing",
+  "messageFixNote": "Fixed upfront payment message to include actual dollar amount ($216) instead of generic 'an invoice' text",
+  "updatedAt": "2025-08-23T15:58:12.948Z"
 }

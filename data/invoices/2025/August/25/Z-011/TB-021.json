@@ -1,0 +1,30 @@
+{
+  "invoiceNumber": "TB-021",
+  "projectId": "Z-011",
+  "freelancerId": 31,
+  "commissionerId": 35,
+  "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+  "totalAmount": 821.33,
+  "invoiceType": "completion_final",
+  "milestoneNumber": 99,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-25T18:06:32.828Z",
+  "dueDate": "2025-09-08T18:06:32.828Z",
+  "createdAt": "2025-08-25T18:06:32.828Z",
+  "description": "Final completion payment (remaining 88%)",
+  "milestones": [
+    {
+      "description": "Final completion payment (remaining 88%)",
+      "rate": 821.33,
+      "title": "Final Payment",
+      "taskId": "final"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 780.26,
+    "platformFee": 41.07
+  },
+  "paidDate": "2025-08-25T18:06:33.364Z",
+  "updatedAt": "2025-08-25T18:06:33.390Z"
+}

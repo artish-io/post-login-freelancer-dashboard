@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1755962425855_1755965862821",
+  "timestamp": "2025-08-23T16:17:42.821Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1755962425855,
+  "metadata": {
+    "taskId": 1755962425855,
+    "taskTitle": "Phase Two: Colour Theory Design ",
+    "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-008",
+    "taskId": 1755962425855
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "project_activated_Z-011_1756144270143",
+  "timestamp": "2025-08-25T17:51:10.143Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 2,
+  "entityId": "Z-011",
+  "metadata": {
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "gigTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "taskCount": 3,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group",
+    "dueDate": "2025-08-29"
+  },
+  "context": {
+    "projectId": "Z-011",
+    "gigId": 37,
+    "applicationId": 1755193217266
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "milestone_payment_sent_C-008_1755975160983",
+  "timestamp": "2025-08-23T18:52:40.983Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "C-008_733.33",
+  "metadata": {
+    "taskTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "projectId": "C-008",
+    "taskId": 1755975160983,
+    "freelancerName": "Tobi Philly",
+    "amount": 733.33,
+    "invoiceNumber": "MH-008",
+    "remainingBudget": 0.009999999999763531,
+    "projectBudget": 2200
+  },
+  "context": {
+    "projectId": 8,
+    "taskId": 1755975160983,
+    "invoiceNumber": "MH-008"
+  }
+}

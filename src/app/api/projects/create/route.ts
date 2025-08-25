@@ -53,6 +53,7 @@ interface Project {
   status: string;
   executionMethod: string;
   invoicingMethod: string;
+  dueDate?: string;
   createdAt: string;
   updatedAt: string;
   deliveryTimeWeeks?: number;
@@ -61,6 +62,16 @@ interface Project {
   typeTags?: string[];
   organizationId?: number;
   gigId?: number;
+
+  // 🛡️ DURATION GUARD: Date separation and duration persistence types
+  gigPostedDate?: string;
+  projectActivatedAt?: string;
+  originalDuration?: {
+    deliveryTimeWeeks?: number;
+    estimatedHours?: number;
+    originalStartDate?: string;
+    originalEndDate?: string;
+  };
 }
 
 function validateProjectInput(data: unknown): { isValid: boolean; error?: string; input?: ProjectCreateInput } {
@@ -161,8 +172,13 @@ export async function POST(req: Request): Promise<NextResponse<ApiSuccess | ApiE
 
     // Generate project ID
     const projectId = await getNextId('project');
-    const createdAt = input.createdAt || new Date().toISOString();
-    
+    const activationDate = new Date();
+    const createdAt = input.createdAt || activationDate.toISOString();
+
+    // 🛡️ DURATION GUARD: Calculate due date from activation time to preserve project duration
+    const deliveryWeeks = input.deliveryTimeWeeks || gigData?.deliveryTimeWeeks || 4;
+    const dueDate = new Date(activationDate.getTime() + deliveryWeeks * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
     // Create project object
     const project: Project = {
       projectId,
@@ -179,9 +195,21 @@ export async function POST(req: Request): Promise<NextResponse<ApiSuccess | ApiE
       status: 'ongoing',
       executionMethod: input.executionMode,
       invoicingMethod: input.invoicingMethod || input.executionMode,
+      dueDate, // 🛡️ DURATION GUARD: Due date calculated from activation time
       createdAt,
       updatedAt: createdAt,
       deliveryTimeWeeks: input.deliveryTimeWeeks || gigData?.deliveryTimeWeeks,
+
+      // 🛡️ DURATION GUARD: Clear date separation and duration persistence
+      gigId: input.gigId,
+      gigPostedDate: gigData?.postedDate,
+      projectActivatedAt: activationDate.toISOString(),
+      originalDuration: {
+        deliveryTimeWeeks: input.deliveryTimeWeeks || gigData?.deliveryTimeWeeks,
+        estimatedHours: gigData?.estimatedHours,
+        originalStartDate: gigData?.startType === 'Custom' ? gigData?.customStartDate : undefined,
+        originalEndDate: gigData?.endDate,
+      },
       skills: input.skills || gigData?.skills || [],
       tools: input.tools || gigData?.tools || [],
       typeTags: input.skills || gigData?.skills || [],

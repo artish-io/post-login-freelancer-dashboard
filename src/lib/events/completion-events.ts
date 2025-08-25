@@ -8,13 +8,14 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-// 🔒 COMPLETION-SPECIFIC: Event type definitions (8 types total)
+// 🔒 COMPLETION-SPECIFIC: Event type definitions (9 types total)
 export type CompletionEventType =
   | 'completion.project_activated'      // Project acceptance
   | 'completion.upfront_payment'        // 12% upfront payment
   | 'completion.task_approved'          // Individual task approval
   | 'completion.invoice_received'       // Manual invoice from freelancer
-  | 'completion.invoice_paid'           // Manual invoice payment
+  | 'completion.invoice_paid'           // Manual invoice payment (freelancer notification)
+  | 'completion.commissioner_payment'   // Commissioner payment confirmation
   | 'completion.project_completed'      // All tasks completed
   | 'completion.final_payment'          // 88% final payment
   | 'completion.rating_prompt';         // Rating request
@@ -97,7 +98,7 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.targetId,
       projectId: event.projectId,
-      message: `${orgName} has paid $${upfrontAmount} upfront for your newly activated ${projectTitle} project. This project has a budget of $${remainingBudget} left. Click here to view invoice details`,
+      message: null, // Let the API route generate the message dynamically
       context: event.context,
       userType: 'freelancer'
     });
@@ -108,7 +109,7 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.actorId, // Self-notification
       projectId: event.projectId,
-      message: `You sent ${freelancerName} an invoice for your recently activated ${projectTitle} project. This project has a budget of $${remainingBudget} left. Click here to view invoice details`,
+      message: null, // Let the API route generate the message dynamically
       context: event.context,
       userType: 'commissioner'
     });
@@ -128,7 +129,7 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.targetId,
       projectId: event.projectId,
-      message: `${freelancerName} sent you a $${amount} invoice for ${taskTitle}. Invoice #${invoiceNumber}. Click here to review.`,
+      message: null, // Let the API route generate the message dynamically
       context: event.context,
       userType: 'commissioner'
     });
@@ -139,7 +140,7 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.actorId, // Self-notification
       projectId: event.projectId,
-      message: `You sent ${commissionerName} a $${amount} invoice for ${taskTitle}. Invoice #${invoiceNumber}. Click here to view details.`,
+      message: null, // Let the API route generate the message dynamically
       context: event.context,
       userType: 'freelancer'
     });
@@ -160,6 +161,7 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.targetId,
       projectId: event.projectId,
+      message: null, // Let the API route generate the message dynamically
       context: event.context,
       userType: 'freelancer'
     });
@@ -170,11 +172,33 @@ export const CompletionEventHandlers = {
       actorId: event.actorId,
       targetId: event.actorId, // Self-notification
       projectId: event.projectId,
+      message: null, // Let the API route generate the message dynamically
       context: event.context,
       userType: 'commissioner'
     });
   },
-  
+
+  'completion.commissioner_payment': async (event: CompletionEvent) => {
+    // Commissioner payment confirmation notification - ARTISH style
+    const amount = event.context.amount || 0;
+    const invoiceNumber = event.context.invoiceNumber || '';
+    const taskTitle = event.context.taskTitle || 'task';
+    const projectTitle = event.context.projectTitle || 'project';
+    const freelancerName = event.context.freelancerName || 'Freelancer';
+    const remainingBudget = event.context.remainingBudget || 0;
+
+    // Notification for commissioner (actor) - confirming payment was sent
+    await createCompletionNotification({
+      type: 'completion.commissioner_payment',
+      actorId: event.actorId,
+      targetId: event.targetId, // Should be same as actorId for self-notification
+      projectId: event.projectId,
+      message: null, // Let the API route generate the message dynamically
+      context: event.context,
+      userType: 'commissioner'
+    });
+  },
+
   'completion.project_completed': async (event: CompletionEvent) => {
     // Notify both parties about project completion (separate from payment) - ARTISH style
     const projectTitle = event.context.projectTitle || 'Project';
@@ -295,7 +319,7 @@ async function createCompletionNotification(params: {
   actorId: number;
   targetId: number;
   projectId: string;
-  message: string;
+  message: string | null;
   context: CompletionEvent['context'];
   userType: 'freelancer' | 'commissioner';
 }) {
@@ -306,7 +330,7 @@ async function createCompletionNotification(params: {
       actorId: params.actorId,
       targetId: params.targetId,
       projectId: params.projectId,
-      message: params.message,
+      message: params.message, // Can be null for dynamic generation
       context: params.context,
       read: false,
       createdAt: new Date().toISOString()

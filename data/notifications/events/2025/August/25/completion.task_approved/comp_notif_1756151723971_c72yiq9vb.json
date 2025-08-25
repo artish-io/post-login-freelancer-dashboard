@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1756151723971_c72yiq9vb",
+  "type": "completion.task_approved",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-012",
+  "message": "You approved \"Phase 2 – Campaign Activation & Outreach\" in Communists of Waterloo Marketing. Task approved and milestone completed. Click here to see project tracker.",
+  "context": {
+    "taskId": "1756151334171",
+    "taskTitle": "Phase 2 – Campaign Activation & Outreach",
+    "projectTitle": "Communists of Waterloo Marketing",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T19:55:23.971Z",
+  "timestamp": "2025-08-25T19:55:23.971Z",
+  "subsystem": "completion_invoicing"
+}

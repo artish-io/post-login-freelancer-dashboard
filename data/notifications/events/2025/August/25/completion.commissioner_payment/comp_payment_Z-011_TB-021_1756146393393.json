@@ -1,0 +1,27 @@
+{
+  "id": "comp_payment_Z-011_TB-021_1756146393393",
+  "timestamp": "2025-08-25T18:06:33.393Z",
+  "type": "completion.commissioner_payment",
+  "notificationType": 45,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "TB-021",
+  "metadata": {
+    "invoiceNumber": "TB-021",
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "amount": 821.33,
+    "freelancerName": "Margsate Flether",
+    "organizationName": "Zynate Events Group",
+    "remainingBudget": 0,
+    "taskTitle": "Final Payment"
+  },
+  "context": {
+    "projectId": "Z-011",
+    "invoiceNumber": "TB-021",
+    "taskId": "final"
+  },
+  "title": "You just paid Margsate Flether $821.33",
+  "message": "Zynate Events Group has paid Margsate Flether $821.33 for your ongoing Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series project. This project has a budget of $0 left. Click here to view invoice details",
+  "subsystem": "completion_invoicing"
+}

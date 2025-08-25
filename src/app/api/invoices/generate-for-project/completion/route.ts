@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    const availableTasks = approvedTasks.filter((task: any) => {
+    let availableTasks = approvedTasks.filter((task: any) => {
       const taskId = task.taskId || task.id;
       const title = task.title;
       return !invoicedTaskIds.has(taskId) && !invoicedTitles.has(title);
@@ -105,14 +105,46 @@ export async function POST(request: NextRequest) {
       excludedDrafts: true
     });
 
+    // Additional check: Ensure no task already has ANY invoice (including sent/paid)
+    // This prevents duplicate invoices for the same task across different statuses
+    const allProjectInvoices = await getAllInvoices({ projectId });
+    const tasksWithExistingInvoices = new Set();
+
+    allProjectInvoices.forEach((invoice: any) => {
+      if (invoice.milestones) {
+        invoice.milestones.forEach((milestone: any) => {
+          if (milestone.taskId) {
+            tasksWithExistingInvoices.add(milestone.taskId);
+          }
+        });
+      }
+    });
+
+    // Filter out tasks that already have ANY invoice (regardless of status)
+    const finalAvailableTasks = availableTasks.filter((task: any) => {
+      const taskId = task.taskId || task.id;
+      return !tasksWithExistingInvoices.has(taskId);
+    });
+
+    await log('FINAL_TASK_FILTER', {
+      projectId,
+      initialAvailable: availableTasks.length,
+      finalAvailable: finalAvailableTasks.length,
+      tasksWithExistingInvoices: Array.from(tasksWithExistingInvoices),
+      filteredOutTasks: availableTasks.filter((task: any) =>
+        tasksWithExistingInvoices.has(task.taskId || task.id)
+      ).map((task: any) => task.taskId || task.id)
+    });
+
     // If none available → return 400 with detailed error
-    if (availableTasks.length === 0) {
+    if (finalAvailableTasks.length === 0) {
       await log('NO_AVAILABLE_TASKS', {
         projectId,
         total: tasks.length,
         approved: approvedTasks.length,
         alreadyInvoicedById: invoicedTaskIds.size,
-        alreadyInvoicedByTitle: invoicedTitles.size
+        alreadyInvoicedByTitle: invoicedTitles.size,
+        tasksWithAnyInvoice: tasksWithExistingInvoices.size
       });
 
       return NextResponse.json({
@@ -121,10 +153,14 @@ export async function POST(request: NextRequest) {
           total: tasks.length,
           approved: approvedTasks.length,
           alreadyInvoicedById: invoicedTaskIds.size,
-          alreadyInvoicedByTitle: invoicedTitles.size
+          alreadyInvoicedByTitle: invoicedTitles.size,
+          tasksWithAnyInvoice: tasksWithExistingInvoices.size
         }
       }, { status: 400 });
     }
+
+    // Update availableTasks to use the final filtered list
+    availableTasks = finalAvailableTasks;
 
     // Rate calculation for completion
     const totalBudget = project.totalBudget || 0;
@@ -136,61 +172,13 @@ export async function POST(request: NextRequest) {
 
     await log('RATE_OK', { projectId, ratePerTask, upfront, pool, totalBudget, base, calculation: `${pool} ÷ ${base} = ${ratePerTask}` });
 
-    // Check for existing draft with same milestone set
-    const existingInvoices = await getAllInvoices({ projectId: projectId, freelancerId: freelancerIdNum });
-    const existingDraft = existingInvoices.find(inv =>
-      inv.status === 'draft' &&
-      inv.milestones?.length === availableTasks.length &&
-      inv.milestones?.every((m: any) => availableTasks.some((t: any) => (t.taskId || t.id) === m.taskId))
-    );
-
-    if (existingDraft) {
-      await log('EXISTING_DRAFT_FOUND', { projectId, existingInvoiceNumber: existingDraft.invoiceNumber });
-
-      // Check if existing draft has zero values - if so, fix it
-      const hasZeroValues = !existingDraft.totalAmount || existingDraft.totalAmount === 0 ||
-                           existingDraft.milestones?.some((m: any) => !m.rate || m.rate === 0);
-
-      if (hasZeroValues) {
-        await log('FIXING_ZERO_VALUES', { projectId, existingInvoiceNumber: existingDraft.invoiceNumber });
-
-        // Fix the milestones with correct rates
-        const fixedMilestones = availableTasks.map((task: any) => ({
-          title: task.title || `Task ${task.taskId || task.id}`,
-          description: task.description || task.title || `Task ${task.taskId || task.id}`,
-          rate: ratePerTask,
-          taskId: task.taskId || task.id
-        }));
-
-        const fixedTotalAmount = fixedMilestones.reduce((sum: number, m: any) => sum + m.rate, 0);
-
-        const fixedInvoice = {
-          ...existingDraft,
-          milestones: fixedMilestones,
-          totalAmount: fixedTotalAmount,
-          updatedAt: new Date().toISOString()
-        };
-
-        // Save the fixed invoice
-        await saveInvoice(fixedInvoice);
-        await log('FIXED_EXISTING_DRAFT', { projectId, invoiceNumber: existingDraft.invoiceNumber, totalAmount: fixedTotalAmount });
-
-        return NextResponse.json({
-          success: true,
-          invoiceNumber: existingDraft.invoiceNumber,
-          invoiceData: fixedInvoice,
-          wasExisting: true,
-          wasFixed: true
-        }, { status: 200 });
-      }
-
-      return NextResponse.json({
-        success: true,
-        invoiceNumber: existingDraft.invoiceNumber,
-        invoiceData: existingDraft,
-        wasExisting: true
-      }, { status: 200 });
-    }
+    // Since we've already filtered out all tasks that have existing invoices,
+    // we can proceed directly to creating a new invoice without checking for drafts
+    await log('PROCEEDING_TO_CREATE_NEW_INVOICE', {
+      projectId,
+      availableTaskIds: availableTasks.map((t: any) => t.taskId || t.id),
+      taskCount: availableTasks.length
+    });
 
     // Generate human-friendly invoice number with completion prefix
     let invoiceNumber = `INV-C-${projectId}-${Date.now()}`;
@@ -207,7 +195,7 @@ export async function POST(request: NextRequest) {
             .join('')
             .slice(0, 2);
 
-          // Get count of existing COMPLETION invoices for this commissioner to generate sequence
+          // Get highest existing COMPLETION invoice number for this commissioner to generate sequence
           const commissionerInvoices = await getAllInvoices({ commissionerId: project.commissionerId });
           const completionInvoices = commissionerInvoices.filter(inv =>
             inv.invoiceType && (
@@ -215,8 +203,32 @@ export async function POST(request: NextRequest) {
               inv.invoiceNumber?.includes('-C')
             )
           );
-          const sequence = String(completionInvoices.length + 1).padStart(3, '0');
+
+          // Find the highest existing number to avoid duplicates
+          let highestNumber = 0;
+          for (const invoice of completionInvoices) {
+            const parts = invoice.invoiceNumber.split('-');
+            const numberPart = parts[parts.length - 1]; // Get last part after final dash
+            if (numberPart && /^C?\d+$/.test(numberPart)) {
+              const num = parseInt(numberPart.replace('C', ''), 10);
+              if (num > highestNumber) {
+                highestNumber = num;
+              }
+            }
+          }
+
+          const sequence = String(highestNumber + 1).padStart(3, '0');
           invoiceNumber = `${initials}-C${sequence}`;
+
+          await log('INVOICE_NUMBER_GENERATED', {
+            projectId,
+            commissionerId: project.commissionerId,
+            initials,
+            existingCompletionInvoices: completionInvoices.length,
+            highestNumber,
+            newSequence: sequence,
+            generatedInvoiceNumber: invoiceNumber
+          });
         }
       }
     } catch (error) {
@@ -233,6 +245,25 @@ export async function POST(request: NextRequest) {
 
     await log('BUILD_OK', { projectId, invoiceNumber, milestones: milestones.length });
 
+    // Final check: Ensure invoice number is truly unique
+    const existingInvoiceWithSameNumber = await getAllInvoices();
+    const duplicateInvoice = existingInvoiceWithSameNumber.find(inv => inv.invoiceNumber === invoiceNumber);
+    if (duplicateInvoice) {
+      await log('DUPLICATE_INVOICE_NUMBER_DETECTED', {
+        projectId,
+        invoiceNumber,
+        existingInvoice: {
+          number: duplicateInvoice.invoiceNumber,
+          status: duplicateInvoice.status,
+          projectId: duplicateInvoice.projectId,
+          createdAt: duplicateInvoice.createdAt
+        }
+      });
+      // Add timestamp to make it unique
+      invoiceNumber = `${invoiceNumber}-${Date.now()}`;
+      await log('INVOICE_NUMBER_MADE_UNIQUE', { projectId, newInvoiceNumber: invoiceNumber });
+    }
+
     const totalAmount = milestones.reduce((sum: number, m: any) => sum + m.rate, 0);
 
     const newInvoice = {
@@ -247,6 +278,7 @@ export async function POST(request: NextRequest) {
       status: 'draft' as const,
       milestones: milestones,
       isCustomProject: false,
+      invoiceType: 'completion', // Ensure proper categorization
       createdAt: new Date().toISOString(),
       autoGenerated: true
     };

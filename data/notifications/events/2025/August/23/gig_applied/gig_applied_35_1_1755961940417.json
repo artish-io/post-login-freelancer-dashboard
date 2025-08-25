@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_35_1_1755961940417",
+  "timestamp": "2025-08-23T15:12:20.417Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "35",
+  "metadata": {
+    "gigTitle": "UN End Poverty Collab Landing Page",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 35,
+    "applicationId": 1755193217265
+  }
+}
