@@ -12,7 +12,7 @@ export async function GET() {
     const testAmounts = [100, 500, 1000, 1748, 3250, 5000];
     
     const testResults = testAmounts.map(amount => {
-      const platformFee = Math.round(amount * 0.05 * 100) / 100; // 5% platform fee
+      const platformFee = Math.round(amount * 0.052666 * 100) / 100; // 5.2666% platform fee
       const freelancerAmount = Math.round((amount - platformFee) * 100) / 100;
       
       return {
@@ -43,7 +43,7 @@ export async function GET() {
     return NextResponse.json({
       message: 'Platform fee calculation tests',
       invoiceFeeTests: {
-        description: '5% platform fee on freelance invoices',
+        description: '5.2666% platform fee on freelance invoices',
         results: testResults
       },
       storefrontFeeTests: {
@@ -53,7 +53,7 @@ export async function GET() {
       summary: {
         allInvoiceTestsPassed: testResults.every(test => test.totalCheck),
         allStorefrontTestsPassed: storefrontResults.every(test => test.totalCheck),
-        invoiceFeeRate: '5%',
+        invoiceFeeRate: '5.2666%',
         storefrontFeeRate: '30%'
       }
     });

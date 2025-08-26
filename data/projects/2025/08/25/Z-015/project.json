@@ -1,0 +1,32 @@
+{
+  "projectId": "Z-015",
+  "title": "NastyWork Club Marketing Promotional Tour, Toronto",
+  "description": "We’re hosting a conference bringing together critics of techno-feudalism—scholars, journalists, and activists concerned with digital monopolies and algorithmic control. We’re looking for a freelancer to design and run a multi-channel marketing campaign that will highlight the urgency of these discussions and drive registrations. The ideal partner will help us position the event as both intellectually rigorous and culturally relevant.",
+  "organizationId": 4,
+  "typeTags": [
+    "Design",
+    "Brand Design"
+  ],
+  "commissionerId": 35,
+  "freelancerId": 31,
+  "status": "completed",
+  "dueDate": "2025-08-30",
+  "totalTasks": 3,
+  "invoicingMethod": "completion",
+  "gigId": 44,
+  "gigPostedDate": "2025-08-25",
+  "projectActivatedAt": "2025-08-25T21:43:37.165Z",
+  "originalDuration": {
+    "deliveryTimeWeeks": 0.7142857142857143,
+    "estimatedHours": 32,
+    "originalEndDate": "2025-08-30T04:00:00.000Z"
+  },
+  "totalBudget": 1150,
+  "paidToDate": 1150,
+  "currency": "USD",
+  "createdAt": "2025-08-25T21:43:37.165Z",
+  "updatedAt": "2025-08-25T23:44:12.851Z",
+  "estimatedHours": 32,
+  "deliveryTimeWeeks": 0.7142857142857143,
+  "completedAt": "2025-08-25T23:44:12.851Z"
+}

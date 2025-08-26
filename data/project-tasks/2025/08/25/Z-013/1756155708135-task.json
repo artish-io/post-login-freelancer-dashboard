@@ -5,16 +5,18 @@
   "organizationId": 4,
   "projectTypeTags": [],
   "title": "Phase 3 – Event Engagement & Reporting",
-  "status": "Ongoing",
-  "completed": false,
+  "status": "Approved",
+  "completed": true,
   "order": 3,
-  "link": "",
-  "dueDate": "2025-08-29T04:00:00.000Z",
+  "link": "bit.ly2342",
+  "dueDate": "2025-08-25T00:00:00.000Z",
   "rejected": false,
   "feedbackCount": 0,
   "pushedBack": false,
   "version": 1,
   "description": "Manage live engagement during the panel series, amplify highlights on digital channels, and deliver a post-event performance report with key metrics, learnings, and recommendations.",
+  "submittedDate": "2025-08-25T23:46:27.034Z",
+  "approvedDate": "2025-08-26T00:30:11.687Z",
   "createdDate": "2025-08-25T20:56:58.317Z",
-  "lastModified": "2025-08-25T20:56:58.320Z"
+  "lastModified": "2025-08-26T00:30:11.687Z"
 }

@@ -15,7 +15,7 @@ export const RATING_NOTIFICATION_TYPES = {
 } as const;
 
 export interface RatingNotificationParams {
-  projectId: number;
+  projectId: string | number; // Support both string IDs (like 'C-009') and numeric IDs
   projectTitle: string;
   freelancerId: number;
   freelancerName: string;
@@ -51,6 +51,20 @@ export async function sendProjectCompletionRatingNotifications(
       return;
     }
 
+    // Check for existing completion notifications to prevent duplicates
+    const { PersistentDeduplication } = await import('./deduplication');
+    const completionKey = {
+      type: 'project_completed',
+      targetId: String(projectId), // Convert to string for consistency
+      entityId: `project_${projectId}`,
+      timeWindow: 60 // 1 hour window to prevent duplicates
+    };
+
+    if (await PersistentDeduplication.isDuplicatePersistent(completionKey, 60)) {
+      console.log(`🔄 Skipping duplicate project completion notifications for project ${projectId}`);
+      return;
+    }
+
     const timestamp = new Date().toISOString();
     // Send notification to freelancer to rate commissioner
     const freelancerNotification = {
@@ -61,7 +75,7 @@ export async function sendProjectCompletionRatingNotifications(
       actorId: commissionerId, // Commissioner approved all tasks
       targetId: freelancerId, // Freelancer should rate
       entityType: ENTITY_TYPES.PROJECT,
-      entityId: projectId.toString(),
+      entityId: String(projectId),
       metadata: {
         projectTitle,
         commissionerName,
@@ -88,12 +102,12 @@ export async function sendProjectCompletionRatingNotifications(
       actorId: freelancerId, // Freelancer completed the work
       targetId: commissionerId, // Commissioner should rate
       entityType: ENTITY_TYPES.PROJECT,
-      entityId: projectId.toString(),
+      entityId: String(projectId),
       metadata: {
         projectTitle,
         freelancerName,
         completedTaskTitle,
-        message: `You have approved all task milestones for ${projectTitle}. Click here to rate ${freelancerName} for their work on this project. Your rating improves the experience of other project managers on ARTISH.`,
+        message: `Rate your experience working with ${freelancerName} on ${projectTitle}`,
         ratingSubjectId: freelancerId,
         ratingSubjectType: 'freelancer',
         priority: 'high'
@@ -115,7 +129,7 @@ export async function sendProjectCompletionRatingNotifications(
       actorId: commissionerId, // Commissioner approved all tasks
       targetId: freelancerId, // Freelancer receives completion notification
       entityType: ENTITY_TYPES.PROJECT,
-      entityId: projectId.toString(),
+      entityId: String(projectId),
       metadata: {
         projectTitle,
         commissionerName,
@@ -135,7 +149,7 @@ export async function sendProjectCompletionRatingNotifications(
       actorId: commissionerId, // Commissioner approved all tasks
       targetId: commissionerId, // Commissioner receives completion notification (self-notification)
       entityType: ENTITY_TYPES.PROJECT,
-      entityId: projectId.toString(),
+      entityId: String(projectId),
       metadata: {
         projectTitle,
         commissionerName,

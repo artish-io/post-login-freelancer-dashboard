@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756160571835_726",
+  "timestamp": "2025-08-25T22:22:51.835Z",
+  "type": "invoice_paid",
+  "notificationType": 41,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 3,
+  "entityId": "TB-C024",
+  "metadata": {
+    "invoiceNumber": "TB-C024",
+    "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "amount": 337.3333333333333,
+    "organizationName": "Tilly Burzinsky",
+    "commissionerName": "Tilly Burzinsky",
+    "projectBudget": 0
+  },
+  "context": {
+    "projectId": "Z-015",
+    "invoiceNumber": "TB-C024"
+  }
+}

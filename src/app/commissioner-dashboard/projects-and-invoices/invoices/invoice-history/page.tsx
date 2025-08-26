@@ -4,8 +4,6 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import InvoiceHistoryTable from '../../../../../../components/commissioner-dashboard/projects-and-invoices/invoice-history/invoice-history-table';
-import AccountHistoryTable from '../../../../../../components/commissioner-dashboard/projects-and-invoices/invoice-history/account-history-table';
-import InvoiceHistoryFilters from '../../../../../../components/commissioner-dashboard/projects-and-invoices/invoice-history/invoice-history-filters';
 
 type Invoice = {
   invoiceNumber: string;
@@ -18,7 +16,7 @@ type Invoice = {
   issueDate: string;
   dueDate: string;
   totalAmount: number;
-  status: 'draft' | 'sent' | 'paid';
+  status: 'draft' | 'sent' | 'paid' | 'on_hold' | 'cancelled' | 'overdue';
   milestones: {
     description: string;
     rate: number;
@@ -44,11 +42,8 @@ export default function InvoiceHistoryPage() {
   const [invoices, setInvoices] = useState<InvoiceWithFreelancer[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<InvoiceWithFreelancer[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('invoices');
-  const [filters, setFilters] = useState({
-    status: 'all',
-    sortBy: 'date-desc'
-  });
+  const [activeTab, setActiveTab] = useState<'all' | 'paid' | 'draft' | 'on_hold'>('all');
+
 
   // Get commissioner ID from URL params, session, or default to 32
   const urlCommissionerId = searchParams.get('commissionerId');
@@ -116,137 +111,35 @@ export default function InvoiceHistoryPage() {
   useEffect(() => {
     let filtered = [...invoices];
 
-    // If we're on the Account History tab, aggregate by project
-    if (activeTab === 'account-history') {
-      // Group invoices by parentInvoiceNumber (project)
-      const projectGroups = filtered.reduce((acc, invoice) => {
-        const projectKey = invoice.parentInvoiceNumber;
-
-        if (!acc[projectKey]) {
-          acc[projectKey] = {
-            invoiceNumber: projectKey,
-            freelancerId: invoice.freelancerId,
-            projectId: invoice.projectId,
-            commissionerId: invoice.commissionerId,
-            projectTitle: invoice.projectTitle,
-            milestoneDescription: `Project #${invoice.projectId}`,
-            milestoneNumber: 0,
-            issueDate: invoice.issueDate,
-            dueDate: invoice.dueDate,
-            totalAmount: 0,
-            status: 'paid' as const,
-            milestones: [],
-            parentInvoiceNumber: projectKey,
-            freelancer: invoice.freelancer,
-            invoiceCount: 0,
-            completedInvoices: 0
-          };
-        }
-
-        // Aggregate data
-        acc[projectKey].totalAmount += invoice.totalAmount;
-        acc[projectKey].invoiceCount++;
-        if (invoice.status === 'paid') {
-          acc[projectKey].completedInvoices++;
-        }
-
-        // Update dates to show project span
-        if (new Date(invoice.issueDate) < new Date(acc[projectKey].issueDate)) {
-          acc[projectKey].issueDate = invoice.issueDate;
-        }
-        if (new Date(invoice.dueDate) > new Date(acc[projectKey].dueDate)) {
-          acc[projectKey].dueDate = invoice.dueDate;
-        }
-
-        return acc;
-      }, {} as any);
-
-      // Convert to array and determine project status
-      filtered = Object.values(projectGroups).map((project: any) => {
-        // Determine overall project status
-        if (project.completedInvoices === project.invoiceCount) {
-          project.status = 'paid'; // All milestones completed
-        } else if (project.completedInvoices > 0) {
-          project.status = 'sent'; // Partially completed
-        } else {
-          project.status = 'draft'; // Not started
-        }
-
-        return project;
-      });
+    // Filter by tab
+    if (activeTab !== 'all') {
+      if (activeTab === 'on_hold') {
+        // Include both 'on_hold' and 'sent' statuses for processing tab
+        filtered = filtered.filter(invoice =>
+          invoice.status === 'on_hold' || invoice.status === 'sent'
+        );
+      } else {
+        filtered = filtered.filter(invoice => invoice.status === activeTab);
+      }
     }
 
-    // Filter by status - map UI filter values to actual data values
-    if (filters.status !== 'all') {
-      // Map UI filter values to actual invoice status values
-      const statusMapping: { [key: string]: string } = {
-        'paid': 'paid',        // Completed -> paid
-        'cancelled': 'cancelled', // Cancelled -> cancelled (doesn't exist in current data)
-        'sent': 'sent',        // On Hold -> sent
-        'failed': 'failed',    // Failed -> failed (doesn't exist in current data)
-        'pending': 'pending',  // Pending -> pending (doesn't exist in current data)
-        'draft': 'draft'       // Processing -> draft
-      };
 
-      const actualStatus = statusMapping[filters.status] || filters.status;
-      filtered = filtered.filter(invoice => invoice.status === actualStatus);
-    }
-
-    // Sort invoices
-    switch (filters.sortBy) {
-      case 'order':
-        filtered.sort((a, b) => a.invoiceNumber.localeCompare(b.invoiceNumber));
-        break;
-      case 'date-desc':
-        filtered.sort((a, b) => {
-          // Prioritize timestamp fields (with time) over issueDate (date only) for accurate "recently sent" ordering
-          const aTimestamp = (a as any).createdAt || (a as any).generatedAt || (a as any).sentDate || (a as any).updatedAt;
-          const bTimestamp = (b as any).createdAt || (b as any).generatedAt || (b as any).sentDate || (b as any).updatedAt;
-          const aDate = aTimestamp ? new Date(aTimestamp).getTime() : new Date(a.issueDate).getTime();
-          const bDate = bTimestamp ? new Date(bTimestamp).getTime() : new Date(b.issueDate).getTime();
-          return bDate - aDate; // Most recent first
-        });
-        break;
-      case 'amount-desc':
-        filtered.sort((a, b) => b.totalAmount - a.totalAmount);
-        break;
-      case 'name':
-        filtered.sort((a, b) => a.freelancer.name.localeCompare(b.freelancer.name));
-        break;
-      default:
-        filtered.sort((a, b) => {
-          // Prioritize timestamp fields (with time) over issueDate (date only) for accurate "recently sent" ordering
-          const aTimestamp = (a as any).createdAt || (a as any).generatedAt || (a as any).sentDate || (a as any).updatedAt;
-          const bTimestamp = (b as any).createdAt || (b as any).generatedAt || (b as any).sentDate || (b as any).updatedAt;
-          const aDate = aTimestamp ? new Date(aTimestamp).getTime() : new Date(a.issueDate).getTime();
-          const bDate = bTimestamp ? new Date(bTimestamp).getTime() : new Date(b.issueDate).getTime();
-          return bDate - aDate; // Most recent first
-        });
-        break;
-    }
+    // Sort by date (most recent first)
+    filtered.sort((a, b) => {
+      const aDate = new Date(a.issueDate).getTime();
+      const bDate = new Date(b.issueDate).getTime();
+      return bDate - aDate;
+    });
 
     setFilteredInvoices(filtered);
-  }, [filters, invoices, activeTab]);
+  }, [invoices, activeTab]);
 
   const handleInvoiceClick = (invoice: InvoiceWithFreelancer) => {
     // Navigate to invoice detail page
     router.push(`/commissioner-dashboard/projects-and-invoices/invoices/invoice/${invoice.invoiceNumber}`);
   };
 
-  const handleProjectClick = (project: any) => {
-    // Navigate to project-level invoice overview page
-    const projectId = project.projectId;
-    const parentInvoiceNumber = project.parentInvoiceNumber;
 
-    if (parentInvoiceNumber) {
-      router.push(`/commissioner-dashboard/projects-and-invoices/invoices/project?parentInvoice=${parentInvoiceNumber}`);
-    } else if (projectId) {
-      router.push(`/commissioner-dashboard/projects-and-invoices/invoices/project?projectId=${projectId}`);
-    } else {
-      // Fallback to individual invoice view
-      router.push(`/commissioner-dashboard/projects-and-invoices/invoices/invoice/${project.invoiceNumber}`);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -261,7 +154,7 @@ export default function InvoiceHistoryPage() {
               </p>
             </div>
             <div className="text-sm text-gray-500">
-              {filteredInvoices.length} {activeTab === 'invoices' ? 'invoices' : 'projects'}
+              {filteredInvoices.length} invoices
             </div>
           </div>
         </div>
@@ -271,59 +164,52 @@ export default function InvoiceHistoryPage() {
       <div className="border-b border-gray-200 bg-white">
         <div className="px-6">
           <nav className="flex space-x-8">
-            <button
-              onClick={() => setActiveTab('invoices')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'invoices'
-                  ? 'border-pink-500 text-pink-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Invoices
-            </button>
-            <button
-              onClick={() => setActiveTab('account-history')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                activeTab === 'account-history'
-                  ? 'border-pink-500 text-pink-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-              }`}
-            >
-              Account History
-            </button>
+            {[
+              { key: 'all', label: 'All Invoices', count: invoices.length },
+              { key: 'paid', label: 'Paid', count: invoices.filter(inv => inv.status === 'paid').length },
+              { key: 'draft', label: 'Draft', count: invoices.filter(inv => inv.status === 'draft').length },
+              { key: 'on_hold', label: 'Processing', count: invoices.filter(inv => inv.status === 'on_hold' || inv.status === 'sent').length }
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key as any)}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-all duration-300 ${
+                  activeTab === tab.key
+                    ? 'border-[#eb1966] text-[#eb1966]'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                {tab.label}
+                {tab.count > 0 && (
+                  <span className="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full">
+                    {tab.count}
+                  </span>
+                )}
+              </button>
+            ))}
           </nav>
         </div>
       </div>
 
-      {/* Content */}
-      <>
-        {/* Filters */}
-        <div className="border-b border-gray-200 bg-white">
-          <div className="px-6 py-4">
-            <InvoiceHistoryFilters
-              filters={filters}
-              onFiltersChange={setFilters}
-            />
+      {/* Invoice Table */}
+      <div className="bg-white">
+        {filteredInvoices.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-gray-500">
+              {activeTab === 'all' && 'No invoices found'}
+              {activeTab === 'paid' && 'No paid invoices found'}
+              {activeTab === 'draft' && 'No draft invoices found'}
+              {activeTab === 'on_hold' && 'No processing invoices found'}
+            </p>
           </div>
-        </div>
-
-        {/* Table */}
-        <div className="bg-white">
-          {activeTab === 'invoices' ? (
-            <InvoiceHistoryTable
-              invoices={filteredInvoices}
-              onInvoiceClick={handleInvoiceClick}
-              loading={loading}
-            />
-          ) : (
-            <AccountHistoryTable
-              projects={filteredInvoices as any}
-              onProjectClick={handleProjectClick}
-              loading={loading}
-            />
-          )}
-        </div>
-      </>
+        ) : (
+          <InvoiceHistoryTable
+            invoices={filteredInvoices as any}
+            onInvoiceClick={handleInvoiceClick}
+            loading={loading}
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 // src/lib/invoice-storage.ts
 import 'server-only';
 import { readFile, writeFile, readdir, stat } from 'fs/promises';
+import * as fs from 'fs';
 import path from 'path';
 
 import { InvoiceStatus, InvoiceType } from './invoice-status-definitions';
@@ -103,6 +104,23 @@ function getInvoiceFilePath(invoice: Invoice): string {
     day,
     projectId,
     `${invoice.invoiceNumber}.json`
+  );
+}
+
+// Helper function to get file path by invoice number and project ID (for direct access)
+function getInvoiceFilePathByNumber(invoiceNumber: string, projectId: string): string {
+  const now = new Date();
+  const { year, month, day } = getDateParts(now);
+
+  return path.join(
+    process.cwd(),
+    'data',
+    'invoices',
+    year,
+    month,
+    day,
+    projectId,
+    `${invoiceNumber}.json`
   );
 }
 
@@ -282,16 +300,56 @@ export async function updateInvoiceByProjectId(
   projectId: string | number,
   updates: Partial<Invoice>
 ): Promise<boolean> {
+  console.log('🔍 updateInvoiceByProjectId: Searching for invoice:', {
+    invoiceNumber,
+    projectId,
+    projectIdType: typeof projectId
+  });
+
+  try {
+    // Try direct file read first (more reliable for recently created invoices)
+    const invoiceFilePath = getInvoiceFilePathByNumber(invoiceNumber, projectId.toString());
+    console.log('📁 updateInvoiceByProjectId: Trying direct file read:', invoiceFilePath);
+
+    if (fs.existsSync(invoiceFilePath)) {
+      console.log('✅ updateInvoiceByProjectId: Found invoice file directly');
+      const invoiceData = JSON.parse(fs.readFileSync(invoiceFilePath, 'utf8'));
+      const updatedInvoice = { ...invoiceData, ...updates, updatedAt: new Date().toISOString() };
+      await saveInvoice(updatedInvoice);
+      console.log('✅ updateInvoiceByProjectId: Invoice updated successfully via direct file access');
+      return true;
+    }
+
+    console.log('📋 updateInvoiceByProjectId: Direct file not found, falling back to getAllInvoices');
+  } catch (directError) {
+    console.warn('⚠️ updateInvoiceByProjectId: Direct file read failed:', directError);
+  }
+
+  // Fallback to getAllInvoices approach
   const allInvoices = await getAllInvoices();
+  console.log('📋 updateInvoiceByProjectId: Found invoices for project:',
+    allInvoices.filter(inv => inv.projectId?.toString() === projectId.toString()).map(inv => ({
+      number: inv.invoiceNumber,
+      projectId: inv.projectId,
+      status: inv.status
+    }))
+  );
+
   const targetInvoice = allInvoices.find(inv =>
     inv.invoiceNumber === invoiceNumber &&
     inv.projectId?.toString() === projectId.toString()
   );
 
-  if (!targetInvoice) return false;
+  console.log('🎯 updateInvoiceByProjectId: Target invoice found:', !!targetInvoice);
+
+  if (!targetInvoice) {
+    console.error('❌ updateInvoiceByProjectId: Invoice not found via getAllInvoices either');
+    return false;
+  }
 
   const updatedInvoice = { ...targetInvoice, ...updates, updatedAt: new Date().toISOString() };
   await saveInvoice(updatedInvoice);
+  console.log('✅ updateInvoiceByProjectId: Invoice updated successfully via getAllInvoices');
   return true;
 }
 

@@ -1,0 +1,30 @@
+{
+  "invoiceNumber": "TB-022",
+  "projectId": "Z-014",
+  "freelancerId": 31,
+  "commissionerId": 35,
+  "projectTitle": "Completion Modelling For Series A Fundraising",
+  "totalAmount": 1056,
+  "invoiceType": "completion_final",
+  "milestoneNumber": 99,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-25T21:28:33.448Z",
+  "dueDate": "2025-09-08T21:28:33.448Z",
+  "createdAt": "2025-08-25T21:28:33.448Z",
+  "description": "Final completion payment (remaining 88%)",
+  "milestones": [
+    {
+      "description": "Final completion payment (remaining 88%)",
+      "rate": 1056,
+      "title": "Final Payment",
+      "taskId": "final"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 1003.2,
+    "platformFee": 52.8
+  },
+  "paidDate": "2025-08-25T21:28:33.959Z",
+  "updatedAt": "2025-08-25T21:28:34.328Z"
+}

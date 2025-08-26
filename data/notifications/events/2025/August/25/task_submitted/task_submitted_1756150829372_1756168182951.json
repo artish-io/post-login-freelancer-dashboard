@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756150829372_1756168182951",
+  "timestamp": "2025-08-26T00:29:42.951Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756150829372,
+  "metadata": {
+    "taskId": 1756150829372,
+    "taskTitle": "Phase 3 – Event Engagement & Reporting",
+    "projectTitle": "Communists of Waterloo Marketing",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-012",
+    "taskId": 1756150829372
+  }
+}

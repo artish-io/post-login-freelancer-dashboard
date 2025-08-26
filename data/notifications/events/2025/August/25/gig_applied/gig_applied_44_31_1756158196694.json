@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_44_31_1756158196694",
+  "timestamp": "2025-08-25T21:43:16.694Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "44",
+  "metadata": {
+    "gigTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 44,
+    "applicationId": 1755193217273
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756156300844_1756165554672",
+  "timestamp": "2025-08-25T23:45:54.672Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756156300844,
+  "metadata": {
+    "taskId": 1756156300844,
+    "taskTitle": "Phase 2 – Campaign Activation & Outreach",
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-013",
+    "taskId": 1756156300844
+  }
+}

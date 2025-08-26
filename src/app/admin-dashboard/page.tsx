@@ -133,12 +133,20 @@ export default function AdminDashboard() {
             <h1 className="text-3xl font-bold text-gray-900">ARTISH Admin Dashboard</h1>
             <p className="text-gray-600 mt-1">Track invoices, commissions, and product approvals</p>
           </div>
-          <button
-            onClick={migratePlatformFees}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
-          >
-            🔧 Fix Missing Platform Fees
-          </button>
+          <div className="flex gap-3">
+            <a
+              href="/admin-dashboard/platform-fees"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            >
+              Platform Fees Dashboard
+            </a>
+            <button
+              onClick={migratePlatformFees}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+            >
+              🔧 Fix Missing Platform Fees
+            </button>
+          </div>
         </div>
       </div>
 

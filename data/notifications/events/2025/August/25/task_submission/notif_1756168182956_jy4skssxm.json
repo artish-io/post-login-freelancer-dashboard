@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756168182956_jy4skssxm",
+  "timestamp": "2025-08-26T00:29:42.956Z",
+  "type": "task_submission",
+  "notificationType": 0,
+  "targetId": 35,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Margsate Flether submitted a task",
+    "message": "\"Phase 3 – Event Engagement & Reporting\" is awaiting your review",
+    "priority": "high"
+  },
+  "context": {}
+}

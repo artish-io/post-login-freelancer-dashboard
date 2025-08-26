@@ -1,0 +1,26 @@
+{
+  "id": "milestone_payment_sent_Z-013_1756168213648",
+  "timestamp": "2025-08-26T00:30:13.648Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 5,
+  "entityId": "Z-013_533.33",
+  "metadata": {
+    "taskTitle": "Marketing For Techno-Fedualism Milestones",
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "projectId": "Z-013",
+    "taskId": 1756168213648,
+    "freelancerName": "Margsate Flether",
+    "amount": 533.33,
+    "invoiceNumber": "TB-026",
+    "remainingBudget": 0.009999999999763531,
+    "projectBudget": 1600
+  },
+  "context": {
+    "projectId": 13,
+    "taskId": 1756168213648,
+    "invoiceNumber": "TB-026"
+  }
+}

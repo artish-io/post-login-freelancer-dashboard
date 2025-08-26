@@ -1,0 +1,23 @@
+{
+  "id": "project_activated_Z-015_1756158226134",
+  "timestamp": "2025-08-25T21:43:46.134Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 2,
+  "entityId": "Z-015",
+  "metadata": {
+    "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "gigTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "taskCount": 3,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group",
+    "dueDate": "2025-08-30"
+  },
+  "context": {
+    "projectId": "Z-015",
+    "gigId": 44,
+    "applicationId": 1755193217273
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "comp_notif_1756165453713_fwyl42n63",
+  "type": "completion.rating_prompt",
+  "actorId": 35,
+  "targetId": 31,
+  "projectId": "Z-015",
+  "message": "Rate your experience with Tilly Burzinsky. All tasks for NastyWork Club Marketing Promotional Tour, Toronto have been approved. Click here to rate your collaboration.",
+  "context": {
+    "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "commissionerName": "Tilly Burzinsky",
+    "freelancerName": "Margsate Flether",
+    "orgName": "Zynate Events Group"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T23:44:13.713Z",
+  "timestamp": "2025-08-25T23:44:13.713Z",
+  "subsystem": "completion_invoicing"
+}

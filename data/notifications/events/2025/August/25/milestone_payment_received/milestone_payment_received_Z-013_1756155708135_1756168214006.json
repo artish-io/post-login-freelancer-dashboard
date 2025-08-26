@@ -1,0 +1,26 @@
+{
+  "id": "milestone_payment_received_Z-013_1756155708135_1756168214006",
+  "timestamp": "2025-08-26T00:30:14.006Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 35,
+  "entityType": 5,
+  "entityId": "Z-013_1756155708135",
+  "metadata": {
+    "taskTitle": "Phase 3 – Event Engagement & Reporting",
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "projectId": "Z-013",
+    "taskId": 1756155708135,
+    "invoiceGenerated": true,
+    "amount": 533.33,
+    "invoiceNumber": "TB-026",
+    "organizationName": "Zynate Events Group"
+  },
+  "context": {
+    "projectId": "Z-013",
+    "taskId": 1756155708135,
+    "invoiceNumber": "TB-026"
+  },
+  "enrichmentNote": "Fixed amount: amount: $533.33 (from invoice TB-026)",
+  "updatedAt": "2025-08-26T00:30:14.007Z"
+}

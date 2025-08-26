@@ -57,7 +57,7 @@ export default function RevenueOverview({ data, dateRange }: RevenueOverviewProp
       color: 'bg-green-500'
     },
     {
-      title: 'Service Charges (5%)',
+      title: 'Service Charges (5.27%)',
       value: `$${actualData.serviceCharges?.toLocaleString() || '0'}`,
       change: actualData.growth?.serviceCharges || 0,
       icon: CreditCard,

@@ -3,6 +3,7 @@
 // Call this once on server startup to register all event handlers
 
 import { registerInvoicePaidToNotifications, registerTaskApprovedToNotifications, registerTaskApprovedToMilestoneInvoices } from '@/lib/events/bus';
+import { bootstrapPaymentNotificationHandlers } from '@/lib/notifications/payment-notification-gateway';
 
 let isBootstrapped = false;
 
@@ -30,6 +31,10 @@ export function bootstrapEventHandlers(): void {
     // Register task approved to milestone invoice auto-generation
     registerTaskApprovedToMilestoneInvoices();
     console.log('[events.bootstrap] ✅ Task approved to milestone invoice auto-generation registered');
+
+    // Bootstrap payment notification handlers (singleton guard)
+    bootstrapPaymentNotificationHandlers();
+    console.log('[events.bootstrap] ✅ Payment notification handlers bootstrapped');
 
     isBootstrapped = true;
     console.log('[events.bootstrap] 🎉 All event handlers registered successfully');

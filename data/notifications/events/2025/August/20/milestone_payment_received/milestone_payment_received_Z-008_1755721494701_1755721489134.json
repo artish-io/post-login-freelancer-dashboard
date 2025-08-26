@@ -12,7 +12,7 @@
     "projectId": "Z-008",
     "taskId": 1755721494701,
     "invoiceGenerated": true,
-    "amount": 0,
+    "amount": 500,
     "invoiceNumber": "TB-016",
     "organizationName": "Zynate Events Group",
     "projectBudget": 1500,
@@ -23,7 +23,8 @@
     "taskId": 1755721494701,
     "invoiceNumber": "TB-016"
   },
-  "updatedAt": "2025-08-23T05:00:01.742Z",
+  "updatedAt": "2025-08-26T03:16:15.111Z",
   "contextEnrichmentNote": "Fixed project budget enrichment: projectBudget: $1500",
-  "milestonePaymentContextNote": "Fixed milestone payment context: remainingBudget: $1000"
+  "milestonePaymentContextNote": "Fixed milestone payment context: remainingBudget: $1000",
+  "enrichmentNote": "Fixed amount: $500 (from invoice TB-016)"
 }

@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756161222893_126",
+  "timestamp": "2025-08-25T22:33:42.894Z",
+  "type": "payment_sent",
+  "notificationType": 42,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "TB-C025",
+  "metadata": {
+    "invoiceNumber": "TB-C025",
+    "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "amount": 337.3333333333333,
+    "freelancerName": "Margsate Flether",
+    "remainingBudget": "$475.33",
+    "notificationText": "You just paid Margsate Flether $337.3333333333333 for their work on NastyWork Club Marketing Promotional Tour, Toronto. This project has a remaining budget of $475.33 left."
+  },
+  "context": {
+    "projectId": "Z-015",
+    "invoiceNumber": "TB-C025"
+  }
+}

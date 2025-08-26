@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_42_31_1756155966680",
+  "timestamp": "2025-08-25T21:06:06.680Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "42",
+  "metadata": {
+    "gigTitle": "Event Marketing For The Dangers of Techno-Feudalism Talk Series",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 42,
+    "applicationId": 1755193217271
+  }
+}

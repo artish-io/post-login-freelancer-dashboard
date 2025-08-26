@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_45_1_1756196348319",
+  "timestamp": "2025-08-26T08:19:08.319Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "45",
+  "metadata": {
+    "gigTitle": "Milestones Web 3 Graphic Design Asssets ",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 45,
+    "applicationId": 1755193217274
+  }
+}

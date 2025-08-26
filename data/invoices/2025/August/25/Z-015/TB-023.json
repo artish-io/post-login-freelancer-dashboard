@@ -1,0 +1,30 @@
+{
+  "invoiceNumber": "TB-023",
+  "projectId": "Z-015",
+  "freelancerId": 31,
+  "commissionerId": 35,
+  "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+  "totalAmount": 337.33,
+  "invoiceType": "completion_final",
+  "milestoneNumber": 99,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-25T23:44:12.290Z",
+  "dueDate": "2025-09-08T23:44:12.290Z",
+  "createdAt": "2025-08-25T23:44:12.291Z",
+  "description": "Final completion payment (remaining 88%)",
+  "milestones": [
+    {
+      "description": "Final completion payment (remaining 88%)",
+      "rate": 337.33,
+      "title": "Final Payment",
+      "taskId": "final"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 320.46,
+    "platformFee": 16.87
+  },
+  "paidDate": "2025-08-25T23:44:12.841Z",
+  "updatedAt": "2025-08-25T23:44:12.848Z"
+}

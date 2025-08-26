@@ -1,0 +1,32 @@
+{
+  "id": "milestone_C-009_MH-010_commissioner_1756224539370",
+  "timestamp": "2025-08-26T16:08:59.370Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 10,
+  "entityId": "C-009_MH-010",
+  "metadata": {
+    "type": "milestone_payment_sent",
+    "audience": "commissioner",
+    "projectId": "C-009",
+    "invoiceNumber": "MH-010",
+    "amount": 500,
+    "freelancerName": "Tobi Philly",
+    "organizationName": "Corlax Wellness",
+    "taskTitle": "Outreach & Campaign Rollout",
+    "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+    "remainingBudget": 500,
+    "commissionerId": 34,
+    "freelancerId": 1,
+    "eventKey": "milestone_payment_sent:commissioner:C-009:MH-010",
+    "qualityScore": 4,
+    "title": "You just paid Tobi Philly $500",
+    "message": "You just paid Tobi Philly $500 for submitting Outreach & Campaign Rollout for Milestones Web 3 Graphic Design Asssets . Remaining budget: $500. Click here to see transaction activity"
+  },
+  "context": {
+    "projectId": "C-009",
+    "invoiceNumber": "MH-010"
+  }
+}

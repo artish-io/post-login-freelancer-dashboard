@@ -23,8 +23,8 @@ export async function POST() {
     for (const invoice of invoices) {
       // Only process paid invoices that don't have paymentDetails
       if (invoice.status === 'paid' && !invoice.paymentDetails) {
-        // Calculate 5% platform fee
-        const platformFee = Math.round(invoice.totalAmount * 0.05 * 100) / 100;
+        // Calculate 5.2666% platform fee
+        const platformFee = Math.round(invoice.totalAmount * 0.052666 * 100) / 100;
         const freelancerAmount = Math.round((invoice.totalAmount - platformFee) * 100) / 100;
 
         // Create updated invoice with payment details
@@ -101,7 +101,7 @@ export async function GET() {
 
     const totalInvoiceValue = paidInvoices.reduce((sum: number, inv: any) => sum + inv.totalAmount, 0);
     const currentPlatformRevenue = paidWithFees.reduce((sum: number, inv: any) => sum + (inv.paymentDetails?.platformFee || 0), 0);
-    const missingPlatformRevenue = paidWithoutFees.reduce((sum: number, inv: any) => sum + (inv.totalAmount * 0.05), 0);
+    const missingPlatformRevenue = paidWithoutFees.reduce((sum: number, inv: any) => sum + (inv.totalAmount * 0.052666), 0);
 
     return NextResponse.json({
       analysis: {

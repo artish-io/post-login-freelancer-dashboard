@@ -1,0 +1,25 @@
+{
+  "id": "rating_prompt_commissioner_C-009_1756231017724",
+  "timestamp": "2025-08-26T17:56:57.723Z",
+  "type": "rating_prompt_commissioner",
+  "notificationType": 141,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 2,
+  "entityId": "C-009",
+  "metadata": {
+    "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+    "freelancerName": "Tobi Philly",
+    "completedTaskTitle": "Amplification & Legacy Building",
+    "message": "Rate your experience working with Tobi Philly on Milestones Web 3 Graphic Design Asssets ",
+    "ratingSubjectId": 1,
+    "ratingSubjectType": "freelancer",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "C-009",
+    "ratingSubjectUserId": 1,
+    "ratingSubjectUserType": "freelancer",
+    "action": "rate_freelancer"
+  }
+}

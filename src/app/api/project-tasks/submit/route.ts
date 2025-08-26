@@ -392,6 +392,19 @@ async function handleTaskOperation(request: NextRequest) {
               try {
                 const { handleCompletionNotification } = await import('../../../../app/api/notifications-v2/completion-handler');
 
+                // Get commissioner name for enrichment
+                let commissionerName = 'Commissioner';
+                try {
+                  if (project.commissionerId) {
+                    const commissioner = await UnifiedStorageService.getUserById(project.commissionerId);
+                    if (commissioner?.name) {
+                      commissionerName = commissioner.name;
+                    }
+                  }
+                } catch (userError) {
+                  console.warn('Could not fetch commissioner name for task approval notification');
+                }
+
                 // Always emit task approval notification for completion projects
                 await handleCompletionNotification({
                   type: 'completion.task_approved',
@@ -401,7 +414,8 @@ async function handleTaskOperation(request: NextRequest) {
                   context: {
                     taskId: taskData.taskId,
                     taskTitle: taskData.title,
-                    projectTitle: project.title
+                    projectTitle: project.title,
+                    commissionerName: commissionerName
                   }
                 });
 
@@ -434,37 +448,65 @@ async function handleTaskOperation(request: NextRequest) {
               }
             }
             // 🔔 MILESTONE-SPECIFIC: Handle milestone project notifications (existing logic)
-            else if (isMilestoneProject && completionStatus.isComplete && completionStatus.isFinalTask) {
-              if (project.freelancerId && project.commissionerId) {
-                const userNames = await getUserNamesForRating(project.freelancerId, project.commissionerId);
+            else if (isMilestoneProject) {
+              console.log(`[MILESTONE] Project completion check: isComplete=${completionStatus.isComplete}, isFinalTask=${completionStatus.isFinalTask}, totalTasks=${completionStatus.totalTasks}, approvedTasks=${completionStatus.approvedTasks}`);
 
-                // Update project status to completed for milestone projects
-                try {
-                  const { UnifiedStorageService } = await import('../../../../lib/storage/unified-storage-service');
-                  await UnifiedStorageService.writeProject({
-                    ...project,
-                    status: 'completed',
-                    completedAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                  });
-                  console.log(`✅ Updated milestone project ${project.projectId} status to completed`);
-                } catch (updateError) {
-                  console.warn('Failed to update milestone project status to completed:', updateError);
+              if (completionStatus.isComplete && completionStatus.isFinalTask) {
+                if (project.freelancerId && project.commissionerId) {
+                  console.log(`[MILESTONE] Triggering completion notifications for project ${project.projectId}`);
+
+                  try {
+                    const userNames = await getUserNamesForRating(project.freelancerId, project.commissionerId);
+
+                    // Update project status to completed for milestone projects
+                    try {
+                      const { UnifiedStorageService } = await import('../../../../lib/storage/unified-storage-service');
+                      await UnifiedStorageService.writeProject({
+                        ...project,
+                        status: 'completed',
+                        completedAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                      });
+                      console.log(`✅ Updated milestone project ${project.projectId} status to completed`);
+                    } catch (updateError) {
+                      console.error(`❌ Failed to update milestone project ${project.projectId} status to completed:`, updateError);
+                    }
+
+                    // For final tasks, the rating notifications should be combined with project completion
+                    // This matches the requirement: "project complete + commissioner rating prompt notification"
+                    await sendProjectCompletionRatingNotifications({
+                      projectId: Number(project.projectId),
+                      projectTitle: project.title || 'Untitled Project',
+                      freelancerId: project.freelancerId,
+                      freelancerName: userNames.freelancerName,
+                      commissionerId: project.commissionerId,
+                      commissionerName: userNames.commissionerName,
+                      completedTaskTitle: taskData.title
+                    });
+
+                    console.log(`🎉 Final task approved - sent completion and rating notifications for milestone project ${taskData.projectId}`);
+                  } catch (notificationError) {
+                    console.error(`❌ CRITICAL: Failed to send completion notifications for milestone project ${project.projectId}:`, notificationError);
+
+                    // Log detailed error information for debugging
+                    console.error(`[MILESTONE_ERROR] Project: ${project.projectId}, Task: ${taskData.taskId}, Error:`, {
+                      error: notificationError instanceof Error ? notificationError.message : String(notificationError),
+                      stack: notificationError instanceof Error ? notificationError.stack : undefined,
+                      projectData: {
+                        projectId: project.projectId,
+                        title: project.title,
+                        freelancerId: project.freelancerId,
+                        commissionerId: project.commissionerId,
+                        status: project.status
+                      },
+                      completionStatus
+                    });
+                  }
+                } else {
+                  console.error(`[MILESTONE] CRITICAL: Missing freelancer or commissioner IDs for project ${project.projectId} - freelancerId: ${project.freelancerId}, commissionerId: ${project.commissionerId}`);
                 }
-
-                // For final tasks, the rating notifications should be combined with project completion
-                // This matches the requirement: "project complete + commissioner rating prompt notification"
-                await sendProjectCompletionRatingNotifications({
-                  projectId: Number(project.projectId),
-                  projectTitle: project.title || 'Untitled Project',
-                  freelancerId: project.freelancerId,
-                  freelancerName: userNames.freelancerName,
-                  commissionerId: project.commissionerId,
-                  commissionerName: userNames.commissionerName,
-                  completedTaskTitle: taskData.title
-                });
-
-                console.log(`🎉 Final task approved - sent completion and rating notifications for milestone project ${taskData.projectId}`);
+              } else {
+                console.log(`[MILESTONE] Project ${project.projectId} not yet complete - ${completionStatus.remainingTasks} tasks remaining`);
               }
             }
           }

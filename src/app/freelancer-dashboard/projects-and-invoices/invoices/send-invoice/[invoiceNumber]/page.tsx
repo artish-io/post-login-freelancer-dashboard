@@ -17,6 +17,7 @@ type Invoice = {
   dueDate: string;
   totalAmount: number;
   status: 'draft' | 'sent' | 'paid';
+  invoiceType?: string; // Added to support completion project detection
   milestones: {
     description: string;
     rate: number;
@@ -49,6 +50,7 @@ export default function SendInvoicePage() {
   const [invoiceData, setInvoiceData] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [statusWarning, setStatusWarning] = useState<string | null>(null);
 
   const invoiceNumber = params.invoiceNumber as string;
 
@@ -96,6 +98,37 @@ export default function SendInvoicePage() {
         console.log('[SEND_INVOICE_PAGE] Setting invoice data');
         setInvoiceData(invoice);
 
+        // SECURITY: Validate invoice status on page load
+        const isNonDraftStatus = ['sent', 'paid', 'on hold', 'cancelled'].includes(invoice.status?.toLowerCase());
+        if (isNonDraftStatus) {
+          console.log('[SECURITY] Non-draft invoice accessed via send-invoice page:', {
+            invoiceNumber,
+            status: invoice.status,
+            userId: session?.user?.id
+          });
+
+          setStatusWarning(`This invoice has already been ${invoice.status}. No further actions are allowed.`);
+
+          // Auto-redirect to appropriate page after 3 seconds
+          setTimeout(() => {
+            console.log('[SECURITY] Auto-redirecting from non-draft invoice page');
+
+            // Check if this is a completion project invoice
+            const isCompletionInvoice = invoice.invoiceType === 'completion' ||
+                                      invoice.invoiceType?.startsWith('completion_');
+
+            if (isCompletionInvoice) {
+              // For completion projects, redirect to project tracking
+              console.log('[SECURITY] Completion project - redirecting to project tracking:', invoice.projectId);
+              router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking/${invoice.projectId}`);
+            } else {
+              // For milestone projects, redirect to invoices list
+              console.log('[SECURITY] Milestone project - redirecting to invoices list');
+              router.push('/freelancer-dashboard/projects-and-invoices/invoices');
+            }
+          }, 3000);
+        }
+
       } catch (err) {
         console.error('[SEND_INVOICE_PAGE] Error fetching invoice data:', err);
         setError(err instanceof Error ? err.message : 'Failed to load invoice');
@@ -123,10 +156,22 @@ export default function SendInvoicePage() {
         <div className="mt-10 p-10 text-center">
           <div className="text-red-600 text-lg font-medium mb-4">{error}</div>
           <button
-            onClick={() => router.push('/freelancer-dashboard/projects-and-invoices/invoices')}
+            onClick={() => {
+              // Check if this is a completion project invoice for better redirect
+              const isCompletionInvoice = invoiceData?.invoiceType === 'completion' ||
+                                        invoiceData?.invoiceType?.startsWith('completion_');
+
+              if (isCompletionInvoice && invoiceData?.projectId) {
+                router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking/${invoiceData.projectId}`);
+              } else {
+                router.push('/freelancer-dashboard/projects-and-invoices/invoices');
+              }
+            }}
             className="px-4 py-2 bg-[#eb1966] text-white rounded-lg hover:bg-[#d1175a] transition-colors"
           >
-            Back to Invoices
+            {(invoiceData?.invoiceType === 'completion' || invoiceData?.invoiceType?.startsWith('completion_'))
+              ? 'Back to Project'
+              : 'Back to Invoices'}
           </button>
         </div>
       </div>
@@ -166,6 +211,34 @@ export default function SendInvoicePage() {
           <span className="text-gray-900 font-medium">Send Invoice</span>
         </nav>
       </div>
+
+      {/* Status Warning for non-draft invoices */}
+      {statusWarning && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Action Not Allowed
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>{statusWarning}</p>
+                <p className="mt-1">
+                  You will be redirected to the {
+                    (invoiceData?.invoiceType === 'completion' || invoiceData?.invoiceType?.startsWith('completion_'))
+                      ? 'project tracking page'
+                      : 'invoices page'
+                  } in a few seconds.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Invoice Preview with Action Buttons */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">

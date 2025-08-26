@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756158516573_1756161115398",
+  "timestamp": "2025-08-25T22:31:55.398Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756158516573,
+  "metadata": {
+    "taskId": 1756158516573,
+    "taskTitle": "Phase 2 – Outreach & Campaign Rollout",
+    "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-015",
+    "taskId": 1756158516573
+  }
+}

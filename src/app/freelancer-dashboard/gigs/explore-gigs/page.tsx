@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
+import { motion } from 'framer-motion';
 import FreelancerHeader from '../../../../../components/freelancer-dashboard/freelancer-header';
 import ApplyModal from '../../../../../components/freelancer-dashboard/gigs/apply';
 import CategoryDropdown from '../../../../../components/freelancer-dashboard/gigs/category-dropdown';
@@ -52,6 +53,9 @@ export default function ExploreGigsPage() {
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [userApplications, setUserApplications] = useState<any[]>([]);
   const showErrorToast = useErrorToast();
+
+  // Tab state
+  const [activeTab, setActiveTab] = useState<'active' | 'applied' | 'accepted' | 'rejected'>('active');
 
   // Filter states
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
@@ -113,9 +117,38 @@ export default function ExploreGigsPage() {
     };
   }, [session?.user?.id]);
 
-  // Filter gigs based on search and category
+  // Filter gigs based on tab, search and category
   const filteredGigs = useMemo(() => {
-    return gigs.filter(gig => {
+    let baseGigs = gigs;
+
+    // Filter by tab
+    if (activeTab === 'active') {
+      // Show gigs that are available and user hasn't applied to
+      const appliedGigIds = userApplications.map(app => app.gigId);
+      baseGigs = gigs.filter(gig =>
+        gig.status === 'Available' && !appliedGigIds.includes(gig.id)
+      );
+    } else if (activeTab === 'applied') {
+      // Show gigs user has applied to (pending applications)
+      const appliedGigIds = userApplications
+        .filter(app => app.status === 'pending')
+        .map(app => app.gigId);
+      baseGigs = gigs.filter(gig => appliedGigIds.includes(gig.id));
+    } else if (activeTab === 'accepted') {
+      // Show gigs where user's application was accepted
+      const acceptedGigIds = userApplications
+        .filter(app => app.status === 'accepted')
+        .map(app => app.gigId);
+      baseGigs = gigs.filter(gig => acceptedGigIds.includes(gig.id));
+    } else if (activeTab === 'rejected') {
+      // Show gigs where user's application was rejected
+      const rejectedGigIds = userApplications
+        .filter(app => app.status === 'rejected')
+        .map(app => app.gigId);
+      baseGigs = gigs.filter(gig => rejectedGigIds.includes(gig.id));
+    }
+
+    return baseGigs.filter(gig => {
       // Category filter
       if (categoryFilter !== 'All Categories' && gig.category !== categoryFilter) {
         return false;
@@ -133,7 +166,7 @@ export default function ExploreGigsPage() {
 
       return true;
     });
-  }, [gigs, categoryFilter, searchQuery]);
+  }, [gigs, categoryFilter, searchQuery, activeTab, userApplications]);
 
   // Get organization for a gig
   const getOrganization = useCallback((organizationId: number) => {
@@ -214,6 +247,21 @@ export default function ExploreGigsPage() {
     return `${Math.floor(diffDays / 30)} months ago`;
   }, []);
 
+  // Calculate tab counts
+  const tabCounts = useMemo(() => {
+    const appliedGigIds = userApplications.map(app => app.gigId);
+    const pendingApplications = userApplications.filter(app => app.status === 'pending');
+    const acceptedApplications = userApplications.filter(app => app.status === 'accepted');
+    const rejectedApplications = userApplications.filter(app => app.status === 'rejected');
+
+    return {
+      active: gigs.filter(gig => gig.status === 'Available' && !appliedGigIds.includes(gig.id)).length,
+      applied: pendingApplications.length,
+      accepted: acceptedApplications.length,
+      rejected: rejectedApplications.length
+    };
+  }, [gigs, userApplications]);
+
   if (loading) {
     return (
       <section className="p-4 md:p-8">
@@ -247,6 +295,41 @@ export default function ExploreGigsPage() {
     <section className="p-4 md:p-8">
       <FreelancerHeader />
 
+      {/* Tabs */}
+      <div className="mb-6 mt-6">
+        <div className="flex items-center gap-32 border-b border-gray-200">
+          {[
+            { key: 'active', label: 'Active Listings', count: tabCounts.active },
+            { key: 'applied', label: 'Applied Listings', count: tabCounts.applied },
+            { key: 'accepted', label: 'Accepted', count: tabCounts.accepted },
+            { key: 'rejected', label: 'Rejected Applications', count: tabCounts.rejected }
+          ].map((tab) => (
+            <motion.button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key as any)}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`pb-3 px-1 text-sm font-medium border-b-2 transition-all duration-300 ${
+                activeTab === tab.key
+                  ? 'border-[#eb1966] text-[#eb1966]'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              {tab.label}
+              {tab.count > 0 && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded-full"
+                >
+                  {tab.count}
+                </motion.span>
+              )}
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
       {/* Search and Filters */}
       <div className="mb-8 mt-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
@@ -272,7 +355,12 @@ export default function ExploreGigsPage() {
       {/* Results */}
       {filteredGigs.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500">No gigs found. Try adjusting your search or filters.</p>
+          <p className="text-gray-500">
+            {activeTab === 'active' && 'No active gigs found. Try adjusting your search or filters.'}
+            {activeTab === 'applied' && 'You haven\'t applied to any gigs yet.'}
+            {activeTab === 'accepted' && 'No accepted applications found.'}
+            {activeTab === 'rejected' && 'No rejected applications found.'}
+          </p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -372,6 +460,44 @@ export default function ExploreGigsPage() {
 
                   {(() => {
                     const appStatus = getApplicationStatus(gig.id);
+
+                    // For rejected tab, show status but disable apply
+                    if (activeTab === 'rejected') {
+                      return (
+                        <button
+                          className="ml-4 bg-red-100 text-red-600 px-6 py-2 rounded-lg cursor-not-allowed"
+                          disabled
+                        >
+                          Rejected
+                        </button>
+                      );
+                    }
+
+                    // For applied tab, show pending status
+                    if (activeTab === 'applied') {
+                      return (
+                        <button
+                          className="ml-4 bg-yellow-100 text-yellow-600 px-6 py-2 rounded-lg cursor-not-allowed"
+                          disabled
+                        >
+                          Pending
+                        </button>
+                      );
+                    }
+
+                    // For accepted tab, show accepted status
+                    if (activeTab === 'accepted') {
+                      return (
+                        <button
+                          className="ml-4 bg-green-100 text-green-600 px-6 py-2 rounded-lg cursor-not-allowed"
+                          disabled
+                        >
+                          Accepted
+                        </button>
+                      );
+                    }
+
+                    // For active tab, show normal apply logic
                     if (appStatus) {
                       return (
                         <button

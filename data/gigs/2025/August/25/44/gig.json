@@ -1,0 +1,56 @@
+{
+  "id": 44,
+  "title": "NastyWork Club Marketing Promotional Tour, Toronto",
+  "organizationId": 4,
+  "commissionerId": "35",
+  "category": "Design",
+  "subcategory": "UI/UX Design",
+  "tags": [
+    "Design",
+    "Brand Design"
+  ],
+  "hourlyRateMin": 28.13,
+  "hourlyRateMax": 35.94,
+  "description": "We’re hosting a conference bringing together critics of techno-feudalism—scholars, journalists, and activists concerned with digital monopolies and algorithmic control. We’re looking for a freelancer to design and run a multi-channel marketing campaign that will highlight the urgency of these discussions and drive registrations. The ideal partner will help us position the event as both intellectually rigorous and culturally relevant.",
+  "deliveryTimeWeeks": 0.7142857142857143,
+  "estimatedHours": 32,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Figma",
+    "Canva"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "c2924c1d-e29d-459c-b671-491313800334",
+      "title": "Phase 1 – Positioning & Messaging",
+      "description": "Work with our team to craft a strong narrative framework that captures the stakes of techno-feudalism, and produce brand assets, talking points, and media kits to set the tone for promotion.\n\n",
+      "startDate": "2025-08-26T04:00:00.000Z",
+      "endDate": "2025-08-27T04:00:00.000Z"
+    },
+    {
+      "id": "ac519819-6a06-4d58-b6ef-80142ec59b0d",
+      "title": "Phase 2 – Outreach & Campaign Rollout",
+      "description": "Execute a campaign across social, newsletters, and media outlets; build partnerships with aligned organizations; and spotlight key speakers through content drops and teasers to drive early RSVPs.\n\n",
+      "startDate": "2025-08-28T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z"
+    },
+    {
+      "id": "da46dfd6-206b-453e-b232-514e0f7e1bcd",
+      "title": "Phase 3 – Event Amplification & Legacy",
+      "description": "Support live event coverage (social media, video recaps, media outreach) and produce a post-event package—such as a highlight reel or digital archive—that keeps the conversation alive beyond the conference itself.",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-08-30T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-30T04:00:00.000Z",
+  "lowerBudget": 900,
+  "upperBudget": 1150,
+  "postedDate": "2025-08-25",
+  "notes": "Budget range: $900 - $1,150",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

@@ -116,6 +116,33 @@ export function clearAll(): void {
   registry.clear();
 }
 
+// Helper: normalize projectId to string
+function normalizeProjectId(projectId: string | number | undefined | null): string {
+  const s = String(projectId ?? '').trim();
+  if (!s) throw new Error(`Invalid project ID: ${projectId}`);
+  return s;
+}
+
+// Helper: tolerant invoice amount resolver
+async function resolveInvoiceAmount(invoiceNumber: string): Promise<number> {
+  try {
+    const { getInvoiceByNumber } = await import('../invoice-storage');
+    const invoice = await getInvoiceByNumber(invoiceNumber);
+    if (!invoice) return 0;
+    const direct = (invoice as any).totalAmount ?? (invoice as any).amount ?? (invoice as any).total ?? (invoice as any).grandTotal;
+    if (typeof direct === 'number' && direct > 0) return direct;
+    // Try summing milestones/line items
+    const items: any[] = (invoice as any).milestones || (invoice as any).items || [];
+    const sum = items.reduce((acc, it) => {
+      const val = (it?.total ?? it?.amount ?? it?.rate ?? 0);
+      return acc + (typeof val === 'number' ? val : Number(val) || 0);
+    }, 0);
+    return sum > 0 ? sum : 0;
+  } catch {
+    return 0;
+  }
+}
+
 // ---------------- Convenience wiring ----------------
 // Provide a helper to forward invoice.paid events into the notification system.
 // Call this once on server bootstrap (e.g., in your route module top-level or a layout/init file).
@@ -130,104 +157,208 @@ export function registerInvoicePaidToNotifications() {
     projectTitle?: string;
   }> = async (p) => {
     try {
-      // For milestone payments, we need to create milestone_payment_received notifications
-      // Import the milestone payment logger
-      const { logMilestonePaymentWithOrg } = await import('../events/event-logger');
-      const { UnifiedStorageService } = await import('../storage/unified-storage-service');
+      // Safety isolation guard - never throw past this point
+      if (process.env.PAYMENT_NOTIFS_DISABLED === 'true') {
+        console.log('[payment-notifs] Disabled via PAYMENT_NOTIFS_DISABLED flag');
+        return;
+      }
 
-      // Get project and commissioner info to create proper milestone notification
-      const project = await UnifiedStorageService.getProjectById(p.projectId); // Keep as string
-      const commissioner = await UnifiedStorageService.getUserById(Number(p.actorId));
+      // Try new gateway first (feature-flagged)
+      const useNewGateway = process.env.NOTIFS_SINGLE_EMITTER === 'true';
+
+      if (useNewGateway) {
+        try {
+          const { enrichPaymentData } = await import('../notifications/payment-enrichment');
+          const { emitMilestonePaymentNotifications, shouldDisableGenericPaymentNotifications } = await import('../notifications/payment-notification-gateway');
+
+          // Enrich payment data at emit-time
+          const enrichedData = await enrichPaymentData({
+            actorId: p.actorId,
+            targetId: p.targetId,
+            projectId: p.projectId,
+            invoiceNumber: p.invoiceNumber,
+            amount: p.amount,
+            projectTitle: p.projectTitle
+          });
+
+          if (enrichedData) {
+            // Emit through new gateway
+            await emitMilestonePaymentNotifications(enrichedData);
+
+            // Skip legacy/generic emitters if flag is set
+            if (shouldDisableGenericPaymentNotifications()) {
+              console.log('[payment-notifs] Gateway emission complete, skipping legacy');
+              return;
+            }
+          } else {
+            console.warn('[payment-notifs] Enrichment failed, falling back to legacy');
+          }
+        } catch (gatewayError) {
+          console.warn('[payment-notifs] Gateway failed, falling back to legacy:', gatewayError);
+        }
+      }
+
+      // Legacy implementation (preserved for rollback safety)
+      const { eventLogger } = await import('../events/event-logger');
+      const { UnifiedStorageService } = await import('../storage/unified-storage-service');
+      const { NotificationStorage } = await import('../notifications/notification-storage');
+
+      // Normalize inputs (PHASE 0)
+      const projectIdStr = normalizeProjectId(p.projectId as any);
+      const invoiceNumber = String(p.invoiceNumber || '').trim();
+
+      // Helper: eventKey + duplicate finder (PHASE 1)
+      const makeKey = (type: string, audience: 'commissioner' | 'freelancer') => `${type}:${audience}:${projectIdStr}:${invoiceNumber}`;
+      const findExisting = (type: string) => {
+        const recent = NotificationStorage.getRecentEvents(1000);
+        return recent.find((e: any) => (
+          e.type === type && (
+            e.metadata?.eventKey === `${type}:${'commissioner'}:${projectIdStr}:${invoiceNumber}` ||
+            e.metadata?.eventKey === `${type}:${'freelancer'}:${projectIdStr}:${invoiceNumber}` ||
+            (String(e.metadata?.invoiceNumber || e.context?.invoiceNumber || '').trim() === invoiceNumber &&
+             String(e.metadata?.projectId || e.context?.projectId || '').trim() === projectIdStr)
+          )
+        ));
+      };
+      const betterCommissioner = (ev: any) => !!(Number(ev?.metadata?.amount) > 0 && ev?.metadata?.freelancerName && ev.metadata.freelancerName !== 'Freelancer');
+      const betterFreelancer = (ev: any) => !!(Number(ev?.metadata?.amount) > 0 && (ev?.metadata?.organizationName || ev?.metadata?.orgName));
+
+      // Load project + parties (PHASE 2/3)
+      const project = await UnifiedStorageService.getProjectById(projectIdStr);
+      const commissioner = await UnifiedStorageService.getUserById(p.actorId as any);
 
       if (project && commissioner) {
-        // Get the actual organization name from the project's organizationId
-        let organizationName = 'Organization'; // fallback
+        // Organization name (tolerant)
+        let organizationName = '';
         if (project.organizationId) {
           try {
-            const organization = await UnifiedStorageService.getOrganizationById(project.organizationId);
-            if (organization && organization.name) {
-              organizationName = organization.name;
-            }
+            const org = await UnifiedStorageService.getOrganizationById(project.organizationId);
+            organizationName = String(org?.name || '').trim();
           } catch (orgError) {
             console.warn('[events.bus] Could not fetch organization:', orgError);
           }
         }
 
-        // Get the actual invoice amount instead of relying on event payload
+        // Amount resolver (PHASE 3)
         let invoiceAmount = Number(p.amount) || 0;
-        if (p.invoiceNumber) {
-          try {
-            const { getInvoiceByNumber } = await import('../invoice-storage');
-            const invoice = await getInvoiceByNumber(p.invoiceNumber);
-            if (invoice && invoice.totalAmount) {
-              invoiceAmount = Number(invoice.totalAmount);
-            }
-          } catch (invoiceError) {
-            console.warn('[events.bus] Could not fetch invoice amount:', invoiceError);
-          }
+        if (!(invoiceAmount > 0) && invoiceNumber) {
+          invoiceAmount = await resolveInvoiceAmount(invoiceNumber);
         }
 
-        // Get freelancer info for commissioner notification
-        const freelancer = await UnifiedStorageService.getUserById(Number(p.targetId));
-        const freelancerName = freelancer?.name || 'Freelancer';
+        // Freelancer (for commissioner branch only)
+        const freelancer = await UnifiedStorageService.getUserById(p.targetId as any);
+        const freelancerName: string | null = freelancer?.name || null;
 
-        // Calculate remaining budget (total budget - paid to date)
-        // Note: paidToDate already includes the current payment that was just processed
+        // Budgets
         const totalBudget = Number(project.totalBudget) || 0;
         const currentPaidToDate = Number(project.paidToDate) || 0;
         const remainingBudget = Math.max(0, totalBudget - currentPaidToDate);
 
-        // Create milestone_payment_received notification for freelancer
-        await logMilestonePaymentWithOrg(
-          Number(p.actorId), // commissionerId
-          Number(p.targetId), // freelancerId
-          p.projectId, // Keep as string for proper project lookup
-          p.projectTitle || project.title || 'Task', // milestoneTitle
-          invoiceAmount, // Use actual invoice amount
-          organizationName, // Use actual organization name
-          p.invoiceNumber,
-          totalBudget, // Add project budget
-          project.title, // Add project title
-          remainingBudget // Add remaining budget
-        );
-        console.log(`[events.bus] ✅ Created milestone_payment_received notification for freelancer ${p.targetId}`);
+        // Build base metadata
+        const taskTitle = p.projectTitle || project.title || 'Task';
+        const projectTitle = project.title || p.projectTitle || 'Project';
 
-        // Create milestone_payment_sent notification for commissioner with remaining budget
-        const eventLogger = await import('../events/event-logger');
-        await eventLogger.eventLogger.logEvent({
-          id: `milestone_payment_sent_${p.projectId}_${Date.now()}`,
-          timestamp: new Date().toISOString(),
-          type: 'milestone_payment_sent',
-          notificationType: 43, // MILESTONE_PAYMENT_SENT
-          actorId: Number(p.actorId),
-          targetId: Number(p.actorId), // Commissioner receives this notification
-          entityType: 5, // MILESTONE
-          entityId: `${p.projectId}_${invoiceAmount}`,
-          metadata: {
-            taskTitle: p.projectTitle || project.title || 'Task',
-            projectTitle: p.projectTitle || project.title,
-            projectId: String(p.projectId), // Ensure string type
-            taskId: Date.now(), // Use timestamp as taskId fallback
-            freelancerName,
-            amount: invoiceAmount,
-            invoiceNumber: p.invoiceNumber,
-            remainingBudget,
-            projectBudget: totalBudget
-          },
-          context: {
-            projectId: Number(p.projectId.toString().replace(/[^0-9]/g, '')) || 0, // Extract numeric part
-            taskId: Date.now(),
-            invoiceNumber: p.invoiceNumber
+        let emittedCommissioner = false;
+        let emittedFreelancer = false;
+
+        // FREELANCER BRANCH (payment_received) — independent (PHASE 2)
+        const freelancerKey = makeKey('milestone_payment_received', 'freelancer');
+        const existingFreelancer = findExisting('milestone_payment_received');
+        const freelancerGuardOk = organizationName && invoiceAmount > 0;
+        if (!freelancerGuardOk) {
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('[skip-guard]', freelancerKey, { missingFields: { organizationName, invoiceAmount } });
           }
-        });
-        console.log(`[events.bus] ✅ Created milestone_payment_sent notification for commissioner ${p.actorId}`);
+        } else if (existingFreelancer && betterFreelancer(existingFreelancer)) {
+          if (process.env.NODE_ENV !== 'production') console.log('[skip-duplicate]', freelancerKey);
+        } else {
+          const payload = {
+            id: `milestone_payment_${projectIdStr}_${Date.now()}`,
+            timestamp: new Date().toISOString(),
+            type: 'milestone_payment_received',
+            notificationType: 42,
+            actorId: Number(p.actorId),
+            targetId: Number(p.targetId),
+            entityType: 10, // MILESTONE
+            entityId: `${projectIdStr}_${taskTitle}`,
+            metadata: {
+              milestoneTitle: taskTitle,
+              amount: invoiceAmount,
+              organizationName,
+              invoiceNumber,
+              projectBudget: totalBudget,
+              projectTitle,
+              remainingBudget,
+              eventKey: freelancerKey,
+              audience: 'freelancer'
+            },
+            context: { projectId: projectIdStr, milestoneTitle: taskTitle, invoiceNumber }
+          } as const;
+          if (process.env.NODE_ENV !== 'production') console.log('[emit]', freelancerKey, { audience: 'freelancer', amount: invoiceAmount, nameUsed: organizationName });
+          await eventLogger.logEvent(payload as any);
+          emittedFreelancer = true;
+        }
+
+        // COMMISSIONER BRANCH (payment_sent) — independent (PHASE 2)
+        const commissionerKey = makeKey('milestone_payment_sent', 'commissioner');
+        const existingCommissioner = findExisting('milestone_payment_sent');
+        const commissionerGuardOk = !!(freelancerName && invoiceAmount > 0);
+        if (!commissionerGuardOk) {
+          if (process.env.NODE_ENV !== 'production') {
+            console.log('[skip-guard]', commissionerKey, { missingFields: { freelancerName, invoiceAmount } });
+          }
+        } else if (existingCommissioner && betterCommissioner(existingCommissioner)) {
+          if (process.env.NODE_ENV !== 'production') console.log('[skip-duplicate]', commissionerKey);
+        } else {
+          const payload = {
+            id: `milestone_payment_sent_${projectIdStr}_${invoiceNumber}`,
+            timestamp: new Date().toISOString(),
+            type: 'milestone_payment_sent',
+            notificationType: 43,
+            actorId: Number(p.actorId),
+            targetId: Number(p.actorId),
+            entityType: 5, // MILESTONE
+            entityId: `${projectIdStr}_${invoiceNumber}`,
+            metadata: {
+              taskTitle,
+              projectTitle,
+              projectId: projectIdStr,
+              freelancerName,
+              amount: invoiceAmount,
+              invoiceNumber,
+              remainingBudget,
+              projectBudget: totalBudget,
+              eventKey: commissionerKey,
+              audience: 'commissioner'
+            },
+            context: { projectId: projectIdStr, invoiceNumber }
+          } as const;
+          if (process.env.NODE_ENV !== 'production') console.log('[emit]', commissionerKey, { audience: 'commissioner', amount: invoiceAmount, nameUsed: freelancerName });
+          await eventLogger.logEvent(payload as any);
+          emittedCommissioner = true;
+        }
+
+        // PHASE 4: Gate generic/fallback emitter (feature-flagged)
+        const shouldSkipGeneric = process.env.NOTIFS_DISABLE_GENERIC_FOR_PAYMENT === 'true' &&
+                                  process.env.NOTIFS_SINGLE_EMITTER === 'true';
+
+        if (!shouldSkipGeneric && !emittedCommissioner && !emittedFreelancer) {
+          // Only fallback if nothing enriched was (or could be) emitted
+          emitInvoicePaid(p.actorId, p.targetId, projectIdStr, invoiceNumber, invoiceAmount || p.amount, p.projectTitle);
+        } else if (shouldSkipGeneric) {
+          console.log('[payment-notifs] Generic payment notifications disabled via feature flag');
+        }
       } else {
         console.warn('[events.bus] ⚠️ Could not find project or commissioner data for milestone payment notification');
-        // Fallback to basic invoice paid notification
-        emitInvoicePaid(p.actorId, p.targetId, p.projectId, p.invoiceNumber, p.amount, p.projectTitle);
+        const shouldSkipGeneric = process.env.NOTIFS_DISABLE_GENERIC_FOR_PAYMENT === 'true' &&
+                                  process.env.NOTIFS_SINGLE_EMITTER === 'true';
+        if (!shouldSkipGeneric) {
+          emitInvoicePaid(p.actorId, p.targetId, projectIdStr, invoiceNumber, p.amount, p.projectTitle);
+        }
       }
     } catch (e) {
-      console.warn('[events.bus] emitInvoicePaid failed:', e);
+      console.warn('[events.bus] payment notifs failed, approvals unaffected:', e);
+      // Intentionally swallow to avoid impacting task approval flow
     }
   };
   on(EVENT, handler);

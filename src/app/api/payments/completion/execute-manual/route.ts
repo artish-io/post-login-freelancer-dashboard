@@ -120,6 +120,39 @@ export async function POST(req: NextRequest) {
         remainingBudget = Math.max(0, totalBudget - paidToDate - invoice.totalAmount);
       }
 
+      // Validate amount before sending notifications
+      const paymentAmount = Number(invoice.totalAmount) || 0;
+      if (paymentAmount <= 0) {
+        console.warn(`[NOTIFY][WARN] Payment enrichment failed: zero amount for invoice ${invoiceNumber}`);
+        return; // Skip notifications for zero amounts
+      }
+
+      // Get enriched user data for better notifications
+      const { getUserById } = await import('@/lib/storage/unified-storage-service');
+      let freelancerName = 'Freelancer';
+      let orgName = 'Organization';
+
+      try {
+        const freelancer = await getUserById(invoice.freelancerId);
+        if (freelancer?.name) {
+          freelancerName = freelancer.name;
+        }
+
+        const commissioner = await getUserById(commissionerId);
+        if (commissioner?.organizationId) {
+          const { getAllOrganizations } = await import('@/lib/storage/unified-storage-service');
+          const organizations = await getAllOrganizations();
+          const organization = organizations.find((org: any) => org.id === commissioner.organizationId);
+          if (organization?.name) {
+            orgName = organization.name;
+          }
+        } else if (commissioner?.name) {
+          orgName = commissioner.name;
+        }
+      } catch (enrichError) {
+        console.warn('Could not enrich payment notification data:', enrichError);
+      }
+
       // 1. Notification for freelancer (receiving payment)
       await handleCompletionNotification({
         type: 'completion.invoice_paid',
@@ -128,12 +161,13 @@ export async function POST(req: NextRequest) {
         projectId: invoice.projectId,
         context: {
           invoiceNumber,
-          amount: invoice.totalAmount,
+          amount: paymentAmount,
           taskId: invoice.taskId,
           taskTitle: task?.title || 'Task',
           projectTitle: project?.title || 'Project',
-          remainingBudget
-          // orgName will be enriched automatically
+          remainingBudget,
+          orgName,
+          freelancerName
         }
       });
 
@@ -145,13 +179,13 @@ export async function POST(req: NextRequest) {
         projectId: invoice.projectId,
         context: {
           invoiceNumber,
-          amount: invoice.totalAmount,
+          amount: paymentAmount,
           taskId: invoice.taskId,
           taskTitle: task?.title || 'Task',
           projectTitle: project?.title || 'Project',
           remainingBudget,
-          freelancerName: 'Freelancer' // Will be enriched automatically
-          // orgName will be enriched automatically
+          freelancerName,
+          orgName
         }
       });
     } catch (e) {

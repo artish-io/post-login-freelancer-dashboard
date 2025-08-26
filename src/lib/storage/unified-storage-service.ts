@@ -716,9 +716,15 @@ export class UnifiedStorageService {
    * Get user by ID from hierarchical storage
    */
   static async getUserById(userId: number | string): Promise<any | null> {
+    // Guard null/undefined to avoid userId.toString() crashes in index lookups
+    if (userId === undefined || userId === null) {
+      return null;
+    }
     try {
       const { readUser } = await import('./normalize-user');
-      return await readUser(userId);
+      // Normalize but preserve numeric-like strings
+      const userIdNorm: number | string = typeof userId === 'number' ? userId : String(userId);
+      return await readUser(userIdNorm);
     } catch (error) {
       logger.warn(`User ${userId} not found:`, error);
       return null;

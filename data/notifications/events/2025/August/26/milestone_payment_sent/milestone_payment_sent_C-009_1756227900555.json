@@ -1,0 +1,25 @@
+{
+  "id": "milestone_payment_sent_C-009_1756227900555",
+  "timestamp": "2025-08-26T17:05:00.555Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 10,
+  "entityId": "C-009_Amplification & Legacy Building",
+  "metadata": {
+    "taskTitle": "Amplification & Legacy Building",
+    "amount": 500,
+    "freelancerName": "Tobi Philly",
+    "invoiceNumber": "MH-011",
+    "projectBudget": 1500,
+    "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+    "priority": "medium"
+  },
+  "context": {
+    "projectId": "C-009",
+    "taskTitle": "Amplification & Legacy Building",
+    "invoiceNumber": "MH-011",
+    "freelancerId": 1
+  }
+}

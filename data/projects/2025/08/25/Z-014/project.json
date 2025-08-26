@@ -1,0 +1,31 @@
+{
+  "projectId": "Z-014",
+  "title": "Completion Modelling For Series A Fundraising",
+  "description": "Drive visibility and engagement for a conference uniting thinkers, activists, and academics critiquing techno-feudalism—the consolidation of power by digital platforms and algorithmic systems. I’ll design and execute a multi-channel campaign (social, newsletters, media outreach, partnerships) to highlight the urgency of these conversations and attract the right audience. Attendees can expect a thought-provoking event positioned as both intellectually rigorous and culturally relevant.",
+  "organizationId": 4,
+  "typeTags": [
+    "Graphic Design"
+  ],
+  "commissionerId": 35,
+  "freelancerId": 31,
+  "status": "completed",
+  "dueDate": "2025-08-29",
+  "totalTasks": 1,
+  "invoicingMethod": "completion",
+  "gigId": 43,
+  "gigPostedDate": "2025-08-25",
+  "projectActivatedAt": "2025-08-25T21:22:59.615Z",
+  "originalDuration": {
+    "deliveryTimeWeeks": 0.5714285714285714,
+    "estimatedHours": 24,
+    "originalEndDate": "2025-08-29T04:00:00.000Z"
+  },
+  "totalBudget": 1200,
+  "paidToDate": 1200,
+  "currency": "USD",
+  "createdAt": "2025-08-25T21:22:59.615Z",
+  "updatedAt": "2025-08-25T21:28:34.343Z",
+  "estimatedHours": 24,
+  "deliveryTimeWeeks": 0.5714285714285714,
+  "completedAt": "2025-08-25T21:28:34.343Z"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756161116399_qiezz98b6",
+  "timestamp": "2025-08-25T22:31:56.399Z",
+  "type": "task_submission",
+  "notificationType": 0,
+  "targetId": 35,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Margsate Flether submitted a task",
+    "message": "\"Phase 2 – Outreach & Campaign Rollout\" is awaiting your review",
+    "priority": "high"
+  },
+  "context": {}
+}

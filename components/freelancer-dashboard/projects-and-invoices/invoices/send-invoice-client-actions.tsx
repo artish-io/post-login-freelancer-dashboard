@@ -28,6 +28,17 @@ export default function SendInvoiceClientActions({
       return;
     }
 
+    // SECURITY CHECK: Prevent sending non-draft invoices
+    if (invoiceData.status && invoiceData.status.toLowerCase() !== 'draft') {
+      showErrorToast('Action Not Allowed', `Cannot send invoice with status: ${invoiceData.status}`);
+      console.log('[SECURITY] Prevented sending non-draft invoice:', {
+        invoiceNumber,
+        status: invoiceData.status,
+        userId: session.user.id
+      });
+      return;
+    }
+
     console.log('[INVGEN:UI:NAVIGATE] Sending invoice:', invoiceNumber);
     setSending(true);
     
@@ -49,7 +60,16 @@ export default function SendInvoiceClientActions({
       if (sendRes.ok) {
         showSuccessToast('Invoice Sent', 'Invoice sent successfully!');
         setTimeout(() => {
-          router.push('/freelancer-dashboard/projects-and-invoices/invoices');
+          // Check if this is a completion project invoice
+          if (invoiceData.invoiceType === 'completion' || invoiceData.projectInvoicingMethod === 'completion') {
+            // For completion projects, navigate to project tracking
+            console.log('[NAVIGATION] Completion project - redirecting to project tracking:', invoiceData.projectId);
+            router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking/${invoiceData.projectId}`);
+          } else {
+            // For milestone projects, navigate to invoices list
+            console.log('[NAVIGATION] Milestone project - redirecting to invoices list');
+            router.push('/freelancer-dashboard/projects-and-invoices/invoices');
+          }
         }, 2000);
       } else {
         throw new Error(sendResult.error || 'Failed to send invoice');
@@ -62,12 +82,16 @@ export default function SendInvoiceClientActions({
     }
   };
 
+  // Determine if actions should be disabled based on invoice status
+  const isNonDraftStatus = invoiceData?.status && invoiceData.status.toLowerCase() !== 'draft';
+
   return (
     <InvoiceActionsBar
       invoiceData={invoiceData}
       onSend={handleSendInvoice}
       onDownload={() => console.log('Download PDF')}
       sending={sending}
+      disabled={isNonDraftStatus}
     />
   );
 }

@@ -213,7 +213,18 @@ export default function NotificationDropdown({ dashboardType }: Props) {
 
     // Navigate to the notification link if it exists
     if (notification.link && notification.link !== '#') {
-      router.push(notification.link);
+      try {
+        // Ensure we're using client-side navigation and preserving session
+        console.log(`[NAV] Router push from notification: ${notification.link} preservedSession:true`);
+        router.push(notification.link);
+      } catch (navError) {
+        console.error('Navigation error from notification:', navError);
+        // Fallback to safe route
+        const fallbackRoute = dashboardType === 'commissioner'
+          ? '/commissioner-dashboard'
+          : '/freelancer-dashboard';
+        router.push(fallbackRoute);
+      }
     }
   };
 

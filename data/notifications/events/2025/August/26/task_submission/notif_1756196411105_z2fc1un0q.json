@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756196411105_z2fc1un0q",
+  "timestamp": "2025-08-26T08:20:11.105Z",
+  "type": "task_submission",
+  "notificationType": 0,
+  "targetId": 34,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Tobi Philly submitted a task",
+    "message": "\"Positioning & Messaging\" is awaiting your review",
+    "priority": "high"
+  },
+  "context": {}
+}

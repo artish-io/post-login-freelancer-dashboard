@@ -127,7 +127,7 @@ export async function POST(request: Request) {
     }
 
     const simulatedPaymentId = `pay_sim_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
-    const platformFee = Math.round(invoice.totalAmount * 0.05 * 100) / 100; // 5% platform fee
+    const platformFee = Math.round(invoice.totalAmount * 0.052666 * 100) / 100; // 5.2666% platform fee
     const freelancerAmount = Math.round((invoice.totalAmount - platformFee) * 100) / 100;
 
     // Update card balance and transaction history

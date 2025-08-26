@@ -5,16 +5,18 @@
   "organizationId": 4,
   "projectTypeTags": [],
   "title": "Phase 1 – Strategy & Asset Development",
-  "status": "Ongoing",
-  "completed": false,
+  "status": "Approved",
+  "completed": true,
   "order": 1,
-  "link": "",
-  "dueDate": "2025-08-26T04:00:00.000Z",
+  "link": "bit.ly3324",
+  "dueDate": "2025-08-25T00:00:00.000Z",
   "rejected": false,
   "feedbackCount": 0,
   "pushedBack": false,
   "version": 1,
   "description": "Research audience segments, define messaging pillars, and create the launch kit (copy, visuals, landing page, social templates, and press outreach materials).",
+  "submittedDate": "2025-08-25T23:45:26.950Z",
+  "approvedDate": "2025-08-25T23:46:38.319Z",
   "createdDate": "2025-08-25T20:56:58.317Z",
-  "lastModified": "2025-08-25T20:56:58.320Z"
+  "lastModified": "2025-08-25T23:46:38.319Z"
 }

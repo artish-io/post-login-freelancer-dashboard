@@ -143,8 +143,8 @@ export async function POST(req: NextRequest) {
         taskId: 'final'
       }],
       paymentDetails: {
-        freelancerAmount: Math.round((finalAmount * 0.95) * 100) / 100, // 5% platform fee
-        platformFee: Math.round((finalAmount * 0.05) * 100) / 100
+        freelancerAmount: Math.round((finalAmount * (1 - 0.052666)) * 100) / 100, // 5.2666% platform fee
+        platformFee: Math.round((finalAmount * 0.052666) * 100) / 100
       }
     };
     

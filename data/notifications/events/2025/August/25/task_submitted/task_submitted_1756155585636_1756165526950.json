@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756155585636_1756165526950",
+  "timestamp": "2025-08-25T23:45:26.950Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756155585636,
+  "metadata": {
+    "taskId": 1756155585636,
+    "taskTitle": "Phase 1 – Strategy & Asset Development",
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-013",
+    "taskId": 1756155585636
+  }
+}

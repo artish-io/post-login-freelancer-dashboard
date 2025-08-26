@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756158990734_1756165428885",
+  "timestamp": "2025-08-25T23:43:48.885Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756158990734,
+  "metadata": {
+    "taskId": 1756158990734,
+    "taskTitle": "Phase 3 – Event Amplification & Legacy",
+    "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-015",
+    "taskId": 1756158990734
+  }
+}

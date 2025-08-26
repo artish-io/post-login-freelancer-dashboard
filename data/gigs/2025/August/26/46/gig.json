@@ -1,0 +1,57 @@
+{
+  "id": 46,
+  "title": "Completion Web 3 Graphic Design Asssets ",
+  "organizationId": 3,
+  "commissionerId": "34",
+  "category": "Engineering",
+  "subcategory": "Smart Contracts",
+  "tags": [
+    "Graphic Design",
+    "Web Development",
+    "Smart Contracts"
+  ],
+  "hourlyRateMin": 28.13,
+  "hourlyRateMax": 35.94,
+  "description": "We’re launching a Web3 project and need a freelancer to create standout design assets that capture our brand’s futuristic, decentralized ethos. This includes logos, banners, social media kits, and token/NFT visuals that feel authentic to Web3 culture while remaining polished and versatile. The right designer will help us stand out in a crowded space with a bold visual identity that scales across platforms.",
+  "deliveryTimeWeeks": 0.7142857142857143,
+  "estimatedHours": 32,
+  "status": "Available",
+  "toolsRequired": [
+    "Python",
+    "Adobe Photoshop"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "ba46e243-8818-45f9-b4d2-64b2c0a04085",
+      "title": "Phase 1 – Concept & Style Guide",
+      "description": "Collaborate with our team to understand brand values, audience, and aesthetic direction. Deliver moodboards, style frames, and an adaptable design system aligned with Web3 culture.\n\n",
+      "startDate": "2025-08-27T04:00:00.000Z",
+      "endDate": "2025-08-28T04:00:00.000Z"
+    },
+    {
+      "id": "3839cb98-ea7e-40e8-bdab-c4103f8891e2",
+      "title": "Phase 2 – Core Asset Creation",
+      "description": "Produce essential design assets including logo variations, banners, icons, NFT/token visuals, and social media templates, ensuring consistency and adaptability across digital channels.\n",
+      "startDate": "2025-08-29T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z"
+    },
+    {
+      "id": "e4b5acc3-18c9-41aa-b634-047a4ef5c6df",
+      "title": "Phase 3 – Launch Package & Iteration",
+      "description": "Assemble a ready-to-use asset library with export formats optimized for multiple platforms, and refine based on early community feedback. Provide ongoing support for launch campaigns and potential partnerships.",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 900,
+  "upperBudget": 1150,
+  "postedDate": "2025-08-26",
+  "notes": "Budget range: $900 - $1,150",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

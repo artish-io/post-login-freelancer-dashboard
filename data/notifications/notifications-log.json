@@ -1,5 +1,49 @@
 [
   {
+    "id": "evt_1756161183311_41",
+    "timestamp": "2025-08-25T22:33:03.311Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C025",
+    "metadata": {
+      "invoiceNumber": "TB-C025",
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "amount": 337.3333333333333,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $337.3333333333333 for 1 approved task, of your active project, NastyWork Club Marketing Promotional Tour, Toronto."
+    },
+    "context": {
+      "projectId": "Z-015",
+      "invoiceNumber": "TB-C025"
+    }
+  },
+  {
+    "id": "evt_1756160515288_91",
+    "timestamp": "2025-08-25T22:21:55.288Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C024",
+    "metadata": {
+      "invoiceNumber": "TB-C024",
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "amount": 337.3333333333333,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $337.3333333333333 for 1 approved task, of your active project, NastyWork Club Marketing Promotional Tour, Toronto."
+    },
+    "context": {
+      "projectId": "Z-015",
+      "invoiceNumber": "TB-C024"
+    }
+  },
+  {
     "id": "evt_1756152084093_160",
     "timestamp": "2025-08-25T20:01:24.093Z",
     "type": "invoice_sent",
@@ -504,6 +548,132 @@
       "projectId": "C-008",
       "taskId": 1755962469192,
       "invoiceId": "MH-008"
+    }
+  },
+  {
+    "id": "evt_1756165600199_invoice_auto",
+    "timestamp": "2025-08-25T23:46:40.199Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-024",
+    "metadata": {
+      "taskTitle": "Phase 1 – Strategy & Asset Development",
+      "projectTitle": "Marketing For Techno-Fedualism Milestones",
+      "amount": 533.33,
+      "invoiceNumber": "TB-024"
+    },
+    "context": {
+      "projectId": "Z-013",
+      "taskId": 1756155585636,
+      "invoiceId": "TB-024"
+    }
+  },
+  {
+    "id": "evt_1756165620093_invoice_auto",
+    "timestamp": "2025-08-25T23:47:00.093Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-025",
+    "metadata": {
+      "taskTitle": "Phase 2 – Campaign Activation & Outreach",
+      "projectTitle": "Marketing For Techno-Fedualism Milestones",
+      "amount": 533.33,
+      "invoiceNumber": "TB-025"
+    },
+    "context": {
+      "projectId": "Z-013",
+      "taskId": 1756156300844,
+      "invoiceId": "TB-025"
+    }
+  },
+  {
+    "id": "evt_1756168212636_invoice_auto",
+    "timestamp": "2025-08-26T00:30:12.636Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-026",
+    "metadata": {
+      "taskTitle": "Phase 3 – Event Engagement & Reporting",
+      "projectTitle": "Marketing For Techno-Fedualism Milestones",
+      "amount": 533.33,
+      "invoiceNumber": "TB-026"
+    },
+    "context": {
+      "projectId": "Z-013",
+      "taskId": 1756155708135,
+      "invoiceId": "TB-026"
+    }
+  },
+  {
+    "id": "evt_1756196445416_invoice_auto",
+    "timestamp": "2025-08-26T08:20:45.416Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-009",
+    "metadata": {
+      "taskTitle": "Positioning & Messaging",
+      "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+      "amount": 500,
+      "invoiceNumber": "MH-009"
+    },
+    "context": {
+      "projectId": "C-009",
+      "taskId": 1756196816187,
+      "invoiceId": "MH-009"
+    }
+  },
+  {
+    "id": "evt_1756199777731_invoice_auto",
+    "timestamp": "2025-08-26T09:16:17.731Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-010",
+    "metadata": {
+      "taskTitle": "Outreach & Campaign Rollout",
+      "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+      "amount": 500,
+      "invoiceNumber": "MH-010"
+    },
+    "context": {
+      "projectId": "C-009",
+      "taskId": 1756197323986,
+      "invoiceId": "MH-010"
+    }
+  },
+  {
+    "id": "evt_1756227899778_invoice_auto",
+    "timestamp": "2025-08-26T17:04:59.778Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-011",
+    "metadata": {
+      "taskTitle": "Amplification & Legacy Building",
+      "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+      "amount": 500,
+      "invoiceNumber": "MH-011"
+    },
+    "context": {
+      "projectId": "C-009",
+      "taskId": 1756197370017,
+      "invoiceId": "MH-011"
     }
   }
 ]

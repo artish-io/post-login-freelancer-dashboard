@@ -1,0 +1,17 @@
+{
+  "id": "comp_notif_1756157314460_ea9n7385n",
+  "type": "completion.project_completed",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-014",
+  "context": {
+    "projectTitle": "Completion Modelling For Series A Fundraising",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T21:28:34.460Z",
+  "timestamp": "2025-08-25T21:28:34.460Z",
+  "subsystem": "completion_invoicing"
+}

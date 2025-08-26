@@ -1,0 +1,32 @@
+{
+  "id": "milestone_C-009_MH-011_commissioner_1756227900546",
+  "timestamp": "2025-08-26T17:05:00.546Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 10,
+  "entityId": "C-009_MH-011",
+  "metadata": {
+    "type": "milestone_payment_sent",
+    "audience": "commissioner",
+    "projectId": "C-009",
+    "invoiceNumber": "MH-011",
+    "amount": 500,
+    "freelancerName": "Tobi Philly",
+    "organizationName": "Corlax Wellness",
+    "taskTitle": "Amplification & Legacy Building",
+    "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+    "remainingBudget": 0,
+    "commissionerId": 34,
+    "freelancerId": 1,
+    "eventKey": "milestone_payment_sent:commissioner:C-009:MH-011",
+    "qualityScore": 4,
+    "title": "You just paid Tobi Philly $500",
+    "message": "You just paid Tobi Philly $500 for submitting Amplification & Legacy Building for Milestones Web 3 Graphic Design Asssets. Remaining budget: $0. Click here to see transaction activity"
+  },
+  "context": {
+    "projectId": "C-009",
+    "invoiceNumber": "MH-011"
+  }
+}

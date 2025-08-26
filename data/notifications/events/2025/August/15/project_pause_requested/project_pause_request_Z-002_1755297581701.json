@@ -10,7 +10,7 @@
   "metadata": {
     "projectTitle": "Product Specification for Data Farm Handbook Cover Graphic",
     "pauseReason": "Freelancer requested project pause",
-    "freelancerName": "Freelancer",
+    "freelancerName": "Margsate Flether",
     "remainingTasks": 1,
     "requestStatus": "pending"
   },
@@ -18,5 +18,7 @@
     "projectId": "Z-002",
     "freelancerId": 31,
     "requestId": "pause_req_Z-002_1755297581701"
-  }
+  },
+  "enrichmentNote": "Fixed freelancer name: freelancerName: Margsate Flether (from user ID 31)",
+  "updatedAt": "2025-08-26T00:30:14.007Z"
 }

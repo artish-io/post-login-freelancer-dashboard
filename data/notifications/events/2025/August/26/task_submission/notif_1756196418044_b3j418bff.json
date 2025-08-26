@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756196418044_b3j418bff",
+  "timestamp": "2025-08-26T08:20:18.044Z",
+  "type": "task_submission",
+  "notificationType": 0,
+  "targetId": 34,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Tobi Philly submitted a task",
+    "message": "\"Outreach & Campaign Rollout\" is awaiting your review",
+    "priority": "high"
+  },
+  "context": {}
+}

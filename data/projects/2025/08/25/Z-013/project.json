@@ -9,23 +9,14 @@
   ],
   "commissionerId": 35,
   "freelancerId": 31,
-  "status": "ongoing",
+  "status": "completed",
   "dueDate": "2025-08-29",
   "totalTasks": 3,
   "invoicingMethod": "milestone",
-  "gigId": 39,
-  "gigPostedDate": "2025-08-25",
-  "projectActivatedAt": "2025-08-25T20:56:58.317Z",
-  "originalDuration": {
-    "deliveryTimeWeeks": 0.5714285714285714,
-    "estimatedHours": 24,
-    "originalEndDate": "2025-08-29T04:00:00.000Z"
-  },
   "totalBudget": 1600,
-  "paidToDate": 0,
+  "paidToDate": 1599.9900000000002,
   "currency": "USD",
   "createdAt": "2025-08-25T20:56:58.317Z",
-  "updatedAt": "2025-08-25T20:56:58.317Z",
-  "estimatedHours": 24,
-  "deliveryTimeWeeks": 0.5714285714285714
+  "updatedAt": "2025-08-26T00:30:14.294Z",
+  "completedAt": "2025-08-26T00:30:14.294Z"
 }

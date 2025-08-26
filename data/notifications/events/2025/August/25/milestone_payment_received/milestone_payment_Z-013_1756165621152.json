@@ -1,0 +1,25 @@
+{
+  "id": "milestone_payment_Z-013_1756165621152",
+  "timestamp": "2025-08-25T23:47:01.152Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 10,
+  "entityId": "Z-013_Marketing For Techno-Fedualism Milestones",
+  "metadata": {
+    "milestoneTitle": "Marketing For Techno-Fedualism Milestones",
+    "amount": 533.33,
+    "organizationName": "Zynate Events Group",
+    "invoiceNumber": "TB-025",
+    "projectBudget": 1600,
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "remainingBudget": 533.3399999999999,
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "Z-013",
+    "milestoneTitle": "Marketing For Techno-Fedualism Milestones",
+    "invoiceNumber": "TB-025"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "comp_notif_1756165452923_tfrdsb2by",
+  "type": "completion.project_completed",
+  "actorId": 35,
+  "targetId": 31,
+  "projectId": "Z-015",
+  "context": {
+    "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T23:44:12.923Z",
+  "timestamp": "2025-08-25T23:44:12.923Z",
+  "subsystem": "completion_invoicing"
+}

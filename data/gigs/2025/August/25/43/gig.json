@@ -1,0 +1,40 @@
+{
+  "id": 43,
+  "title": "Completion Modelling For Series A Fundraising",
+  "organizationId": 4,
+  "commissionerId": "35",
+  "category": "Design",
+  "subcategory": "Graphic Design",
+  "tags": [
+    "Graphic Design"
+  ],
+  "hourlyRateMin": 41.67,
+  "hourlyRateMax": 50,
+  "description": "Drive visibility and engagement for a conference uniting thinkers, activists, and academics critiquing techno-feudalism—the consolidation of power by digital platforms and algorithmic systems. I’ll design and execute a multi-channel campaign (social, newsletters, media outreach, partnerships) to highlight the urgency of these conversations and attract the right audience. Attendees can expect a thought-provoking event positioned as both intellectually rigorous and culturally relevant.",
+  "deliveryTimeWeeks": 0.5714285714285714,
+  "estimatedHours": 24,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Figma"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "2ce5384b-dbf9-4478-9915-618c1a478f60",
+      "title": "Phase One: Test",
+      "description": "Bring Gotham’s edge to the stage—I’ll craft and run a full event marketing campaign for “The Philosophy of Absolute Batman” that turns casual fans into ticket-holders. From sharp creative assets and targeted ads to campus and community outreach, I’ll build anticipation and keep RSVPs climbing",
+      "startDate": "2025-08-26T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-29T04:00:00.000Z",
+  "lowerBudget": 1000,
+  "upperBudget": 1200,
+  "postedDate": "2025-08-25",
+  "notes": "Budget range: $1,000 - $1,200",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

@@ -1,0 +1,18 @@
+{
+  "id": "comp_notif_1756157315367_ogwy1d3jt",
+  "type": "completion.rating_prompt",
+  "actorId": 35,
+  "targetId": 31,
+  "projectId": "Z-014",
+  "message": "Rate your experience with Tilly Burzinsky. All tasks for Completion Modelling For Series A Fundraising have been approved. Click here to rate your collaboration.",
+  "context": {
+    "projectTitle": "Completion Modelling For Series A Fundraising",
+    "commissionerName": "Tilly Burzinsky",
+    "freelancerName": "Margsate Flether",
+    "orgName": "Zynate Events Group"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T21:28:35.367Z",
+  "timestamp": "2025-08-25T21:28:35.367Z",
+  "subsystem": "completion_invoicing"
+}

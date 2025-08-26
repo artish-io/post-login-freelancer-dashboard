@@ -168,8 +168,41 @@ export async function POST(req: NextRequest) {
         }
 
         const nextNumber = String(highestNumber + 1).padStart(3, '0');
+        const baseInvoiceNumber = `${initials}-${nextNumber}`;
 
-        invoiceNumber = `${initials}-${nextNumber}`;
+        // 🔒 COMPLETION-SPECIFIC: For manual invoices, check if base number already exists for this project
+        // If so, add letter suffix (A, B, C, etc.) to make it unique
+        const projectInvoices = await getAllInvoices({ projectId: normalizedProjectId });
+        const projectManualInvoices = projectInvoices.filter(inv =>
+          inv.invoiceType === 'completion_manual' &&
+          inv.invoiceNumber.startsWith(baseInvoiceNumber)
+        );
+
+        if (projectManualInvoices.length > 0) {
+          // Find the highest letter suffix used for this base number in this project
+          let highestSuffix = '';
+          for (const invoice of projectManualInvoices) {
+            const suffixMatch = invoice.invoiceNumber.match(new RegExp(`^${baseInvoiceNumber.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}([A-Z]?)$`));
+            if (suffixMatch) {
+              const suffix = suffixMatch[1] || '';
+              if (suffix > highestSuffix) {
+                highestSuffix = suffix;
+              }
+            }
+          }
+
+          // Generate next letter suffix
+          let nextSuffix = 'A';
+          if (highestSuffix) {
+            const nextCharCode = highestSuffix.charCodeAt(0) + 1;
+            nextSuffix = String.fromCharCode(nextCharCode);
+          }
+
+          invoiceNumber = `${baseInvoiceNumber}${nextSuffix}`;
+          console.log(`📋 MANUAL INVOICE: Generated invoice number with suffix: ${invoiceNumber} (base: ${baseInvoiceNumber}, suffix: ${nextSuffix})`);
+        } else {
+          invoiceNumber = baseInvoiceNumber;
+        }
         console.log(`📋 MANUAL INVOICE: Generated invoice number: ${invoiceNumber} for commissioner ${commissioner.name}`);
       }
     } catch (error) {
@@ -199,8 +232,8 @@ export async function POST(req: NextRequest) {
         taskId: normalizedTaskId
       }],
       paymentDetails: {
-        freelancerAmount: Math.round((manualInvoiceAmount * 0.95) * 100) / 100, // 5% platform fee
-        platformFee: Math.round((manualInvoiceAmount * 0.05) * 100) / 100
+        freelancerAmount: Math.round((manualInvoiceAmount * (1 - 0.052666)) * 100) / 100, // 5.2666% platform fee
+        platformFee: Math.round((manualInvoiceAmount * 0.052666) * 100) / 100
       }
     } as any; // Type assertion to handle interface mismatch
 

@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1756157315898_m8uze9ai0",
+  "type": "completion.task_approved",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-014",
+  "message": "You approved \"Phase One: Test\" in Completion Modelling For Series A Fundraising. Task approved and milestone completed. Click here to see project tracker.",
+  "context": {
+    "taskId": "1756157493378",
+    "taskTitle": "Phase One: Test",
+    "projectTitle": "Completion Modelling For Series A Fundraising",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T21:28:35.898Z",
+  "timestamp": "2025-08-25T21:28:35.898Z",
+  "subsystem": "completion_invoicing"
+}

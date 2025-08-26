@@ -226,13 +226,13 @@ export async function executeTaskApprovalTransaction(
           // Get organization information for the commissioner
           const { readProject } = await import('../projects-utils');
 
-          // Ensure projectId is a valid number
-          const projectId = typeof invoice.projectId === 'string' ? parseInt(invoice.projectId) : invoice.projectId;
-          if (!projectId || isNaN(projectId)) {
+          // Normalize projectId to string (accepts IDs like "C-009")
+          const projectIdStr = String(invoice.projectId ?? '').trim();
+          if (!projectIdStr) {
             throw new Error(`Invalid project ID: ${invoice.projectId}`);
           }
 
-          const project = await readProject(projectId);
+          const project = await readProject(projectIdStr);
 
           // Get organization data
           let organizationName = 'Organization';
@@ -250,32 +250,44 @@ export async function executeTaskApprovalTransaction(
           // (Freelancer notifications are handled by the bus system via PaymentsService)
           if (params.invoiceType === 'milestone') {
             const { logMilestonePaymentSent } = await import('../events/event-logger');
+            const { NotificationStorage } = await import('../notifications/notification-storage');
 
             // Notification for commissioner (sender) only
             // Get freelancer name for the sender notification
             let freelancerName = 'Freelancer';
             try {
               const { getUserById } = await import('../storage/unified-storage-service');
-              const freelancer = await getUserById(invoice.freelancerId);
-              if (freelancer) {
-                freelancerName = freelancer.name || freelancer.firstName || 'Freelancer';
+              const freelancer = await getUserById(invoice.freelancerId as any);
+              if (freelancer && freelancer.name) {
+                freelancerName = freelancer.name;
               }
             } catch (userError) {
               console.warn('Could not fetch freelancer name, using fallback');
             }
 
-            await logMilestonePaymentSent(
-              invoice.commissionerId,
-              invoice.freelancerId,
-              projectId,
-              params.taskTitle,
-              invoice.totalAmount,
-              freelancerName,
-              invoice.invoiceNumber,
-              project?.totalBudget || project?.budget?.upper || project?.budget?.lower,
-              project?.title
+            // Deduplicate against bus-emitted notification using invoiceNumber
+            const existing = NotificationStorage.getRecentEvents(500).find(ev =>
+              ev.type === 'milestone_payment_sent' && ev.metadata?.invoiceNumber === invoice.invoiceNumber
             );
-            console.log(`📧 Payment sent notification created for commissioner ${invoice.commissionerId}`);
+            if (existing) {
+              console.log('🔄 Skipping local milestone_payment_sent (bus will/has emitted)', {
+                projectId: projectIdStr,
+                invoiceNumber: invoice.invoiceNumber
+              });
+            } else {
+              await logMilestonePaymentSent(
+                invoice.commissionerId,
+                invoice.freelancerId as any,
+                projectIdStr,
+                params.taskTitle,
+                invoice.totalAmount,
+                freelancerName,
+                invoice.invoiceNumber,
+                project?.totalBudget || project?.budget?.upper || project?.budget?.lower,
+                project?.title
+              );
+              console.log(`📧 Payment sent notification created for commissioner ${invoice.commissionerId}`);
+            }
             console.log(`ℹ️ Freelancer notification will be handled by bus system`);
           } else {
             console.log(`ℹ️ Skipping milestone payment notifications for ${params.invoiceType}-based project`);

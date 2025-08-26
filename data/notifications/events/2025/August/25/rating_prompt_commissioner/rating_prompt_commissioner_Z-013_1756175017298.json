@@ -1,0 +1,28 @@
+{
+  "id": "rating_prompt_commissioner_Z-013_1756175017298",
+  "timestamp": "2025-08-26T02:23:37.270Z",
+  "type": "rating_prompt_commissioner",
+  "notificationType": 31,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 2,
+  "entityId": "Z-013",
+  "metadata": {
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "freelancerName": "Margsate Flether",
+    "completedTaskTitle": "Phase 3 – Event Engagement & Reporting",
+    "message": "Rate your experience working with Margsate Flether on Marketing For Techno-Fedualism Milestones",
+    "ratingSubjectId": 31,
+    "ratingSubjectType": "freelancer",
+    "priority": "medium"
+  },
+  "context": {
+    "projectId": "Z-013",
+    "ratingSubjectUserId": 31,
+    "ratingSubjectUserType": "freelancer",
+    "action": "rate_freelancer"
+  },
+  "iconPath": "/icons/rating-prompt.png",
+  "updatedAt": "2025-08-26T02:47:12.523Z",
+  "backfillNote": "Updated to new UX content format for commissioner rating prompts"
+}

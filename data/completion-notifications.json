@@ -914,5 +914,449 @@
     },
     "read": false,
     "createdAt": "2025-08-25T19:55:23.971Z"
+  },
+  {
+    "id": "comp_notif_1756156042830_acb0sywe4",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-014",
+    "message": null,
+    "context": {
+      "upfrontAmount": 144,
+      "projectTitle": "Event Marketing For The Dangers of Techno-Feudalism Talk Series",
+      "remainingBudget": 1056,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:07:22.830Z"
+  },
+  {
+    "id": "comp_notif_1756156042867_7d19o2bwy",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-014",
+    "message": null,
+    "context": {
+      "upfrontAmount": 144,
+      "projectTitle": "Event Marketing For The Dangers of Techno-Feudalism Talk Series",
+      "remainingBudget": 1056,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:07:22.867Z"
+  },
+  {
+    "id": "comp_notif_1756156993514_9t83vw2l9",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-014",
+    "message": null,
+    "context": {
+      "upfrontAmount": 144,
+      "projectTitle": "Completion Modelling For Series A Fundraising",
+      "remainingBudget": 1056,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:23:13.514Z"
+  },
+  {
+    "id": "comp_notif_1756156993879_7ssenlb3i",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-014",
+    "message": null,
+    "context": {
+      "upfrontAmount": 144,
+      "projectTitle": "Completion Modelling For Series A Fundraising",
+      "remainingBudget": 1056,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:23:13.879Z"
+  },
+  {
+    "id": "comp_notif_1756157314436_5mvh5bwzb",
+    "type": "completion.project_completed",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-014",
+    "context": {
+      "projectTitle": "Completion Modelling For Series A Fundraising",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:28:34.436Z"
+  },
+  {
+    "id": "comp_notif_1756157314460_ea9n7385n",
+    "type": "completion.project_completed",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-014",
+    "context": {
+      "projectTitle": "Completion Modelling For Series A Fundraising",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:28:34.460Z"
+  },
+  {
+    "id": "comp_notif_1756157314796_j1sy1w5r5",
+    "type": "completion.final_payment",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-014",
+    "context": {
+      "finalAmount": 1056,
+      "projectTitle": "Completion Modelling For Series A Fundraising",
+      "finalPercent": 88,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:28:34.796Z"
+  },
+  {
+    "id": "comp_notif_1756157314969_6gaiafsgu",
+    "type": "completion.final_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-014",
+    "context": {
+      "finalAmount": 1056,
+      "projectTitle": "Completion Modelling For Series A Fundraising",
+      "finalPercent": 88,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:28:34.969Z"
+  },
+  {
+    "id": "comp_notif_1756157315367_ogwy1d3jt",
+    "type": "completion.rating_prompt",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-014",
+    "message": "Rate your experience with Tilly Burzinsky. All tasks for Completion Modelling For Series A Fundraising have been approved. Click here to rate your collaboration.",
+    "context": {
+      "projectTitle": "Completion Modelling For Series A Fundraising",
+      "commissionerName": "Tilly Burzinsky",
+      "freelancerName": "Margsate Flether",
+      "orgName": "Zynate Events Group"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:28:35.367Z"
+  },
+  {
+    "id": "comp_notif_1756157315388_9f06vrzza",
+    "type": "completion.rating_prompt",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-014",
+    "message": "Rate Margsate Flether's work. You have approved all task milestones for Completion Modelling For Series A Fundraising. Click here to rate their work on this project.",
+    "context": {
+      "projectTitle": "Completion Modelling For Series A Fundraising",
+      "commissionerName": "Tilly Burzinsky",
+      "freelancerName": "Margsate Flether",
+      "orgName": "Zynate Events Group"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:28:35.388Z"
+  },
+  {
+    "id": "comp_notif_1756157315801_2a3oz6jki",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-014",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase One: Test\" in Completion Modelling For Series A Fundraising. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1756157493378",
+      "taskTitle": "Phase One: Test",
+      "projectTitle": "Completion Modelling For Series A Fundraising",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:28:35.801Z"
+  },
+  {
+    "id": "comp_notif_1756157315898_m8uze9ai0",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-014",
+    "message": "You approved \"Phase One: Test\" in Completion Modelling For Series A Fundraising. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1756157493378",
+      "taskTitle": "Phase One: Test",
+      "projectTitle": "Completion Modelling For Series A Fundraising",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:28:35.898Z"
+  },
+  {
+    "id": "comp_notif_1756158225217_9kk7godsy",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-015",
+    "message": null,
+    "context": {
+      "upfrontAmount": 138,
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "remainingBudget": 1012,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:43:45.217Z"
+  },
+  {
+    "id": "comp_notif_1756158225233_eshnf4l9q",
+    "type": "completion.upfront_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-015",
+    "message": null,
+    "context": {
+      "upfrontAmount": 138,
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "remainingBudget": 1012,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T21:43:45.233Z"
+  },
+  {
+    "id": "comp_notif_1756160497314_k652au8uo",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-015",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase 1 – Positioning & Messaging\" in NastyWork Club Marketing Promotional Tour, Toronto. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1756159025149",
+      "taskTitle": "Phase 1 – Positioning & Messaging",
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T22:21:37.314Z"
+  },
+  {
+    "id": "comp_notif_1756160497319_q98alsqis",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-015",
+    "message": "You approved \"Phase 1 – Positioning & Messaging\" in NastyWork Club Marketing Promotional Tour, Toronto. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1756159025149",
+      "taskTitle": "Phase 1 – Positioning & Messaging",
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T22:21:37.319Z"
+  },
+  {
+    "id": "comp_notif_1756161142625_6nhxhbj9n",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-015",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase 2 – Outreach & Campaign Rollout\" in NastyWork Club Marketing Promotional Tour, Toronto. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1756158516573",
+      "taskTitle": "Phase 2 – Outreach & Campaign Rollout",
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T22:32:22.625Z"
+  },
+  {
+    "id": "comp_notif_1756161142630_3i6h2g7oc",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-015",
+    "message": "You approved \"Phase 2 – Outreach & Campaign Rollout\" in NastyWork Club Marketing Promotional Tour, Toronto. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1756158516573",
+      "taskTitle": "Phase 2 – Outreach & Campaign Rollout",
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T22:32:22.630Z"
+  },
+  {
+    "id": "comp_notif_1756165452923_tfrdsb2by",
+    "type": "completion.project_completed",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-015",
+    "context": {
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T23:44:12.923Z"
+  },
+  {
+    "id": "comp_notif_1756165452938_gjmkj14et",
+    "type": "completion.project_completed",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-015",
+    "context": {
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T23:44:12.938Z"
+  },
+  {
+    "id": "comp_notif_1756165453241_jgtwt669c",
+    "type": "completion.final_payment",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-015",
+    "context": {
+      "finalAmount": 337.33,
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "finalPercent": 29,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T23:44:13.241Z"
+  },
+  {
+    "id": "comp_notif_1756165453268_21ardr4vo",
+    "type": "completion.final_payment",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-015",
+    "context": {
+      "finalAmount": 337.33,
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "finalPercent": 29,
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether",
+      "commissionerName": "Tilly Burzinsky"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T23:44:13.268Z"
+  },
+  {
+    "id": "comp_notif_1756165453713_fwyl42n63",
+    "type": "completion.rating_prompt",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-015",
+    "message": "Rate your experience with Tilly Burzinsky. All tasks for NastyWork Club Marketing Promotional Tour, Toronto have been approved. Click here to rate your collaboration.",
+    "context": {
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "commissionerName": "Tilly Burzinsky",
+      "freelancerName": "Margsate Flether",
+      "orgName": "Zynate Events Group"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T23:44:13.713Z"
+  },
+  {
+    "id": "comp_notif_1756165453781_13mqw3p4j",
+    "type": "completion.rating_prompt",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-015",
+    "message": "Rate Margsate Flether's work. You have approved all task milestones for NastyWork Club Marketing Promotional Tour, Toronto. Click here to rate their work on this project.",
+    "context": {
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "commissionerName": "Tilly Burzinsky",
+      "freelancerName": "Margsate Flether",
+      "orgName": "Zynate Events Group"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T23:44:13.781Z"
+  },
+  {
+    "id": "comp_notif_1756165454137_yc87hcxxu",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 31,
+    "projectId": "Z-015",
+    "message": "Tilly Burzinsky has approved your submission for \"Phase 3 – Event Amplification & Legacy\" in NastyWork Club Marketing Promotional Tour, Toronto. Task approved and milestone completed. Click here to see its project tracker.",
+    "context": {
+      "taskId": "1756158990734",
+      "taskTitle": "Phase 3 – Event Amplification & Legacy",
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T23:44:14.137Z"
+  },
+  {
+    "id": "comp_notif_1756165454304_u36y6xnw5",
+    "type": "completion.task_approved",
+    "actorId": 35,
+    "targetId": 35,
+    "projectId": "Z-015",
+    "message": "You approved \"Phase 3 – Event Amplification & Legacy\" in NastyWork Club Marketing Promotional Tour, Toronto. Task approved and milestone completed. Click here to see project tracker.",
+    "context": {
+      "taskId": "1756158990734",
+      "taskTitle": "Phase 3 – Event Amplification & Legacy",
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "commissionerName": "Tilly Burzinsky",
+      "orgName": "Zynate Events Group",
+      "freelancerName": "Margsate Flether"
+    },
+    "read": false,
+    "createdAt": "2025-08-25T23:44:14.304Z"
   }
 ]

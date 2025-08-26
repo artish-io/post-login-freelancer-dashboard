@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1756160497314_k652au8uo",
+  "type": "completion.task_approved",
+  "actorId": 35,
+  "targetId": 31,
+  "projectId": "Z-015",
+  "message": "Tilly Burzinsky has approved your submission for \"Phase 1 – Positioning & Messaging\" in NastyWork Club Marketing Promotional Tour, Toronto. Task approved and milestone completed. Click here to see its project tracker.",
+  "context": {
+    "taskId": "1756159025149",
+    "taskTitle": "Phase 1 – Positioning & Messaging",
+    "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T22:21:37.314Z",
+  "timestamp": "2025-08-25T22:21:37.314Z",
+  "subsystem": "completion_invoicing"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756160457597_c8c7h7ftd",
+  "timestamp": "2025-08-25T22:20:57.597Z",
+  "type": "task_submission",
+  "notificationType": 0,
+  "targetId": 35,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Margsate Flether submitted a task",
+    "message": "\"Phase 1 – Positioning & Messaging\" is awaiting your review",
+    "priority": "high"
+  },
+  "context": {}
+}

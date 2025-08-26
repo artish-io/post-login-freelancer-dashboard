@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756197370017_1756196423101",
+  "timestamp": "2025-08-26T08:20:23.101Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756197370017,
+  "metadata": {
+    "taskId": 1756197370017,
+    "taskTitle": "Amplification & Legacy Building",
+    "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-009",
+    "taskId": 1756197370017
+  }
+}

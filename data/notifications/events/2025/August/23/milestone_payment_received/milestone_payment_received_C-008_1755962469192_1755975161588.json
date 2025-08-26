@@ -12,7 +12,7 @@
     "projectId": "C-008",
     "taskId": 1755962469192,
     "invoiceGenerated": true,
-    "amount": 0,
+    "amount": 733.33,
     "invoiceNumber": "MH-008",
     "organizationName": "Corlax Wellness"
   },
@@ -20,5 +20,7 @@
     "projectId": "C-008",
     "taskId": 1755962469192,
     "invoiceNumber": "MH-008"
-  }
+  },
+  "enrichmentNote": "Fixed amount: $733.33 (from invoice MH-008)",
+  "updatedAt": "2025-08-26T03:16:15.130Z"
 }

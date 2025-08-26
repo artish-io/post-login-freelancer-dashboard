@@ -1,0 +1,22 @@
+{
+  "projectId": "C-009",
+  "title": "Milestones Web 3 Graphic Design Asssets ",
+  "description": "Drive visibility and engagement for a conference uniting thinkers, activists, and academics critiquing techno-feudalism—the consolidation of power by digital platforms and algorithmic systems. I’ll design and execute a multi-channel campaign (social, newsletters, media outreach, partnerships) to highlight the urgency of these conversations",
+  "organizationId": 3,
+  "typeTags": [
+    "Graphic Design",
+    "Web Development"
+  ],
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "status": "completed",
+  "dueDate": "2025-08-31",
+  "totalTasks": 3,
+  "invoicingMethod": "milestone",
+  "totalBudget": 1500,
+  "paidToDate": 1500,
+  "currency": "USD",
+  "createdAt": "2025-08-26T08:19:36.129Z",
+  "updatedAt": "2025-08-26T17:05:01.430Z",
+  "completedAt": "2025-08-26T17:05:01.429Z"
+}

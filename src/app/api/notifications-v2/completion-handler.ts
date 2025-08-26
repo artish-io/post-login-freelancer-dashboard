@@ -92,7 +92,7 @@ async function logCompletionEvent(event: CompletionEvent) {
       eventLog = eventLog.slice(-1000);
     }
     
-    await fs.writeFile(eventLogPath, JSON.stringify(eventLog, null, 2));
+    await fs.writeFile(eventLogPath, JSON.stringify(eventLog, null, 2), 'utf8');
     
     // ✅ SAFE: Also try to use existing event logger if available
     try {
@@ -234,11 +234,24 @@ function generateNotificationMessage(event: CompletionEvent): string {
       return `${freelancerName} sent you a $${amount} invoice for ${taskTitle}. Click here to review.`;
 
     case 'completion.invoice_paid':
-      return `${orgName} paid you $${amount} for ${invoiceNumber}. Click here to view details.`;
+      // Format for freelancer receiving payment
+      const taskTitleForPayment = event.context.taskTitle || taskTitle;
+      const remainingBudgetForFreelancer = event.context.remainingBudget || 0;
+      if (remainingBudgetForFreelancer > 0) {
+        return `${orgName} has paid you $${amount} for your recent ${projectTitle} task submission. This project has a remaining budget of $${remainingBudgetForFreelancer}. Click here to view invoice details.`;
+      } else {
+        return `${orgName} paid you $${amount} for ${taskTitleForPayment || invoiceNumber}. Click here to view details.`;
+      }
 
     case 'completion.commissioner_payment':
+      // Format for commissioner payment confirmation
       const remainingBudget = event.context.remainingBudget || 0;
-      return `${orgName} has paid ${freelancerName} $${amount} for your ongoing ${projectTitle} project. This project has a budget of $${remainingBudget} left. Click here to view invoice details`;
+      const taskTitleForCommissioner = event.context.taskTitle || taskTitle;
+      if (remainingBudget > 0) {
+        return `You just paid ${freelancerName} $${amount} for submitting ${taskTitleForCommissioner} for ${projectTitle}. Remaining budget: $${remainingBudget}. Click here to see transaction activity.`;
+      } else {
+        return `You paid ${freelancerName} $${amount} for ${taskTitleForCommissioner || invoiceNumber}. Click here to view transaction details.`;
+      }
 
     case 'completion.project_completed':
       // Let the main API route handle message generation for context-aware messages

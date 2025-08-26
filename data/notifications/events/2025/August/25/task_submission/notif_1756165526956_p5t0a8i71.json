@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756165526956_p5t0a8i71",
+  "timestamp": "2025-08-25T23:45:26.956Z",
+  "type": "task_submission",
+  "notificationType": 0,
+  "targetId": 35,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Margsate Flether submitted a task",
+    "message": "\"Phase 1 – Strategy & Asset Development\" is awaiting your review",
+    "priority": "high"
+  },
+  "context": {}
+}

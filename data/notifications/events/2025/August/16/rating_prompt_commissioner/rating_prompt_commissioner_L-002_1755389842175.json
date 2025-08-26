@@ -2,7 +2,7 @@
   "id": "rating_prompt_commissioner_L-002_1755389842175",
   "timestamp": "2025-08-17T00:17:22.174Z",
   "type": "rating_prompt_commissioner",
-  "notificationType": 141,
+  "notificationType": 31,
   "actorId": 31,
   "targetId": 32,
   "entityType": 2,
@@ -11,7 +11,7 @@
     "projectTitle": "Market Research for Longer Divide",
     "freelancerName": "Margsate Flether",
     "completedTaskTitle": "Initial research and data collections",
-    "message": "You have approved all task milestones for Market Research for Longer Divide. Click here to rate Margsate Flether for their work on this project. Your rating improves the experience of other project managers on ARTISH.",
+    "message": "Rate your experience working with Margsate Flether on Market Research for Longer Divide",
     "ratingSubjectId": 31,
     "ratingSubjectType": "freelancer",
     "priority": "high"
@@ -21,5 +21,8 @@
     "ratingSubjectUserId": 31,
     "ratingSubjectUserType": "freelancer",
     "action": "rate_freelancer"
-  }
+  },
+  "iconPath": "/icons/rating-prompt.png",
+  "updatedAt": "2025-08-26T02:47:12.517Z",
+  "backfillNote": "Updated to new UX content format for commissioner rating prompts"
 }

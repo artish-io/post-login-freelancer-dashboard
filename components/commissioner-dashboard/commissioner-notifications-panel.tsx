@@ -24,6 +24,25 @@ const getNotificationIcon = (type: NotificationData['type']): string => {
       return '/icons/new-invoice.png';
     case 'milestone_payment_sent':
       return '/icons/payment-sent.png';
+    // Completion-based project notifications
+    case 'completion_invoice_received':
+      return '/icons/new-invoice.png';
+    case 'completion_project_activated':
+      return '/icons/project-completed.png';
+    case 'completion_project_completed':
+      return '/icons/project-completed.png';
+    case 'completion_upfront_payment':
+      return '/icons/payment-sent.png';
+    case 'completion_final_payment':
+      return '/icons/payment-sent.png';
+    case 'completion_task_approved':
+      return '/icons/task-approved.png';
+    case 'completion_invoice_paid':
+      return '/icons/payment-sent.png';
+    case 'completion_commissioner_payment':
+      return '/icons/payment-sent.png';
+    case 'completion_rating_prompt':
+      return '/icons/notification-default.png';
     default:
       return '/icons/notification-default.png';
   }

@@ -1,0 +1,18 @@
+{
+  "id": "comp_notif_1756157315388_9f06vrzza",
+  "type": "completion.rating_prompt",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-014",
+  "message": "Rate Margsate Flether's work. You have approved all task milestones for Completion Modelling For Series A Fundraising. Click here to rate their work on this project.",
+  "context": {
+    "projectTitle": "Completion Modelling For Series A Fundraising",
+    "commissionerName": "Tilly Burzinsky",
+    "freelancerName": "Margsate Flether",
+    "orgName": "Zynate Events Group"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T21:28:35.388Z",
+  "timestamp": "2025-08-25T21:28:35.388Z",
+  "subsystem": "completion_invoicing"
+}

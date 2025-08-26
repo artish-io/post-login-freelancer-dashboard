@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1756156042830_acb0sywe4",
+  "type": "completion.upfront_payment",
+  "actorId": 35,
+  "targetId": 31,
+  "projectId": "Z-014",
+  "message": null,
+  "context": {
+    "upfrontAmount": 144,
+    "projectTitle": "Event Marketing For The Dangers of Techno-Feudalism Talk Series",
+    "remainingBudget": 1056,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T21:07:22.830Z",
+  "timestamp": "2025-08-25T21:07:22.830Z",
+  "subsystem": "completion_invoicing"
+}

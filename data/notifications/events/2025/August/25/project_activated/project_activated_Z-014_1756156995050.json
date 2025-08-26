@@ -1,0 +1,23 @@
+{
+  "id": "project_activated_Z-014_1756156995050",
+  "timestamp": "2025-08-25T21:23:15.050Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 2,
+  "entityId": "Z-014",
+  "metadata": {
+    "projectTitle": "Completion Modelling For Series A Fundraising",
+    "gigTitle": "Completion Modelling For Series A Fundraising",
+    "taskCount": 1,
+    "commissionerName": "Tilly Burzinsky",
+    "organizationName": "Zynate Events Group",
+    "dueDate": "2025-08-29"
+  },
+  "context": {
+    "projectId": "Z-014",
+    "gigId": 43,
+    "applicationId": 1755193217272
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756159025149_1756160457592",
+  "timestamp": "2025-08-25T22:20:57.592Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756159025149,
+  "metadata": {
+    "taskId": 1756159025149,
+    "taskTitle": "Phase 1 – Positioning & Messaging",
+    "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-015",
+    "taskId": 1756159025149
+  }
+}

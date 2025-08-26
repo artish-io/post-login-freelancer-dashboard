@@ -105,7 +105,10 @@ export default function InvoiceHistoryList() {
 
       {/* Caret */}
       <div className="flex justify-center mt-4">
-        <button className="bg-pink-100 hover:bg-pink-200 p-2 rounded-full shadow-sm">
+        <button
+          onClick={() => router.push('/freelancer-dashboard/projects-and-invoices/invoices/invoice-history')}
+          className="bg-pink-100 hover:bg-pink-200 p-2 rounded-full shadow-sm transition-colors"
+        >
           <svg
             className="w-4 h-4 text-pink-700"
             fill="none"

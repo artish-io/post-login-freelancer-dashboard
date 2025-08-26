@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756197323986_1756196418038",
+  "timestamp": "2025-08-26T08:20:18.038Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756197323986,
+  "metadata": {
+    "taskId": 1756197323986,
+    "taskTitle": "Outreach & Campaign Rollout",
+    "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-009",
+    "taskId": 1756197323986
+  }
+}

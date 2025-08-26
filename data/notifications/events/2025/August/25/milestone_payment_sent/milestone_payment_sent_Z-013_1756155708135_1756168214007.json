@@ -1,0 +1,30 @@
+{
+  "id": "milestone_payment_sent_Z-013_1756155708135_1756168214007",
+  "timestamp": "2025-08-26T00:30:14.007Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 5,
+  "entityId": "Z-013_1756155708135",
+  "metadata": {
+    "taskTitle": "Phase 3 – Event Engagement & Reporting",
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "projectId": "Z-013",
+    "taskId": 1756155708135,
+    "freelancerName": "Margsate Flether",
+    "amount": 533.33,
+    "invoiceNumber": "TB-026",
+    "remainingBudget": 0.01,
+    "projectBudget": 1600
+  },
+  "context": {
+    "projectId": "Z-013",
+    "taskId": 1756155708135,
+    "invoiceNumber": "TB-026"
+  },
+  "title": "You just paid Margsate Flether $533.33",
+  "message": "You just paid Margsate Flether $533.33 for submitting Phase 3 – Event Engagement & Reporting for Marketing For Techno-Fedualism Milestones. Remaining budget: $0.01. Click here to see transaction activity",
+  "enrichmentNote": "Fixed freelancer name and amount: freelancerName: Margsate Flether (from user ID 31), amount: $533.33 (from invoice TB-026), title and message updated",
+  "updatedAt": "2025-08-26T00:30:14.007Z"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1756165454304_u36y6xnw5",
+  "type": "completion.task_approved",
+  "actorId": 35,
+  "targetId": 35,
+  "projectId": "Z-015",
+  "message": "You approved \"Phase 3 – Event Amplification & Legacy\" in NastyWork Club Marketing Promotional Tour, Toronto. Task approved and milestone completed. Click here to see project tracker.",
+  "context": {
+    "taskId": "1756158990734",
+    "taskTitle": "Phase 3 – Event Amplification & Legacy",
+    "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether"
+  },
+  "read": false,
+  "createdAt": "2025-08-25T23:44:14.304Z",
+  "timestamp": "2025-08-25T23:44:14.304Z",
+  "subsystem": "completion_invoicing"
+}

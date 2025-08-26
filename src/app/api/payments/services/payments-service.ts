@@ -192,6 +192,18 @@ export class PaymentsService {
 
       console.log(`✅ Payment processed successfully:`, transaction);
 
+      // Calculate platform fee based on invoice type
+      const platformFeeRate = params.invoiceType === 'milestone' ? 0.052666 : 0.05; // 5.2666% for milestone, 5% for completion
+      const platformFee = Math.round(params.amount * platformFeeRate * 100) / 100;
+      const freelancerAmount = Math.round((params.amount - platformFee) * 100) / 100;
+
+      console.log(`💰 Platform fee calculation for ${params.invoiceType || 'unknown'} invoice:`, {
+        totalAmount: params.amount,
+        platformFeeRate: `${(platformFeeRate * 100).toFixed(4)}%`,
+        platformFee,
+        freelancerAmount
+      });
+
       // Update invoice status to 'paid' after successful payment
       const { updateInvoice } = await import('../../../../lib/invoice-storage');
       await updateInvoice(params.invoiceNumber, {
@@ -201,8 +213,8 @@ export class PaymentsService {
         paymentDetails: {
           paymentId: transaction.transactionId,
           paymentMethod: 'mock',
-          platformFee: 0,
-          freelancerAmount: params.amount,
+          platformFee: platformFee,
+          freelancerAmount: freelancerAmount,
           currency: 'USD',
           processedAt: new Date().toISOString()
         }
@@ -239,7 +251,7 @@ export class PaymentsService {
         const paymentTransaction = {
           userId: params.freelancerId,
           type: 'payment' as const,
-          amount: params.amount,
+          amount: freelancerAmount, // Use freelancer amount after platform fee deduction
           currency: 'USD',
           timestamp: new Date().toISOString(),
           status: 'completed' as const,
@@ -250,7 +262,9 @@ export class PaymentsService {
           source: 'auto_milestone' as const,
           paymentMethod: 'mock' as const,
           gatewayTransactionId: transaction.transactionId,
-          description: `Payment for invoice ${params.invoiceNumber}`
+          description: `Payment for invoice ${params.invoiceNumber}`,
+          platformFee: platformFee, // Track platform fee in transaction
+          totalInvoiceAmount: params.amount // Track original invoice amount
         };
 
         await HierarchicalTransactionService.createPaymentTransaction(paymentTransaction);

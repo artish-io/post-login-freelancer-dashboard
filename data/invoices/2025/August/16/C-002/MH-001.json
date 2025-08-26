@@ -28,10 +28,12 @@
   "paymentDetails": {
     "paymentId": "TXN-MH-001",
     "paymentMethod": "mock",
-    "platformFee": 0,
-    "freelancerAmount": 1000,
+    "platformFee": 52.67,
+    "freelancerAmount": 947.33,
     "currency": "USD",
-    "processedAt": "2025-08-17T18:05:29.101Z"
+    "processedAt": "2025-08-17T18:05:29.101Z",
+    "migratedAt": "2025-08-26T16:38:23.513Z",
+    "migrationNote": "Retroactively added 5.2666% platform fee for milestone-based invoice"
   },
-  "updatedAt": "2025-08-17T18:05:29.104Z"
+  "updatedAt": "2025-08-26T16:38:23.527Z"
 }

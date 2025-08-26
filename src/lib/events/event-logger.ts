@@ -124,7 +124,7 @@ export const ENTITY_TYPES = {
 
 export type EventType =
   // Task events - More granular
-  | 'task_created' | 'task_submitted' | 'task_approved' | 'task_rejected' | 'task_rejected_with_comment'
+  | 'task_created' | 'task_submitted' | 'task_submission' | 'task_approved' | 'task_rejected' | 'task_rejected_with_comment'
   | 'task_completed' | 'task_commented'
   // Project events
   | 'project_created' | 'project_started' | 'project_activated' | 'project_reactivated' | 'project_paused' | 'project_resumed' | 'project_completed'
@@ -134,7 +134,9 @@ export type EventType =
   // Message events
   | 'message_sent' | 'message_read'
   // Invoice events - More granular
-  | 'invoice_created' | 'invoice_sent' | 'invoice_paid' | 'invoice_overdue' | 'milestone_payment_received' | 'milestone_payment_sent' | 'payment_sent'
+  | 'invoice_created' | 'invoice_sent' | 'invoice_paid' | 'invoice_overdue' | 'milestone_payment_received'
+  // Payment events
+  | 'payment_sent' | 'payment_received' | 'milestone_payment_sent' | 'payment_sent'
   // Storefront events
   | 'product_purchased' | 'product_downloaded' | 'review_posted' | 'product_approved' | 'product_rejected'
   // Proposal events
@@ -287,17 +289,18 @@ class EventLogger {
         priority: 'high',
         channels: ['in_app', 'email']
       },
-      {
-        eventType: 'task_approved',
-        targetUserTypes: ['project_freelancer'],
-        notificationType: 'task_approved',
-        titleTemplate: 'Task approved',
-        messageTemplate: '"{taskTitle}" has been approved',
-        iconType: 'icon',
-        iconPath: '/icons/task-approved.png',
-        priority: 'medium',
-        channels: ['in_app']
-      },
+      // DISABLED: task_approved rule - main system already creates proper notifications
+      // {
+      //   eventType: 'task_approved',
+      //   targetUserTypes: ['project_freelancer'],
+      //   notificationType: 'task_approved',
+      //   titleTemplate: 'Task approved',
+      //   messageTemplate: '"{taskTitle}" has been approved',
+      //   iconType: 'icon',
+      //   iconPath: '/icons/task-approved.png',
+      //   priority: 'medium',
+      //   channels: ['in_app']
+      // },
       {
         eventType: 'task_rejected',
         targetUserTypes: ['project_freelancer'],
@@ -656,9 +659,33 @@ class EventLogger {
    * Save notification to user's notification list
    */
   private async saveNotification(userId: number, notification: any): Promise<void> {
-    // This will be implemented to save to the new notification system
-    // For now, we'll add it to the existing structure for compatibility
-    console.log(`Notification for user ${userId}:`, notification);
+    try {
+      // Create a proper notification event for the storage system
+      const notificationEvent = {
+        id: `notif_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        timestamp: new Date().toISOString(),
+        type: notification.type || 'generic_notification',
+        notificationType: notification.notificationType || 0,
+        actorId: notification.actorId,
+        targetId: userId,
+        entityType: notification.entityType || 0,
+        entityId: notification.entityId || '',
+        metadata: {
+          title: notification.title,
+          message: notification.message,
+          icon: notification.icon,
+          priority: notification.priority || 'medium',
+          ...notification.metadata
+        },
+        context: notification.context || {}
+      };
+
+      // Save to the notification storage system
+      NotificationStorage.addEvent(notificationEvent);
+      console.log(`✅ Saved notification for user ${userId}: ${notification.title}`);
+    } catch (error) {
+      console.error(`❌ Failed to save notification for user ${userId}:`, error);
+    }
   }
 }
 

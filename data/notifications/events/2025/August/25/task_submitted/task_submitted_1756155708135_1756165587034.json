@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756155708135_1756165587034",
+  "timestamp": "2025-08-25T23:46:27.034Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756155708135,
+  "metadata": {
+    "taskId": 1756155708135,
+    "taskTitle": "Phase 3 – Event Engagement & Reporting",
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "Z-013",
+    "taskId": 1756155708135
+  }
+}

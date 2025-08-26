@@ -220,8 +220,8 @@ export async function POST(req: NextRequest) {
         taskId: 'upfront'
       }],
       paymentDetails: {
-        freelancerAmount: Math.round((upfrontAmount * 0.95) * 100) / 100, // 5% platform fee
-        platformFee: Math.round((upfrontAmount * 0.05) * 100) / 100
+        freelancerAmount: Math.round((upfrontAmount * (1 - 0.052666)) * 100) / 100, // 5.2666% platform fee
+        platformFee: Math.round((upfrontAmount * 0.052666) * 100) / 100
       }
     };
     console.log('📋 UPFRONT PAYMENT: Invoice data:', invoice);
@@ -244,12 +244,21 @@ export async function POST(req: NextRequest) {
       status: paymentRecord.status
     });
 
-    // ✅ SAFE: Update invoice to paid (using simple update by invoice number)
+    // ✅ SAFE: Update invoice to paid (using project-aware update to handle duplicates)
     console.log('📝 UPFRONT PAYMENT: Updating invoice status to paid...');
-    const { updateInvoice } = await import('@/lib/invoice-storage');
-    const updateSuccess = await updateInvoice(invoiceNumber, {
+    const { updateInvoiceByProjectId } = await import('@/lib/invoice-storage');
+    const updateSuccess = await updateInvoiceByProjectId(invoiceNumber, projectId, {
       status: 'paid',
-      paidDate: new Date().toISOString()
+      paidDate: new Date().toISOString().split('T')[0],
+      paidAmount: upfrontAmount,
+      paymentDetails: {
+        paymentId: paymentRecord.transactionId,
+        paymentMethod: 'mock',
+        platformFee: Math.round((upfrontAmount * 0.052666) * 100) / 100,
+        freelancerAmount: Math.round((upfrontAmount * (1 - 0.052666)) * 100) / 100,
+        currency: 'USD',
+        processedAt: new Date().toISOString()
+      }
     });
 
     if (!updateSuccess) {

@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_43_31_1756156440963",
+  "timestamp": "2025-08-25T21:14:00.963Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "43",
+  "metadata": {
+    "gigTitle": "Completion Modelling For Series A Fundraising",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 43,
+    "applicationId": 1755193217272
+  }
+}

@@ -2,7 +2,7 @@
   "id": "rating_prompt_commissioner_Z-004_1755414164311",
   "timestamp": "2025-08-17T07:02:44.310Z",
   "type": "rating_prompt_commissioner",
-  "notificationType": 141,
+  "notificationType": 31,
   "actorId": 1,
   "targetId": 35,
   "entityType": 2,
@@ -11,7 +11,7 @@
     "projectTitle": "Landing Page for 2Baba 40-Year Concert",
     "freelancerName": "Tobi Philly",
     "completedTaskTitle": "Frontend Development",
-    "message": "You have approved all task milestones for Landing Page for 2Baba 40-Year Concert. Click here to rate Tobi Philly for their work on this project. Your rating improves the experience of other project managers on ARTISH.",
+    "message": "Rate your experience working with Tobi Philly on Landing Page for 2Baba 40-Year Concert",
     "ratingSubjectId": 1,
     "ratingSubjectType": "freelancer",
     "priority": "high"
@@ -21,5 +21,8 @@
     "ratingSubjectUserId": 1,
     "ratingSubjectUserType": "freelancer",
     "action": "rate_freelancer"
-  }
+  },
+  "iconPath": "/icons/rating-prompt.png",
+  "updatedAt": "2025-08-26T02:47:12.521Z",
+  "backfillNote": "Updated to new UX content format for commissioner rating prompts"
 }

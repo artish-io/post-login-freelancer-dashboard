@@ -1,0 +1,19 @@
+{
+  "id": "project_completed_Z-013_1756175017273_freelancer",
+  "timestamp": "2025-08-26T02:23:37.270Z",
+  "type": "project_completed",
+  "notificationType": 28,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 2,
+  "entityId": "Z-013",
+  "metadata": {
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "commissionerName": "Tilly Burzinsky",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "Z-013"
+  },
+  "iconPath": "/icons/project-completed.png"
+}

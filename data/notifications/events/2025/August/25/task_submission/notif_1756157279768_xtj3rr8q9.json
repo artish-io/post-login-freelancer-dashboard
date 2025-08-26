@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756157279768_xtj3rr8q9",
+  "timestamp": "2025-08-25T21:27:59.768Z",
+  "type": "task_submission",
+  "notificationType": 0,
+  "targetId": 35,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Margsate Flether submitted a task",
+    "message": "\"Phase One: Test\" is awaiting your review",
+    "priority": "high"
+  },
+  "context": {}
+}

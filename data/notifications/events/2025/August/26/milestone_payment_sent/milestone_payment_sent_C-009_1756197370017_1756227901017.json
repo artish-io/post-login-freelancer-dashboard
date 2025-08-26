@@ -1,0 +1,26 @@
+{
+  "id": "milestone_payment_sent_C-009_1756197370017_1756227901017",
+  "timestamp": "2025-08-26T17:05:01.017Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "C-009_1756197370017",
+  "metadata": {
+    "taskTitle": "Amplification & Legacy Building",
+    "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+    "projectId": "C-009",
+    "taskId": 1756197370017,
+    "freelancerName": "Freelancer",
+    "amount": 0,
+    "invoiceNumber": "MH-011",
+    "remainingBudget": 0,
+    "projectBudget": 1500
+  },
+  "context": {
+    "projectId": "C-009",
+    "taskId": 1756197370017,
+    "invoiceNumber": "MH-011"
+  }
+}
