@@ -1,0 +1,31 @@
+{
+  "projectId": "C-011",
+  "title": "90% Completion Landing Page Win ",
+  "description": "I can make this conference impossible to ignore—I understand the cultural and political stakes at play and know how to translate them into sharp messaging and bold campaigns. My approach will ensure the event resonates not only with academics but also with journalists, activists, and the wider public who care about democracy in the digital age.",
+  "organizationId": 3,
+  "typeTags": [
+    "UI/UX Design"
+  ],
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "status": "completed",
+  "dueDate": "2025-08-31",
+  "totalTasks": 3,
+  "invoicingMethod": "completion",
+  "gigId": 48,
+  "gigPostedDate": "2025-08-26",
+  "projectActivatedAt": "2025-08-26T19:50:54.749Z",
+  "originalDuration": {
+    "deliveryTimeWeeks": 0.7142857142857143,
+    "estimatedHours": 32,
+    "originalEndDate": "2025-08-31T04:00:00.000Z"
+  },
+  "totalBudget": 900,
+  "paidToDate": 900,
+  "currency": "USD",
+  "createdAt": "2025-08-26T19:50:54.749Z",
+  "updatedAt": "2025-08-27T00:03:51.748Z",
+  "estimatedHours": 32,
+  "deliveryTimeWeeks": 0.7142857142857143,
+  "completedAt": "2025-08-27T00:03:51.748Z"
+}

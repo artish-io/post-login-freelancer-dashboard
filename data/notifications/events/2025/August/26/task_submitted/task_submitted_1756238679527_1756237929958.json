@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756238679527_1756237929958",
+  "timestamp": "2025-08-26T19:52:09.958Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756238679527,
+  "metadata": {
+    "taskId": 1756238679527,
+    "taskTitle": "Phase 2 ",
+    "projectTitle": "90% Completion Landing Page Win ",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-011",
+    "taskId": 1756238679527
+  }
+}

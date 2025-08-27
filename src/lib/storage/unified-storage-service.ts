@@ -18,7 +18,6 @@ import 'server-only';
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import { format } from 'date-fns';
 import { z } from 'zod';
 
 // Throttle warnings to prevent spam
@@ -29,7 +28,6 @@ import { ProjectSchema, ProjectTaskSchema, parseProject, parseTask } from './sch
 
 // Import utilities
 import { writeJsonAtomic, fileExists, ensureDir } from '../fs-json';
-import { readProjectTasks } from '@/lib/project-tasks/hierarchical-storage';
 
 // Logger utility
 interface Logger {
@@ -147,12 +145,7 @@ async function withFileLock<T>(filePath: string, fn: () => Promise<T>): Promise<
   return lockPromise;
 }
 
-/**
- * Ensure directories exist
- */
-async function ensureDirs(dirPath: string): Promise<void> {
-  await ensureDir(dirPath);
-}
+
 
 /**
  * Legacy compatibility functions (read-only with warnings)
@@ -201,7 +194,7 @@ async function updateTaskIndexes(task: ProjectTask): Promise<void> {
   const indexPath = path.join(process.cwd(), 'data', 'project-tasks', 'metadata', 'tasks-index.json');
 
   await withFileLock(indexPath, async () => {
-    let index: Record<string, { projectId: number; createdAt: string }> = {};
+    let index: Record<string, { projectId: string; createdAt: string }> = {};
 
     if (await fileExists(indexPath)) {
       const data = await fs.readFile(indexPath, 'utf-8');
@@ -209,7 +202,7 @@ async function updateTaskIndexes(task: ProjectTask): Promise<void> {
     }
 
     index[task.taskId.toString()] = {
-      projectId: task.projectId,
+      projectId: task.projectId.toString(),
       createdAt: task.createdDate
     };
 
@@ -317,7 +310,7 @@ export class UnifiedStorageService {
       // Delete all tasks for this project first
       const tasks = await UnifiedStorageService.listTasks(projectIdStr);
       for (const task of tasks) {
-        await UnifiedStorageService.deleteTask(projectIdStr, task.id || task.taskId);
+        await UnifiedStorageService.deleteTask(projectIdStr, task.taskId);
       }
 
       // Delete the project file from hierarchical storage

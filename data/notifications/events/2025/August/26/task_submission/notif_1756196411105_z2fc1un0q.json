@@ -4,12 +4,21 @@
   "type": "task_submission",
   "notificationType": 0,
   "targetId": 34,
-  "entityType": 0,
-  "entityId": "",
+  "entityType": 1,
+  "entityId": 1756196816187,
   "metadata": {
     "title": "Tobi Philly submitted a task",
-    "message": "\"Positioning & Messaging\" is awaiting your review",
-    "priority": "high"
+    "message": "\"Positioning & Messaging\" is awaiting your review for Milestones Web 3 Graphic Design Asssets ",
+    "priority": "high",
+    "taskId": 1756196816187,
+    "taskTitle": "Positioning & Messaging",
+    "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+    "action": "submit",
+    "invoiceGenerated": false
   },
-  "context": {}
+  "context": {
+    "projectId": "C-009",
+    "taskId": 1756196816187
+  },
+  "actorId": 1
 }

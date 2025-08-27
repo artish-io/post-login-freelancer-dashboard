@@ -1,0 +1,40 @@
+{
+  "id": 49,
+  "title": "Test 3 Completion Final Salle",
+  "organizationId": 3,
+  "commissionerId": "34",
+  "category": "Design",
+  "subcategory": "Graphic Design",
+  "tags": [
+    "Design"
+  ],
+  "hourlyRateMin": 12.5,
+  "hourlyRateMax": 18.75,
+  "description": "Web3 culture while remaining polished and versatile. The right designer will help us stand out in a crowded space with a bold visual identity that scales across platforms.",
+  "deliveryTimeWeeks": 0.42857142857142855,
+  "estimatedHours": 24,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Canva"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "4df2b0b4-639a-4438-a8e2-2f93dee5610d",
+      "title": "Final Completion",
+      "description": "I’ll deliver assets that connect with crypto-native audiences while appealing to newcomers. My focus is on helping your project stand out with a visual identity that feels both authentic to the space and scalable for growth.",
+      "startDate": "2025-08-27T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-29T04:00:00.000Z",
+  "lowerBudget": 300,
+  "upperBudget": 450,
+  "postedDate": "2025-08-27",
+  "notes": "Budget range: $300 - $450",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

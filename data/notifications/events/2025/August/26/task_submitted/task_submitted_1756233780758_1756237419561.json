@@ -1,0 +1,21 @@
+{
+  "id": "task_submitted_1756233780758_1756237419561",
+  "timestamp": "2025-08-26T19:43:39.561Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756233780758,
+  "metadata": {
+    "taskId": 1756233780758,
+    "taskTitle": "Phase 3 – Package",
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-010",
+    "taskId": 1756233780758
+  }
+}

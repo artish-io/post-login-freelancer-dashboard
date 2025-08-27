@@ -1,0 +1,21 @@
+{
+  "userId": 1,
+  "type": "payment",
+  "amount": 363.14,
+  "currency": "USD",
+  "timestamp": "2025-08-26T19:43:57.997Z",
+  "status": "completed",
+  "invoiceNumber": "MH-014",
+  "projectId": "C-010",
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "source": "auto_milestone",
+  "paymentMethod": "mock",
+  "gatewayTransactionId": "TXN-MH-014",
+  "description": "Payment for invoice MH-014",
+  "platformFee": 20.19,
+  "totalInvoiceAmount": 383.33,
+  "transactionId": "TXN-PAY-MH-014-1756237437997",
+  "createdAt": "2025-08-26T19:43:57.997Z",
+  "updatedAt": "2025-08-26T19:43:57.997Z"
+}

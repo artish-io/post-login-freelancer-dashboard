@@ -1,0 +1,32 @@
+{
+  "id": "milestone_C-010_MH-012_commissioner_1756233635512",
+  "timestamp": "2025-08-26T18:40:35.512Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 10,
+  "entityId": "C-010_MH-012",
+  "metadata": {
+    "type": "milestone_payment_sent",
+    "audience": "commissioner",
+    "projectId": "C-010",
+    "invoiceNumber": "MH-012",
+    "amount": 383.33,
+    "freelancerName": "Tobi Philly",
+    "organizationName": "Corlax Wellness",
+    "taskTitle": "Phase 1: Style Guide",
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "remainingBudget": 766.6700000000001,
+    "commissionerId": 34,
+    "freelancerId": 1,
+    "eventKey": "milestone_payment_sent:commissioner:C-010:MH-012",
+    "qualityScore": 4,
+    "title": "You just paid Tobi Philly $383.33",
+    "message": "You just paid Tobi Philly $383.33 for submitting Phase 1: Style Guide for Milestone Data Farm Handbook Mr Bond. Remaining budget: $766.6700000000001. Click here to see transaction activity"
+  },
+  "context": {
+    "projectId": "C-010",
+    "invoiceNumber": "MH-012"
+  }
+}

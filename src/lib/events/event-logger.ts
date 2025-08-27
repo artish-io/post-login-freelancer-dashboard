@@ -3,8 +3,6 @@
  * Tracks all platform activities and generates notifications
  */
 
-import fs from 'fs';
-import path from 'path';
 import { NotificationStorage } from '../notifications/notification-storage';
 
 // Notification Type Mapping - Number-based for efficiency
@@ -128,7 +126,7 @@ export type EventType =
   | 'task_completed' | 'task_commented'
   // Project events
   | 'project_created' | 'project_started' | 'project_activated' | 'project_reactivated' | 'project_paused' | 'project_resumed' | 'project_completed'
-  | 'project_pause_requested' | 'project_pause_accepted' | 'project_pause_denied' | 'project_pause_refused'
+  | 'project_pause_requested' | 'project_pause_accepted' | 'project_pause_denied' | 'project_pause_refused' | 'project_pause_reminder'
   // Gig events
   | 'gig_posted' | 'gig_applied' | 'gig_rejected' | 'gig_request_sent' | 'gig_request_accepted' | 'gig_request_declined'
   // Message events
@@ -136,7 +134,7 @@ export type EventType =
   // Invoice events - More granular
   | 'invoice_created' | 'invoice_sent' | 'invoice_paid' | 'invoice_overdue' | 'milestone_payment_received'
   // Payment events
-  | 'payment_sent' | 'payment_received' | 'milestone_payment_sent' | 'payment_sent'
+  | 'payment_sent' | 'payment_received' | 'milestone_payment_sent'
   // Storefront events
   | 'product_purchased' | 'product_downloaded' | 'review_posted' | 'product_approved' | 'product_rejected'
   // Proposal events
@@ -172,6 +170,7 @@ function getNotificationTypeNumber(eventType: EventType): number {
   const mapping: Record<EventType, number> = {
     // Task events
     'task_submitted': NOTIFICATION_TYPES.TASK_SUBMITTED,
+    'task_submission': NOTIFICATION_TYPES.TASK_SUBMITTED, // Alias for task_submitted
     'task_approved': NOTIFICATION_TYPES.TASK_APPROVED,
     'task_rejected': NOTIFICATION_TYPES.TASK_REJECTED,
     'task_rejected_with_comment': NOTIFICATION_TYPES.TASK_REJECTED_WITH_COMMENT,
@@ -217,7 +216,6 @@ function getNotificationTypeNumber(eventType: EventType): number {
 
     // Default fallback for unmapped types
     'project_resumed': NOTIFICATION_TYPES.PROJECT_STARTED,
-    'project_pause_denied': NOTIFICATION_TYPES.PROJECT_PAUSE_REFUSED,
     'gig_posted': NOTIFICATION_TYPES.GIG_APPLICATION_RECEIVED,
     'gig_request_declined': NOTIFICATION_TYPES.GIG_REQUEST_SENT,
     'message_sent': 0, // Messages excluded from notifications
@@ -230,6 +228,8 @@ function getNotificationTypeNumber(eventType: EventType): number {
     'user_login': 0,
     'user_logout': 0,
     'profile_updated': 0,
+    'payment_sent': NOTIFICATION_TYPES.MILESTONE_PAYMENT_SENT,
+    'payment_received': NOTIFICATION_TYPES.MILESTONE_PAYMENT_RECEIVED,
 
     // Rating events
     'rating_prompt_freelancer': NOTIFICATION_TYPES.RATING_PROMPT_FREELANCER,
@@ -241,6 +241,7 @@ function getNotificationTypeNumber(eventType: EventType): number {
     'completion.task_approved': NOTIFICATION_TYPES.COMPLETION_TASK_APPROVED,
     'completion.invoice_received': NOTIFICATION_TYPES.COMPLETION_INVOICE_RECEIVED,
     'completion.invoice_paid': NOTIFICATION_TYPES.COMPLETION_INVOICE_PAID,
+    'completion.commissioner_payment': NOTIFICATION_TYPES.COMPLETION_COMMISSIONER_PAYMENT,
     'completion.project_completed': NOTIFICATION_TYPES.COMPLETION_PROJECT_COMPLETED,
     'completion.final_payment': NOTIFICATION_TYPES.COMPLETION_FINAL_PAYMENT,
     'completion.rating_prompt': NOTIFICATION_TYPES.COMPLETION_RATING_PROMPT
@@ -249,46 +250,26 @@ function getNotificationTypeNumber(eventType: EventType): number {
   return mapping[eventType] || 0;
 }
 
-// Helper function to get entity type number
-function getEntityTypeNumber(entityType: EntityType): number {
-  const mapping: Record<EntityType, number> = {
-    'task': ENTITY_TYPES.TASK,
-    'project': ENTITY_TYPES.PROJECT,
-    'gig': ENTITY_TYPES.GIG,
-    'message': ENTITY_TYPES.MESSAGE,
-    'invoice': ENTITY_TYPES.INVOICE,
-    'product': ENTITY_TYPES.PRODUCT,
-    'proposal': ENTITY_TYPES.PROPOSAL,
-    'user': ENTITY_TYPES.USER,
-    'organization': ENTITY_TYPES.ORGANIZATION,
-    'milestone': ENTITY_TYPES.MILESTONE
-  };
-
-  return mapping[entityType] || 0;
-}
-
 class EventLogger {
-  private logPath: string;
   private notificationRules: NotificationRule[];
 
   constructor() {
-    this.logPath = path.join(process.cwd(), 'data', 'notifications', 'notifications-log.json');
     this.notificationRules = this.initializeNotificationRules();
   }
 
   private initializeNotificationRules(): NotificationRule[] {
     return [
-      // Task events
-      {
-        eventType: 'task_submitted',
-        targetUserTypes: ['project_commissioner'],
-        notificationType: 'task_submission',
-        titleTemplate: '{actorName} submitted a task',
-        messageTemplate: '"{taskTitle}" is awaiting your review',
-        iconType: 'avatar',
-        priority: 'high',
-        channels: ['in_app', 'email']
-      },
+      // DISABLED: task_submitted rule - main system now creates proper notifications based on invoicing method
+      // {
+      //   eventType: 'task_submitted',
+      //   targetUserTypes: ['project_commissioner'],
+      //   notificationType: 'task_submission',
+      //   titleTemplate: '{actorName} submitted a task',
+      //   messageTemplate: '"{taskTitle}" is awaiting your review',
+      //   iconType: 'avatar',
+      //   priority: 'high',
+      //   channels: ['in_app', 'email']
+      // },
       // DISABLED: task_approved rule - main system already creates proper notifications
       // {
       //   eventType: 'task_approved',
@@ -662,7 +643,7 @@ class EventLogger {
     try {
       // Create a proper notification event for the storage system
       const notificationEvent = {
-        id: `notif_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        id: `notif_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date().toISOString(),
         type: notification.type || 'generic_notification',
         notificationType: notification.notificationType || 0,
@@ -725,7 +706,7 @@ export const logTaskApproved = async (commissionerId: number, freelancerId: numb
     const { UnifiedStorageService } = await import('../storage/unified-storage-service');
 
     const [projectData, commissioner, freelancer] = await Promise.all([
-      import('@/lib/projects-utils').then(m => m.readProject(projectId)),
+      import('../projects-utils').then(m => m.readProject(projectId)),
       UnifiedStorageService.getUserById(commissionerId),
       UnifiedStorageService.getUserById(freelancerId)
     ]);
@@ -773,7 +754,7 @@ export const logTaskRejected = async (commissionerId: number, freelancerId: numb
     const { UnifiedStorageService } = await import('../storage/unified-storage-service');
 
     const [projectData, commissioner, freelancer] = await Promise.all([
-      import('@/lib/projects-utils').then(m => m.readProject(projectId)),
+      import('../projects-utils').then(m => m.readProject(projectId)),
       UnifiedStorageService.getUserById(commissionerId),
       UnifiedStorageService.getUserById(freelancerId)
     ]);
@@ -854,14 +835,14 @@ export const logMilestonePaymentWithOrg = (commissionerId: number, freelancerId:
       priority: 'high'
     },
     context: {
-      projectId,
+      projectId: typeof projectId === 'string' ? parseInt(projectId) : projectId,
       milestoneTitle,
       invoiceNumber
     }
   });
 };
 
-export const logMilestonePaymentSent = (commissionerId: number, freelancerId: number, projectId: string | number, taskTitle: string, amount: number, freelancerName: string, invoiceNumber: string, projectBudget?: number, projectTitle?: string) => {
+export const logMilestonePaymentSent = (commissionerId: number, _freelancerId: number, projectId: string | number, taskTitle: string, amount: number, freelancerName: string, invoiceNumber: string, projectBudget?: number, projectTitle?: string) => {
   return eventLogger.logEvent({
     id: `milestone_payment_sent_${projectId}_${Date.now()}`,
     timestamp: new Date().toISOString(),
@@ -881,10 +862,8 @@ export const logMilestonePaymentSent = (commissionerId: number, freelancerId: nu
       priority: 'medium'
     },
     context: {
-      projectId,
-      taskTitle,
-      invoiceNumber,
-      freelancerId
+      projectId: typeof projectId === 'string' ? parseInt(projectId) : projectId,
+      invoiceNumber
     }
   });
 };

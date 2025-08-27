@@ -1,0 +1,21 @@
+{
+  "id": "evt_1755462048012_invoice_auto",
+  "timestamp": "2025-08-17T20:20:48.012Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "MH-002",
+  "metadata": {
+    "taskTitle": "Phase 2:  Legitimate concerns from users",
+    "projectTitle": "Web 3 Graphic Design Asssets ",
+    "amount": 1000,
+    "invoiceNumber": "MH-002"
+  },
+  "context": {
+    "projectId": "C-002",
+    "taskId": 1755452428625,
+    "invoiceId": "MH-002"
+  }
+}

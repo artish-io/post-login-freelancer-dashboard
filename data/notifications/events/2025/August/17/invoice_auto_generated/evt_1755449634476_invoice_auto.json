@@ -1,0 +1,21 @@
+{
+  "id": "evt_1755449634476_invoice_auto",
+  "timestamp": "2025-08-17T16:53:54.476Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 1,
+  "targetId": 32,
+  "entityType": 5,
+  "entityId": "NM-004",
+  "metadata": {
+    "taskTitle": "Phase 2: Conclusion and Review",
+    "projectTitle": "Beautiful days and simple flows",
+    "amount": 550,
+    "invoiceNumber": "NM-004"
+  },
+  "context": {
+    "projectId": "L-004",
+    "taskId": 1755446172095,
+    "invoiceId": "NM-004"
+  }
+}

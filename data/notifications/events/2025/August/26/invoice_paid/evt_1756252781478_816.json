@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756252781478_816",
+  "timestamp": "2025-08-26T23:59:41.478Z",
+  "type": "invoice_paid",
+  "notificationType": 41,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "MH-C007",
+  "metadata": {
+    "invoiceNumber": "MH-C007",
+    "projectTitle": "90% Completion Landing Page Win ",
+    "amount": 528,
+    "organizationName": "Matte Hannery",
+    "commissionerName": "Matte Hannery",
+    "projectBudget": 0
+  },
+  "context": {
+    "projectId": "C-011",
+    "invoiceNumber": "MH-C007"
+  }
+}

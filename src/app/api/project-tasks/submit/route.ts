@@ -67,7 +67,18 @@ async function handleTaskOperation(request: NextRequest) {
           projectId: projectId,
           referenceUrl
         });
-        eventType = 'task_submitted';
+
+        // Determine event type based on project invoicing method
+        if (result.success && result.task) {
+          const project = await UnifiedStorageService.getProjectById(result.task.projectId);
+          if (project?.invoicingMethod === 'milestone') {
+            eventType = 'task_submission'; // For milestone-based projects
+          } else {
+            eventType = 'task_submitted'; // For completion-based projects
+          }
+        } else {
+          eventType = 'task_submitted'; // Fallback
+        }
         break;
 
       case 'approve':
@@ -252,6 +263,7 @@ async function handleTaskOperation(request: NextRequest) {
       try {
         const notificationTypeMap: Record<string, number> = {
           'task_submitted': NOTIFICATION_TYPES.TASK_SUBMITTED,
+          'task_submission': NOTIFICATION_TYPES.TASK_SUBMITTED, // Use same type for both
           'task_approved': NOTIFICATION_TYPES.TASK_APPROVED,
           'task_rejected': NOTIFICATION_TYPES.TASK_REJECTED
         };
@@ -270,7 +282,8 @@ async function handleTaskOperation(request: NextRequest) {
             taskTitle: result.task.title,
             projectTitle: result.task.projectTitle,
             action: action,
-            invoiceGenerated: result.invoiceGenerated || false
+            invoiceGenerated: result.invoiceGenerated || false,
+            message: `"${result.task.title}" is awaiting your review for ${result.task.projectTitle}`
           },
           context: {
             projectId: result.task.projectId,
@@ -475,7 +488,7 @@ async function handleTaskOperation(request: NextRequest) {
                     // For final tasks, the rating notifications should be combined with project completion
                     // This matches the requirement: "project complete + commissioner rating prompt notification"
                     await sendProjectCompletionRatingNotifications({
-                      projectId: Number(project.projectId),
+                      projectId: project.projectId, // Fixed: Keep as string instead of Number() conversion
                       projectTitle: project.title || 'Untitled Project',
                       freelancerId: project.freelancerId,
                       freelancerName: userNames.freelancerName,

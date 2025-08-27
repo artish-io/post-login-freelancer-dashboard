@@ -1,0 +1,12 @@
+{
+  "transactionId": "TXN-MH-C006",
+  "type": "invoice",
+  "integration": "mock",
+  "status": "paid",
+  "invoiceNumber": "MH-C006",
+  "projectId": "C-011",
+  "freelancerId": 1,
+  "commissionerId": 34,
+  "amount": 108,
+  "timestamp": "2025-08-26T19:50:56.329Z"
+}

@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/lib/auth';
+import { authOptions } from '../../../../lib/auth';
 import path from 'path';
 import { promises as fs } from 'fs';
-import { NotificationStorage } from '@/lib/notifications/notification-storage';
-import { getInvoiceByNumber, saveInvoice } from '@/lib/invoice-storage';
+import { NotificationStorage } from '../../../../lib/notifications/notification-storage';
+import { getInvoiceByNumber, saveInvoice } from '../../../../lib/invoice-storage';
 
 /**
  * Pay Invoice API Endpoint
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
       invoiceNumber,
       commissionerId,
       amount,
-      paymentMethodId, // TODO: From payment gateway
+      paymentMethodId: _paymentMethodId, // TODO: From payment gateway
       currency = 'USD'
     } = await request.json();
 
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
     }
 
     // Load data files
-    const { getAllUsers } = await import('@/lib/storage/unified-storage-service');
+    const { getAllUsers } = await import('../../../../lib/storage/unified-storage-service');
     const users = await getAllUsers();
 
     // Find the invoice
@@ -191,16 +191,19 @@ export async function POST(request: Request) {
     let organizationName = commissionerName; // Fallback to commissioner name
     let projectBudget = 0;
     try {
-      const { getOrganizationByCommissionerId, getProjectById } = await import('../../../lib/storage/unified-storage-service');
+      const { getOrganizationByCommissionerId, getProjectById } = await import('../../../../lib/storage/unified-storage-service');
       const organization = await getOrganizationByCommissionerId(commissionerIdNum);
       if (organization) {
         organizationName = organization.name;
       }
 
       // Get project budget for remaining budget calculation
-      const project = await getProjectById(invoice.projectId);
-      if (project) {
-        projectBudget = project.totalBudget || project.budget?.upper || project.budget?.lower || 0;
+      if (invoice.projectId) {
+        const projectIdNum = typeof invoice.projectId === 'string' ? parseInt(invoice.projectId) : invoice.projectId;
+        const project = await getProjectById(projectIdNum);
+        if (project) {
+          projectBudget = project.totalBudget || 0;
+        }
       }
     } catch (orgError) {
       console.warn('Could not fetch organization name or project budget for invoice payment notification, using fallbacks');
@@ -211,10 +214,10 @@ export async function POST(request: Request) {
     const newNotification = {
       id: notificationId,
       timestamp: new Date().toISOString(),
-      type: "invoice_paid",
+      type: "invoice_paid" as const,
       notificationType: 41, // INVOICE_PAID from the notification types
       actorId: commissionerIdNum,
-      targetId: parseInt(invoice.freelancerId),
+      targetId: typeof invoice.freelancerId === 'string' ? parseInt(invoice.freelancerId) : invoice.freelancerId,
       entityType: 3, // Invoice entity type
       entityId: invoiceNumber,
       metadata: {
@@ -237,13 +240,14 @@ export async function POST(request: Request) {
 
     // Create notification for commissioner about their payment
     const commissionerNotificationId = `evt_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
-    const freelancer = users.find((user: any) => user.id === parseInt(invoice.freelancerId));
+    const freelancerIdNum = typeof invoice.freelancerId === 'string' ? parseInt(invoice.freelancerId) : invoice.freelancerId;
+    const freelancer = users.find((user: any) => user.id === freelancerIdNum);
     const freelancerName = freelancer?.name || 'A freelancer';
 
     // Get project info for remaining budget calculation
     let remainingBudget = 'unknown';
     try {
-      const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+      const { UnifiedStorageService } = await import('../../../../lib/storage/unified-storage-service');
       const project = await UnifiedStorageService.readProject(invoice.projectId?.toString() || '');
       if (project) {
         const currentPaidToDate = project.paidToDate || 0;
@@ -258,7 +262,7 @@ export async function POST(request: Request) {
     const commissionerNotification = {
       id: commissionerNotificationId,
       timestamp: new Date().toISOString(),
-      type: "payment_sent",
+      type: "payment_sent" as const,
       notificationType: 42, // PAYMENT_SENT notification type
       actorId: commissionerIdNum,
       targetId: commissionerIdNum, // Commissioner notifies themselves
@@ -295,7 +299,7 @@ export async function POST(request: Request) {
     // Add wallet credit transaction
     const walletTransaction = {
       id: Date.now(),
-      userId: parseInt(invoice.freelancerId),
+      userId: freelancerIdNum,
       commissionerId: commissionerIdNum,
       organizationId: null, // Could be derived from project if needed
       projectId: invoice.projectId,
@@ -319,7 +323,7 @@ export async function POST(request: Request) {
     // Update project paidToDate (CRITICAL FIX)
     if (invoice.projectId) {
       try {
-        const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+        const { UnifiedStorageService } = await import('../../../../lib/storage/unified-storage-service');
         const projectIdStr = invoice.projectId.toString();
         console.log(`🔍 Attempting to read project: ${projectIdStr}`);
 

@@ -1,0 +1,21 @@
+{
+  "id": "evt_1755413996879_invoice_auto",
+  "timestamp": "2025-08-17T06:59:56.879Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 5,
+  "entityId": "TB-009",
+  "metadata": {
+    "taskTitle": "Testing & Launch",
+    "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+    "amount": 1500,
+    "invoiceNumber": "TB-009"
+  },
+  "context": {
+    "projectId": "Z-004",
+    "taskId": 1755413841796,
+    "invoiceId": "TB-009"
+  }
+}

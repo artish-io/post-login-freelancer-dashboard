@@ -1,0 +1,20 @@
+{
+  "id": "evt_1755827446561_332",
+  "timestamp": "2025-08-22T01:50:46.561Z",
+  "type": "invoice_sent",
+  "notificationType": 40,
+  "actorId": 25,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "TB-012",
+  "metadata": {
+    "invoiceNumber": "TB-012",
+    "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+    "amount": 1408,
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "projectId": "Z-007",
+    "invoiceNumber": "TB-012"
+  }
+}

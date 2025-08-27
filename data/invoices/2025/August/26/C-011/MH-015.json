@@ -1,0 +1,30 @@
+{
+  "invoiceNumber": "MH-015",
+  "projectId": "C-011",
+  "freelancerId": 1,
+  "commissionerId": 34,
+  "projectTitle": "90% Completion Landing Page Win ",
+  "totalAmount": 264,
+  "invoiceType": "completion_final",
+  "milestoneNumber": 99,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-27T00:03:51.221Z",
+  "dueDate": "2025-09-10T00:03:51.221Z",
+  "createdAt": "2025-08-27T00:03:51.221Z",
+  "description": "Final completion payment (remaining 88%)",
+  "milestones": [
+    {
+      "description": "Final completion payment (remaining 88%)",
+      "rate": 264,
+      "title": "Final Payment",
+      "taskId": "final"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 250.1,
+    "platformFee": 13.9
+  },
+  "paidDate": "2025-08-27T00:03:51.732Z",
+  "updatedAt": "2025-08-27T00:03:51.745Z"
+}

@@ -53,14 +53,7 @@ export async function POST(request: Request) {
     }
 
     // Load data files
-    const notificationsPath = path.join(process.cwd(), 'data/notifications/notifications-log.json');
-
-    const [notificationsData, users] = await Promise.all([
-      fs.readFile(notificationsPath, 'utf-8'),
-      import('@/lib/storage/unified-storage-service').then(m => m.getAllUsers())
-    ]);
-
-    const notifications = JSON.parse(notificationsData);
+    const users = await import('@/lib/storage/unified-storage-service').then(m => m.getAllUsers());
 
     // Find the invoice
     const invoice = await getInvoiceByNumber(invoiceNumber);
@@ -140,8 +133,12 @@ export async function POST(request: Request) {
 
     // Only send notification if invoice has approved tasks and amount > 0
     if (approvedTasksCount > 0 && invoiceValue > 0) {
-      // Create notification for commissioner with exact copy as specified
+      // Create notification for commissioner using hierarchical storage system
       notificationId = `evt_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+
+      // Import the hierarchical notification storage
+      const { NotificationStorage } = await import('@/lib/notifications/notification-storage');
+
       const newNotification = {
         id: notificationId,
         timestamp: new Date().toISOString(),
@@ -165,20 +162,13 @@ export async function POST(request: Request) {
         }
       };
 
-      // Add notification to the log
-      notifications.unshift(newNotification);
+      // Use hierarchical storage system instead of legacy flat file
+      NotificationStorage.addEvent(newNotification);
     }
 
     // SIMULATION: Save updated data
     // TODO: In production, also update payment gateway records
-    const savePromises = [saveInvoice(updatedInvoice)];
-
-    // Only save notifications if we created one
-    if (approvedTasksCount > 0 && invoiceValue > 0) {
-      savePromises.push(fs.writeFile(notificationsPath, JSON.stringify(notifications, null, 2)));
-    }
-
-    await Promise.all(savePromises);
+    await saveInvoice(updatedInvoice);
 
     return NextResponse.json({ 
       success: true, 

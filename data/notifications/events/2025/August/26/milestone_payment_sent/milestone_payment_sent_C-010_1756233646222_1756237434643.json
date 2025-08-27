@@ -1,0 +1,26 @@
+{
+  "id": "milestone_payment_sent_C-010_1756233646222_1756237434643",
+  "timestamp": "2025-08-26T19:43:54.643Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "C-010_1756233646222",
+  "metadata": {
+    "taskTitle": "Phase 2 – Creation",
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "projectId": "C-010",
+    "taskId": 1756233646222,
+    "freelancerName": "Freelancer",
+    "amount": 0,
+    "invoiceNumber": "MH-013",
+    "remainingBudget": 383.34000000000003,
+    "projectBudget": 1150
+  },
+  "context": {
+    "projectId": "C-010",
+    "taskId": 1756233646222,
+    "invoiceNumber": "MH-013"
+  }
+}

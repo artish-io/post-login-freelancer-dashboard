@@ -1,0 +1,24 @@
+{
+  "id": "milestone_payment_received_C-010_1756233516653_1756233635939",
+  "timestamp": "2025-08-26T18:40:35.939Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 34,
+  "entityType": 5,
+  "entityId": "C-010_1756233516653",
+  "metadata": {
+    "taskTitle": "Phase 1: Style Guide",
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "projectId": "C-010",
+    "taskId": 1756233516653,
+    "invoiceGenerated": true,
+    "amount": 0,
+    "invoiceNumber": "MH-012",
+    "organizationName": "Corlax Wellness"
+  },
+  "context": {
+    "projectId": "C-010",
+    "taskId": 1756233516653,
+    "invoiceNumber": "MH-012"
+  }
+}

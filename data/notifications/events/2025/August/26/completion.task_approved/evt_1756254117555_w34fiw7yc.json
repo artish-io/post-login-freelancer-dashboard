@@ -1,0 +1,18 @@
+{
+  "type": "completion.task_approved",
+  "actorId": 34,
+  "targetId": 1,
+  "projectId": "C-012",
+  "metadata": {
+    "taskId": "1756254699667",
+    "taskTitle": "Final Completion",
+    "projectTitle": "Test 3 Completion Final Salle",
+    "commissionerName": "Matte Hannery",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly"
+  },
+  "timestamp": "2025-08-27T00:21:57.261Z",
+  "subsystem": "completion_invoicing",
+  "notificationType": 152,
+  "id": "evt_1756254117555_w34fiw7yc"
+}

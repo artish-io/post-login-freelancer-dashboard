@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_47_1_1756233069284",
+  "timestamp": "2025-08-26T18:31:09.284Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "47",
+  "metadata": {
+    "gigTitle": "Milestone Data Farm Handbook Mr Bond",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 47,
+    "applicationId": 1755193217275
+  }
+}

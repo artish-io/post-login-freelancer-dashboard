@@ -1,0 +1,21 @@
+{
+  "id": "evt_1755962701774_invoice_auto",
+  "timestamp": "2025-08-23T15:25:01.774Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "MH-006",
+  "metadata": {
+    "taskTitle": "Phase One: Wireframe and Sketches",
+    "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+    "amount": 733.33,
+    "invoiceNumber": "MH-006"
+  },
+  "context": {
+    "projectId": "C-008",
+    "taskId": 1755962967537,
+    "invoiceId": "MH-006"
+  }
+}

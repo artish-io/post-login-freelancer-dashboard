@@ -1,0 +1,24 @@
+{
+  "id": "notif_1756237413690_dwpj37wm3",
+  "timestamp": "2025-08-26T19:43:33.690Z",
+  "type": "task_submission",
+  "notificationType": 0,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756233646222,
+  "metadata": {
+    "title": "Tobi Philly submitted a task",
+    "message": "\"Phase 2 – Creation\" is awaiting your review for Milestone Data Farm Handbook Mr Bond",
+    "priority": "high",
+    "taskId": 1756233646222,
+    "taskTitle": "Phase 2 – Creation",
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-010",
+    "taskId": 1756233646222
+  },
+  "actorId": 1
+}

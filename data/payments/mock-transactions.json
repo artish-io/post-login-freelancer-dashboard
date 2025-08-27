@@ -78,5 +78,29 @@
     "commissionerId": 35,
     "amount": 337.33,
     "timestamp": "2025-08-25T23:44:12.850Z"
+  },
+  {
+    "transactionId": "TXN-MH-015",
+    "type": "invoice",
+    "integration": "mock",
+    "status": "paid",
+    "invoiceNumber": "MH-015",
+    "projectId": "C-011",
+    "freelancerId": 1,
+    "commissionerId": 34,
+    "amount": 264,
+    "timestamp": "2025-08-27T00:03:51.747Z"
+  },
+  {
+    "transactionId": "TXN-MH-016",
+    "type": "invoice",
+    "integration": "mock",
+    "status": "paid",
+    "invoiceNumber": "MH-016",
+    "projectId": "C-012",
+    "freelancerId": 1,
+    "commissionerId": 34,
+    "amount": 396,
+    "timestamp": "2025-08-27T00:21:56.433Z"
   }
 ]

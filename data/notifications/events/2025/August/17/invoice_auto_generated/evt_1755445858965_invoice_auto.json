@@ -1,0 +1,21 @@
+{
+  "id": "evt_1755445858965_invoice_auto",
+  "timestamp": "2025-08-17T15:50:58.965Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 1,
+  "targetId": 32,
+  "entityType": 5,
+  "entityId": "NM-003",
+  "metadata": {
+    "taskTitle": "Phase 1: In the week leading to the Oscars",
+    "projectTitle": "Beautiful days and simple flows",
+    "amount": 550,
+    "invoiceNumber": "NM-003"
+  },
+  "context": {
+    "projectId": "L-004",
+    "taskId": 1755446086465,
+    "invoiceId": "NM-003"
+  }
+}

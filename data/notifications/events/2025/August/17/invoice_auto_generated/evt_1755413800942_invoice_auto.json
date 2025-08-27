@@ -1,0 +1,21 @@
+{
+  "id": "evt_1755413800942_invoice_auto",
+  "timestamp": "2025-08-17T06:56:40.942Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 5,
+  "entityId": "TB-007",
+  "metadata": {
+    "taskTitle": "Wireframe & Visual Design ",
+    "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+    "amount": 1500,
+    "invoiceNumber": "TB-007"
+  },
+  "context": {
+    "projectId": "Z-004",
+    "taskId": 1755413647714,
+    "invoiceId": "TB-007"
+  }
+}

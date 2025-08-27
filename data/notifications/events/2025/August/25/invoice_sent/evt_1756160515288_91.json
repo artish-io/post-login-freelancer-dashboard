@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756160515288_91",
+  "timestamp": "2025-08-25T22:21:55.288Z",
+  "type": "invoice_sent",
+  "notificationType": 40,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "TB-C024",
+  "metadata": {
+    "invoiceNumber": "TB-C024",
+    "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+    "amount": 337.3333333333333,
+    "approvedTasksCount": 1,
+    "freelancerName": "Margsate Flether",
+    "notificationText": "Margsate Flether sent you an invoice for $337.3333333333333 for 1 approved task, of your active project, NastyWork Club Marketing Promotional Tour, Toronto."
+  },
+  "context": {
+    "projectId": "Z-015",
+    "invoiceNumber": "TB-C024"
+  }
+}

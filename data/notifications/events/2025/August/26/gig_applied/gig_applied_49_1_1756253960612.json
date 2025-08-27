@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_49_1_1756253960612",
+  "timestamp": "2025-08-27T00:19:20.612Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "49",
+  "metadata": {
+    "gigTitle": "Test 3 Completion Final Salle",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 49,
+    "applicationId": 1755193217277
+  }
+}

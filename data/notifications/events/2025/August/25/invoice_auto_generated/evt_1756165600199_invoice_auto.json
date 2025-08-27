@@ -1,0 +1,21 @@
+{
+  "id": "evt_1756165600199_invoice_auto",
+  "timestamp": "2025-08-25T23:46:40.199Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 5,
+  "entityId": "TB-024",
+  "metadata": {
+    "taskTitle": "Phase 1 – Strategy & Asset Development",
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "amount": 533.33,
+    "invoiceNumber": "TB-024"
+  },
+  "context": {
+    "projectId": "Z-013",
+    "taskId": 1756155585636,
+    "invoiceId": "TB-024"
+  }
+}

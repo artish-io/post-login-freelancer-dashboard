@@ -1,0 +1,21 @@
+{
+  "id": "evt_1755408874772_invoice_auto",
+  "timestamp": "2025-08-17T05:34:34.772Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 5,
+  "entityId": "TB-003",
+  "metadata": {
+    "taskTitle": "Frontend Development",
+    "projectTitle": "Landing Page for Ticket Announcement",
+    "amount": 1500,
+    "invoiceNumber": "TB-003"
+  },
+  "context": {
+    "projectId": "Z-003",
+    "taskId": 1755407948690,
+    "invoiceId": "TB-003"
+  }
+}

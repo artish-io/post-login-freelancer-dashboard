@@ -1,0 +1,21 @@
+{
+  "id": "evt_1755407248869_invoice_auto",
+  "timestamp": "2025-08-17T05:07:28.869Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 5,
+  "entityId": "TB-001",
+  "metadata": {
+    "taskTitle": "Wireframe & Visual Design",
+    "projectTitle": "Landing Page for Ticket Announcement",
+    "amount": 1500,
+    "invoiceNumber": "TB-001"
+  },
+  "context": {
+    "projectId": "Z-003",
+    "taskId": 1755407648165,
+    "invoiceId": "TB-001"
+  }
+}

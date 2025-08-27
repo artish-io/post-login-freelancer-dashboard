@@ -286,13 +286,7 @@ export async function POST(req: NextRequest) {
       },
       message: 'Manual invoice created successfully'
     }));
-  } catch (error) {
-    console.error('Manual invoice creation failed:', error);
-    return NextResponse.json(
-      { error: 'Failed to create manual invoice' },
-      { status: 500 }
-    );
-  }
+  });
 }
 
 // All helper functions removed - now using hierarchical storage services

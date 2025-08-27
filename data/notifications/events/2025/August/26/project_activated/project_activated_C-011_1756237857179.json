@@ -1,0 +1,23 @@
+{
+  "id": "project_activated_C-011_1756237857179",
+  "timestamp": "2025-08-26T19:50:57.179Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "C-011",
+  "metadata": {
+    "projectTitle": "90% Completion Landing Page Win ",
+    "gigTitle": "90% Completion Landing Page Win ",
+    "taskCount": 3,
+    "commissionerName": "Matte Hannery",
+    "organizationName": "Corlax Wellness",
+    "dueDate": "2025-08-31"
+  },
+  "context": {
+    "projectId": "C-011",
+    "gigId": 48,
+    "applicationId": 1755193217276
+  }
+}

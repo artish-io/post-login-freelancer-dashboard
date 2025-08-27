@@ -1,0 +1,21 @@
+{
+  "id": "evt_1756237437437_invoice_auto",
+  "timestamp": "2025-08-26T19:43:57.437Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "MH-014",
+  "metadata": {
+    "taskTitle": "Phase 3 – Package",
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "amount": 383.33,
+    "invoiceNumber": "MH-014"
+  },
+  "context": {
+    "projectId": "C-010",
+    "taskId": 1756233780758,
+    "invoiceId": "MH-014"
+  }
+}

@@ -58,96 +58,45 @@ export interface CompletionNotification {
 export const CompletionEventHandlers = {
   'completion.project_activated': async (event: CompletionEvent) => {
     // Project acceptance notifications (separate from payment)
+    // Business logic only - notification creation handled by completion-handler
     const projectTitle = event.context.projectTitle || 'Project';
     const commissionerName = event.context.commissionerName || 'Commissioner';
     const freelancerName = event.context.freelancerName || 'Freelancer';
     const totalTasks = event.context.totalTasks || 4;
 
-    // Notification for freelancer (target) - ARTISH style
-    await createCompletionNotification({
-      type: 'completion.project_activated',
-      actorId: event.actorId,
-      targetId: event.targetId,
-      projectId: event.projectId,
-      context: event.context,
-      userType: 'freelancer'
-    });
-
-    // Notification for commissioner (actor) - ARTISH style
-    await createCompletionNotification({
-      type: 'completion.project_activated',
-      actorId: event.actorId,
-      targetId: event.actorId, // Self-notification
-      projectId: event.projectId,
-      context: event.context,
-      userType: 'commissioner'
-    });
+    console.log(`[COMPLETION] Project activation notification processed: ${projectTitle} (${commissionerName} -> ${freelancerName})`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
   },
 
   'completion.upfront_payment': async (event: CompletionEvent) => {
     // Upfront payment notifications (separate from project activation)
+    // Business logic only - notification creation handled by completion-handler
     const projectTitle = event.context.projectTitle || 'Project';
     const upfrontAmount = event.context.upfrontAmount || 0;
     const remainingBudget = event.context.remainingBudget || 0;
     const orgName = event.context.orgName || 'Organization';
     const freelancerName = event.context.freelancerName || 'Freelancer';
 
-    // Notification for freelancer (target) - ARTISH style
-    await createCompletionNotification({
-      type: 'completion.upfront_payment',
-      actorId: event.actorId,
-      targetId: event.targetId,
-      projectId: event.projectId,
-      message: null, // Let the API route generate the message dynamically
-      context: event.context,
-      userType: 'freelancer'
-    });
-
-    // Notification for commissioner (actor) - ARTISH style
-    await createCompletionNotification({
-      type: 'completion.upfront_payment',
-      actorId: event.actorId,
-      targetId: event.actorId, // Self-notification
-      projectId: event.projectId,
-      message: null, // Let the API route generate the message dynamically
-      context: event.context,
-      userType: 'commissioner'
-    });
+    console.log(`[COMPLETION] Upfront payment notification processed: $${upfrontAmount} for ${projectTitle} (${orgName} -> ${freelancerName})`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
   },
   
   'completion.invoice_received': async (event: CompletionEvent) => {
     // Dual notifications for invoice creation - both freelancer and commissioner get notified
+    // Business logic only - notification creation handled by completion-handler
     const taskTitle = event.context.taskTitle || 'Task';
     const amount = event.context.amount || 0;
     const freelancerName = event.context.freelancerName || 'Freelancer';
     const commissionerName = event.context.commissionerName || 'Commissioner';
     const invoiceNumber = event.context.invoiceNumber || '';
 
-    // Notification for commissioner (target) - receiving the invoice
-    await createCompletionNotification({
-      type: 'completion.invoice_received',
-      actorId: event.actorId,
-      targetId: event.targetId,
-      projectId: event.projectId,
-      message: null, // Let the API route generate the message dynamically
-      context: event.context,
-      userType: 'commissioner'
-    });
-
-    // Notification for freelancer (actor) - confirming invoice was sent
-    await createCompletionNotification({
-      type: 'completion.invoice_received',
-      actorId: event.actorId,
-      targetId: event.actorId, // Self-notification
-      projectId: event.projectId,
-      message: null, // Let the API route generate the message dynamically
-      context: event.context,
-      userType: 'freelancer'
-    });
+    console.log(`[COMPLETION] Invoice received notification processed: ${invoiceNumber} - $${amount} for ${taskTitle}`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
   },
   
   'completion.invoice_paid': async (event: CompletionEvent) => {
     // Dual notifications for invoice payment - both freelancer and commissioner get notified
+    // Business logic only - notification creation handled by completion-handler
     const amount = event.context.amount || 0;
     const invoiceNumber = event.context.invoiceNumber || '';
     const taskTitle = event.context.taskTitle || 'task';
@@ -155,31 +104,13 @@ export const CompletionEventHandlers = {
     const orgName = event.context.orgName || 'Organization';
     const freelancerName = event.context.freelancerName || 'Freelancer';
 
-    // Notification for freelancer (target) - receiving the payment
-    await createCompletionNotification({
-      type: 'completion.invoice_paid',
-      actorId: event.actorId,
-      targetId: event.targetId,
-      projectId: event.projectId,
-      message: null, // Let the API route generate the message dynamically
-      context: event.context,
-      userType: 'freelancer'
-    });
-
-    // Notification for commissioner (actor) - confirming payment was sent
-    await createCompletionNotification({
-      type: 'completion.invoice_paid',
-      actorId: event.actorId,
-      targetId: event.actorId, // Self-notification
-      projectId: event.projectId,
-      message: null, // Let the API route generate the message dynamically
-      context: event.context,
-      userType: 'commissioner'
-    });
+    console.log(`[COMPLETION] Invoice paid notification processed: ${invoiceNumber} - $${amount} for ${projectTitle} (${orgName} -> ${freelancerName})`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
   },
 
   'completion.commissioner_payment': async (event: CompletionEvent) => {
     // Commissioner payment confirmation notification - ARTISH style
+    // Business logic only - notification creation handled by completion-handler
     const amount = event.context.amount || 0;
     const invoiceNumber = event.context.invoiceNumber || '';
     const taskTitle = event.context.taskTitle || 'task';
@@ -187,129 +118,53 @@ export const CompletionEventHandlers = {
     const freelancerName = event.context.freelancerName || 'Freelancer';
     const remainingBudget = event.context.remainingBudget || 0;
 
-    // Notification for commissioner (actor) - confirming payment was sent
-    await createCompletionNotification({
-      type: 'completion.commissioner_payment',
-      actorId: event.actorId,
-      targetId: event.targetId, // Should be same as actorId for self-notification
-      projectId: event.projectId,
-      message: null, // Let the API route generate the message dynamically
-      context: event.context,
-      userType: 'commissioner'
-    });
+    console.log(`[COMPLETION] Commissioner payment notification processed: ${invoiceNumber} - $${amount} for ${projectTitle}`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
   },
 
   'completion.project_completed': async (event: CompletionEvent) => {
     // Notify both parties about project completion (separate from payment) - ARTISH style
+    // Business logic only - notification creation handled by completion-handler
     const projectTitle = event.context.projectTitle || 'Project';
     const freelancerName = event.context.freelancerName || 'Freelancer';
 
-    // Notification for freelancer (target)
-    await createCompletionNotification({
-      type: 'completion.project_completed',
-      actorId: event.actorId,
-      targetId: event.targetId,
-      projectId: event.projectId,
-      context: event.context,
-      userType: 'freelancer'
-    });
-
-    // Notification for commissioner (actor)
-    await createCompletionNotification({
-      type: 'completion.project_completed',
-      actorId: event.actorId,
-      targetId: event.actorId, // Self-notification
-      projectId: event.projectId,
-      context: event.context,
-      userType: 'commissioner'
-    });
+    console.log(`[COMPLETION] Project completed notification processed: ${projectTitle} (${freelancerName})`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
   },
 
   'completion.final_payment': async (event: CompletionEvent) => {
     // Notify both parties about final payment (separate from project completion) - ARTISH style
+    // Business logic only - notification creation handled by completion-handler
     const projectTitle = event.context.projectTitle || 'Project';
     const finalAmount = event.context.finalAmount || 0;
     const finalPercent = event.context.finalPercent || 88;
     const orgName = event.context.orgName || 'Organization';
     const freelancerName = event.context.freelancerName || 'Freelancer';
 
-    // Notification for freelancer (target)
-    await createCompletionNotification({
-      type: 'completion.final_payment',
-      actorId: event.actorId,
-      targetId: event.targetId,
-      projectId: event.projectId,
-      context: event.context,
-      userType: 'freelancer'
-    });
-
-    // Notification for commissioner (actor)
-    await createCompletionNotification({
-      type: 'completion.final_payment',
-      actorId: event.actorId,
-      targetId: event.actorId, // Self-notification
-      projectId: event.projectId,
-      context: event.context,
-      userType: 'commissioner'
-    });
+    console.log(`[COMPLETION] Final payment notification processed: $${finalAmount} for ${projectTitle} (${orgName} -> ${freelancerName})`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
   },
 
   'completion.task_approved': async (event: CompletionEvent) => {
     // Notify both parties about task approval (not tied to invoice) - ARTISH style
+    // Business logic only - notification creation handled by completion-handler
     const taskTitle = event.context.taskTitle || 'Task';
     const projectTitle = event.context.projectTitle || 'Project';
     const commissionerName = event.context.commissionerName || 'Commissioner';
 
-    // Notification for freelancer (target)
-    await createCompletionNotification({
-      type: 'completion.task_approved',
-      actorId: event.actorId,
-      targetId: event.targetId,
-      projectId: event.projectId,
-      message: `${commissionerName} has approved your submission for "${taskTitle}" in ${projectTitle}. Task approved and milestone completed. Click here to see its project tracker.`,
-      context: event.context,
-      userType: 'freelancer'
-    });
-
-    // Notification for commissioner (actor)
-    await createCompletionNotification({
-      type: 'completion.task_approved',
-      actorId: event.actorId,
-      targetId: event.actorId, // Self-notification
-      projectId: event.projectId,
-      message: `You approved "${taskTitle}" in ${projectTitle}. Task approved and milestone completed. Click here to see project tracker.`,
-      context: event.context,
-      userType: 'commissioner'
-    });
+    console.log(`[COMPLETION] Task approved notification processed: "${taskTitle}" in ${projectTitle} (${commissionerName})`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
   },
 
   'completion.rating_prompt': async (event: CompletionEvent) => {
     // Notify both parties to rate each other after project completion - ARTISH style
+    // Business logic only - notification creation handled by completion-handler
     const projectTitle = event.context.projectTitle || 'Project';
     const commissionerName = event.context.commissionerName || 'Commissioner';
     const freelancerName = event.context.freelancerName || 'Freelancer';
 
-    // Notification for freelancer (target)
-    await createCompletionNotification({
-      type: 'completion.rating_prompt',
-      actorId: event.actorId,
-      targetId: event.targetId,
-      projectId: event.projectId,
-      message: `Rate your experience with ${commissionerName}. All tasks for ${projectTitle} have been approved. Click here to rate your collaboration.`,
-      context: event.context,
-      userType: 'freelancer'
-    });
-
-    // Notification for commissioner (actor)
-    await createCompletionNotification({
-      type: 'completion.rating_prompt',
-      actorId: event.actorId,
-      targetId: event.actorId, // Self-notification
-      projectId: event.projectId,
-      message: `Rate ${freelancerName}'s work. You have approved all task milestones for ${projectTitle}. Click here to rate their work on this project.`,
-      context: event.context,
-      userType: 'commissioner'
-    });
+    console.log(`[COMPLETION] Rating prompt notification processed: ${projectTitle} (${commissionerName} <-> ${freelancerName})`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
   }
 };
 
@@ -348,41 +203,11 @@ async function createCompletionNotification(params: {
   }
 }
 
-// 🔒 COMPLETION-SPECIFIC: Notification storage helper
+// 🔒 COMPLETION-SPECIFIC: Notification storage helper (DEPRECATED)
 async function saveCompletionNotification(notification: CompletionNotification) {
-  try {
-    
-    // Store in completion-specific notifications file
-    const notificationsPath = path.join(process.cwd(), 'data', 'completion-notifications.json');
-    let notifications: CompletionNotification[] = [];
-    
-    try {
-      const notificationsData = await fs.readFile(notificationsPath, 'utf8');
-      notifications = JSON.parse(notificationsData);
-    } catch (e) {
-      // File doesn't exist, start with empty array
-    }
-    
-    notifications.push(notification);
-    
-    await fs.writeFile(notificationsPath, JSON.stringify(notifications, null, 2));
-    
-    // Also integrate with existing notification system if available
-    try {
-      const { NotificationStorage } = await import('@/lib/notifications/notification-storage');
-      await NotificationStorage.addEventWithPersistentDedup({
-        ...notification,
-        timestamp: notification.createdAt,
-        subsystem: 'completion_invoicing'
-      });
-    } catch (e) {
-      console.warn('Could not integrate with unified notification system:', e);
-    }
-    
-  } catch (error) {
-    console.error('Error saving completion notification:', error);
-    throw error;
-  }
+  // This function is deprecated - notifications are now saved through the hierarchical storage system
+  // via the completion-handler's integrateWithExistingNotificationSystem function
+  console.warn('[DEPRECATED] saveCompletionNotification - using hierarchical storage instead');
 }
 
 // 🔒 COMPLETION-SPECIFIC: Utility functions
@@ -469,6 +294,7 @@ export function validateCompletionEvent(event: CompletionEvent): { isValid: bool
       break;
     case 'completion.invoice_received':
     case 'completion.invoice_paid':
+    case 'completion.commissioner_payment':
       if (!event.context.invoiceNumber) {
         errors.push('Invoice events require invoice number');
       }

@@ -1,0 +1,25 @@
+{
+  "id": "milestone_payment_sent_C-010_1756233635617",
+  "timestamp": "2025-08-26T18:40:35.617Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 10,
+  "entityId": "C-010_Phase 1: Style Guide",
+  "metadata": {
+    "taskTitle": "Phase 1: Style Guide",
+    "amount": 383.33,
+    "freelancerName": "Tobi Philly",
+    "invoiceNumber": "MH-012",
+    "projectBudget": 1150,
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "priority": "medium"
+  },
+  "context": {
+    "projectId": "C-010",
+    "taskTitle": "Phase 1: Style Guide",
+    "invoiceNumber": "MH-012",
+    "freelancerId": 1
+  }
+}

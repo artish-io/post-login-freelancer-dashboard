@@ -1,0 +1,54 @@
+{
+  "id": 48,
+  "title": "90% Completion Landing Page Win ",
+  "organizationId": 3,
+  "commissionerId": "34",
+  "category": "Engineering",
+  "subcategory": "Frontend Development",
+  "tags": [
+    "UI/UX Design"
+  ],
+  "hourlyRateMin": 23.44,
+  "hourlyRateMax": 28.13,
+  "description": "I can make this conference impossible to ignore—I understand the cultural and political stakes at play and know how to translate them into sharp messaging and bold campaigns. My approach will ensure the event resonates not only with academics but also with journalists, activists, and the wider public who care about democracy in the digital age.",
+  "deliveryTimeWeeks": 0.7142857142857143,
+  "estimatedHours": 32,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Ableton Live"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "ca9498f6-c9ec-40c9-9d7e-808be386ddc9",
+      "title": "Phase 1 ",
+      "description": "Collaborate with our team to understand brand values, audience, and aesthetic direction. Deliver moodboards, style frames, and an adaptable design system aligned with Web3 culture.\n\n",
+      "startDate": "2025-08-27T04:00:00.000Z",
+      "endDate": "2025-08-28T04:00:00.000Z"
+    },
+    {
+      "id": "b65e2f59-ca9f-48f2-bd05-17ce3cba9833",
+      "title": "Phase 2 ",
+      "description": "Produce essential design assets including logo variations, banners, icons, NFT/token visuals, and social media templates, ensuring consistency and adaptability across digital channels.\n\n",
+      "startDate": "2025-08-29T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z"
+    },
+    {
+      "id": "825dfe7b-dc0c-4adf-a87a-147cb958aef6",
+      "title": "Phase 3 ",
+      "description": "Assemble a ready-to-use asset library with export formats optimized for multiple platforms, and refine based on early community feedback. Provide ongoing support for launch campaigns and potential partnerships.",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 750,
+  "upperBudget": 900,
+  "postedDate": "2025-08-26",
+  "notes": "Budget range: $750 - $900",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

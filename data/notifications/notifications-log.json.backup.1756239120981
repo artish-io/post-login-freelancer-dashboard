@@ -1,0 +1,764 @@
+[
+  {
+    "id": "evt_1756237984636_177",
+    "timestamp": "2025-08-26T19:53:04.636Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 3,
+    "entityId": "MH-C007",
+    "metadata": {
+      "invoiceNumber": "MH-C007",
+      "projectTitle": "90% Completion Landing Page Win ",
+      "amount": 528,
+      "approvedTasksCount": 2,
+      "freelancerName": "Tobi Philly",
+      "notificationText": "Tobi Philly sent you an invoice for $528 for 2 approved tasks, of your active project, 90% Completion Landing Page Win ."
+    },
+    "context": {
+      "projectId": "C-011",
+      "invoiceNumber": "MH-C007"
+    }
+  },
+  {
+    "id": "evt_1756161183311_41",
+    "timestamp": "2025-08-25T22:33:03.311Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C025",
+    "metadata": {
+      "invoiceNumber": "TB-C025",
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "amount": 337.3333333333333,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $337.3333333333333 for 1 approved task, of your active project, NastyWork Club Marketing Promotional Tour, Toronto."
+    },
+    "context": {
+      "projectId": "Z-015",
+      "invoiceNumber": "TB-C025"
+    }
+  },
+  {
+    "id": "evt_1756160515288_91",
+    "timestamp": "2025-08-25T22:21:55.288Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C024",
+    "metadata": {
+      "invoiceNumber": "TB-C024",
+      "projectTitle": "NastyWork Club Marketing Promotional Tour, Toronto",
+      "amount": 337.3333333333333,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $337.3333333333333 for 1 approved task, of your active project, NastyWork Club Marketing Promotional Tour, Toronto."
+    },
+    "context": {
+      "projectId": "Z-015",
+      "invoiceNumber": "TB-C024"
+    }
+  },
+  {
+    "id": "evt_1756152084093_160",
+    "timestamp": "2025-08-25T20:01:24.093Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C010",
+    "metadata": {
+      "invoiceNumber": "TB-C010",
+      "projectTitle": "Communists of Waterloo Marketing",
+      "amount": 440,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $440 for 1 approved task, of your active project, Communists of Waterloo Marketing."
+    },
+    "context": {
+      "projectId": "Z-012",
+      "invoiceNumber": "TB-C010"
+    }
+  },
+  {
+    "id": "evt_1756151768806_876",
+    "timestamp": "2025-08-25T19:56:08.806Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C010",
+    "metadata": {
+      "invoiceNumber": "TB-C010",
+      "projectTitle": "Communists of Waterloo Marketing",
+      "amount": 440,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $440 for 1 approved task, of your active project, Communists of Waterloo Marketing."
+    },
+    "context": {
+      "projectId": "Z-012",
+      "invoiceNumber": "TB-C010"
+    }
+  },
+  {
+    "id": "evt_1756150835082_701",
+    "timestamp": "2025-08-25T19:40:35.082Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C010",
+    "metadata": {
+      "invoiceNumber": "TB-C010",
+      "projectTitle": "Communists of Waterloo Marketing",
+      "amount": 440,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $440 for 1 approved task, of your active project, Communists of Waterloo Marketing."
+    },
+    "context": {
+      "projectId": "Z-012",
+      "invoiceNumber": "TB-C010"
+    }
+  },
+  {
+    "id": "evt_1756144421810_885",
+    "timestamp": "2025-08-25T17:53:41.810Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-C008",
+    "metadata": {
+      "invoiceNumber": "TB-C008",
+      "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+      "amount": 410.6666666666667,
+      "approvedTasksCount": 1,
+      "freelancerName": "Margsate Flether",
+      "notificationText": "Margsate Flether sent you an invoice for $410.6666666666667 for 1 approved task, of your active project, Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series."
+    },
+    "context": {
+      "projectId": "Z-011",
+      "invoiceNumber": "TB-C008"
+    }
+  },
+  {
+    "id": "evt_1755827446561_332",
+    "timestamp": "2025-08-22T01:50:46.561Z",
+    "type": "invoice_sent",
+    "notificationType": 40,
+    "actorId": 25,
+    "targetId": 35,
+    "entityType": 3,
+    "entityId": "TB-012",
+    "metadata": {
+      "invoiceNumber": "TB-012",
+      "projectTitle": "Ad Copy for Google Waterloo Launch Event",
+      "amount": 1408,
+      "freelancerName": "Lucas Meyer"
+    },
+    "context": {
+      "projectId": "Z-007",
+      "invoiceNumber": "TB-012"
+    }
+  },
+  {
+    "id": "evt_1755386256242_invoice_auto",
+    "timestamp": "2025-08-16T23:17:36.242Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 5,
+    "entityId": "NM-001",
+    "metadata": {
+      "taskTitle": "Pretty sick job title",
+      "projectTitle": "Market Research for Longer Divide",
+      "amount": 5000,
+      "invoiceNumber": "NM-001"
+    },
+    "context": {
+      "projectId": "L-002",
+      "taskId": 1755290696512,
+      "invoiceId": "NM-001"
+    }
+  },
+  {
+    "id": "evt_1755389840807_invoice_auto",
+    "timestamp": "2025-08-17T00:17:20.807Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 32,
+    "entityType": 5,
+    "entityId": "NM-002",
+    "metadata": {
+      "taskTitle": "Initial research and data collections",
+      "projectTitle": "Market Research for Longer Divide",
+      "amount": 5000,
+      "invoiceNumber": "NM-002"
+    },
+    "context": {
+      "projectId": "L-002",
+      "taskId": 1755290628346,
+      "invoiceId": "NM-002"
+    }
+  },
+  {
+    "id": "evt_1755407248869_invoice_auto",
+    "timestamp": "2025-08-17T05:07:28.869Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-001",
+    "metadata": {
+      "taskTitle": "Wireframe & Visual Design",
+      "projectTitle": "Landing Page for Ticket Announcement",
+      "amount": 1500,
+      "invoiceNumber": "TB-001"
+    },
+    "context": {
+      "projectId": "Z-003",
+      "taskId": 1755407648165,
+      "invoiceId": "TB-001"
+    }
+  },
+  {
+    "id": "evt_1755408874772_invoice_auto",
+    "timestamp": "2025-08-17T05:34:34.772Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-003",
+    "metadata": {
+      "taskTitle": "Frontend Development",
+      "projectTitle": "Landing Page for Ticket Announcement",
+      "amount": 1500,
+      "invoiceNumber": "TB-003"
+    },
+    "context": {
+      "projectId": "Z-003",
+      "taskId": 1755407948690,
+      "invoiceId": "TB-003"
+    }
+  },
+  {
+    "id": "evt_1755409259484_invoice_auto",
+    "timestamp": "2025-08-17T05:40:59.484Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-005",
+    "metadata": {
+      "taskTitle": "Testing & Launch",
+      "projectTitle": "Landing Page for Ticket Announcement",
+      "amount": 1500,
+      "invoiceNumber": "TB-005"
+    },
+    "context": {
+      "projectId": "Z-003",
+      "taskId": 1755407409578,
+      "invoiceId": "TB-005"
+    }
+  },
+  {
+    "id": "evt_1755413800942_invoice_auto",
+    "timestamp": "2025-08-17T06:56:40.942Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-007",
+    "metadata": {
+      "taskTitle": "Wireframe & Visual Design ",
+      "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+      "amount": 1500,
+      "invoiceNumber": "TB-007"
+    },
+    "context": {
+      "projectId": "Z-004",
+      "taskId": 1755413647714,
+      "invoiceId": "TB-007"
+    }
+  },
+  {
+    "id": "evt_1755413996879_invoice_auto",
+    "timestamp": "2025-08-17T06:59:56.879Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-009",
+    "metadata": {
+      "taskTitle": "Testing & Launch",
+      "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+      "amount": 1500,
+      "invoiceNumber": "TB-009"
+    },
+    "context": {
+      "projectId": "Z-004",
+      "taskId": 1755413841796,
+      "invoiceId": "TB-009"
+    }
+  },
+  {
+    "id": "evt_1755414161701_invoice_auto",
+    "timestamp": "2025-08-17T07:02:41.701Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-011",
+    "metadata": {
+      "taskTitle": "Frontend Development",
+      "projectTitle": "Landing Page for 2Baba 40-Year Concert",
+      "amount": 1500,
+      "invoiceNumber": "TB-011"
+    },
+    "context": {
+      "projectId": "Z-004",
+      "taskId": 1755414226149,
+      "invoiceId": "TB-011"
+    }
+  },
+  {
+    "id": "evt_1755445858965_invoice_auto",
+    "timestamp": "2025-08-17T15:50:58.965Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 32,
+    "entityType": 5,
+    "entityId": "NM-003",
+    "metadata": {
+      "taskTitle": "Phase 1: In the week leading to the Oscars",
+      "projectTitle": "Beautiful days and simple flows",
+      "amount": 550,
+      "invoiceNumber": "NM-003"
+    },
+    "context": {
+      "projectId": "L-004",
+      "taskId": 1755446086465,
+      "invoiceId": "NM-003"
+    }
+  },
+  {
+    "id": "evt_1755449634476_invoice_auto",
+    "timestamp": "2025-08-17T16:53:54.476Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 32,
+    "entityType": 5,
+    "entityId": "NM-004",
+    "metadata": {
+      "taskTitle": "Phase 2: Conclusion and Review",
+      "projectTitle": "Beautiful days and simple flows",
+      "amount": 550,
+      "invoiceNumber": "NM-004"
+    },
+    "context": {
+      "projectId": "L-004",
+      "taskId": 1755446172095,
+      "invoiceId": "NM-004"
+    }
+  },
+  {
+    "id": "evt_1755453928592_invoice_auto",
+    "timestamp": "2025-08-17T18:05:28.592Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-001",
+    "metadata": {
+      "taskTitle": "Phase 1: Cultivating desire is very profitable",
+      "projectTitle": "Web 3 Graphic Design Asssets ",
+      "amount": 1000,
+      "invoiceNumber": "MH-001"
+    },
+    "context": {
+      "projectId": "C-002",
+      "taskId": 1755452756598,
+      "invoiceId": "MH-001"
+    }
+  },
+  {
+    "id": "evt_1755462048012_invoice_auto",
+    "timestamp": "2025-08-17T20:20:48.012Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-002",
+    "metadata": {
+      "taskTitle": "Phase 2:  Legitimate concerns from users",
+      "projectTitle": "Web 3 Graphic Design Asssets ",
+      "amount": 1000,
+      "invoiceNumber": "MH-002"
+    },
+    "context": {
+      "projectId": "C-002",
+      "taskId": 1755452428625,
+      "invoiceId": "MH-002"
+    }
+  },
+  {
+    "id": "evt_1755462458065_invoice_auto",
+    "timestamp": "2025-08-17T20:27:38.065Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-003",
+    "metadata": {
+      "taskTitle": "Phase 3: Algorithms corrupt curated",
+      "projectTitle": "Web 3 Graphic Design Asssets ",
+      "amount": 1000,
+      "invoiceNumber": "MH-003"
+    },
+    "context": {
+      "projectId": "C-002",
+      "taskId": 1755452388354,
+      "invoiceId": "MH-003"
+    }
+  },
+  {
+    "id": "evt_1755721488352_invoice_auto",
+    "timestamp": "2025-08-20T20:24:48.352Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 25,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-016",
+    "metadata": {
+      "taskTitle": "Phase One: God Abeg Bro",
+      "projectTitle": "God Abeg No Code Regression Test",
+      "amount": 500,
+      "invoiceNumber": "TB-016"
+    },
+    "context": {
+      "projectId": "Z-008",
+      "taskId": 1755721494701,
+      "invoiceId": "TB-016"
+    }
+  },
+  {
+    "id": "evt_1755893263546_invoice_auto",
+    "timestamp": "2025-08-22T20:07:43.546Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 25,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-019",
+    "metadata": {
+      "taskTitle": "Phase One: The ARTISH invoicing system",
+      "projectTitle": "Project Test: ARTISH implements Tow Distinct",
+      "amount": 900,
+      "invoiceNumber": "TB-019"
+    },
+    "context": {
+      "projectId": "Z-010",
+      "taskId": 1755863278355,
+      "invoiceId": "TB-019"
+    }
+  },
+  {
+    "id": "evt_1755893443562_invoice_auto",
+    "timestamp": "2025-08-22T20:10:43.562Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 25,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-020",
+    "metadata": {
+      "taskTitle": "Phase Two: Routing projects through",
+      "projectTitle": "Project Test: ARTISH implements Tow Distinct",
+      "amount": 900,
+      "invoiceNumber": "TB-020"
+    },
+    "context": {
+      "projectId": "Z-010",
+      "taskId": 1755863093799,
+      "invoiceId": "TB-020"
+    }
+  },
+  {
+    "id": "evt_1755962701774_invoice_auto",
+    "timestamp": "2025-08-23T15:25:01.774Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-006",
+    "metadata": {
+      "taskTitle": "Phase One: Wireframe and Sketches",
+      "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+      "amount": 733.33,
+      "invoiceNumber": "MH-006"
+    },
+    "context": {
+      "projectId": "C-008",
+      "taskId": 1755962967537,
+      "invoiceId": "MH-006"
+    }
+  },
+  {
+    "id": "evt_1755965879195_invoice_auto",
+    "timestamp": "2025-08-23T16:17:59.195Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-007",
+    "metadata": {
+      "taskTitle": "Phase Two: Colour Theory Design ",
+      "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+      "amount": 733.33,
+      "invoiceNumber": "MH-007"
+    },
+    "context": {
+      "projectId": "C-008",
+      "taskId": 1755962425855,
+      "invoiceId": "MH-007"
+    }
+  },
+  {
+    "id": "evt_1755975160446_invoice_auto",
+    "timestamp": "2025-08-23T18:52:40.446Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-008",
+    "metadata": {
+      "taskTitle": "Phase Three: Design and Publishing ",
+      "projectTitle": "Banners And Web 3 Assests For UN End Poverty Collab ",
+      "amount": 733.33,
+      "invoiceNumber": "MH-008"
+    },
+    "context": {
+      "projectId": "C-008",
+      "taskId": 1755962469192,
+      "invoiceId": "MH-008"
+    }
+  },
+  {
+    "id": "evt_1756165600199_invoice_auto",
+    "timestamp": "2025-08-25T23:46:40.199Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-024",
+    "metadata": {
+      "taskTitle": "Phase 1 – Strategy & Asset Development",
+      "projectTitle": "Marketing For Techno-Fedualism Milestones",
+      "amount": 533.33,
+      "invoiceNumber": "TB-024"
+    },
+    "context": {
+      "projectId": "Z-013",
+      "taskId": 1756155585636,
+      "invoiceId": "TB-024"
+    }
+  },
+  {
+    "id": "evt_1756165620093_invoice_auto",
+    "timestamp": "2025-08-25T23:47:00.093Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-025",
+    "metadata": {
+      "taskTitle": "Phase 2 – Campaign Activation & Outreach",
+      "projectTitle": "Marketing For Techno-Fedualism Milestones",
+      "amount": 533.33,
+      "invoiceNumber": "TB-025"
+    },
+    "context": {
+      "projectId": "Z-013",
+      "taskId": 1756156300844,
+      "invoiceId": "TB-025"
+    }
+  },
+  {
+    "id": "evt_1756168212636_invoice_auto",
+    "timestamp": "2025-08-26T00:30:12.636Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 31,
+    "targetId": 35,
+    "entityType": 5,
+    "entityId": "TB-026",
+    "metadata": {
+      "taskTitle": "Phase 3 – Event Engagement & Reporting",
+      "projectTitle": "Marketing For Techno-Fedualism Milestones",
+      "amount": 533.33,
+      "invoiceNumber": "TB-026"
+    },
+    "context": {
+      "projectId": "Z-013",
+      "taskId": 1756155708135,
+      "invoiceId": "TB-026"
+    }
+  },
+  {
+    "id": "evt_1756196445416_invoice_auto",
+    "timestamp": "2025-08-26T08:20:45.416Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-009",
+    "metadata": {
+      "taskTitle": "Positioning & Messaging",
+      "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+      "amount": 500,
+      "invoiceNumber": "MH-009"
+    },
+    "context": {
+      "projectId": "C-009",
+      "taskId": 1756196816187,
+      "invoiceId": "MH-009"
+    }
+  },
+  {
+    "id": "evt_1756199777731_invoice_auto",
+    "timestamp": "2025-08-26T09:16:17.731Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-010",
+    "metadata": {
+      "taskTitle": "Outreach & Campaign Rollout",
+      "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+      "amount": 500,
+      "invoiceNumber": "MH-010"
+    },
+    "context": {
+      "projectId": "C-009",
+      "taskId": 1756197323986,
+      "invoiceId": "MH-010"
+    }
+  },
+  {
+    "id": "evt_1756227899778_invoice_auto",
+    "timestamp": "2025-08-26T17:04:59.778Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-011",
+    "metadata": {
+      "taskTitle": "Amplification & Legacy Building",
+      "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+      "amount": 500,
+      "invoiceNumber": "MH-011"
+    },
+    "context": {
+      "projectId": "C-009",
+      "taskId": 1756197370017,
+      "invoiceId": "MH-011"
+    }
+  },
+  {
+    "id": "evt_1756233634338_invoice_auto",
+    "timestamp": "2025-08-26T18:40:34.338Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-012",
+    "metadata": {
+      "taskTitle": "Phase 1: Style Guide",
+      "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+      "amount": 383.33,
+      "invoiceNumber": "MH-012"
+    },
+    "context": {
+      "projectId": "C-010",
+      "taskId": 1756233516653,
+      "invoiceId": "MH-012"
+    }
+  },
+  {
+    "id": "evt_1756237434040_invoice_auto",
+    "timestamp": "2025-08-26T19:43:54.040Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-013",
+    "metadata": {
+      "taskTitle": "Phase 2 – Creation",
+      "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+      "amount": 383.33,
+      "invoiceNumber": "MH-013"
+    },
+    "context": {
+      "projectId": "C-010",
+      "taskId": 1756233646222,
+      "invoiceId": "MH-013"
+    }
+  },
+  {
+    "id": "evt_1756237437437_invoice_auto",
+    "timestamp": "2025-08-26T19:43:57.437Z",
+    "type": "invoice_auto_generated",
+    "notificationType": 42,
+    "actorId": 1,
+    "targetId": 34,
+    "entityType": 5,
+    "entityId": "MH-014",
+    "metadata": {
+      "taskTitle": "Phase 3 – Package",
+      "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+      "amount": 383.33,
+      "invoiceNumber": "MH-014"
+    },
+    "context": {
+      "projectId": "C-010",
+      "taskId": 1756233780758,
+      "invoiceId": "MH-014"
+    }
+  }
+]

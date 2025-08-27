@@ -37,8 +37,8 @@ export async function handleCompletionNotification(event: CompletionEvent): Prom
       context: enrichedContext
     };
 
-    // ✅ SAFE: Log event using existing infrastructure
-    await logCompletionEvent(enrichedEvent);
+    // ✅ SAFE: Log event using existing infrastructure (DISABLED - causes duplicate notifications)
+    // await logCompletionEvent(enrichedEvent);
 
     // 🔒 COMPLETION-SPECIFIC: Handle event with completion-specific logic
     const handler = CompletionEventHandlers[enrichedEvent.type];
@@ -65,54 +65,26 @@ export async function handleCompletionNotification(event: CompletionEvent): Prom
   }
 }
 
-// 🔒 COMPLETION-SPECIFIC: Event logging
+// 🔒 COMPLETION-SPECIFIC: Event logging (DEPRECATED - now uses hierarchical storage)
 async function logCompletionEvent(event: CompletionEvent) {
+  // This function is deprecated - events are now logged through the hierarchical storage system
+  // in the integrateWithExistingNotificationSystem function below
+  console.log(`[COMPLETION-EVENT-LOG] Event logging deprecated - using hierarchical storage for: ${event.type}`);
+
+  // Still use the existing event logger for compatibility
   try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    // Log to completion-specific event log
-    const eventLogPath = path.join(process.cwd(), 'data', 'completion-event-log.json');
-    let eventLog: CompletionEvent[] = [];
-    
-    try {
-      const eventLogData = await fs.readFile(eventLogPath, 'utf8');
-      eventLog = JSON.parse(eventLogData);
-    } catch (e) {
-      // File doesn't exist, start with empty array
-    }
-    
-    eventLog.push({
-      ...event,
-      timestamp: event.timestamp || new Date().toISOString()
+    const { eventLogger } = await import('@/lib/events/event-logger');
+    await eventLogger.logEvent({
+      type: event.type,
+      actorId: event.actorId,
+      targetId: event.targetId,
+      projectId: event.projectId,
+      metadata: event.context,
+      timestamp: event.timestamp,
+      subsystem: 'completion_invoicing'
     });
-    
-    // Keep only last 1000 events to prevent file from growing too large
-    if (eventLog.length > 1000) {
-      eventLog = eventLog.slice(-1000);
-    }
-    
-    await fs.writeFile(eventLogPath, JSON.stringify(eventLog, null, 2), 'utf8');
-    
-    // ✅ SAFE: Also try to use existing event logger if available
-    try {
-      const { eventLogger } = await import('@/lib/events/event-logger');
-      await eventLogger.logEvent({
-        type: event.type,
-        actorId: event.actorId,
-        targetId: event.targetId,
-        projectId: event.projectId,
-        metadata: event.context,
-        timestamp: event.timestamp,
-        subsystem: 'completion_invoicing'
-      });
-    } catch (e) {
-      console.warn('Could not integrate with existing event logger:', e);
-    }
-    
-  } catch (error) {
-    console.error('Error logging completion event:', error);
-    // Don't throw - logging failures shouldn't break notification flows
+  } catch (e) {
+    console.warn('Could not integrate with existing event logger:', e);
   }
 }
 
@@ -124,14 +96,31 @@ async function integrateWithExistingNotificationSystem(event: CompletionEvent): 
 
     const notificationId = `comp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
+    // Map completion notification types to completion-specific notification types
+    const notificationTypeMap: Record<string, number> = {
+      'completion.project_activated': 150, // COMPLETION_PROJECT_ACTIVATED
+      'completion.upfront_payment': 151, // COMPLETION_UPFRONT_PAYMENT
+      'completion.task_approved': 152, // COMPLETION_TASK_APPROVED
+      'completion.invoice_received': 153, // COMPLETION_INVOICE_RECEIVED
+      'completion.invoice_paid': 154, // COMPLETION_INVOICE_PAID
+      'completion.commissioner_payment': 45, // Custom completion payment type (not in old system)
+      'completion.project_completed': 155, // COMPLETION_PROJECT_COMPLETED
+      'completion.final_payment': 156, // COMPLETION_FINAL_PAYMENT
+      'completion.rating_prompt': 157 // COMPLETION_RATING_PROMPT
+    };
+
     const notificationEvent = {
       id: notificationId,
       type: event.type,
+      notificationType: notificationTypeMap[event.type] || 45,
       actorId: event.actorId,
       targetId: event.targetId,
+      entityType: 3, // INVOICE entity type for most completion notifications
+      entityId: event.context?.invoiceNumber || event.projectId || `completion_${event.type}_${Date.now()}`,
       projectId: event.projectId,
       message: generateNotificationMessage(event),
       context: event.context,
+      metadata: event.context, // Include context as metadata for compatibility
       timestamp: event.timestamp || new Date().toISOString(),
       subsystem: 'completion_invoicing'
     };
@@ -268,7 +257,7 @@ function generateNotificationMessage(event: CompletionEvent): string {
   }
 }
 
-// 🔒 COMPLETION-SPECIFIC: Notification retrieval
+// 🔒 COMPLETION-SPECIFIC: Notification retrieval (DEPRECATED)
 export async function getCompletionNotifications(userId: number, options?: {
   limit?: number;
   offset?: number;
@@ -279,102 +268,19 @@ export async function getCompletionNotifications(userId: number, options?: {
   total: number;
   unreadCount: number;
 }> {
-  try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    const notificationsPath = path.join(process.cwd(), 'data', 'completion-notifications.json');
-    let notifications: any[] = [];
-    
-    try {
-      const notificationsData = await fs.readFile(notificationsPath, 'utf8');
-      notifications = JSON.parse(notificationsData);
-    } catch (e) {
-      // File doesn't exist, return empty
-      return { notifications: [], total: 0, unreadCount: 0 };
-    }
-    
-    // Filter notifications for the user
-    let userNotifications = notifications.filter(n => 
-      n.targetId === userId || n.actorId === userId
-    );
-    
-    // Apply filters
-    if (options?.unreadOnly) {
-      userNotifications = userNotifications.filter(n => !n.read);
-    }
-    
-    if (options?.projectId) {
-      userNotifications = userNotifications.filter(n => n.projectId === options.projectId);
-    }
-    
-    // Sort by creation date (newest first)
-    userNotifications.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
-    
-    const total = userNotifications.length;
-    const unreadCount = userNotifications.filter(n => !n.read).length;
-    
-    // Apply pagination
-    if (options?.limit || options?.offset) {
-      const offset = options.offset || 0;
-      const limit = options.limit || 50;
-      userNotifications = userNotifications.slice(offset, offset + limit);
-    }
-    
-    return {
-      notifications: userNotifications,
-      total,
-      unreadCount
-    };
-    
-  } catch (error) {
-    console.error('Error retrieving completion notifications:', error);
-    return { notifications: [], total: 0, unreadCount: 0 };
-  }
+  // This function is deprecated - notifications are now retrieved through the unified notifications-v2 API
+  // which reads from the hierarchical storage system
+  console.warn('[DEPRECATED] getCompletionNotifications - use notifications-v2 API instead');
+  return { notifications: [], total: 0, unreadCount: 0 };
 }
 
-// 🔒 COMPLETION-SPECIFIC: Mark notifications as read
+// 🔒 COMPLETION-SPECIFIC: Mark notifications as read (DEPRECATED)
 export async function markCompletionNotificationsAsRead(
-  userId: number, 
+  userId: number,
   notificationIds: string[]
 ): Promise<{ success: boolean; updatedCount: number }> {
-  try {
-    const fs = await import('fs').promises;
-    const path = await import('path');
-    
-    const notificationsPath = path.join(process.cwd(), 'data', 'completion-notifications.json');
-    let notifications: any[] = [];
-    
-    try {
-      const notificationsData = await fs.readFile(notificationsPath, 'utf8');
-      notifications = JSON.parse(notificationsData);
-    } catch (e) {
-      return { success: false, updatedCount: 0 };
-    }
-    
-    let updatedCount = 0;
-    
-    // Mark specified notifications as read
-    notifications = notifications.map(notification => {
-      if (
-        notificationIds.includes(notification.id) &&
-        (notification.targetId === userId || notification.actorId === userId) &&
-        !notification.read
-      ) {
-        updatedCount++;
-        return { ...notification, read: true, readAt: new Date().toISOString() };
-      }
-      return notification;
-    });
-    
-    await fs.writeFile(notificationsPath, JSON.stringify(notifications, null, 2));
-    
-    return { success: true, updatedCount };
-    
-  } catch (error) {
-    console.error('Error marking completion notifications as read:', error);
-    return { success: false, updatedCount: 0 };
-  }
+  // This function is deprecated - notifications are now marked as read through the unified notifications-v2 API
+  // which updates the hierarchical storage system
+  console.warn('[DEPRECATED] markCompletionNotificationsAsRead - use notifications-v2 API instead');
+  return { success: true, updatedCount: 0 };
 }

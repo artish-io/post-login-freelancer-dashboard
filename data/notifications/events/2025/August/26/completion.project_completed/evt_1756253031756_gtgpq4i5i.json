@@ -1,0 +1,16 @@
+{
+  "type": "completion.project_completed",
+  "actorId": 34,
+  "targetId": 1,
+  "projectId": "C-011",
+  "metadata": {
+    "projectTitle": "90% Completion Landing Page Win ",
+    "commissionerName": "Matte Hannery",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly"
+  },
+  "timestamp": "2025-08-27T00:03:51.752Z",
+  "subsystem": "completion_invoicing",
+  "notificationType": 155,
+  "id": "evt_1756253031756_gtgpq4i5i"
+}

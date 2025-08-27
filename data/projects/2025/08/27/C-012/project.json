@@ -1,0 +1,31 @@
+{
+  "projectId": "C-012",
+  "title": "Test 3 Completion Final Salle",
+  "description": "Web3 culture while remaining polished and versatile. The right designer will help us stand out in a crowded space with a bold visual identity that scales across platforms.",
+  "organizationId": 3,
+  "typeTags": [
+    "Design"
+  ],
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "status": "completed",
+  "dueDate": "2025-08-30",
+  "totalTasks": 1,
+  "invoicingMethod": "completion",
+  "gigId": 49,
+  "gigPostedDate": "2025-08-27",
+  "projectActivatedAt": "2025-08-27T00:19:32.186Z",
+  "originalDuration": {
+    "deliveryTimeWeeks": 0.42857142857142855,
+    "estimatedHours": 24,
+    "originalEndDate": "2025-08-29T04:00:00.000Z"
+  },
+  "totalBudget": 450,
+  "paidToDate": 450,
+  "currency": "USD",
+  "createdAt": "2025-08-27T00:19:32.186Z",
+  "updatedAt": "2025-08-27T00:21:56.435Z",
+  "estimatedHours": 24,
+  "deliveryTimeWeeks": 0.42857142857142855,
+  "completedAt": "2025-08-27T00:21:56.435Z"
+}

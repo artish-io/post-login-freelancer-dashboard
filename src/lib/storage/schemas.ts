@@ -51,7 +51,6 @@ export const ProjectSchema = z.object({
     upper: z.number().optional(),
     currency: z.string().optional()
   }).optional(),
-  gigId: z.number().nullable().optional(),
   id: z.number().optional(), // Legacy field
   category: z.string().optional(),
   subcategory: z.string().optional(),

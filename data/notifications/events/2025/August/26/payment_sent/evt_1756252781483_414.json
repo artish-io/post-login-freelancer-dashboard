@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756252781483_414",
+  "timestamp": "2025-08-26T23:59:41.484Z",
+  "type": "payment_sent",
+  "notificationType": 42,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "MH-C007",
+  "metadata": {
+    "invoiceNumber": "MH-C007",
+    "projectTitle": "90% Completion Landing Page Win ",
+    "amount": 528,
+    "freelancerName": "Tobi Philly",
+    "remainingBudget": "$372.00",
+    "notificationText": "You just paid Tobi Philly $528 for their work on 90% Completion Landing Page Win . This project has a remaining budget of $372.00 left."
+  },
+  "context": {
+    "projectId": "C-011",
+    "invoiceNumber": "MH-C007"
+  }
+}

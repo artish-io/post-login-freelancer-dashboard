@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_48_1_1756237834563",
+  "timestamp": "2025-08-26T19:50:34.563Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "48",
+  "metadata": {
+    "gigTitle": "90% Completion Landing Page Win ",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 48,
+    "applicationId": 1755193217276
+  }
+}

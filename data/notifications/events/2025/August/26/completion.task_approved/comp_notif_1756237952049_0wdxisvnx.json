@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1756237952049_0wdxisvnx",
+  "type": "completion.task_approved",
+  "actorId": 34,
+  "targetId": 1,
+  "projectId": "C-011",
+  "message": "Matte Hannery has approved your submission for \"Phase 1 \" in 90% Completion Landing Page Win . Task approved and milestone completed. Click here to see its project tracker.",
+  "context": {
+    "taskId": "1756238331779",
+    "taskTitle": "Phase 1 ",
+    "projectTitle": "90% Completion Landing Page Win ",
+    "commissionerName": "Matte Hannery",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly"
+  },
+  "read": false,
+  "createdAt": "2025-08-26T19:52:32.049Z",
+  "timestamp": "2025-08-26T19:52:32.049Z",
+  "subsystem": "completion_invoicing"
+}

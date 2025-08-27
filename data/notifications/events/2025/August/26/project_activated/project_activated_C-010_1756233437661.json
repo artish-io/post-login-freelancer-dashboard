@@ -1,0 +1,23 @@
+{
+  "id": "project_activated_C-010_1756233437661",
+  "timestamp": "2025-08-26T18:37:17.661Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "C-010",
+  "metadata": {
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "gigTitle": "Milestone Data Farm Handbook Mr Bond",
+    "taskCount": 3,
+    "commissionerName": "Matte Hannery",
+    "organizationName": "Corlax Wellness",
+    "dueDate": "2025-08-31"
+  },
+  "context": {
+    "projectId": "C-010",
+    "gigId": 47,
+    "applicationId": 1755193217275
+  }
+}

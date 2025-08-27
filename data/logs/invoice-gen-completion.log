@@ -420,3 +420,16 @@
 {"ts":"2025-08-25T22:32:33.093Z","stage":"BUILD_OK","projectId":"Z-015","invoiceNumber":"TB-C025","milestones":1}
 {"ts":"2025-08-25T22:32:33.116Z","stage":"WRITE_OK","projectId":"Z-015","invoiceNumber":"TB-C025"}
 {"ts":"2025-08-25T22:32:33.117Z","stage":"DONE","projectId":"Z-015","invoiceNumber":"TB-C025","success":true}
+{"ts":"2025-08-26T19:52:52.003Z","stage":"START","projectId":"C-011","freelancerId":1}
+{"ts":"2025-08-26T19:52:52.012Z","stage":"READ_PROJECT_OK","projectId":"C-011","invoicingMethod":"completion"}
+{"ts":"2025-08-26T19:52:52.017Z","stage":"READ_TASKS_OK","projectId":"C-011","count":3}
+{"ts":"2025-08-26T19:52:52.017Z","stage":"FILTER_APPROVED","projectId":"C-011","total":3,"approved":2}
+{"ts":"2025-08-26T19:52:52.026Z","stage":"LIST_INVOICES_OK","projectId":"C-011","count":1}
+{"ts":"2025-08-26T19:52:52.026Z","stage":"FILTER_DEDUP","projectId":"C-011","available":2,"alreadyInvoicedById":1,"alreadyInvoicedByTitle":1,"excludedDrafts":true}
+{"ts":"2025-08-26T19:52:52.379Z","stage":"FINAL_TASK_FILTER","projectId":"C-011","initialAvailable":2,"finalAvailable":2,"tasksWithExistingInvoices":["upfront"],"filteredOutTasks":[]}
+{"ts":"2025-08-26T19:52:52.382Z","stage":"RATE_OK","projectId":"C-011","ratePerTask":264,"upfront":108,"pool":792,"totalBudget":900,"base":3,"calculation":"792 ÷ 3 = 264"}
+{"ts":"2025-08-26T19:52:52.384Z","stage":"PROCEEDING_TO_CREATE_NEW_INVOICE","projectId":"C-011","availableTaskIds":[1756238331779,1756238679527],"taskCount":2}
+{"ts":"2025-08-26T19:52:53.124Z","stage":"INVOICE_NUMBER_GENERATED","projectId":"C-011","commissionerId":34,"initials":"MH","existingCompletionInvoices":5,"highestNumber":6,"newSequence":"007","generatedInvoiceNumber":"MH-C007"}
+{"ts":"2025-08-26T19:52:53.125Z","stage":"BUILD_OK","projectId":"C-011","invoiceNumber":"MH-C007","milestones":2}
+{"ts":"2025-08-26T19:52:53.135Z","stage":"WRITE_OK","projectId":"C-011","invoiceNumber":"MH-C007"}
+{"ts":"2025-08-26T19:52:53.135Z","stage":"DONE","projectId":"C-011","invoiceNumber":"MH-C007","success":true}

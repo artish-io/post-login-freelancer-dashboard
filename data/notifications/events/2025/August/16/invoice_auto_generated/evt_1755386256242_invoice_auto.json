@@ -1,0 +1,21 @@
+{
+  "id": "evt_1755386256242_invoice_auto",
+  "timestamp": "2025-08-16T23:17:36.242Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 31,
+  "targetId": 32,
+  "entityType": 5,
+  "entityId": "NM-001",
+  "metadata": {
+    "taskTitle": "Pretty sick job title",
+    "projectTitle": "Market Research for Longer Divide",
+    "amount": 5000,
+    "invoiceNumber": "NM-001"
+  },
+  "context": {
+    "projectId": "L-002",
+    "taskId": 1755290696512,
+    "invoiceId": "NM-001"
+  }
+}

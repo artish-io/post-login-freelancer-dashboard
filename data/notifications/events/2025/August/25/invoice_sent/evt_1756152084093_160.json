@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756152084093_160",
+  "timestamp": "2025-08-25T20:01:24.093Z",
+  "type": "invoice_sent",
+  "notificationType": 40,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "TB-C010",
+  "metadata": {
+    "invoiceNumber": "TB-C010",
+    "projectTitle": "Communists of Waterloo Marketing",
+    "amount": 440,
+    "approvedTasksCount": 1,
+    "freelancerName": "Margsate Flether",
+    "notificationText": "Margsate Flether sent you an invoice for $440 for 1 approved task, of your active project, Communists of Waterloo Marketing."
+  },
+  "context": {
+    "projectId": "Z-012",
+    "invoiceNumber": "TB-C010"
+  }
+}

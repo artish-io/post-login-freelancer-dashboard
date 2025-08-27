@@ -1,0 +1,24 @@
+{
+  "id": "notif_1756233610043_iu9f7fnjr",
+  "timestamp": "2025-08-26T18:40:10.043Z",
+  "type": "task_submission",
+  "notificationType": 0,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756233516653,
+  "metadata": {
+    "title": "Tobi Philly submitted a task",
+    "message": "\"Phase 1: Style Guide\" is awaiting your review for Milestone Data Farm Handbook Mr Bond",
+    "priority": "high",
+    "taskId": 1756233516653,
+    "taskTitle": "Phase 1: Style Guide",
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "action": "submit",
+    "invoiceGenerated": false
+  },
+  "context": {
+    "projectId": "C-010",
+    "taskId": 1756233516653
+  },
+  "actorId": 1
+}

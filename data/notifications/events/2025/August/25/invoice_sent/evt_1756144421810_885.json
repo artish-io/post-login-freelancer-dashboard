@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756144421810_885",
+  "timestamp": "2025-08-25T17:53:41.810Z",
+  "type": "invoice_sent",
+  "notificationType": 40,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "TB-C008",
+  "metadata": {
+    "invoiceNumber": "TB-C008",
+    "projectTitle": "Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series",
+    "amount": 410.6666666666667,
+    "approvedTasksCount": 1,
+    "freelancerName": "Margsate Flether",
+    "notificationText": "Margsate Flether sent you an invoice for $410.6666666666667 for 1 approved task, of your active project, Event Marketing For \"The Philosophy of Absolute Batman\" Panel Talk Series."
+  },
+  "context": {
+    "projectId": "Z-011",
+    "invoiceNumber": "TB-C008"
+  }
+}

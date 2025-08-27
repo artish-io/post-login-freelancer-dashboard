@@ -1,0 +1,21 @@
+{
+  "id": "evt_1755389840807_invoice_auto",
+  "timestamp": "2025-08-17T00:17:20.807Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 31,
+  "targetId": 32,
+  "entityType": 5,
+  "entityId": "NM-002",
+  "metadata": {
+    "taskTitle": "Initial research and data collections",
+    "projectTitle": "Market Research for Longer Divide",
+    "amount": 5000,
+    "invoiceNumber": "NM-002"
+  },
+  "context": {
+    "projectId": "L-002",
+    "taskId": 1755290628346,
+    "invoiceId": "NM-002"
+  }
+}

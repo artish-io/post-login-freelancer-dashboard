@@ -1,0 +1,21 @@
+{
+  "projectId": "C-010",
+  "title": "Milestone Data Farm Handbook Mr Bond",
+  "description": "Web3 culture while remaining polished and versatile. The right designer will help us stand out in a crowded space with a bold visual identity that scales across platforms.",
+  "organizationId": 3,
+  "typeTags": [
+    "UI/UX Design"
+  ],
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "status": "completed",
+  "dueDate": "2025-08-31",
+  "totalTasks": 3,
+  "invoicingMethod": "milestone",
+  "totalBudget": 1150,
+  "paidToDate": 1149.99,
+  "currency": "USD",
+  "createdAt": "2025-08-26T18:37:17.651Z",
+  "updatedAt": "2025-08-26T19:43:59.273Z",
+  "completedAt": "2025-08-26T19:43:59.273Z"
+}

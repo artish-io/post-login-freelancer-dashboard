@@ -1,0 +1,30 @@
+{
+  "invoiceNumber": "MH-016",
+  "projectId": "C-012",
+  "freelancerId": 1,
+  "commissionerId": 34,
+  "projectTitle": "Test 3 Completion Final Salle",
+  "totalAmount": 396,
+  "invoiceType": "completion_final",
+  "milestoneNumber": 99,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-27T00:21:55.851Z",
+  "dueDate": "2025-09-10T00:21:55.851Z",
+  "createdAt": "2025-08-27T00:21:55.851Z",
+  "description": "Final completion payment (remaining 88%)",
+  "milestones": [
+    {
+      "description": "Final completion payment (remaining 88%)",
+      "rate": 396,
+      "title": "Final Payment",
+      "taskId": "final"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 375.14,
+    "platformFee": 20.86
+  },
+  "paidDate": "2025-08-27T00:21:56.416Z",
+  "updatedAt": "2025-08-27T00:21:56.428Z"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "comp_notif_1756237856404_es7omhym4",
+  "type": "completion.upfront_payment",
+  "actorId": 34,
+  "targetId": 1,
+  "projectId": "C-011",
+  "message": null,
+  "context": {
+    "upfrontAmount": 108,
+    "projectTitle": "90% Completion Landing Page Win ",
+    "remainingBudget": 792,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "read": false,
+  "createdAt": "2025-08-26T19:50:56.404Z",
+  "timestamp": "2025-08-26T19:50:56.404Z",
+  "subsystem": "completion_invoicing"
+}

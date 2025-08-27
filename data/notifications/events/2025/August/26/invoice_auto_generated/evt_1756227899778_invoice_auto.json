@@ -1,0 +1,21 @@
+{
+  "id": "evt_1756227899778_invoice_auto",
+  "timestamp": "2025-08-26T17:04:59.778Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "MH-011",
+  "metadata": {
+    "taskTitle": "Amplification & Legacy Building",
+    "projectTitle": "Milestones Web 3 Graphic Design Asssets ",
+    "amount": 500,
+    "invoiceNumber": "MH-011"
+  },
+  "context": {
+    "projectId": "C-009",
+    "taskId": 1756197370017,
+    "invoiceId": "MH-011"
+  }
+}

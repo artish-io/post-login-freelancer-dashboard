@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756237984636_177",
+  "timestamp": "2025-08-26T19:53:04.636Z",
+  "type": "invoice_sent",
+  "notificationType": 40,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "MH-C007",
+  "metadata": {
+    "invoiceNumber": "MH-C007",
+    "projectTitle": "90% Completion Landing Page Win ",
+    "amount": 528,
+    "approvedTasksCount": 2,
+    "freelancerName": "Tobi Philly",
+    "notificationText": "Tobi Philly sent you an invoice for $528 for 2 approved tasks, of your active project, 90% Completion Landing Page Win ."
+  },
+  "context": {
+    "projectId": "C-011",
+    "invoiceNumber": "MH-C007"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "evt_1756168212636_invoice_auto",
+  "timestamp": "2025-08-26T00:30:12.636Z",
+  "type": "invoice_auto_generated",
+  "notificationType": 42,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 5,
+  "entityId": "TB-026",
+  "metadata": {
+    "taskTitle": "Phase 3 – Event Engagement & Reporting",
+    "projectTitle": "Marketing For Techno-Fedualism Milestones",
+    "amount": 533.33,
+    "invoiceNumber": "TB-026"
+  },
+  "context": {
+    "projectId": "Z-013",
+    "taskId": 1756155708135,
+    "invoiceId": "TB-026"
+  }
+}

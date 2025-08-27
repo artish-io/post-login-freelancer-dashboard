@@ -1,0 +1,22 @@
+{
+  "id": "task_submitted_1756254699667_1756254097341",
+  "timestamp": "2025-08-27T00:21:37.341Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756254699667,
+  "metadata": {
+    "taskId": 1756254699667,
+    "taskTitle": "Final Completion",
+    "projectTitle": "Test 3 Completion Final Salle",
+    "action": "submit",
+    "invoiceGenerated": false,
+    "message": "\"Final Completion\" is awaiting your review for Test 3 Completion Final Salle"
+  },
+  "context": {
+    "projectId": "C-012",
+    "taskId": 1756254699667
+  }
+}

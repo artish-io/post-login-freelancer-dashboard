@@ -1,0 +1,21 @@
+{
+  "id": "task_approved_1756233646222_1756237434642",
+  "timestamp": "2025-08-26T19:43:54.642Z",
+  "type": "task_approved",
+  "notificationType": 2,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 1,
+  "entityId": 1756233646222,
+  "metadata": {
+    "taskId": 1756233646222,
+    "taskTitle": "Phase 2 – Creation",
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "action": "approve",
+    "invoiceGenerated": true
+  },
+  "context": {
+    "projectId": "C-010",
+    "taskId": 1756233646222
+  }
+}

@@ -23,6 +23,14 @@ function deduplicateNotificationEvents(events: EventData[]): EventData[] {
     } else if (event.type === 'invoice_paid') {
       // Group invoice payments by project + invoice + target
       groupKey = `${event.type}_${event.context?.projectId}_${event.context?.invoiceNumber}_${event.targetId}`;
+    } else if (event.type === 'task_submitted' || event.type === 'task_submission') {
+      // Group task submissions by extracting task name from message to handle both enriched and basic versions
+      const message = event.metadata?.message || '';
+      // Extract task name from message like "Phase 2" is awaiting your review...
+      const taskNameMatch = message.match(/^"([^"]+)"/);
+      const taskName = taskNameMatch ? taskNameMatch[1].trim() : '';
+      const targetId = event.targetId;
+      groupKey = `task_submission_${taskName}_${targetId}`;
     } else {
       // For other events, use the event ID as unique key
       groupKey = event.id;
@@ -43,12 +51,31 @@ function deduplicateNotificationEvents(events: EventData[]): EventData[] {
       deduplicatedEvents.push(groupEvents[0]);
     } else {
       // Multiple events, prioritize enriched versions
-      const enrichedEvent = groupEvents.find(e =>
-        e.metadata?.message &&
-        e.metadata?.freelancerName &&
-        e.metadata?.organizationName &&
-        e.metadata?.amount > 0
-      );
+      let enrichedEvent;
+
+      if (groupEvents[0].type === 'task_submitted' || groupEvents[0].type === 'task_submission') {
+        // For task submissions, prefer task_submitted over task_submission
+        enrichedEvent = groupEvents.find(e => e.type === 'task_submitted');
+
+        // If no task_submitted found, prefer the version with project title in the message
+        if (!enrichedEvent) {
+          enrichedEvent = groupEvents.find(e =>
+            e.metadata?.message &&
+            e.metadata.message.includes('for ') &&
+            !e.metadata.message.endsWith('for this project')
+          );
+        }
+
+
+      } else {
+        // For other events (payments), use existing enrichment logic
+        enrichedEvent = groupEvents.find(e =>
+          e.metadata?.message &&
+          e.metadata?.freelancerName &&
+          e.metadata?.organizationName &&
+          e.metadata?.amount > 0
+        );
+      }
 
       if (enrichedEvent) {
         // Use the enriched version
@@ -65,6 +92,8 @@ function deduplicateNotificationEvents(events: EventData[]): EventData[] {
 
   return deduplicatedEvents;
 }
+
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -404,22 +433,25 @@ export async function GET(request: NextRequest) {
         return true;
       });
 
+    // No filtering needed - task_submitted and task_submission serve different invoicing methods
+    const baseNotifications = notifications;
+
     // Filter by tab
-    let filteredNotifications = notifications;
+    let filteredNotifications = baseNotifications;
     if (userType === 'freelancer') {
       if (tab === 'projects') {
-        filteredNotifications = notifications.filter(n =>
+        filteredNotifications = baseNotifications.filter(n =>
           ['task_submission', 'task_approved', 'task_rejected', 'project_pause_requested', 'project_pause_accepted',
            'milestone_payment_received', 'invoice_paid'].includes(n.type)
         );
       } else if (tab === 'gigs') {
-        filteredNotifications = notifications.filter(n =>
+        filteredNotifications = baseNotifications.filter(n =>
           ['gig_request', 'gig_application', 'proposal_sent', 'proposal_accepted', 'proposal_rejected'].includes(n.type)
         );
       }
     } else {
       if (tab === 'network') {
-        filteredNotifications = notifications.filter(n => n.isFromNetwork);
+        filteredNotifications = baseNotifications.filter(n => n.isFromNetwork);
       }
     }
 
@@ -429,7 +461,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Calculate counts (only unread notifications)
-    const unreadNotifications = notifications.filter(n => !n.isRead);
+    const unreadNotifications = baseNotifications.filter(n => !n.isRead);
     const allCount = unreadNotifications.length;
     const networkCount = unreadNotifications.filter(n => n.isFromNetwork).length;
     const projectsCount = unreadNotifications.filter(n =>
@@ -498,7 +530,7 @@ export async function POST(request: NextRequest) {
 
 function getNotificationType(eventType: EventType): string {
   const typeMap: Partial<Record<EventType, string>> = {
-    'task_submitted': 'task_submission',
+    'task_submitted': 'task_submitted',
     'task_approved': 'task_approved',
     'task_rejected': 'task_rejected',
     'task_rejected_with_comment': 'task_rejected_with_comment',
@@ -1059,11 +1091,11 @@ async function generateGranularMessage(event: EventData, _actor: any, _project?:
       // Generate context-aware message for commissioner payment confirmation
       const commPaymentAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
       const commPaymentProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
-      const commPaymentOrgName = (event.metadata as any)?.organizationName || (event.context as any)?.orgName || 'Organization';
       const commPaymentFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
       const commPaymentRemainingBudget = (event.metadata as any)?.remainingBudget || (event.context as any)?.remainingBudget || 0;
 
-      return `${commPaymentOrgName} has paid ${commPaymentFreelancerName} $${commPaymentAmount} for your ongoing ${commPaymentProjectTitle} project. This project has a budget of $${commPaymentRemainingBudget} left. Click here to view invoice details`;
+      // This is always for commissioners (self-notification), so use "You just paid" format
+      return `You just paid ${commPaymentFreelancerName} $${commPaymentAmount} for your ongoing ${commPaymentProjectTitle} project. This project has a budget of $${commPaymentRemainingBudget} left. Click here to view invoice details`;
     case 'completion.project_completed':
       // Generate context-aware message for project completion
       const completionProjectTitle = (event.context as any)?.projectTitle || (event.metadata as any)?.projectTitle || 'project';
@@ -1208,7 +1240,9 @@ function generateNotificationLink(event: EventData, _project?: any, _task?: any,
     case 'completion.task_approved':
     case 'completion.project_completed':
       // Navigate to project tracking page (always freelancer for completion projects)
-      return `/freelancer-dashboard/projects-and-invoices/project-tracking/${event.context?.projectId}`;
+      // Check both root level and context for projectId (completion notifications store it at root level)
+      const completionProjectId = (event as any).projectId || event.context?.projectId;
+      return `/freelancer-dashboard/projects-and-invoices/project-tracking/${completionProjectId}`;
     case 'project_completed':
       // Navigate to appropriate dashboard based on user role for milestone projects
       if (currentUserId && event.actorId === currentUserId) {

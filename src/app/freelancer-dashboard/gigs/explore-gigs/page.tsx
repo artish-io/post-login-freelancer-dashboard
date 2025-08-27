@@ -7,28 +7,7 @@ import FreelancerHeader from '../../../../../components/freelancer-dashboard/fre
 import ApplyModal from '../../../../../components/freelancer-dashboard/gigs/apply';
 import CategoryDropdown from '../../../../../components/freelancer-dashboard/gigs/category-dropdown';
 import { useErrorToast } from '@/components/ui/toast';
-
-type Gig = {
-  id: number;
-  title: string;
-  organizationId: number;
-  category: string;
-  tags: string[];
-  hourlyRateMin: number;
-  hourlyRateMax: number;
-  status: string;
-  postedDate: string;
-  description?: string;
-  estimatedHours?: number;
-  deliveryTimeWeeks?: number;
-  invoicingMethod?: 'completion' | 'milestone';
-  briefFile?: {
-    name: string;
-    size: number;
-    type: string;
-    path?: string;
-  };
-};
+import { Gig } from '@/lib/gigs/hierarchical-storage';
 
 type Organization = {
   id: number;
@@ -71,7 +50,7 @@ export default function ExploreGigsPage() {
         setError(null);
 
         const [gigsRes, orgsRes, applicationsRes] = await Promise.all([
-          fetch('/api/gigs'),
+          fetch('/api/gigs/all'), // Use all gigs endpoint to include unavailable gigs for accepted/rejected tabs
           fetch('/api/organizations'),
           session?.user?.id ? fetch('/api/gigs/gig-applications') : Promise.resolve({ ok: true, json: () => [] })
         ]);
@@ -87,7 +66,9 @@ export default function ExploreGigsPage() {
         ]);
 
         if (isMounted) {
-          setGigs(Array.isArray(gigsData) ? gigsData : []);
+          // Handle envelope format from /api/gigs/all
+          const gigs = gigsData?.entities?.gigs || gigsData || [];
+          setGigs(Array.isArray(gigs) ? gigs : []);
           setOrganizations(Array.isArray(orgsData) ? orgsData : []);
 
           // Filter applications for current user
@@ -123,10 +104,13 @@ export default function ExploreGigsPage() {
 
     // Filter by tab
     if (activeTab === 'active') {
-      // Show gigs that are available and user hasn't applied to
+      // Show gigs that are available, public, and user hasn't applied to
       const appliedGigIds = userApplications.map(app => app.gigId);
       baseGigs = gigs.filter(gig =>
-        gig.status === 'Available' && !appliedGigIds.includes(gig.id)
+        gig.status === 'Available' &&
+        gig.isPublic !== false &&
+        !gig.isTargetedRequest &&
+        !appliedGigIds.includes(gig.id)
       );
     } else if (activeTab === 'applied') {
       // Show gigs user has applied to (pending applications)
@@ -255,7 +239,12 @@ export default function ExploreGigsPage() {
     const rejectedApplications = userApplications.filter(app => app.status === 'rejected');
 
     return {
-      active: gigs.filter(gig => gig.status === 'Available' && !appliedGigIds.includes(gig.id)).length,
+      active: gigs.filter(gig =>
+        gig.status === 'Available' &&
+        gig.isPublic !== false &&
+        !gig.isTargetedRequest &&
+        !appliedGigIds.includes(gig.id)
+      ).length,
       applied: pendingApplications.length,
       accepted: acceptedApplications.length,
       rejected: rejectedApplications.length
@@ -351,6 +340,8 @@ export default function ExploreGigsPage() {
           </div>
         </div>
       </div>
+
+
 
       {/* Results */}
       {filteredGigs.length === 0 ? (

@@ -1,0 +1,57 @@
+{
+  "id": 47,
+  "title": "Milestone Data Farm Handbook Mr Bond",
+  "organizationId": 3,
+  "commissionerId": "34",
+  "category": "Design",
+  "subcategory": "UI/UX Design",
+  "tags": [
+    "UI/UX Design"
+  ],
+  "hourlyRateMin": 25,
+  "hourlyRateMax": 35.94,
+  "description": "Web3 culture while remaining polished and versatile. The right designer will help us stand out in a crowded space with a bold visual identity that scales across platforms.",
+  "deliveryTimeWeeks": 0.7142857142857143,
+  "estimatedHours": 32,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Figma"
+  ],
+  "executionMethod": "milestone",
+  "invoicingMethod": "milestone",
+  "milestones": [
+    {
+      "id": "f9be65aa-2b35-40c4-a1fa-3de42d7e7bf5",
+      "title": "Phase 1: Style Guide",
+      "description": "Collaborate with our team to understand brand values, audience, and aesthetic direction. Deliver moodboards, style frames, and an adaptable design system aligned with Web3 culture.\n\n",
+      "startDate": "2025-08-27T04:00:00.000Z",
+      "endDate": "2025-08-27T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "5839da91-660d-496e-9056-121069fa7a94",
+      "title": "Phase 2 – Creation",
+      "description": "Produce essential design assets including logo variations, banners, icons, NFT/token visuals, and social media templates, ensuring consistency and adaptability across digital channels.\n\n",
+      "startDate": "2025-08-28T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z",
+      "amount": 0
+    },
+    {
+      "id": "dd252ba7-45bb-43a5-b276-96d849faebc3",
+      "title": "Phase 3 – Package",
+      "description": "Provide ongoing support for launch campaigns and potential partnerships.",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 800,
+  "upperBudget": 1150,
+  "postedDate": "2025-08-26",
+  "notes": "Budget range: $800 - $1,150",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

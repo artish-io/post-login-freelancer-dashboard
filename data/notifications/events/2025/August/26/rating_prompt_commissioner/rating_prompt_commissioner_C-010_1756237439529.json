@@ -1,0 +1,25 @@
+{
+  "id": "rating_prompt_commissioner_C-010_1756237439529",
+  "timestamp": "2025-08-26T19:43:59.528Z",
+  "type": "rating_prompt_commissioner",
+  "notificationType": 141,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 2,
+  "entityId": "C-010",
+  "metadata": {
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "freelancerName": "Tobi Philly",
+    "completedTaskTitle": "Phase 3 – Package",
+    "message": "Rate your experience working with Tobi Philly on Milestone Data Farm Handbook Mr Bond",
+    "ratingSubjectId": 1,
+    "ratingSubjectType": "freelancer",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "C-010",
+    "ratingSubjectUserId": 1,
+    "ratingSubjectUserType": "freelancer",
+    "action": "rate_freelancer"
+  }
+}

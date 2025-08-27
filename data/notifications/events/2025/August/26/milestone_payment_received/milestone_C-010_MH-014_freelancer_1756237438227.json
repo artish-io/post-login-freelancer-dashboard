@@ -1,0 +1,32 @@
+{
+  "id": "milestone_C-010_MH-014_freelancer_1756237438227",
+  "timestamp": "2025-08-26T19:43:58.227Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 10,
+  "entityId": "C-010_MH-014",
+  "metadata": {
+    "type": "milestone_payment_received",
+    "audience": "freelancer",
+    "projectId": "C-010",
+    "invoiceNumber": "MH-014",
+    "amount": 383.33,
+    "freelancerName": "Tobi Philly",
+    "organizationName": "Corlax Wellness",
+    "taskTitle": "Phase 3 – Package",
+    "projectTitle": "Milestone Data Farm Handbook Mr Bond",
+    "remainingBudget": 0.009999999999990905,
+    "commissionerId": 34,
+    "freelancerId": 1,
+    "eventKey": "milestone_payment_received:freelancer:C-010:MH-014",
+    "qualityScore": 4,
+    "title": "Corlax Wellness paid $383.33",
+    "message": "Corlax Wellness has paid $383.33 for your recent Phase 3 – Package for Milestone Data Farm Handbook Mr Bond. This project has a remaining budget of $0.009999999999990905. Click here to view invoice details"
+  },
+  "context": {
+    "projectId": "C-010",
+    "invoiceNumber": "MH-014"
+  }
+}
