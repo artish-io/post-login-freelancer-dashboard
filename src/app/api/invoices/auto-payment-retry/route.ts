@@ -69,8 +69,8 @@ export async function POST(request: Request) {
             paymentDetails: paymentResult.paymentDetails,
             autoPaymentAttempts: attempts + 1,
             lastPaymentAttempt: new Date().toISOString(),
-            nextRetryDate: null,
-            paymentFailureReason: null,
+            nextRetryDate: undefined,
+            paymentFailureReason: undefined,
             updatedAt: new Date().toISOString()
           };
 
@@ -94,9 +94,9 @@ export async function POST(request: Request) {
             ...invoice,
             autoPaymentAttempts: nextAttempts,
             lastPaymentAttempt: new Date().toISOString(),
-            nextRetryDate: shouldRetry 
+            nextRetryDate: shouldRetry
               ? new Date(Date.now() + AUTO_MILESTONE_CONFIG.retryDelayDays * 24 * 60 * 60 * 1000).toISOString()
-              : null,
+              : undefined,
             paymentFailureReason: paymentResult.error,
             updatedAt: new Date().toISOString()
           };
@@ -242,8 +242,8 @@ export async function PUT(request: Request) {
         paymentDetails: paymentResult.paymentDetails,
         autoPaymentAttempts: (invoice.autoPaymentAttempts || 0) + 1,
         lastPaymentAttempt: new Date().toISOString(),
-        nextRetryDate: null,
-        paymentFailureReason: null,
+        nextRetryDate: undefined,
+        paymentFailureReason: undefined,
         updatedAt: new Date().toISOString()
       };
 

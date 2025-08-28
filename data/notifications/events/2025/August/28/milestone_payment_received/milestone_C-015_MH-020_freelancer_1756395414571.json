@@ -1,0 +1,32 @@
+{
+  "id": "milestone_C-015_MH-020_freelancer_1756395414571",
+  "timestamp": "2025-08-28T15:36:54.571Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 10,
+  "entityId": "C-015_MH-020",
+  "metadata": {
+    "type": "milestone_payment_received",
+    "audience": "freelancer",
+    "projectId": "C-015",
+    "invoiceNumber": "MH-020",
+    "amount": 350,
+    "freelancerName": "Tobi Philly",
+    "organizationName": "Corlax Wellness",
+    "taskTitle": "Whitepaper or highlight reel",
+    "projectTitle": "Final Test Notification Test Hopefully for Longer Divide",
+    "remainingBudget": 0,
+    "commissionerId": 34,
+    "freelancerId": 1,
+    "eventKey": "milestone_payment_received:freelancer:C-015:MH-020",
+    "qualityScore": 4,
+    "title": "Corlax Wellness paid $350",
+    "message": "Corlax Wellness has paid $350 for your recent Whitepaper or highlight reel for Final Test Notification Test Hopefully for Longer Divide. This project has a remaining budget of $0. Click here to view invoice details"
+  },
+  "context": {
+    "projectId": "C-015",
+    "invoiceNumber": "MH-020"
+  }
+}

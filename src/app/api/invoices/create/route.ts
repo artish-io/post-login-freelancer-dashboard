@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
+import { saveInvoice, getAllInvoices, updateInvoice } from '../../../../lib/invoice-storage';
 import { readProject } from '../../../../lib/projects-utils';
 
 const ALLOWED_STATUSES = ['draft', 'sent', 'paid'];
@@ -74,7 +74,6 @@ export async function POST(request: Request) {
       }
     }
 
-    const allInvoices = await getAllInvoices();
     const newInvoiceId = Math.floor(100000 + Math.random() * 900000);
 
     const newInvoice = {
@@ -114,14 +113,12 @@ export async function PUT(request: Request) {
       id,
       freelancerId,
       projectId,
-      client,
       projectTitle,
       issueDate,
       dueDate,
       milestones,
       totalAmount,
       status,
-      executionMode, // should not be editable
     } = body;
 
     if (!id || (status && !ALLOWED_STATUSES.includes(status))) {
@@ -136,36 +133,29 @@ export async function PUT(request: Request) {
       }
     }
 
-    const file = await readFile(invoicesFilePath, 'utf-8');
-    const invoices = JSON.parse(file);
+    // Use hierarchical storage to get all invoices
+    const invoices = await getAllInvoices();
 
     const index = invoices.findIndex((inv: any) => inv.id === id);
     if (index === -1) {
       return NextResponse.json({ error: 'Invoice not found' }, { status: 404 });
     }
 
-    // Prevent executionMode from being modified
-    if (
-      executionMode &&
-      executionMode !== invoices[index].executionMode
-    ) {
-      return NextResponse.json({ error: 'executionMode cannot be modified after creation' }, { status: 400 });
-    }
-
     invoices[index] = {
       ...invoices[index],
       freelancerId,
       projectId,
-      client,
       projectTitle,
       issueDate,
       dueDate, // OK to update
       milestones,
       totalAmount,
       status,
+      updatedAt: new Date().toISOString()
     };
 
-    await writeFile(invoicesFilePath, JSON.stringify(invoices, null, 2));
+    // Use hierarchical storage to update the invoice
+    await updateInvoice(invoices[index].invoiceNumber, invoices[index]);
 
     return NextResponse.json({ message: 'Invoice updated successfully' }, { status: 200 });
   } catch (error) {

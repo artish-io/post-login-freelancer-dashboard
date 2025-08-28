@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_55_25_1756347853144",
+  "timestamp": "2025-08-28T02:24:13.144Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "55",
+  "metadata": {
+    "gigTitle": "Completion for 2Baba 40-Year Concert",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 55,
+    "applicationId": 1755193217285
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "taskId": 1756395506095,
+  "projectId": "C-015",
+  "projectTitle": "Final Test Notification Test Hopefully for Longer Divide",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Design"
+  ],
+  "title": "Whitepaper or highlight reel",
+  "status": "Approved",
+  "completed": true,
+  "order": 1,
+  "link": "bit.ly32432",
+  "dueDate": "2025-08-30T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Manage live coverage during the conference (live tweets, recap reels, press placements) and publish a post-event. Ensure the conference’s ideas outlast the event itself by building a digital archive ",
+  "submittedDate": "2025-08-28T15:33:02.515Z",
+  "approvedDate": "2025-08-28T15:36:53.081Z",
+  "createdDate": "2025-08-28T15:28:18.701Z",
+  "lastModified": "2025-08-28T15:36:53.081Z"
+}

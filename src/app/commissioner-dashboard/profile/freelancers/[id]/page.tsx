@@ -7,6 +7,7 @@ import { PageSkeleton } from '../../../../../../components/ui/loading-skeleton';
 import ProfileHeader from '../../../../../../components/user-profiles/profile-header';
 import ProfileInfo from '../../../../../../components/user-profiles/profile-info';
 import WorkSamples from '../../../../../../components/user-profiles/work-samples';
+import ResumeUpload from '../../../../../../components/freelancer-dashboard/profile/resume-upload';
 
 interface WorkSample {
   id: string;
@@ -58,6 +59,7 @@ export default function FreelancerProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [resumeInfo, setResumeInfo] = useState<any>(null);
   const [accessDenied, setAccessDenied] = useState(false);
 
   const userId = params?.id as string;
@@ -110,8 +112,23 @@ export default function FreelancerProfilePage() {
 
     if (userId) {
       fetchProfile();
+      fetchResumeInfo();
     }
   }, [userId]);
+
+  const fetchResumeInfo = async () => {
+    try {
+      // For commissioners viewing freelancer profiles, we need to fetch the freelancer's resume
+      // This requires a different endpoint that allows commissioners to access freelancer resumes
+      const response = await fetch(`/api/freelancer/resume/info/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setResumeInfo(data.resume);
+      }
+    } catch (error) {
+      console.error('Error fetching resume info:', error);
+    }
+  };
 
   // Handle session loading
   if (status === 'loading') {
@@ -209,13 +226,23 @@ export default function FreelancerProfilePage() {
           />
         </div>
 
-        {/* Right Column: Work Samples */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <WorkSamples
-            workSamples={workSamplesData}
-            isOwnProfile={false} // Always false for commissioners viewing freelancer profiles - no add button
-            onAddWorkSample={() => {}} // No add functionality for commissioners
+        {/* Right Column: Resume and Work Samples */}
+        <div className="space-y-6">
+          {/* Resume Section */}
+          <ResumeUpload
+            currentResume={resumeInfo}
+            onResumeUpdate={() => {}} // No update functionality for commissioners
+            isOwnProfile={false} // Always false for commissioners viewing freelancer profiles
           />
+
+          {/* Work Samples Section */}
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <WorkSamples
+              workSamples={workSamplesData}
+              isOwnProfile={false} // Always false for commissioners viewing freelancer profiles - no add button
+              onAddWorkSample={() => {}} // No add functionality for commissioners
+            />
+          </div>
         </div>
       </div>
     </div>

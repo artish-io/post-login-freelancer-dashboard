@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756388437570_818",
+  "timestamp": "2025-08-28T13:40:37.571Z",
+  "type": "invoice_sent",
+  "notificationType": 40,
+  "actorId": 31,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "MH-C019",
+  "metadata": {
+    "invoiceNumber": "MH-C019",
+    "projectTitle": "Easy Resumé Writing",
+    "amount": 352,
+    "approvedTasksCount": 1,
+    "freelancerName": "Margsate Flether",
+    "notificationText": "Margsate Flether sent you an invoice for $352 for 1 approved task, of your active project, Easy Resumé Writing."
+  },
+  "context": {
+    "projectId": "C-013",
+    "invoiceNumber": "MH-C019"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756381657427_wqiow110n",
+  "type": "completion.project_activated",
+  "notificationType": 150,
+  "actorId": 32,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "L-007",
+  "projectId": "L-007",
+  "message": "Neilsan Mando accepted your application for Completion Sender for Data Farm Handbook. This project is now active and includes 3 milestones due by August 30, 2025",
+  "context": {
+    "projectId": "L-007",
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "dueDate": "2025-08-31",
+    "totalTasks": 3,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-007",
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "dueDate": "2025-08-31",
+    "totalTasks": 3,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T11:47:37.426Z",
+  "subsystem": "completion_invoicing"
+}

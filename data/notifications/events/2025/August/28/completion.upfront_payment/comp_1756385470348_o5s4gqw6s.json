@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756385470348_o5s4gqw6s",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-008",
+  "projectId": "L-008",
+  "message": "Lagos State Parks Services has paid $30 upfront for your newly activated Test Portfolio Styling project. This project has a budget of $220 left. Click here to view invoice details",
+  "context": {
+    "projectId": "L-008",
+    "upfrontAmount": 30,
+    "projectTitle": "Test Portfolio Styling",
+    "remainingBudget": 220,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-008",
+    "upfrontAmount": 30,
+    "projectTitle": "Test Portfolio Styling",
+    "remainingBudget": 220,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T12:51:10.345Z",
+  "subsystem": "completion_invoicing"
+}

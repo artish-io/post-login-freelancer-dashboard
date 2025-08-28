@@ -1,0 +1,40 @@
+{
+  "id": 56,
+  "title": "Market Research for Longer Divide",
+  "organizationId": 1,
+  "commissionerId": "32",
+  "category": "Design",
+  "subcategory": "Graphic Design",
+  "tags": [
+    "Design"
+  ],
+  "hourlyRateMin": 5.42,
+  "hourlyRateMax": 6.67,
+  "description": "Research & Benchmarking\nAnalyze comparable smart community projects worldwide, assess Lagos’ local economic conditions, and map out regulatory, infrastructural, and demographic realities that shape feasibility.\n\n",
+  "deliveryTimeWeeks": 0.42857142857142855,
+  "estimatedHours": 24,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Figma"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "fc88db1a-4b7c-4fd0-b02f-f59fe96c56cc",
+      "title": "Phase 2 – Model Design & Simulation",
+      "description": "Develop a detailed economic framework incorporating revenue streams (housing, services, retail, energy), cost structures, and reinvestment loops. Run simulations for sustainability, scalability, and resilience under different growth and risk scenarios.\n\n",
+      "startDate": "2025-08-28T04:00:00.000Z",
+      "endDate": "2025-08-30T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-30T04:00:00.000Z",
+  "lowerBudget": 130,
+  "upperBudget": 160,
+  "postedDate": "2025-08-28",
+  "notes": "Budget range: $130 - $160",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

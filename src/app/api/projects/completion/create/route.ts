@@ -3,7 +3,9 @@ import { NextResponse, NextRequest } from 'next/server';
 import { requireSession, assert } from '@/lib/auth/session-guard';
 import { sanitizeApiInput } from '@/lib/security/input-sanitizer';
 import { withErrorHandling, ok, err } from '@/lib/http/envelope';
-import { CompletionCalculationService } from '../../payments/services/completion-calculation-service';
+import { generateOrganizationProjectId } from '@/lib/utils/id-generation';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
+// import { CompletionCalculationService } from '../../payments/services/completion-calculation-service';
 
 // 🚨 CRITICAL: This is a COMPLETELY NEW route - does not modify existing project creation routes
 // 🛡️ PROTECTED: Existing project creation at /api/projects/create remains unchanged
@@ -24,15 +26,38 @@ export async function POST(req: NextRequest) {
     assert(projectData.title, 'Project title is required', 400);
     
     // 🧮 COMPLETION-SPECIFIC: Calculate upfront amount for validation
-    const upfrontAmount = CompletionCalculationService.calculateUpfrontAmount(projectData.totalBudget);
-    const manualInvoiceAmount = CompletionCalculationService.calculateManualInvoiceAmount(
-      projectData.totalBudget, 
-      projectData.totalTasks
-    );
+    const upfrontAmount = Math.round((projectData.totalBudget || 0) * 0.12 * 100) / 100;
+    const manualInvoiceAmount = Math.round(((projectData.totalBudget || 0) * 0.88) / (projectData.totalTasks || 1) * 100) / 100;
     
-    // ✅ SAFE: Create project using existing infrastructure pattern
-    const projectId = generateProjectId();
+    // ✅ SAFE: Create project using organization-based ID generation
+    let projectId: string;
     const activationDate = new Date();
+
+    // Generate organization-based project ID if organization info is available
+    if (projectData.organizationId) {
+      try {
+        const organization = await UnifiedStorageService.getOrganizationById(projectData.organizationId);
+        if (organization?.name) {
+          // Get existing project IDs to avoid collisions
+          const existingProjects = await UnifiedStorageService.listProjects();
+          const existingProjectIds = new Set(existingProjects.map(p => p.projectId.toString()));
+
+          projectId = generateOrganizationProjectId(organization.name, existingProjectIds);
+        } else {
+          // Fallback to numeric ID if organization not found
+          const { generateProjectId } = await import('@/lib/utils/id-generation');
+          projectId = generateProjectId().toString();
+        }
+      } catch (error) {
+        console.warn('Failed to generate organization-based project ID, using fallback:', error);
+        const { generateProjectId } = await import('@/lib/utils/id-generation');
+        projectId = generateProjectId().toString();
+      }
+    } else {
+      // Fallback to numeric ID if no organization
+      const { generateProjectId } = await import('@/lib/utils/id-generation');
+      projectId = generateProjectId().toString();
+    }
 
     // 🛡️ DURATION GUARD: Calculate due date from activation time to preserve project duration
     const dueDate = (() => {
@@ -114,11 +139,11 @@ export async function POST(req: NextRequest) {
       // Don't rollback project creation - allow manual retry
     }
     
-    // 🔔 COMPLETION-SPECIFIC: Emit project activation event (separate from payment)
+    // 🔔 COMPLETION-SPECIFIC: Emit project activation events (separate from payment)
     try {
       const { handleCompletionNotification } = await import('@/app/api/notifications-v2/completion-handler');
 
-      // Project activation notification
+      // Project activation notification for freelancer only
       await handleCompletionNotification({
         type: 'completion.project_activated',
         actorId: commissionerId,
@@ -126,18 +151,32 @@ export async function POST(req: NextRequest) {
         projectId,
         context: {
           projectTitle: projectData.title,
-          totalTasks: projectData.totalTasks,
           dueDate: projectData.dueDate
           // commissionerName and freelancerName will be enriched automatically
-        }
+        } as any
       });
 
       // Upfront payment notification (if payment was successful)
       if (upfrontPaymentResult) {
+        // Freelancer upfront payment notification
         await handleCompletionNotification({
           type: 'completion.upfront_payment',
           actorId: commissionerId,
           targetId: projectData.freelancerId,
+          projectId,
+          context: {
+            upfrontAmount,
+            projectTitle: projectData.title,
+            remainingBudget: project.remainingBudget
+            // orgName and freelancerName will be enriched automatically
+          }
+        });
+
+        // Commissioner upfront payment notification (self-targeted)
+        await handleCompletionNotification({
+          type: 'completion.upfront_payment',
+          actorId: commissionerId,
+          targetId: commissionerId,
           projectId,
           context: {
             upfrontAmount,
@@ -152,38 +191,18 @@ export async function POST(req: NextRequest) {
     }
     
     return NextResponse.json(ok({
-      project: {
-        projectId: project.projectId,
-        title: project.title,
-        status: project.status,
-        executionMethod: project.executionMethod,
-        invoicingMethod: project.invoicingMethod,
-        totalBudget: project.totalBudget,
-        totalTasks: project.totalTasks,
-        upfrontPaid: project.upfrontPaid
-      },
-      upfrontPayment: upfrontPaymentResult?.data || null,
-      calculations: {
-        upfrontAmount,
-        manualInvoiceAmount,
-        remainingBudget: project.remainingBudget
-      },
-      message: 'Completion-based project created successfully'
-    }));
+      message: 'Completion-based project created successfully',
+      projectId: project.projectId,
+      status: project.status
+    } as any));
   });
 }
 
 // Helper functions - NEW, doesn't modify existing functions
-function generateProjectId(): string {
-  // Generate completion-specific project ID
-  const timestamp = Date.now();
-  const random = Math.random().toString(36).substr(2, 6);
-  return `COMP-${timestamp}-${random}`;
-}
 
 async function saveProject(project: any) {
   try {
-    const fs = await import('fs').promises;
+    const fs = await import('fs/promises');
     const path = await import('path');
     
     const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
@@ -209,7 +228,7 @@ async function saveProject(project: any) {
 
 async function updateProject(projectId: string, updates: any) {
   try {
-    const fs = await import('fs').promises;
+    const fs = await import('fs/promises');
     const path = await import('path');
     
     const projectsPath = path.join(process.cwd(), 'data', 'projects.json');

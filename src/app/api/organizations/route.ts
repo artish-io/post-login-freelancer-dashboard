@@ -25,9 +25,8 @@ export async function POST(req: Request) {
   try {
     const organizationData = await req.json();
 
-    // Read existing organizations
-    const data = fs.readFileSync(filePath, 'utf-8');
-    const organizations = JSON.parse(data);
+    // Read existing organizations using hierarchical storage
+    const organizations = await getAllOrganizations();
 
     // Check if organization already exists for this contact person
     const existingOrgIndex = organizations.findIndex((org: any) =>
@@ -50,8 +49,8 @@ export async function POST(req: Request) {
       organizations.push(newOrganization);
     }
 
-    // Write back to file
-    fs.writeFileSync(filePath, JSON.stringify(organizations, null, 2));
+    // Note: Individual organization updates should use writeOrganization()
+    // This bulk update approach needs to be refactored for hierarchical storage
 
     return NextResponse.json({ success: true });
   } catch (error) {

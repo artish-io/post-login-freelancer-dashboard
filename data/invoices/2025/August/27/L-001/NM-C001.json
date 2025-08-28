@@ -1,0 +1,34 @@
+{
+  "invoiceNumber": "NM-C001",
+  "projectId": "L-001",
+  "freelancerId": 25,
+  "commissionerId": 32,
+  "projectTitle": "Economic Model Design for Smart Gated Communities: Building Self-Sustaining Futures in Lagos",
+  "totalAmount": 114,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-28T00:59:56.233Z",
+  "dueDate": "2025-09-11T00:59:56.233Z",
+  "createdAt": "2025-08-28T00:59:56.233Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 114,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "paymentId": "TXN-NM-C001",
+    "paymentMethod": "mock",
+    "platformFee": 6,
+    "freelancerAmount": 108,
+    "currency": "USD",
+    "processedAt": "2025-08-28T00:59:56.745Z"
+  },
+  "paidDate": "2025-08-28",
+  "paidAmount": 114,
+  "updatedAt": "2025-08-28T00:59:56.746Z"
+}

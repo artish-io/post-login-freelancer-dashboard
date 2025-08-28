@@ -32,7 +32,7 @@ async function handleProjectReactivation(request: NextRequest) {
       ...unifiedProject,
       status: 'ongoing',
       updatedAt: new Date().toISOString()
-    });
+    } as any);
 
     // Log the transition
     logProjectTransition(
@@ -67,7 +67,7 @@ async function handleProjectReactivation(request: NextRequest) {
     };
 
     // Store the event
-    NotificationStorage.addEvent(event);
+    NotificationStorage.addEvent(event as any);
 
     return NextResponse.json(
       ok({

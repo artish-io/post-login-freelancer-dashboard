@@ -1,0 +1,25 @@
+{
+  "id": "rating_prompt_freelancer_C-014_1756388936696",
+  "timestamp": "2025-08-28T13:48:56.696Z",
+  "type": "rating_prompt_freelancer",
+  "notificationType": 140,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "C-014",
+  "metadata": {
+    "projectTitle": "Milestone Modelling For Series A Fundraising",
+    "commissionerName": "Matte Hannery",
+    "completedTaskTitle": "Building",
+    "message": "All tasks for Milestone Modelling For Series A Fundraising have been approved. Click here to rate your collaboration with Matte Hannery.",
+    "ratingSubjectId": 34,
+    "ratingSubjectType": "commissioner",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "C-014",
+    "ratingSubjectUserId": 34,
+    "ratingSubjectUserType": "commissioner",
+    "action": "rate_commissioner"
+  }
+}

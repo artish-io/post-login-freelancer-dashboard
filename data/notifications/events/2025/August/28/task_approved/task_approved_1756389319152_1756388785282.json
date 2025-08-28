@@ -1,0 +1,22 @@
+{
+  "id": "task_approved_1756389319152_1756388785282",
+  "timestamp": "2025-08-28T13:46:25.282Z",
+  "type": "task_approved",
+  "notificationType": 2,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 1,
+  "entityId": 1756389319152,
+  "metadata": {
+    "taskId": 1756389319152,
+    "taskTitle": "Messaging",
+    "projectTitle": "Milestone Modelling For Series A Fundraising",
+    "action": "approve",
+    "invoiceGenerated": true,
+    "message": "\"Messaging\" is awaiting your review for Milestone Modelling For Series A Fundraising"
+  },
+  "context": {
+    "projectId": "C-014",
+    "taskId": 1756389319152
+  }
+}

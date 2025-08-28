@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_51_25_1756346516874",
+  "timestamp": "2025-08-28T02:01:56.874Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "51",
+  "metadata": {
+    "gigTitle": "Smart Gated Communities: Building Self-Sustaining Futures in Lagos",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 51,
+    "applicationId": 1755193217281
+  }
+}

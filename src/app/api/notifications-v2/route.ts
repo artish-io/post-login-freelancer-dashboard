@@ -23,14 +23,10 @@ function deduplicateNotificationEvents(events: EventData[]): EventData[] {
     } else if (event.type === 'invoice_paid') {
       // Group invoice payments by project + invoice + target
       groupKey = `${event.type}_${event.context?.projectId}_${event.context?.invoiceNumber}_${event.targetId}`;
-    } else if (event.type === 'task_submitted' || event.type === 'task_submission') {
-      // Group task submissions by extracting task name from message to handle both enriched and basic versions
-      const message = event.metadata?.message || '';
-      // Extract task name from message like "Phase 2" is awaiting your review...
-      const taskNameMatch = message.match(/^"([^"]+)"/);
-      const taskName = taskNameMatch ? taskNameMatch[1].trim() : '';
-      const targetId = event.targetId;
-      groupKey = `task_submission_${taskName}_${targetId}`;
+    // REMOVED: task_submitted and task_submission deduplication
+    // These serve different project configurations and should never be deduplicated:
+    // - task_submission: milestone-based projects (invoicingMethod: "milestone")
+    // - task_submitted: completion-based projects (invoicingMethod: "completion")
     } else {
       // For other events, use the event ID as unique key
       groupKey = event.id;
@@ -53,28 +49,41 @@ function deduplicateNotificationEvents(events: EventData[]): EventData[] {
       // Multiple events, prioritize enriched versions
       let enrichedEvent;
 
-      if (groupEvents[0].type === 'task_submitted' || groupEvents[0].type === 'task_submission') {
-        // For task submissions, prefer task_submitted over task_submission
-        enrichedEvent = groupEvents.find(e => e.type === 'task_submitted');
+      // REMOVED: task_submitted and task_submission selection logic
+      // These serve different project configurations and should never be deduplicated
+      {
+        // For milestone payment events, prioritize notifications with the highest quality score
+        if (groupKey.includes('milestone_payment_sent') || groupKey.includes('milestone_payment_received')) {
+          // Sort by quality score (highest first), then by enrichment criteria
+          const sortedByQuality = groupEvents.sort((a, b) => {
+            const aQuality = a.metadata?.qualityScore || 0;
+            const bQuality = b.metadata?.qualityScore || 0;
 
-        // If no task_submitted found, prefer the version with project title in the message
-        if (!enrichedEvent) {
+            if (aQuality !== bQuality) {
+              return bQuality - aQuality; // Higher quality first
+            }
+
+            // If quality scores are equal, prioritize by enrichment
+            const aEnriched = !!(a.metadata?.message && a.metadata?.freelancerName && a.metadata?.organizationName && a.metadata?.amount > 0);
+            const bEnriched = !!(b.metadata?.message && b.metadata?.freelancerName && b.metadata?.organizationName && b.metadata?.amount > 0);
+
+            if (aEnriched && !bEnriched) return -1;
+            if (!aEnriched && bEnriched) return 1;
+
+            // Finally, prioritize by timestamp (newest first)
+            return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+          });
+
+          enrichedEvent = sortedByQuality[0];
+        } else {
+          // For other events (payments), use existing enrichment logic
           enrichedEvent = groupEvents.find(e =>
             e.metadata?.message &&
-            e.metadata.message.includes('for ') &&
-            !e.metadata.message.endsWith('for this project')
+            e.metadata?.freelancerName &&
+            e.metadata?.organizationName &&
+            e.metadata?.amount > 0
           );
         }
-
-
-      } else {
-        // For other events (payments), use existing enrichment logic
-        enrichedEvent = groupEvents.find(e =>
-          e.metadata?.message &&
-          e.metadata?.freelancerName &&
-          e.metadata?.organizationName &&
-          e.metadata?.amount > 0
-        );
       }
 
       if (enrichedEvent) {
@@ -176,18 +185,39 @@ export async function GET(request: NextRequest) {
         return true;
       }
 
-      // Special case: completion.upfront_payment notifications for commissioners are self-notifications
-      if (event.type === 'completion.upfront_payment' && event.targetId === parseInt(userId) && event.actorId === parseInt(userId)) {
+      // Special case: All commissioner completion notifications are self-notifications
+      const commissionerCompletionTypes = [
+        'completion.upfront_payment',
+        'completion.invoice_received',  // 🔔 FIX: Add missing invoice received notifications
+        'completion.commissioner_payment',
+        'completion.final_payment',
+        'completion.project_completed',
+        'completion.rating_prompt'
+        // NOTE: completion.project_activated is intentionally excluded - commissioners don't need to be notified of their own project activation
+        // NOTE: task_submitted is handled separately below as it's not a self-notification
+      ];
+
+      // 🔔 ATOMIC CONSOLE LOG: Track completion commissioner notification filtering
+      if (event.type.startsWith('completion.') && userType === 'commissioner') {
+        console.log('🔔 COMPLETION COMMISSIONER FILTER:', {
+          eventType: event.type,
+          eventId: event.id,
+          actorId: event.actorId,
+          targetId: event.targetId,
+          userId: parseInt(userId),
+          isInCommissionerTypes: commissionerCompletionTypes.includes(event.type),
+          isSelfNotification: event.targetId === parseInt(userId) && event.actorId === parseInt(userId),
+          willBeIncluded: commissionerCompletionTypes.includes(event.type) && event.targetId === parseInt(userId) && event.actorId === parseInt(userId),
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      if (commissionerCompletionTypes.includes(event.type) && event.targetId === parseInt(userId) && event.actorId === parseInt(userId)) {
         return true;
       }
 
-      // Special case: completion.rating_prompt notifications can be self-notifications for both freelancers and commissioners
-      if (event.type === 'completion.rating_prompt' && event.targetId === parseInt(userId)) {
-        return true;
-      }
-
-      // Special case: completion.final_payment, completion.project_completed, completion.commissioner_payment, and project_completed notifications can be self-notifications for commissioners
-      if ((event.type === 'completion.final_payment' || event.type === 'completion.project_completed' || event.type === 'completion.commissioner_payment' || event.type === 'project_completed') && event.targetId === parseInt(userId) && event.actorId === parseInt(userId)) {
+      // Special case: Legacy project_completed notifications can be self-notifications for commissioners
+      if (event.type === 'project_completed' && event.targetId === parseInt(userId) && event.actorId === parseInt(userId)) {
         return true;
       }
 
@@ -345,6 +375,38 @@ export async function GET(request: NextRequest) {
       const projectTaskData = projectTasks.find((pt: any) => pt.projectId === event.context?.projectId);
       const task = projectTaskData?.tasks?.find((t: any) => t.id === event.context?.taskId);
 
+      // Check if this is a payment notification
+      const isPaymentNotification = [
+        'milestone_payment_sent',
+        'payment_sent',
+        'invoice_paid',
+        'milestone_payment_received',
+        'completion.upfront_payment',
+        'completion.final_payment',
+        'completion.invoice_paid',
+        'completion.commissioner_payment'
+      ].includes(event.type);
+
+      // Enrich organization name for payment notifications if missing
+      if (isPaymentNotification && !event.metadata?.organizationName) {
+        if (organization?.name) {
+          // Use organization from context
+          event.metadata = { ...event.metadata, organizationName: organization.name };
+        } else if (project?.organizationId) {
+          // Use organization from project data
+          const projectOrg = organizations.find((o: any) => o.id === project.organizationId);
+          if (projectOrg?.name) {
+            event.metadata = { ...event.metadata, organizationName: projectOrg.name };
+          }
+        } else if (project?.commissionerId && actor?.id === project.commissionerId) {
+          // For commissioner-initiated payments, try to find their organization by contactPersonId
+          const commissionerOrg = organizations.find((o: any) => o.contactPersonId === project.commissionerId);
+          if (commissionerOrg?.name) {
+            event.metadata = { ...event.metadata, organizationName: commissionerOrg.name };
+          }
+        }
+      }
+
       // Determine icon based on notification typology rules
       let iconPath = undefined;
       if (shouldUseOrgLogo(event.type) && organization?.logo) {
@@ -369,14 +431,15 @@ export async function GET(request: NextRequest) {
       const enrichedTitle = event.metadata?.title;
       const enrichedMessage = event.metadata?.message;
 
-      const title = enrichedTitle || await generateGranularTitle(event, actor, project, projectTaskData, task, parseInt(userId));
+      // Always generate titles dynamically for payment notifications to ensure correct organization names
+      const title = (enrichedTitle && !isPaymentNotification) || await generateGranularTitle(event, actor, project, projectTaskData, task, parseInt(userId));
 
-      // Always generate messages dynamically for completion notifications to ensure they're context-aware
+      // Always generate messages dynamically for completion and payment notifications to ensure they're context-aware
       const preGeneratedMessage = enrichedMessage || (event as any).message;
       const isFallbackMessage = preGeneratedMessage && preGeneratedMessage.startsWith('Completion event:');
       const isCompletionNotification = event.type.startsWith('completion.');
 
-      const message = (preGeneratedMessage && !isFallbackMessage && !isCompletionNotification)
+      const message = (preGeneratedMessage && !isFallbackMessage && !isCompletionNotification && !isPaymentNotification)
         ? preGeneratedMessage
         : await generateGranularMessage(event, actor, project, projectTaskData, task, parseInt(userId));
 
@@ -442,7 +505,7 @@ export async function GET(request: NextRequest) {
       if (tab === 'projects') {
         filteredNotifications = baseNotifications.filter(n =>
           ['task_submission', 'task_approved', 'task_rejected', 'project_pause_requested', 'project_pause_accepted',
-           'milestone_payment_received', 'invoice_paid'].includes(n.type)
+           'milestone_payment_received', 'invoice_paid', 'project_activated', 'project_completed'].includes(n.type)
         );
       } else if (tab === 'gigs') {
         filteredNotifications = baseNotifications.filter(n =>
@@ -455,10 +518,72 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Sort by timestamp (newest first)
-    filteredNotifications.sort((a, b) => 
-      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    );
+    // Sort by timestamp (newest first) with logical ordering for completion project notifications
+    filteredNotifications.sort((a, b) => {
+      const aTime = new Date(a.timestamp).getTime();
+      const bTime = new Date(b.timestamp).getTime();
+
+      // Check if both notifications are from the same project
+      const aIsCompletion = a.type.startsWith('completion.');
+      const bIsCompletion = b.type.startsWith('completion.');
+      const aIsMilestone = !aIsCompletion && a.project?.id && ['project_activated', 'task_submission', 'task_approved', 'milestone_payment_sent', 'milestone_payment_received', 'project_completed', 'rating_prompt_freelancer', 'rating_prompt_commissioner'].includes(a.type);
+      const bIsMilestone = !bIsCompletion && b.project?.id && ['project_activated', 'task_submission', 'task_approved', 'milestone_payment_sent', 'milestone_payment_received', 'project_completed', 'rating_prompt_freelancer', 'rating_prompt_commissioner'].includes(b.type);
+      const sameProject = a.project?.id === b.project?.id;
+
+      if (aIsCompletion && bIsCompletion && sameProject && a.project?.id) {
+        // Define logical order for completion project notifications
+        const completionOrder = {
+          'completion.project_activated': 1,
+          'completion.upfront_payment': 2,
+          'completion.task_approved': 3,
+          'completion.invoice_received': 4,
+          'completion.invoice_paid': 5,
+          'completion.commissioner_payment': 6,
+          'completion.final_payment': 7,
+          'completion.project_completed': 8,
+          'completion.rating_prompt': 9
+        };
+
+        const aOrder = completionOrder[a.type as keyof typeof completionOrder] || 999;
+        const bOrder = completionOrder[b.type as keyof typeof completionOrder] || 999;
+
+        // If they have different logical orders, use logical order (reversed for newest first)
+        if (aOrder !== bOrder) {
+          return bOrder - aOrder;
+        }
+
+        // If same logical order (e.g., multiple task approvals), use timestamp
+        return bTime - aTime;
+      }
+
+      if (aIsMilestone && bIsMilestone && sameProject && a.project?.id) {
+        // Define logical order for milestone project notifications
+        const milestoneOrder = {
+          'project_activated': 1,
+          'task_submission': 2,
+          'task_approved': 3,
+          'milestone_payment_sent': 4,
+          'milestone_payment_received': 4, // Same priority as payment_sent
+          'project_completed': 5,
+          'rating_prompt_freelancer': 6,
+          'rating_prompt_commissioner': 6 // Same priority as freelancer rating
+        };
+
+        const aOrder = milestoneOrder[a.type as keyof typeof milestoneOrder] || 999;
+        const bOrder = milestoneOrder[b.type as keyof typeof milestoneOrder] || 999;
+
+        // If they have different logical orders, use logical order (reversed for newest first)
+        if (aOrder !== bOrder) {
+          return bOrder - aOrder;
+        }
+
+        // If same logical order (e.g., multiple task approvals), use timestamp
+        return bTime - aTime;
+      }
+
+      // For non-project or different projects, use timestamp
+      return bTime - aTime;
+    });
 
     // Calculate counts (only unread notifications)
     const unreadNotifications = baseNotifications.filter(n => !n.isRead);
@@ -577,16 +702,17 @@ function getNotificationType(eventType: EventType): string {
     'product_approved': 'product_approved',
     'product_rejected': 'product_rejected',
 
-    // Completion notification types
-    'completion.project_activated': 'completion_project_activated',
-    'completion.upfront_payment': 'completion_upfront_payment',
-    'completion.task_approved': 'completion_task_approved',
-    'completion.invoice_received': 'completion_invoice_received',
-    'completion.invoice_paid': 'completion_invoice_paid',
-    'completion.commissioner_payment': 'completion_commissioner_payment',
-    'completion.project_completed': 'completion_project_completed',
-    'completion.final_payment': 'completion_final_payment',
-    'completion.rating_prompt': 'completion_rating_prompt'
+    // Completion notification types (DEPRECATED: underscore format no longer used)
+    // All completion notifications now use dot notation only
+    // 'completion.project_activated': 'completion_project_activated',
+    // 'completion.upfront_payment': 'completion_upfront_payment',
+    // 'completion.task_approved': 'completion_task_approved',
+    // 'completion.invoice_received': 'completion_invoice_received',
+    // 'completion.invoice_paid': 'completion_invoice_paid',
+    // 'completion.commissioner_payment': 'completion_commissioner_payment',
+    // 'completion.project_completed': 'completion_project_completed',
+    // 'completion.final_payment': 'completion_final_payment',
+    // 'completion.rating_prompt': 'completion_rating_prompt'
   };
 
   return typeMap[eventType] || eventType;
@@ -598,7 +724,7 @@ function shouldUseAvatar(eventType: EventType): boolean {
     'task_submission', // Legacy task submission notifications should also use avatars
     'project_pause_requested', // Freelancer requests pause - show freelancer avatar on commissioner side
     'project_activated', // Commissioner accepts application - show commissioner avatar on freelancer side
-    'invoice_sent', // Freelancer sends invoice - show freelancer avatar on commissioner side
+    // 'invoice_sent',          // ← REMOVE: Should use payment icon instead
     'gig_request_accepted', // Freelancer accepts gig request - show freelancer avatar on commissioner side
     'proposal_sent',
     'gig_applied' // Freelancer applies for gig - show freelancer avatar on commissioner side
@@ -614,6 +740,7 @@ function shouldUseOrgLogo(eventType: EventType): boolean {
 
 function shouldUsePaymentIcon(eventType: EventType): boolean {
   return [
+    'invoice_sent',             // ← ADD: Should use payment icon, not avatar
     'invoice_paid', // Commissioner pays invoice - show payment icon
     'completion.invoice_paid', // Completion project payment - show payment icon
     'completion.commissioner_payment', // Completion project payment confirmation - show payment icon
@@ -654,7 +781,9 @@ function shouldUseProjectCompletionIcon(eventType: EventType): boolean {
 function shouldUseRatingPromptIcon(eventType: EventType): boolean {
   return [
     'rating_prompt_freelancer', // Rating prompt for freelancer - show rating prompt icon
-    'rating_prompt_commissioner' // Rating prompt for commissioner - show rating prompt icon
+    'rating_prompt_commissioner', // Rating prompt for commissioner - show rating prompt icon
+    'completion.rating_prompt', // Completion project rating prompt - show rating prompt icon
+    'completion_rating_prompt' // Legacy completion rating prompt - show rating prompt icon
   ].includes(eventType);
 }
 
@@ -762,24 +891,15 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
         : '$0';
       return `${titleOrgName} paid ${titleAmount}`;
     case 'milestone_payment_sent':
-      const titleFreelancerName = event.metadata?.freelancerName || 'freelancer';
-      const titlePaidAmount = event.metadata?.amount !== undefined && event.metadata?.amount !== null
-        ? `$${event.metadata.amount.toLocaleString()}`
-        : '$0';
-      return `You just paid ${titleFreelancerName} ${titlePaidAmount}`;
+      const milestoneOrgName = event.metadata?.organizationName || 'Organization';
+      const milestoneFreelancerName = event.metadata?.freelancerName || 'freelancer';
+      const milestoneAmount = event.metadata?.amount ? `$${event.metadata.amount}` : '$0';
+      return `${milestoneOrgName} paid ${milestoneFreelancerName} ${milestoneAmount}`;
     case 'payment_sent':
-      // Use the custom notification text if available, otherwise fall back to default
-      if (event.metadata?.notificationText) {
-        return event.metadata.notificationText;
-      }
-      // Fallback format
+      const paymentOrgName = event.metadata?.organizationName || 'Organization';
       const paymentFreelancerName = event.metadata?.freelancerName || 'freelancer';
-      const paymentAmount = event.metadata?.amount !== undefined && event.metadata?.amount !== null
-        ? `$${event.metadata.amount}`
-        : '$0';
-      const paymentProjectTitle = event.metadata?.projectTitle || 'project';
-      const paymentRemainingBudget = event.metadata?.remainingBudget || 'unknown';
-      return `You just paid ${paymentFreelancerName} ${paymentAmount} for their work on ${paymentProjectTitle}. This project has a remaining budget of ${paymentRemainingBudget} left.`;
+      const paymentAmount = event.metadata?.amount ? `$${event.metadata.amount}` : '$0';
+      return `${paymentOrgName} paid ${paymentFreelancerName} ${paymentAmount}`;
     case 'product_purchased':
       return `You just made a new sale of "${event.metadata?.productTitle || 'product'}"`;
     case 'invoice_created':
@@ -798,24 +918,31 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
       return `Rate your experience with ${event.metadata?.commissionerName || 'the commissioner'}`;
     case 'rating_prompt_commissioner':
       return `Rate your experience with ${event.metadata?.freelancerName || 'the freelancer'}`;
-    case 'payment_sent':
-      const paymentSentFreelancerName = event.metadata?.freelancerName || 'freelancer';
-      const paymentSentAmount = event.metadata?.amount !== undefined && event.metadata?.amount !== null
-        ? `$${event.metadata.amount.toLocaleString()}`
-        : '$0';
-      return `You just paid ${paymentSentFreelancerName} ${paymentSentAmount}`;
 
     // Completion notification types
     case 'completion.project_activated':
       return `${actorName} accepted your application`;
     case 'completion.upfront_payment':
-      // Use organization name for upfront payments as specified by user
+      // V2 Title: "[org name] paid [freelancer] [invoice value]"
       const orgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || actorName;
-      return `${orgName} paid upfront payment`;
+      const freelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'freelancer';
+      const upfrontAmount = (event.metadata as any)?.upfrontAmount || (event.context as any)?.upfrontAmount || 0;
+
+      // Check if this is a commissioner notification (self-targeted)
+      const isCommissionerUpfront = event.actorId === event.targetId;
+      if (isCommissionerUpfront) {
+        return `${orgName} paid ${freelancerName} $${upfrontAmount}`;
+      } else {
+        return `${orgName} paid upfront payment`;
+      }
     case 'completion.task_approved':
       return `${actorName} approved your task`;
     case 'completion.invoice_received':
-      return `${actorName} sent you an invoice`;
+      // V2 Title: "[freelancer name] sent you an invoice for [invoice value] for [x number] approved tasks, of your active project, [project title]"
+      const invoiceRecAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
+      const invoiceRecProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
+      const approvedTasksCount = 1; // Completion projects send individual task invoices
+      return `${actorName} sent you an invoice for $${invoiceRecAmount} for ${approvedTasksCount} approved task, of your active project, ${invoiceRecProjectTitle}`;
     case 'completion.invoice_paid':
       // Generate context-aware title for invoice payments
       const compTitleOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || actorName;
@@ -833,10 +960,11 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
         return `${compTitleOrgName} paid your invoice`;
       }
     case 'completion.commissioner_payment':
-      // Commissioner payment confirmation title
+      // V2 Title: "[org name] paid [freelancer name] [invoice value]"
+      const commPaymentOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
       const commPaymentAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
       const commPaymentFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
-      return `You paid ${commPaymentFreelancerName} $${commPaymentAmount}`;
+      return `${commPaymentOrgName} paid ${commPaymentFreelancerName} $${commPaymentAmount}`;
     case 'completion.project_completed':
       return `Project completed`;
     case 'project_completed':
@@ -851,8 +979,8 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
       const isFinalTitleCommissioner = currentUserId === event.actorId;
 
       if (isFinalTitleCommissioner) {
-        // Commissioner title - they made the final payment
-        return `You just paid ${finalTitleFreelancerName} $${finalTitleAmount}`;
+        // V2 Commissioner title: "[org name] paid [freelancer name] [invoice value]"
+        return `${finalTitleOrgName} paid ${finalTitleFreelancerName} $${finalTitleAmount}`;
       } else {
         // Freelancer title - they received the final payment
         return `${finalTitleOrgName} sent final payment`;
@@ -1021,96 +1149,26 @@ async function generateGranularMessage(event: EventData, _actor: any, _project?:
 
     // Completion notification types
     case 'completion.project_activated':
-      return `Your application has been accepted and the project is now active`;
+      // JUST USE THE MESSAGE FROM THE EVENT JSON
+      return (event as any).message || 'Project activated';
     case 'completion.upfront_payment':
-      // Generate detailed message with budget information
-      const upfrontAmt = (event.metadata as any)?.upfrontAmount || (event.context as any)?.upfrontAmount || 0;
-      const remainingBudgetAmt = (event.metadata as any)?.remainingBudget || (event.context as any)?.remainingBudget || 0;
-      const projTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'your project';
-      const orgNameForUpfront = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
-      const freelancerNameForUpfront = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
-
-      // Check if current user is the commissioner (actor) or freelancer (target)
-      const isUpfrontCommissioner = currentUserId === event.actorId;
-
-      if (isUpfrontCommissioner) {
-        // Commissioner message - they sent the upfront payment
-        return `You sent ${freelancerNameForUpfront} a $${upfrontAmt} invoice for your recently activated ${projTitle} project. This project has a budget of $${remainingBudgetAmt} left. Click here to view invoice details`;
-      } else {
-        // Freelancer message - they received the upfront payment
-        if (upfrontAmt && remainingBudgetAmt) {
-          return `${orgNameForUpfront} has paid $${upfrontAmt} upfront for your newly activated ${projTitle} project. This project has a budget of $${remainingBudgetAmt} left. Click here to view invoice details`;
-        } else {
-          return `Upfront payment received for your newly activated project`;
-        }
-      }
+      // JUST USE THE MESSAGE FROM THE EVENT JSON
+      return (event as any).message || 'Upfront payment processed';
     case 'completion.task_approved':
-      // Generate detailed message for task approval notifications
-      const taskApprovalTaskTitle = (event.metadata as any)?.taskTitle || (event.context as any)?.taskTitle || 'task';
-      const taskApprovalProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
-      const taskApprovalCommissionerName = (event.metadata as any)?.commissionerName || (event.context as any)?.commissionerName || 'Commissioner';
-
-      // Check if current user is the commissioner (actor) or freelancer (target)
-      const isTaskApprovalCommissioner = currentUserId === event.actorId;
-
-      if (isTaskApprovalCommissioner) {
-        // Commissioner message - they approved the task
-        return `You approved "${taskApprovalTaskTitle}" in ${taskApprovalProjectTitle}. Task approved and milestone completed. Click here to see project tracker.`;
-      } else {
-        // Freelancer message - their task was approved
-        return `${taskApprovalCommissionerName} has approved your submission for "${taskApprovalTaskTitle}" in ${taskApprovalProjectTitle}. Task approved and milestone completed. Click here to see its project tracker.`;
-      }
+      // JUST USE THE MESSAGE FROM THE EVENT JSON
+      return (event as any).message || 'Task approved';
     case 'completion.invoice_received':
-      // Generate detailed message for invoice received notifications
-      const invoiceRecAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
-      const invoiceRecTaskTitle = (event.metadata as any)?.taskTitle || (event.context as any)?.taskTitle || 'task';
-      const invoiceRecFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
-      const invoiceRecInvoiceNumber = (event.metadata as any)?.invoiceNumber || (event.context as any)?.invoiceNumber || '';
-
-      return `${invoiceRecFreelancerName} sent you a $${invoiceRecAmount} invoice for ${invoiceRecTaskTitle}. Invoice #${invoiceRecInvoiceNumber}. Click here to review.`;
+      // JUST USE THE MESSAGE FROM THE EVENT JSON
+      return (event as any).message || 'Invoice received';
     case 'completion.invoice_paid':
-      // Generate context-aware message for manual invoice payments
-      const compInvoiceAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
-      const compTaskTitle = (event.metadata as any)?.taskTitle || (event.context as any)?.taskTitle || 'task';
-      const compProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
-      const compOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
-      const compFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
-      const compRemainingBudget = (event.metadata as any)?.remainingBudget || (event.context as any)?.remainingBudget || 0;
-
-      // Check if current user is the commissioner (actor) or freelancer (target)
-      const isCommissioner = currentUserId === event.actorId;
-
-      if (isCommissioner) {
-        // Commissioner message - they made the payment
-        return `You just paid ${compFreelancerName} $${compInvoiceAmount} for submitting ${compTaskTitle} for ${compProjectTitle}. Remaining budget: $${compRemainingBudget}. Click here to see transaction activity`;
-      } else {
-        // Freelancer message - they received the payment
-        return `${compOrgName} has paid $${compInvoiceAmount} for your recent task submission. Click here to view invoice details`;
-      }
+      // JUST USE THE MESSAGE FROM THE EVENT JSON
+      return (event as any).message || 'Invoice paid';
     case 'completion.commissioner_payment':
-      // Generate context-aware message for commissioner payment confirmation
-      const commPaymentAmount = (event.metadata as any)?.amount || (event.context as any)?.amount || 0;
-      const commPaymentProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
-      const commPaymentFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
-      const commPaymentRemainingBudget = (event.metadata as any)?.remainingBudget || (event.context as any)?.remainingBudget || 0;
-
-      // This is always for commissioners (self-notification), so use "You just paid" format
-      return `You just paid ${commPaymentFreelancerName} $${commPaymentAmount} for your ongoing ${commPaymentProjectTitle} project. This project has a budget of $${commPaymentRemainingBudget} left. Click here to view invoice details`;
+      // JUST USE THE MESSAGE FROM THE EVENT JSON
+      return (event as any).message || 'Payment sent';
     case 'completion.project_completed':
-      // Generate context-aware message for project completion
-      const completionProjectTitle = (event.context as any)?.projectTitle || (event.metadata as any)?.projectTitle || 'project';
-      const completionCommissionerName = (event.context as any)?.commissionerName || (event.metadata as any)?.commissionerName || 'Commissioner';
-
-      // Check if current user is the commissioner (actor) or freelancer (target)
-      const isCompletionCommissioner = currentUserId === event.actorId;
-
-      if (isCompletionCommissioner) {
-        // Commissioner message - they approved all tasks
-        return `You have approved all tasks for ${completionProjectTitle}. Project is now complete.`;
-      } else {
-        // Freelancer message - commissioner approved all their tasks
-        return `${completionCommissionerName} has approved all tasks for ${completionProjectTitle}. This project is now complete.`;
-      }
+      // JUST USE THE MESSAGE FROM THE EVENT JSON
+      return (event as any).message || 'Project completed';
     case 'project_completed':
       // Generate context-aware message for milestone project completion
       const projectCompletedTitle = event.metadata?.projectTitle || 'project';
@@ -1127,25 +1185,11 @@ async function generateGranularMessage(event: EventData, _actor: any, _project?:
         return `${projectCompletedCommissionerName} has approved all tasks for ${projectCompletedTitle}. This project is now complete.`;
       }
     case 'completion.final_payment':
-      // Generate context-aware message for final payments
-      const finalAmount = (event.metadata as any)?.finalAmount || (event.context as any)?.finalAmount || 0;
-      const finalProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
-      const finalOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
-      const finalFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
-      const finalPercent = (event.metadata as any)?.finalPercent || (event.context as any)?.finalPercent || 88;
-
-      // Check if current user is the commissioner (actor) or freelancer (target)
-      const isFinalCommissioner = currentUserId === event.actorId;
-
-      if (isFinalCommissioner) {
-        // Commissioner message - they made the final payment
-        return `You just paid ${finalFreelancerName} $${finalAmount} for completing ${finalProjectTitle}. Remaining budget: $0. Click here to see transaction activity`;
-      } else {
-        // Freelancer message - they received the final payment
-        return `${finalOrgName} has paid you $${finalAmount} for ${finalProjectTitle} final payment (remaining ${finalPercent}% of budget). Click here to view invoice details`;
-      }
+      // JUST USE THE MESSAGE FROM THE EVENT JSON
+      return (event as any).message || 'Final payment processed';
     case 'completion.rating_prompt':
-      return `Please rate your experience with this project`;
+      // JUST USE THE MESSAGE FROM THE EVENT JSON - STOP OVERENGINEERING
+      return (event as any).message || 'Rate your experience';
 
     default:
       console.warn(`Unknown notification message type: ${event.type}`, event);

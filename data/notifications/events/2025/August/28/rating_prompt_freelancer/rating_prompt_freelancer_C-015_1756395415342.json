@@ -1,0 +1,25 @@
+{
+  "id": "rating_prompt_freelancer_C-015_1756395415342",
+  "timestamp": "2025-08-28T15:36:55.342Z",
+  "type": "rating_prompt_freelancer",
+  "notificationType": 140,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "C-015",
+  "metadata": {
+    "projectTitle": "Final Test Notification Test Hopefully for Longer Divide",
+    "commissionerName": "Matte Hannery",
+    "completedTaskTitle": "Whitepaper or highlight reel",
+    "message": "All tasks for Final Test Notification Test Hopefully for Longer Divide have been approved. Click here to rate your collaboration with Matte Hannery.",
+    "ratingSubjectId": 34,
+    "ratingSubjectType": "commissioner",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "C-015",
+    "ratingSubjectUserId": 34,
+    "ratingSubjectUserType": "commissioner",
+    "action": "rate_commissioner"
+  }
+}

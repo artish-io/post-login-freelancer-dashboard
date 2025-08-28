@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756384936309_432",
+  "timestamp": "2025-08-28T12:42:16.310Z",
+  "type": "payment_sent",
+  "notificationType": 42,
+  "actorId": 32,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "NM-C004",
+  "metadata": {
+    "invoiceNumber": "NM-C004",
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "amount": 102.66666666666667,
+    "freelancerName": "Lucas Meyer",
+    "remainingBudget": "$144.67",
+    "notificationText": "You just paid Lucas Meyer $102.66666666666667 for their work on Completion Sender for Data Farm Handbook. This project has a remaining budget of $144.67 left."
+  },
+  "context": {
+    "projectId": "L-007",
+    "invoiceNumber": "NM-C004"
+  }
+}

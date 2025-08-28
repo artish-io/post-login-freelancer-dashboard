@@ -53,11 +53,11 @@ export async function GET(request: NextRequest): Promise<NextResponse<ApiError |
       }, { status: 400 });
     }
 
-    const projectId = Number(projectIdParam);
+    const projectId = projectIdParam;
     const subjectUserId = Number(subjectUserIdParam);
     const subjectUserType = subjectUserTypeParam as 'freelancer' | 'commissioner';
 
-    if (isNaN(projectId) || isNaN(subjectUserId)) {
+    if (!projectId || isNaN(subjectUserId)) {
       return NextResponse.json({
         success: false,
         code: 'INVALID_INPUT',

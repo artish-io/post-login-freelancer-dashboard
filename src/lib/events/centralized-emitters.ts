@@ -225,7 +225,7 @@ export async function emitTaskReopened(params: {
     };
 
     // Store notification
-    NotificationStorage.addEvent(taskReopenedEvent);
+    NotificationStorage.addEvent(taskReopenedEvent as any);
 
     // Emit bus event
     await emitBus('task.reopened', {

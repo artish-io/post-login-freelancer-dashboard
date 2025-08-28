@@ -1,0 +1,41 @@
+{
+  "id": 61,
+  "title": "Final Test Notification Test Hopefully for Longer Divide",
+  "organizationId": 3,
+  "commissionerId": "34",
+  "category": "Design",
+  "subcategory": "UI/UX Design",
+  "tags": [
+    "Design"
+  ],
+  "hourlyRateMin": 18.75,
+  "hourlyRateMax": 21.88,
+  "description": "Run digital campaigns targeting academics, journalists, and activists; foster partnerships with progressive organizations; and amplify voices of key speakers through content drops and video teasers. Drive early RSVPs with thought-leadership articles and community engagement.\n",
+  "deliveryTimeWeeks": 0.2857142857142857,
+  "estimatedHours": 16,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Figma"
+  ],
+  "executionMethod": "milestone",
+  "invoicingMethod": "milestone",
+  "milestones": [
+    {
+      "id": "8299e15f-3473-4a97-b27e-e7e21f119ab1",
+      "title": "Whitepaper or highlight reel",
+      "description": "Manage live coverage during the conference (live tweets, recap reels, press placements) and publish a post-event. Ensure the conference’s ideas outlast the event itself by building a digital archive ",
+      "startDate": "2025-08-29T04:00:00.000Z",
+      "endDate": "2025-08-30T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-30T04:00:00.000Z",
+  "lowerBudget": 300,
+  "upperBudget": 350,
+  "postedDate": "2025-08-28",
+  "notes": "Budget range: $300 - $350",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

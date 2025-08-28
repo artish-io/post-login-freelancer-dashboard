@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
 import { readGig, updateGig } from '@/lib/gigs/hierarchical-storage';
@@ -13,11 +13,11 @@ import { logProjectTransition, Subsystems } from '@/lib/log/transitions';
 // Using hierarchical storage for gigs and project tasks
 import { readAllGigApplications, writeGigApplication, readGigApplication } from '@/lib/gigs/gig-applications-storage';
 
-async function handleGigMatching(req: Request) {
+async function handleGigMatching(req: NextRequest) {
   console.log('🚀 Starting handleGigMatching function');
 
   // Hoist variables for error logging
-  let actorId: number;
+  let actorId: number = 0; // Default value to avoid unassigned variable error
   let applicationId: any;
   let gigId: any;
   let freelancerId: any;
@@ -156,15 +156,15 @@ async function handleGigMatching(req: Request) {
       await UnifiedStorageService.writeProject({
         ...acceptResult.project,
         status: 'ongoing',
-        invoicingMethod: acceptResult.project.invoicingMethod || 'completion',
+        invoicingMethod: (acceptResult.project.invoicingMethod as "completion" | "milestone") || 'completion',
         createdAt: acceptResult.project.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString()
-      });
+      } as any);
       const projectSaveTime = Date.now() - projectSaveStart;
       console.log(`✅ Project saved to unified storage in ${projectSaveTime}ms`);
     } catch (projectSaveError) {
       console.error('❌ Failed to save project to unified storage:', projectSaveError);
-      throw new Error(`Project creation failed: ${projectSaveError.message}`);
+      throw new Error(`Project creation failed: ${projectSaveError instanceof Error ? projectSaveError.message : String(projectSaveError)}`);
     }
 
     console.log('🔄 Saving tasks to unified storage...');
@@ -176,7 +176,7 @@ async function handleGigMatching(req: Request) {
       projectId: task.projectId,
       projectTitle: acceptResult.project.title,
       organizationId: acceptResult.project.organizationId || 0,
-      projectTypeTags: acceptResult.project.tags || [],
+      projectTypeTags: acceptResult.project.typeTags || [],
       title: task.title,
       description: task.description || '',
       status: 'Ongoing',
@@ -199,7 +199,7 @@ async function handleGigMatching(req: Request) {
       console.log(`🔄 Saving task ${task.taskId} (${index + 1}/${tasksToSave.length})...`);
 
       try {
-        await UnifiedStorageService.saveTask(task);
+        await UnifiedStorageService.saveTask(task as any);
         const taskSaveTime = Date.now() - taskSaveStart;
         console.log(`✅ Task ${task.taskId} saved in ${taskSaveTime}ms`);
         return { taskId: task.taskId, success: true, time: taskSaveTime };
@@ -292,7 +292,7 @@ async function handleGigMatching(req: Request) {
         const { UpfrontPaymentGuard } = await import('../../../../lib/payments/upfront-payment-guard');
 
         const guardResult = await UpfrontPaymentGuard.ensureUpfrontPaidAndReconciled({
-          projectId: acceptResult.project.projectId,
+          projectId: String(acceptResult.project.projectId),
           expectedInvoiceTypes: ['completion_upfront'],
           gigBudget: acceptResult.project.totalBudget,
           upfrontPercentage: 0.12
@@ -344,7 +344,7 @@ async function handleGigMatching(req: Request) {
             // Re-run the guard to verify the payment was processed correctly
             console.log('🔍 Re-verifying upfront payment after automatic execution...');
             const reVerifyResult = await UpfrontPaymentGuard.ensureUpfrontPaidAndReconciled({
-              projectId: acceptResult.project.projectId,
+              projectId: String(acceptResult.project.projectId),
               expectedInvoiceTypes: ['completion_upfront'],
               gigBudget: acceptResult.project.totalBudget,
               upfrontPercentage: 0.12
@@ -370,7 +370,7 @@ async function handleGigMatching(req: Request) {
                 console.log('🔍 Project invoices check:', upfrontInvoices.map(inv => ({
                   invoiceNumber: inv.invoiceNumber,
                   status: inv.status,
-                  amount: inv.totalAmount || inv.amount,
+                  amount: inv.totalAmount || (inv as any).amount,
                   createdAt: inv.createdAt,
                   updatedAt: inv.updatedAt
                 })));
@@ -474,12 +474,56 @@ async function handleGigMatching(req: Request) {
     console.log('🔄 Updating application status to accepted (guard passed)...');
     const applicationRecord = await readGigApplication(applicationId);
     if (applicationRecord) {
-      applicationRecord.status = 'accepted';
-      applicationRecord.acceptedAt = new Date().toISOString();
-      applicationRecord.projectId = acceptResult.project.projectId; // Link to created project
-      await writeGigApplication(applicationRecord);
+      const updatedApplication = {
+        ...applicationRecord,
+        status: 'accepted',
+        acceptedAt: new Date().toISOString(),
+        projectId: acceptResult.project.projectId // Link to created project
+      };
+      await writeGigApplication(updatedApplication as any);
     }
     console.log('✅ Application status updated to accepted');
+
+    // 🔔 COMPLETION-SPECIFIC: Trigger completion project activation notifications for completion-based projects
+    if (gig!.invoicingMethod === 'completion' || gig!.executionMethod === 'completion') {
+      console.log('🔔 Triggering completion project activation notifications...');
+      try {
+        const { handleCompletionNotification } = await import('@/app/api/notifications-v2/completion-handler');
+
+        // Notification for freelancer
+        await handleCompletionNotification({
+          type: 'completion.project_activated',
+          actorId: actorId, // Commissioner who accepted
+          targetId: Number(freelancerId), // Freelancer who gets notified
+          projectId: String(acceptResult.project.projectId),
+          context: {
+            projectTitle: acceptResult.project.title,
+            dueDate: acceptResult.project.dueDate,
+            totalTasks: acceptResult.tasks.length
+            // commissionerName and freelancerName will be enriched automatically
+          } as any
+        });
+
+        // Self-targeted notification for commissioner
+        await handleCompletionNotification({
+          type: 'completion.project_activated',
+          actorId: actorId, // Commissioner who accepted
+          targetId: actorId, // Commissioner gets self-targeted notification
+          projectId: String(acceptResult.project.projectId),
+          context: {
+            projectTitle: acceptResult.project.title,
+            dueDate: acceptResult.project.dueDate,
+            totalTasks: acceptResult.tasks.length
+            // commissionerName and freelancerName will be enriched automatically
+          } as any
+        });
+
+        console.log(`✅ Completion project activation notifications sent for project ${acceptResult.project.projectId}`);
+      } catch (completionNotificationError) {
+        console.error('Failed to send completion project activation notifications:', completionNotificationError);
+        // Don't fail the main operation if notification fails
+      }
+    }
 
     // 🚫 AUTO-REJECT OTHER APPLICANTS: Find and reject all other pending applications for this gig
     console.log('🔄 Auto-rejecting other applicants for this gig...');
@@ -626,46 +670,116 @@ async function handleGigMatching(req: Request) {
 
     // Log project creation
     logProjectTransition(
-      acceptResult.project.projectId,
-      undefined,
+      String(acceptResult.project.projectId),
+      'created',
       'ongoing',
       actorId,
       Subsystems.GIGS_MATCH,
       {
         gigId: gigId,
-        freelancerId: Number(freelancerId),
-        applicationId: applicationId,
+        reason: `Project created from gig application ${applicationId}`,
       }
     );
 
     // Create project activation notification for freelancer
     try {
-      await eventLogger.logEvent({
+      // 🔔 ATOMIC CONSOLE LOG: Track milestone project activation enrichment
+      console.log('🔔 MILESTONE PROJECT ACTIVATION ENRICHMENT START:', {
+        projectId: acceptResult.project.projectId,
+        freelancerId: freelancerId,
+        commissionerId: actorId,
+        projectTitle: acceptResult.project.title,
+        taskCount: acceptResult.tasks.length,
+        timestamp: new Date().toISOString()
+      });
+
+      // Get freelancer name for enriched notification
+      let freelancerName = 'Freelancer';
+      try {
+        const freelancerUser = await UnifiedStorageService.getUserById(Number(freelancerId));
+        if (freelancerUser?.name) {
+          freelancerName = freelancerUser.name;
+          console.log('🔔 FREELANCER NAME FETCHED:', { freelancerId, freelancerName });
+        } else {
+          console.log('🔔 FREELANCER USER NOT FOUND:', { freelancerId });
+        }
+      } catch (userError) {
+        console.warn('🔔 FREELANCER NAME FETCH FAILED:', userError);
+      }
+
+      // Format due date for message
+      let dueDateText = 'the deadline';
+      if (acceptResult.project.dueDate) {
+        try {
+          const date = new Date(acceptResult.project.dueDate);
+          dueDateText = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+          console.log('🔔 DUE DATE FORMATTED:', { original: acceptResult.project.dueDate, formatted: dueDateText });
+        } catch (e) {
+          dueDateText = acceptResult.project.dueDate;
+          console.log('🔔 DUE DATE FORMAT FAILED, USING ORIGINAL:', dueDateText);
+        }
+      }
+
+      // Generate enriched message similar to completion notifications
+      const enrichedMessage = `${manager.name} accepted your application for ${acceptResult.project.title}. This project is now active and includes ${acceptResult.tasks.length} milestones due by ${dueDateText}`;
+
+      console.log('🔔 ENRICHED MESSAGE GENERATED:', { enrichedMessage });
+
+      const enrichedNotificationData = {
         id: `project_activated_${acceptResult.project.projectId}_${Date.now()}`,
         timestamp: new Date().toISOString(),
         type: 'project_activated',
         notificationType: NOTIFICATION_TYPES.PROJECT_ACTIVATED,
-        actorId: actorId, // Commissioner who accepted
-        targetId: Number(freelancerId), // Freelancer who gets notified
+        actorId: actorId,
+        targetId: Number(freelancerId),
         entityType: ENTITY_TYPES.PROJECT,
         entityId: acceptResult.project.projectId,
+        message: enrichedMessage,
         metadata: {
           projectTitle: acceptResult.project.title,
           gigTitle: gig!.title,
           taskCount: acceptResult.tasks.length,
           commissionerName: manager.name,
           organizationName: organization.name,
+          freelancerName: freelancerName,
           dueDate: acceptResult.project.dueDate
         },
         context: {
           projectId: acceptResult.project.projectId,
-          gigId: gigId,
-          applicationId: applicationId
+          gigId: Number(gigId),
+          projectTitle: acceptResult.project.title,
+          dueDate: acceptResult.project.dueDate,
+          totalTasks: acceptResult.tasks.length,
+          orgName: organization.name,
+          freelancerName: freelancerName,
+          commissionerName: manager.name
         }
+      };
+
+      console.log('🔔 ENRICHED NOTIFICATION DATA PREPARED:', enrichedNotificationData);
+
+      await eventLogger.logEvent(enrichedNotificationData);
+
+      console.log('🔔 MILESTONE PROJECT ACTIVATION ENRICHMENT SUCCESS:', {
+        projectId: acceptResult.project.projectId,
+        notificationId: enrichedNotificationData.id,
+        freelancerName: freelancerName,
+        enrichedMessage: enrichedMessage,
+        timestamp: new Date().toISOString()
       });
 
-      console.log(`✅ Successfully sent project activation notification for project ${acceptResult.project.projectId}`);
+      console.log(`✅ Successfully sent enriched project activation notification for project ${acceptResult.project.projectId}`);
     } catch (eventError) {
+      console.error('🔔 MILESTONE PROJECT ACTIVATION ENRICHMENT FAILED:', {
+        projectId: acceptResult.project.projectId,
+        freelancerId: freelancerId,
+        error: eventError,
+        timestamp: new Date().toISOString()
+      });
       console.error('Failed to log project activation event:', eventError);
       // Don't fail the main operation if event logging fails
     }
@@ -682,13 +796,13 @@ async function handleGigMatching(req: Request) {
             dueDate: acceptResult.project.dueDate,
 
             // 🛡️ DURATION GUARD: Include date separation fields in response
-            gigId: acceptResult.project.gigId,
-            gigPostedDate: acceptResult.project.gigPostedDate,
-            projectActivatedAt: acceptResult.project.projectActivatedAt,
-            originalDuration: acceptResult.project.originalDuration,
+            gigId: (acceptResult.project as any).gigId,
+            gigPostedDate: (acceptResult.project as any).gigPostedDate,
+            projectActivatedAt: (acceptResult.project as any).projectActivatedAt,
+            originalDuration: (acceptResult.project as any).originalDuration,
             // Legacy fields for backward compatibility
-            deliveryTimeWeeks: acceptResult.project.deliveryTimeWeeks,
-            estimatedHours: acceptResult.project.estimatedHours,
+            deliveryTimeWeeks: (acceptResult.project as any).deliveryTimeWeeks,
+            estimatedHours: (acceptResult.project as any).estimatedHours,
           },
           tasks: acceptResult.tasks.map(task => ({
             id: task.id,
@@ -698,8 +812,8 @@ async function handleGigMatching(req: Request) {
             dueDate: task.dueDate,
 
             // 🛡️ DURATION GUARD: Include task-level duration information
-            taskActivatedAt: task.taskActivatedAt,
-            originalTaskDuration: task.originalTaskDuration,
+            taskActivatedAt: (task as any).taskActivatedAt,
+            originalTaskDuration: (task as any).originalTaskDuration,
           })),
         },
         message: 'Successfully matched with freelancer and created project',

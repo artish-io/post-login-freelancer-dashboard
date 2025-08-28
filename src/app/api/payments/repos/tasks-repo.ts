@@ -100,7 +100,7 @@ export async function readAllTasks(): Promise<TaskRecord[]> {
  * Get tasks by project ID
  * @deprecated Use UnifiedStorageService.listTasks() instead
  */
-export async function listTasksByProject(projectId: number): Promise<TaskRecord[]> {
+export async function listTasksByProject(projectId: string | number): Promise<TaskRecord[]> {
   try {
     console.warn('⚠️ Using deprecated listTasksByProject from tasks-repo. Consider migrating to UnifiedStorageService.');
     const projectTasks = await UnifiedStorageService.listTasks(projectId);

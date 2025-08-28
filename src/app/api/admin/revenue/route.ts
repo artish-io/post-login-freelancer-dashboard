@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     // Load data files
     const storefrontSalesPath = path.join(process.cwd(), 'data/storefront-sales.json'); // TODO: Create this file
 
-    let invoicesData = [];
+    let invoicesData: any[] = [];
     let storefrontData = [];
 
     try {

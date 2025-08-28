@@ -31,7 +31,7 @@ export function emitInvoicePaid(
 ) {
   const actorNum = Number(actorId);
   const targetNum = Number(targetId);
-  const projectIdNum = Number(projectId);
+  const projectIdNum = typeof projectId === 'string' ? parseInt(projectId.replace(/\D/g, '')) || 0 : projectId;
 
   emitEvent({
     type: 'invoice_paid' as EventType,
@@ -64,7 +64,7 @@ export function emitTaskApproved(
 ) {
   const actorNum = Number(actorId);
   const targetNum = Number(targetId);
-  const projectIdNum = Number(projectId);
+  const projectIdNum = typeof projectId === 'string' ? parseInt(projectId.replace(/\D/g, '')) || 0 : projectId;
 
   emitEvent({
     type: 'task_approved' as EventType,

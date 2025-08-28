@@ -20,7 +20,7 @@ export async function POST(
     }
 
     // Read gig requests data from hierarchical storage
-    const { readAllGigRequests } = await import('../../../../../lib/gigs/gig-request-storage');
+    const { readAllGigRequests, updateGigRequestStatus } = await import('../../../../../lib/gigs/gig-request-storage');
     const requestsData = await readAllGigRequests();
     
     // Find the specific request
@@ -33,12 +33,9 @@ export async function POST(
       );
     }
 
-    // Update the request status
-    requestsData[requestIndex] = {
-      ...requestsData[requestIndex],
+    // Update the request status using hierarchical storage
+    await updateGigRequestStatus(requestId, {
       status: 'Rejected',
-      rejectedAt: new Date().toISOString(),
-      rejectionReason: reason || 'No reason provided',
       responses: [
         ...(requestsData[requestIndex].responses || []),
         {
@@ -48,15 +45,12 @@ export async function POST(
           reason: reason
         }
       ]
-    };
-
-    // Write back to file
-    fs.writeFileSync(requestsPath, JSON.stringify(requestsData, null, 2));
+    });
 
     return NextResponse.json({
       success: true,
       message: 'Gig request rejected successfully',
-      request: requestsData[requestIndex]
+      requestId: requestId
     });
   } catch (error) {
     console.error('Error rejecting gig request:', error);

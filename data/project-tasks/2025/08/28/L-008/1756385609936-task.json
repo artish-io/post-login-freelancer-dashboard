@@ -1,0 +1,22 @@
+{
+  "taskId": 1756385609936,
+  "projectId": "L-008",
+  "projectTitle": "Test Portfolio Styling",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Writing"
+  ],
+  "title": "Phase One: Concept & Style Guide",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "link": "",
+  "dueDate": "2025-08-30T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": " map out regulatory, infrastructural, and demographic realities that shape feasibility.",
+  "createdDate": "2025-08-28T12:51:08.313Z",
+  "lastModified": "2025-08-28T12:51:08.314Z"
+}

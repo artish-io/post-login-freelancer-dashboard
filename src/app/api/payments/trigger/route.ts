@@ -50,7 +50,7 @@ async function handleTriggerPayment(req: Request) {
 
     // Project lookup and validation
     assert(invoice!.projectId, ErrorCodes.INVALID_INPUT, 400, 'Invoice has no associated project');
-    const projectRaw = await getProjectById(Number(invoice!.projectId));
+    const projectRaw = await getProjectById(invoice!.projectId!);
     assert(projectRaw, ErrorCodes.PROJECT_NOT_FOUND, 404, 'Project not found');
 
     // Project validation complete - we have a valid project
@@ -122,7 +122,7 @@ async function handleTriggerPayment(req: Request) {
     // Build transaction via mock gateway (processing)
     const paymentRecord = await processMockPayment({
       invoiceNumber: invoice!.invoiceNumber,
-      projectId: Number(invoice!.projectId),
+      projectId: invoice!.projectId!,
       freelancerId: Number(invoice!.freelancerId),
       commissionerId: Number(invoice!.commissionerId),
       totalAmount: Number(invoice!.totalAmount)
@@ -144,7 +144,7 @@ async function handleTriggerPayment(req: Request) {
       actorId,
       Subsystems.PAYMENTS_TRIGGER,
       {
-        projectId: Number(invoice!.projectId),
+        projectId: invoice!.projectId!,
         amount: Number(invoice!.totalAmount),
         integration: 'mock',
         transactionId: paymentRecord.transactionId,

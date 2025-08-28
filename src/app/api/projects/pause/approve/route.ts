@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Store the event
-    NotificationStorage.addEvent(event);
+    NotificationStorage.addEvent(event as any);
 
     return NextResponse.json({
       success: true,
@@ -114,7 +114,7 @@ export async function PUT(request: NextRequest) {
     };
 
     // Store the event
-    NotificationStorage.addEvent(event);
+    NotificationStorage.addEvent(event as any);
 
     return NextResponse.json({
       success: true,

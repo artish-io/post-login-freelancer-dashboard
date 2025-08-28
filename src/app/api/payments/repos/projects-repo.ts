@@ -53,7 +53,7 @@ export async function readAllProjects(): Promise<ProjectRecord[]> {
       description: project.description,
       organizationId: project.organizationId,
       typeTags: project.typeTags || [],
-      commissionerId: project.commissionerId,
+      commissionerId: project.commissionerId || 0, // Provide default value
       freelancerId: project.freelancerId,
       status: project.status,
       dueDate: project.dueDate,
@@ -77,7 +77,7 @@ export async function readAllProjects(): Promise<ProjectRecord[]> {
  * Get project by ID from hierarchical storage
  * @deprecated Use UnifiedStorageService.readProject() instead
  */
-export async function getProjectById(projectId: number): Promise<ProjectRecord | null> {
+export async function getProjectById(projectId: string | number): Promise<ProjectRecord | null> {
   try {
     console.warn('⚠️ Using deprecated getProjectById from projects-repo. Consider migrating to UnifiedStorageService.');
     const project = await UnifiedStorageService.readProject(projectId);
@@ -93,7 +93,7 @@ export async function getProjectById(projectId: number): Promise<ProjectRecord |
       description: project.description,
       organizationId: project.organizationId,
       typeTags: project.typeTags || [],
-      commissionerId: project.commissionerId,
+      commissionerId: project.commissionerId || 0, // Provide default value
       freelancerId: project.freelancerId,
       status: project.status,
       dueDate: project.dueDate,
@@ -124,6 +124,7 @@ export async function createProject(project: Omit<ProjectRecord, 'createdAt' | '
     const now = new Date().toISOString();
     const newProject: Project = {
       ...project,
+      projectId: String(project.projectId), // Ensure projectId is string
       createdAt: now,
       updatedAt: now,
       status: project.status as any || 'proposed',
@@ -148,7 +149,7 @@ export async function createProject(project: Omit<ProjectRecord, 'createdAt' | '
  * Update an existing project
  * @deprecated Use UnifiedStorageService.writeProject() instead
  */
-export async function updateProject(projectId: number, updates: Partial<ProjectRecord>): Promise<ProjectRecord | null> {
+export async function updateProject(projectId: string | number, updates: Partial<ProjectRecord>): Promise<ProjectRecord | null> {
   try {
     console.warn('⚠️ Using deprecated updateProject from projects-repo. Consider migrating to UnifiedStorageService.');
 
@@ -160,6 +161,7 @@ export async function updateProject(projectId: number, updates: Partial<ProjectR
     const updatedProject: Project = {
       ...existingProject,
       ...updates,
+      projectId: String(existingProject.projectId), // Ensure projectId is string
       updatedAt: new Date().toISOString(),
       status: (updates.status as any) || existingProject.status as any,
       invoicingMethod: (updates.invoicingMethod as any) || existingProject.invoicingMethod as any
@@ -183,7 +185,7 @@ export async function updateProject(projectId: number, updates: Partial<ProjectR
  * Delete a project
  * @deprecated Use UnifiedStorageService for deletion instead
  */
-export async function deleteProjectById(projectId: number): Promise<boolean> {
+export async function deleteProjectById(projectId: string | number): Promise<boolean> {
   try {
     console.warn('⚠️ Using deprecated deleteProjectById from projects-repo. Consider migrating to UnifiedStorageService.');
     // Note: UnifiedStorageService doesn't have delete yet, so we'll implement a basic version

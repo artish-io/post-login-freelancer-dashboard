@@ -75,13 +75,15 @@ async function logCompletionEvent(event: CompletionEvent) {
   try {
     const { eventLogger } = await import('@/lib/events/event-logger');
     await eventLogger.logEvent({
+      id: `completion_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       type: event.type,
+      notificationType: 50, // Completion event type
       actorId: event.actorId,
       targetId: event.targetId,
-      projectId: event.projectId,
+      entityType: 1, // Project entity type
+      entityId: String((event.context as any).projectId || 'unknown'),
       metadata: event.context,
-      timestamp: event.timestamp,
-      subsystem: 'completion_invoicing'
+      timestamp: event.timestamp || new Date().toISOString(),
     });
   } catch (e) {
     console.warn('Could not integrate with existing event logger:', e);
@@ -119,11 +121,28 @@ async function integrateWithExistingNotificationSystem(event: CompletionEvent): 
       entityId: event.context?.invoiceNumber || event.projectId || `completion_${event.type}_${Date.now()}`,
       projectId: event.projectId,
       message: generateNotificationMessage(event),
-      context: event.context,
-      metadata: event.context, // Include context as metadata for compatibility
+      context: {
+        projectId: event.projectId,  // ← ADD: Ensure project ID is set
+        ...event.context
+      },
+      metadata: {
+        projectId: event.projectId,  // ← ADD: Also in metadata for compatibility
+        ...event.context
+      },
       timestamp: event.timestamp || new Date().toISOString(),
       subsystem: 'completion_invoicing'
     };
+
+    // 🔔 ATOMIC CONSOLE LOG: Track completion notification storage
+    console.log('🔔 COMPLETION NOTIFICATION STORAGE:', {
+      notificationId,
+      type: event.type,
+      actorId: event.actorId,
+      targetId: event.targetId,
+      isCommissionerNotification: event.actorId === event.targetId,
+      projectId: event.projectId,
+      timestamp: new Date().toISOString()
+    });
 
     // Use the proper notification storage method
     await NotificationStorage.addEventWithPersistentDedup(notificationEvent);
@@ -141,25 +160,33 @@ async function enrichCompletionContext(event: CompletionEvent): Promise<Completi
   try {
     const { UnifiedStorageService, getAllOrganizations } = await import('@/lib/storage/unified-storage-service');
 
-    // Get actor (commissioner) data
-    const actor = await UnifiedStorageService.getUserById(event.actorId);
+    // Get project data to find both commissioner and freelancer
+    const project = await UnifiedStorageService.getProjectById(event.projectId);
+    if (!project) {
+      throw new Error(`Project ${event.projectId} not found`);
+    }
+
+    // Get commissioner data
+    const commissioner = await UnifiedStorageService.getUserById(project.commissionerId);
     let orgName = 'Organization';
 
-    if (actor?.organizationId) {
+    if (commissioner?.organizationId) {
       const organizations = await getAllOrganizations();
-      const organization = organizations.find((org: any) => org.id === actor.organizationId);
+      const organization = organizations.find((org: any) => org.id === commissioner.organizationId);
       if (organization) {
         orgName = organization.name;
       }
-    } else if (actor?.name) {
-      // If no organization, use actor name as fallback
-      orgName = actor.name;
+    } else if (commissioner?.name) {
+      // If no organization, use commissioner name as fallback
+      orgName = commissioner.name;
     }
 
-    // Get target (freelancer) data
-    const target = await UnifiedStorageService.getUserById(event.targetId);
-    const freelancerName = target?.name || 'Freelancer';
-    const commissionerName = actor?.name || 'Commissioner';
+    // Get freelancer data from project
+    const freelancer = await UnifiedStorageService.getUserById(project.freelancerId);
+    const freelancerName = freelancer?.name || 'Freelancer';
+    const commissionerName = commissioner?.name || 'Commissioner';
+
+    console.log(`[COMPLETION-ENRICHMENT] Project ${event.projectId}: Commissioner=${commissionerName}, Freelancer=${freelancerName}, Org=${orgName}`);
 
     // Return enriched context
     return {
@@ -188,39 +215,57 @@ function generateNotificationMessage(event: CompletionEvent): string {
   const finalAmount = event.context.finalAmount || 0;
   const taskTitle = event.context.taskTitle || 'Task';
   const invoiceNumber = event.context.invoiceNumber || '';
-  const orgName = event.context.orgName || 'Organization';
-  const freelancerName = event.context.freelancerName || 'Freelancer';
-  const commissionerName = event.context.commissionerName || 'Commissioner';
-  const totalTasks = event.context.totalTasks || 4;
-  const finalPercent = event.context.finalPercent || 88;
+  const context = event.context as any;
+  const orgName = context.orgName || 'Organization';
+  const freelancerName = context.freelancerName || 'Freelancer';
+  const commissionerName = context.commissionerName || 'Commissioner';
+  const totalTasks = context.totalTasks || 4;
+  const finalPercent = context.finalPercent || 88;
+
+  // Determine if this is a commissioner notification (self-targeted)
+  const isCommissionerNotification = event.actorId === event.targetId;
 
   switch (event.type) {
     case 'completion.project_activated':
+      // This notification is only for freelancers - commissioners don't get project activation notifications
       // Format due date properly if available
       let dueDateText = 'the deadline';
-      if (event.context?.dueDate) {
+      if (context?.dueDate) {
         try {
-          const date = new Date(event.context.dueDate);
+          const date = new Date(context.dueDate);
           dueDateText = date.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
           });
         } catch (e) {
-          dueDateText = event.context.dueDate;
+          dueDateText = context.dueDate;
         }
       }
+
+      // Freelancer message: "[commissioner] accepted your application"
       return `${commissionerName} accepted your application for ${projectTitle}. This project is now active and includes ${totalTasks} milestones due by ${dueDateText}`;
 
     case 'completion.upfront_payment':
-      // Use organization name for payer as specified by user
-      return `${orgName} has paid $${upfrontAmount} upfront for your newly activated ${projectTitle} project. This project has a budget of $${event.context.remainingBudget || 0} left. Click here to view invoice details`;
+      if (isCommissionerNotification) {
+        // V2 Commissioner message: "[org name] paid [freelancer] [invoice value]" + "You just paid [freelancer name] [invoice value] upfront [project title]. Remaining budget: [remaining budget = totalBudget minus paidToDate]. Click here to view invoice details"
+        const remainingBudget = event.context.remainingBudget || 0;
+        return `You just paid ${freelancerName} $${upfrontAmount} upfront ${projectTitle}. Remaining budget: $${remainingBudget}. Click here to view invoice details`;
+      } else {
+        // Freelancer message: "[org] has paid upfront"
+        return `${orgName} has paid $${upfrontAmount} upfront for your newly activated ${projectTitle} project. This project has a budget of $${event.context.remainingBudget || 0} left. Click here to view invoice details`;
+      }
 
     case 'completion.task_approved':
+      // This notification is only for freelancers - commissioners don't get task approval notifications
+      // Freelancer message: "[commissioner] has approved your task"
       return `${commissionerName} has approved your submission for "${taskTitle}" in ${projectTitle}. Task approved and milestone completed. Click here to see its project tracker.`;
 
     case 'completion.invoice_received':
-      return `${freelancerName} sent you a $${amount} invoice for ${taskTitle}. Click here to review.`;
+      // V2 Commissioner message: "[freelancer name] sent you an invoice for [invoice value] for [x number] approved tasks, of your active project, [project title]"
+      // Note: For completion projects, it's typically 1 task per invoice
+      const approvedTasksCount = 1; // Completion projects send individual task invoices
+      return `${freelancerName} sent you an invoice for $${amount} for ${approvedTasksCount} approved task, of your active project, ${projectTitle}.`;
 
     case 'completion.invoice_paid':
       // Format for freelancer receiving payment
@@ -233,24 +278,37 @@ function generateNotificationMessage(event: CompletionEvent): string {
       }
 
     case 'completion.commissioner_payment':
-      // Format for commissioner payment confirmation
+      // V2 Commissioner message: "You just paid [freelancer name] [invoice value] for your ongoing project, [project title]. Remaining budget: [remaining budget = totalBudget minus paidToDate]. Click here to see transaction activity"
       const remainingBudget = event.context.remainingBudget || 0;
-      const taskTitleForCommissioner = event.context.taskTitle || taskTitle;
-      if (remainingBudget > 0) {
-        return `You just paid ${freelancerName} $${amount} for submitting ${taskTitleForCommissioner} for ${projectTitle}. Remaining budget: $${remainingBudget}. Click here to see transaction activity.`;
-      } else {
-        return `You paid ${freelancerName} $${amount} for ${taskTitleForCommissioner || invoiceNumber}. Click here to view transaction details.`;
-      }
+      return `You just paid ${freelancerName} $${amount} for your ongoing project, ${projectTitle}. Remaining budget: $${remainingBudget}. Click here to see transaction activity`;
 
     case 'completion.project_completed':
-      // Let the main API route handle message generation for context-aware messages
-      return null;
+      if (isCommissionerNotification) {
+        // V2 Commissioner message: "You have approved all tasks for [project title]. This project is now complete"
+        return `You have approved all tasks for ${projectTitle}. This project is now complete`;
+      } else {
+        // Freelancer message: "[commissioner] has approved all tasks"
+        return `Project completed - ${commissionerName} has approved all tasks for ${projectTitle}. This project is now complete.`;
+      }
 
     case 'completion.final_payment':
-      return `${orgName} has paid you $${finalAmount} for ${projectTitle} final payment (remaining ${finalPercent}% of budget). Click here to view invoice details.`;
+      if (isCommissionerNotification) {
+        // V2 Commissioner message: "You just paid [freelancer name] a final payment of [invoice value] for your now completed project, [project title]. Remaining budget: [remaining budget = totalBudget minus paidToDate]. Click here to see invoice details"
+        const remainingBudgetFinal = event.context.remainingBudget || 0;
+        return `You just paid ${freelancerName} a final payment of $${finalAmount} for your now completed project, ${projectTitle}. Remaining budget: $${remainingBudgetFinal}. Click here to see invoice details`;
+      } else {
+        // Freelancer message: "[org] has paid final payment"
+        return `${orgName} has paid you $${finalAmount} for ${projectTitle} final payment (remaining ${finalPercent}% of budget). Click here to view invoice details.`;
+      }
 
     case 'completion.rating_prompt':
-      return `Rate your experience with ${commissionerName}. All tasks for ${projectTitle} have been approved. Click here to rate your collaboration.`;
+      if (isCommissionerNotification) {
+        // Commissioner message: "Rate your experience with [freelancer]"
+        return `Rate your experience with ${freelancerName}. All tasks for ${projectTitle} have been completed. Click here to rate your collaboration.`;
+      } else {
+        // Freelancer message: "Rate your experience with [commissioner]"
+        return `Rate your experience with ${commissionerName}. All tasks for ${projectTitle} have been approved. Click here to rate your collaboration.`;
+      }
 
     default:
       return `Completion event: ${event.type}`;

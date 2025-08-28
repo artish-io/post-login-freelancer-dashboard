@@ -1,0 +1,24 @@
+{
+  "id": "milestone_payment_received_C-015_1756395506095_1756395415076",
+  "timestamp": "2025-08-28T15:36:55.076Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 34,
+  "entityType": 5,
+  "entityId": "C-015_1756395506095",
+  "metadata": {
+    "taskTitle": "Whitepaper or highlight reel",
+    "projectTitle": "Final Test Notification Test Hopefully for Longer Divide",
+    "projectId": "C-015",
+    "taskId": 1756395506095,
+    "invoiceGenerated": true,
+    "amount": 0,
+    "invoiceNumber": "MH-020",
+    "organizationName": "Corlax Wellness"
+  },
+  "context": {
+    "projectId": "C-015",
+    "taskId": 1756395506095,
+    "invoiceNumber": "MH-020"
+  }
+}

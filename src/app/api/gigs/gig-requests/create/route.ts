@@ -122,7 +122,7 @@ export async function POST(req: Request) {
           }
         };
 
-        NotificationStorage.addEvent(notificationEvent);
+        NotificationStorage.addEvent(notificationEvent as any);
         console.log(`✅ Created gig request notification for freelancer ${payload.freelancerId}`);
       }
     } catch (notificationError) {

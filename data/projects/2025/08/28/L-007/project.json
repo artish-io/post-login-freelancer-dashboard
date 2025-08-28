@@ -1,0 +1,21 @@
+{
+  "projectId": "L-007",
+  "title": "Completion Sender for Data Farm Handbook",
+  "description": "We’re developing a smart gated community in Lagos and need a freelancer to design an economic model that supports a self-sustaining ecosystem. The model should balance real estate, energy, utilities, commerce, and community services to ensure both profitability and long-term resilience. The right partner will help us structure a blueprint that blends financial viability with innovation in sustainable living.",
+  "organizationId": 1,
+  "typeTags": [
+    "Design"
+  ],
+  "commissionerId": 32,
+  "freelancerId": 25,
+  "status": "completed",
+  "dueDate": "2025-08-31",
+  "totalTasks": 3,
+  "invoicingMethod": "completion",
+  "totalBudget": 350,
+  "paidToDate": 350,
+  "currency": "USD",
+  "createdAt": "2025-08-28T11:47:33.924Z",
+  "updatedAt": "2025-08-28T12:45:28.573Z",
+  "completedAt": "2025-08-28T12:45:28.573Z"
+}

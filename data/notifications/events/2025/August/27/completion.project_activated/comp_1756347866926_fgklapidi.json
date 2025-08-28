@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756347866926_fgklapidi",
+  "type": "completion.project_activated",
+  "notificationType": 150,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-005",
+  "projectId": "L-005",
+  "message": "Neilsan Mando accepted your application for Completion for 2Baba 40-Year Concert. This project is now active and includes 1 milestones due by August 30, 2025",
+  "context": {
+    "projectId": "L-005",
+    "projectTitle": "Completion for 2Baba 40-Year Concert",
+    "dueDate": "2025-08-31",
+    "totalTasks": 1,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-005",
+    "projectTitle": "Completion for 2Baba 40-Year Concert",
+    "dueDate": "2025-08-31",
+    "totalTasks": 1,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T02:24:26.926Z",
+  "subsystem": "completion_invoicing"
+}

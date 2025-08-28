@@ -1,0 +1,32 @@
+{
+  "id": "milestone_C-014_MH-019_commissioner_1756388935556",
+  "timestamp": "2025-08-28T13:48:55.556Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 10,
+  "entityId": "C-014_MH-019",
+  "metadata": {
+    "type": "milestone_payment_sent",
+    "audience": "commissioner",
+    "projectId": "C-014",
+    "invoiceNumber": "MH-019",
+    "amount": 250,
+    "freelancerName": "Tobi Philly",
+    "organizationName": "Corlax Wellness",
+    "taskTitle": "Building",
+    "projectTitle": "Milestone Modelling For Series A Fundraising",
+    "remainingBudget": 0,
+    "commissionerId": 34,
+    "freelancerId": 1,
+    "eventKey": "milestone_payment_sent:commissioner:C-014:MH-019",
+    "qualityScore": 4,
+    "title": "You just paid Tobi Philly $250",
+    "message": "You just paid Tobi Philly $250 for submitting Building for Milestone Modelling For Series A Fundraising. Remaining budget: $0. Click here to see transaction activity"
+  },
+  "context": {
+    "projectId": "C-014",
+    "invoiceNumber": "MH-019"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "comp_1756348804070_8mupfe8ur",
+  "type": "completion.rating_prompt",
+  "notificationType": 157,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-006",
+  "projectId": "L-006",
+  "message": "Rate your experience with Neilsan Mando. All tasks for Market Research for Longer Divide have been approved. Click here to rate your collaboration.",
+  "context": {
+    "projectId": "L-006",
+    "projectTitle": "Market Research for Longer Divide",
+    "commissionerName": "Neilsan Mando",
+    "freelancerName": "Lucas Meyer",
+    "orgName": "Lagos State Parks Services"
+  },
+  "metadata": {
+    "projectId": "L-006",
+    "projectTitle": "Market Research for Longer Divide",
+    "commissionerName": "Neilsan Mando",
+    "freelancerName": "Lucas Meyer",
+    "orgName": "Lagos State Parks Services"
+  },
+  "timestamp": "2025-08-28T02:40:03.870Z",
+  "subsystem": "completion_invoicing"
+}

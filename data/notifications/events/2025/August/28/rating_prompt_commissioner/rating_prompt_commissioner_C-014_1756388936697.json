@@ -1,0 +1,25 @@
+{
+  "id": "rating_prompt_commissioner_C-014_1756388936697",
+  "timestamp": "2025-08-28T13:48:56.696Z",
+  "type": "rating_prompt_commissioner",
+  "notificationType": 141,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 2,
+  "entityId": "C-014",
+  "metadata": {
+    "projectTitle": "Milestone Modelling For Series A Fundraising",
+    "freelancerName": "Tobi Philly",
+    "completedTaskTitle": "Building",
+    "message": "Rate your experience working with Tobi Philly on Milestone Modelling For Series A Fundraising",
+    "ratingSubjectId": 1,
+    "ratingSubjectType": "freelancer",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "C-014",
+    "ratingSubjectUserId": 1,
+    "ratingSubjectUserType": "freelancer",
+    "action": "rate_freelancer"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_50_25_1756319350155",
+  "timestamp": "2025-08-27T18:29:10.155Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "50",
+  "metadata": {
+    "gigTitle": "Economic Model Design for Smart Gated Communities: Building Self-Sustaining Futures in Lagos",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 50,
+    "applicationId": 1755193217278
+  }
+}

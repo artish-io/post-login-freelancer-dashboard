@@ -51,7 +51,7 @@ export async function getSpendingTransactions(commissionerId: number): Promise<S
       type: 'freelancer_payout' as const,
       amount: invoice.totalAmount,
       currency: 'USD',
-      date: invoice.paymentDetails?.processedAt || invoice.paidDate || invoice.sentDate || invoice.generatedAt || invoice.issueDate,
+      date: invoice.paymentDetails?.processedAt || invoice.paidDate || invoice.sentDate || (invoice as any).generatedAt || invoice.issueDate,
       description: `Payment for ${invoice.projectTitle}`,
       projectName: invoice.projectTitle
     }));
@@ -62,7 +62,7 @@ export async function getSpendingTransactions(commissionerId: number): Promise<S
   transactions.forEach(transaction => {
     const existing = uniqueTransactions.get(transaction.id);
     if (!existing || new Date(transaction.date) > new Date(existing.date)) {
-      uniqueTransactions.set(transaction.id, transaction);
+      uniqueTransactions.set(transaction.id, transaction as SpendingTransaction);
     }
   });
 

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { readAllProjects } from '@/lib/projects-utils';
+import { readAllTasks } from '@/lib/project-tasks/hierarchical-storage';
 
 // Types
 interface Project {
@@ -99,7 +100,7 @@ function isActiveProject(status: string): boolean {
          !inactiveStatuses.some(inactive => normalizedStatus.includes(inactive));
 }
 
-function calculateUserStats(userId: string, projects: Project[], projectTasks: ProjectTasks[]): DashboardStats {
+function calculateUserStats(userId: string, projects: any[], tasks: any[]): DashboardStats {
   // Get user's projects
   const userProjects = projects.filter(project =>
     String(project.freelancerId) === String(userId)
@@ -130,11 +131,11 @@ function calculateUserStats(userId: string, projects: Project[], projectTasks: P
   });
 
   // Analyze tasks for each project
-  userProjects.forEach(project => {
-    const projectTaskData = projectTasks.find(pt => pt.projectId === project.projectId);
+  userProjects.forEach((project: any) => {
+    const projectTasks = tasks.filter((task: any) => task.projectId === project.projectId);
 
-    if (projectTaskData && projectTaskData.tasks) {
-      projectTaskData.tasks.forEach(task => {
+    if (projectTasks.length > 0) {
+      projectTasks.forEach((task: any) => {
         // Count active (non-completed) tasks
         if (!task.completed && !task.rejected) {
           totalActiveTasks++;
@@ -187,16 +188,15 @@ export async function GET(request: Request) {
       readAllTasks()
     ]);
 
-    const projectTasks: ProjectTasks[] = convertHierarchicalToLegacy(hierarchicalTasks);
-    
+    // Use hierarchical storage directly instead of legacy conversion
     if (userId) {
       // Return stats for specific user
-      const stats = calculateUserStats(userId, projects, projectTasks);
+      const stats = calculateUserStats(userId, projects, hierarchicalTasks);
       return NextResponse.json(stats);
     } else {
       // Return stats for all users
-      const userIds = [...new Set(projects.map(p => p.freelancerId))].filter(Boolean);
-      const allStats = userIds.map(id => calculateUserStats(String(id), projects, projectTasks));
+      const userIds = [...new Set(projects.map((p: any) => p.freelancerId))].filter(Boolean);
+      const allStats = userIds.map(id => calculateUserStats(String(id), projects, hierarchicalTasks));
       return NextResponse.json(allStats);
     }
     
@@ -220,11 +220,10 @@ export async function POST(request: Request) {
       readAllTasks()
     ]);
 
-    const projectTasks: ProjectTasks[] = convertHierarchicalToLegacy(hierarchicalTasks);
-
+    // Use hierarchical storage directly
     // Calculate stats for all users dynamically
-    const userIds = [...new Set(projects.map(p => p.freelancerId))].filter(Boolean);
-    const allStats = userIds.map(id => calculateUserStats(String(id), projects, projectTasks));
+    const userIds = [...new Set(projects.map((p: any) => p.freelancerId))].filter(Boolean);
+    const allStats = userIds.map(id => calculateUserStats(String(id), projects, hierarchicalTasks));
 
     return NextResponse.json({
       message: 'Dashboard stats calculated successfully from universal source files',

@@ -1,0 +1,22 @@
+{
+  "taskId": 1756388463892,
+  "projectId": "C-013",
+  "projectTitle": "Easy Resumé Writing",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Writing"
+  ],
+  "title": "Phase 3 – Event Amplification & Legacy Building",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 3,
+  "link": "",
+  "dueDate": "2025-08-28T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Manage live coverage during the conference (live tweets, recap reels, press placements) and publish a post-event whitepaper or highlight reel. Ensure the conference’s ideas outlast the event itself by building a digital archive and ongoing community channel.",
+  "createdDate": "2025-08-28T13:28:59.922Z",
+  "lastModified": "2025-08-28T13:30:17.798Z"
+}

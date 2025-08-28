@@ -245,27 +245,4 @@ export function generateMigrationReport(): {
 }
 
 // ==================== EXPORTS ====================
-
-// Export all compatibility functions
-export {
-  // User functions
-  readUsersJson,
-  findUserInJson,
-  findUserByEmailInJson,
-  getUsersByType,
-  getFreelancerUsers,
-  getCommissionerUsers,
-  
-  // Freelancer functions
-  readFreelancersJson,
-  findFreelancerInJson,
-  
-  // Organization functions
-  readOrganizationsJson,
-  findOrganizationInJson,
-  
-  // Utility functions
-  parseJsonData,
-  checkHierarchicalStorageHealth,
-  generateMigrationReport
-};
+// All functions are already exported individually above

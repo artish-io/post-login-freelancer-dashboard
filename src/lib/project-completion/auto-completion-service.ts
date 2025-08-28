@@ -59,7 +59,7 @@ export async function checkProjectCompletionEligibility(projectId: string | numb
     }
 
     // Get tasks from hierarchical storage first (faster), fallback to repo if needed
-    let tasks = await readProjectTasks(projectId);
+    let tasks: any[] = await readProjectTasks(projectId);
 
     // Only query repo if hierarchical storage is empty
     if (tasks.length === 0) {
@@ -160,7 +160,7 @@ export async function autoCompleteProject(projectId: string | number): Promise<P
     try {
       const repoProject = await getProjectById(projectId);
       if (repoProject) {
-        await updateProjectRepo(projectId, { 
+        await updateProjectRepo(projectId, {
           status: 'completed',
           updatedAt: new Date().toISOString()
         });

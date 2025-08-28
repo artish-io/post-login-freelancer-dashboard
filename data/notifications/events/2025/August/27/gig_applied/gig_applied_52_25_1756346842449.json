@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_52_25_1756346842449",
+  "timestamp": "2025-08-28T02:07:22.449Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "52",
+  "metadata": {
+    "gigTitle": "Test Test Test",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 52,
+    "applicationId": 1755193217282
+  }
+}

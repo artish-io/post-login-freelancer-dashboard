@@ -34,6 +34,40 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
   const [canRate, setCanRate] = useState(false);
   const [hasRated, setHasRated] = useState(false);
 
+  // Rating handlers - moved here to avoid hoisting issues
+  const handleRateClick = async () => {
+    try {
+      // Get commissioner info
+      const projectRes = await fetch(`/api/projects`);
+      if (projectRes.ok) {
+        const projects = await projectRes.json();
+        const currentProject = projects.find((p: any) => p.projectId === projectId);
+
+        if (currentProject) {
+          // Get commissioner details
+          const commissionerRes = await fetch(`/api/user/${currentProject.commissionerId}`);
+          if (commissionerRes.ok) {
+            const commissioner = await commissionerRes.json();
+
+            setRatingModal({
+              isOpen: true,
+              commissionerId: currentProject.commissionerId,
+              commissionerName: commissioner.name || 'Commissioner'
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error opening rating modal:', error);
+    }
+  };
+
+  const handleRatingSubmitted = () => {
+    setRatingModal(null);
+    // Optionally refresh the component or show a success message
+    window.location.reload();
+  };
+
   const showSuccessToast = useSuccessToast();
   const showErrorToast = useErrorToast();
   const showInfoToast = useInfoToast();
@@ -154,6 +188,8 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
   }, [projectId]);
 
   const handleGenerateInvoice = async () => {
+    console.log('[INVOICE_GENERATION] Starting invoice generation for project:', projectId);
+
     if (!session?.user?.id) {
       showErrorToast('Authentication Required', 'Please log in to generate an invoice');
       return;
@@ -197,7 +233,11 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
       // Navigate on success (works for both new invoices and existing drafts)
       if (data.success && data.invoiceNumber) {
         console.log('[INVOICE_GENERATION] Success response:', data);
-        console.log('[INVOICE_GENERATION] Navigating to:', `/freelancer-dashboard/projects-and-invoices/invoices/send-invoice/${encodeURIComponent(data.invoiceNumber)}`);
+        console.log('[INVOICE_GENERATION] Invoice number received:', data.invoiceNumber);
+
+        const encodedInvoiceNumber = encodeURIComponent(data.invoiceNumber);
+        const navigationUrl = `/freelancer-dashboard/projects-and-invoices/invoices/send-invoice/${encodedInvoiceNumber}`;
+        console.log('[INVOICE_GENERATION] Navigating to:', navigationUrl);
 
         // Only show toast for new invoices, not existing drafts
         if (data.existingDraft || data.wasExisting) {
@@ -211,8 +251,15 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
 
         // Add a small delay to ensure toast is shown before navigation
         setTimeout(() => {
-          router.push(`/freelancer-dashboard/projects-and-invoices/invoices/send-invoice/${encodeURIComponent(data.invoiceNumber)}`);
-        }, 100);
+          console.log('[INVOICE_GENERATION] Executing navigation...');
+          try {
+            router.push(navigationUrl);
+            console.log('[INVOICE_GENERATION] Navigation initiated successfully');
+          } catch (navError) {
+            console.error('[INVOICE_GENERATION] Navigation failed:', navError);
+            showErrorToast('Navigation Failed', 'Could not navigate to invoice page. Please try manually.');
+          }
+        }, 500);
       } else {
         console.error('[INVOICE_GENERATION] Invalid response:', data);
         showErrorToast('Invoice Generation Failed', 'Invalid response from server');
@@ -461,40 +508,4 @@ export default function ProjectActionButtons({ projectId, onNotesClick, projectS
       )}
     </div>
   );
-
-  // Rating handlers
-  const handleRateClick = async () => {
-    try {
-      // Get commissioner info
-      const projectRes = await fetch(`/api/projects`);
-      if (projectRes.ok) {
-        const projects = await projectRes.json();
-        const currentProject = projects.find((p: any) => p.projectId === projectId);
-
-        if (currentProject) {
-          // Get commissioner name
-          const usersRes = await fetch('/api/users');
-          if (usersRes.ok) {
-            const users = await usersRes.json();
-            const commissioner = users.find((u: any) => u.id === currentProject.commissionerId && u.type === 'commissioner');
-
-            setRatingModal({
-              isOpen: true,
-              commissionerId: currentProject.commissionerId,
-              commissionerName: commissioner?.name || 'Unknown Commissioner'
-            });
-          }
-        }
-      }
-    } catch (error) {
-      console.error('Error opening rating modal:', error);
-      showErrorToast('Failed to open rating form');
-    }
-  };
-
-  const handleRatingSubmitted = () => {
-    setHasRated(true);
-    setRatingModal(null);
-    showSuccessToast('Rating submitted successfully!');
-  };
 }

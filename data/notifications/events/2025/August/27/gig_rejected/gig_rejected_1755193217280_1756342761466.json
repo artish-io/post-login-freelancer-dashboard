@@ -1,0 +1,21 @@
+{
+  "id": "gig_rejected_1755193217280_1756342761466",
+  "timestamp": "2025-08-28T00:59:21.466Z",
+  "type": "gig_rejected",
+  "notificationType": 61,
+  "actorId": "32",
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "50",
+  "metadata": {
+    "gigTitle": "Economic Model Design for Smart Gated Communities: Building Self-Sustaining Futures in Lagos",
+    "organizationName": "Lagos State Parks Services",
+    "rejectionMessage": "Lagos State Parks Services has rejected your application for \"Economic Model Design for Smart Gated Communities: Building Self-Sustaining Futures in Lagos\". You will be able to re-apply if this gig listing is still active after 21 days.",
+    "cooldownUntil": "2025-09-18T00:59:21.466Z"
+  },
+  "context": {
+    "gigId": 50,
+    "applicationId": 1755193217280,
+    "organizationId": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "task_submitted_1756348701651_1756348776814",
+  "timestamp": "2025-08-28T02:39:36.814Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 25,
+  "targetId": 32,
+  "entityType": 1,
+  "entityId": 1756348701651,
+  "metadata": {
+    "taskId": 1756348701651,
+    "taskTitle": "Phase 2 – Model Design & Simulation",
+    "projectTitle": "Market Research for Longer Divide",
+    "action": "submit",
+    "invoiceGenerated": false,
+    "message": "\"Phase 2 – Model Design & Simulation\" is awaiting your review for Market Research for Longer Divide"
+  },
+  "context": {
+    "projectId": "L-006",
+    "taskId": 1756348701651
+  }
+}

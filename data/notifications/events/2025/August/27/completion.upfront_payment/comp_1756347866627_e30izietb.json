@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756347866627_e30izietb",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-005",
+  "projectId": "L-005",
+  "message": "Lagos State Parks Services has paid $18 upfront for your newly activated Completion for 2Baba 40-Year Concert project. This project has a budget of $132 left. Click here to view invoice details",
+  "context": {
+    "projectId": "L-005",
+    "upfrontAmount": 18,
+    "projectTitle": "Completion for 2Baba 40-Year Concert",
+    "remainingBudget": 132,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-005",
+    "upfrontAmount": 18,
+    "projectTitle": "Completion for 2Baba 40-Year Concert",
+    "remainingBudget": 132,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T02:24:26.625Z",
+  "subsystem": "completion_invoicing"
+}

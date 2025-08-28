@@ -89,7 +89,7 @@ async function migrateLegacyNotifications(options: MigrationOptions = { dryRun: 
         
         if (!options.dryRun) {
           // Add to hierarchical storage
-          NotificationStorage.addEvent(hierarchicalNotification);
+          NotificationStorage.addEvent(hierarchicalNotification as any);
         }
         
         migrated++;
@@ -130,7 +130,7 @@ async function migrateLegacyNotifications(options: MigrationOptions = { dryRun: 
     
   } catch (error) {
     console.error('❌ Migration failed:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
   }
 }
 

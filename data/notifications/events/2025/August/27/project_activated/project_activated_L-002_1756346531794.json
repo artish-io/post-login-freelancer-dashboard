@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_L-002_1756346531794",
+  "timestamp": "2025-08-28T02:02:11.794Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "L-002",
+  "metadata": {
+    "projectTitle": "Smart Gated Communities: Building Self-Sustaining Futures in Lagos",
+    "gigTitle": "Smart Gated Communities: Building Self-Sustaining Futures in Lagos",
+    "taskCount": 3,
+    "commissionerName": "Neilsan Mando",
+    "organizationName": "Lagos State Parks Services",
+    "dueDate": "2025-09-01"
+  },
+  "context": {
+    "projectId": 2,
+    "gigId": 51
+  }
+}

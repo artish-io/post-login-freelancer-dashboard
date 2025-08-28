@@ -62,7 +62,7 @@ export const CompletionEventHandlers = {
     const projectTitle = event.context.projectTitle || 'Project';
     const commissionerName = event.context.commissionerName || 'Commissioner';
     const freelancerName = event.context.freelancerName || 'Freelancer';
-    const totalTasks = event.context.totalTasks || 4;
+    const totalTasks = (event.context as any).totalTasks || 4;
 
     console.log(`[COMPLETION] Project activation notification processed: ${projectTitle} (${commissionerName} -> ${freelancerName})`);
     // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
@@ -185,7 +185,7 @@ async function createCompletionNotification(params: {
       actorId: params.actorId,
       targetId: params.targetId,
       projectId: params.projectId,
-      message: params.message, // Can be null for dynamic generation
+      message: params.message || '', // Can be null for dynamic generation
       context: params.context,
       read: false,
       createdAt: new Date().toISOString()
@@ -226,12 +226,12 @@ export function generateCompletionNotificationMessage(event: CompletionEvent): s
   const orgName = event.context.orgName || 'Organization';
   const freelancerName = event.context.freelancerName || 'Freelancer';
   const commissionerName = event.context.commissionerName || 'Commissioner';
-  const totalTasks = event.context.totalTasks || 4;
+  const totalTasks = (event.context as any).totalTasks || 4;
 
   switch (event.type) {
     case 'completion.project_activated':
       // Let the main API route handle message generation for context-aware messages
-      return null;
+      return '';
     case 'completion.upfront_payment':
       return `${orgName} has paid $${event.context.upfrontAmount} upfront for your newly activated ${projectTitle} project. This project has a budget of $${event.context.remainingBudget} left. Click here to view invoice details`;
     case 'completion.task_approved':

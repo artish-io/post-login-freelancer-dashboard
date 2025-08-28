@@ -1,0 +1,22 @@
+{
+  "id": "task_submission_1756395506095_1756395182551",
+  "timestamp": "2025-08-28T15:33:02.551Z",
+  "type": "task_submission",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756395506095,
+  "metadata": {
+    "taskId": 1756395506095,
+    "taskTitle": "Whitepaper or highlight reel",
+    "projectTitle": "Final Test Notification Test Hopefully for Longer Divide",
+    "action": "submit",
+    "invoiceGenerated": false,
+    "message": "\"Whitepaper or highlight reel\" is awaiting your review for Final Test Notification Test Hopefully for Longer Divide"
+  },
+  "context": {
+    "projectId": "C-015",
+    "taskId": 1756395506095
+  }
+}

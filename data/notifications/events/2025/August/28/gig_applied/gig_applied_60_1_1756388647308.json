@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_60_1_1756388647308",
+  "timestamp": "2025-08-28T13:44:07.308Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "60",
+  "metadata": {
+    "gigTitle": "Milestone Modelling For Series A Fundraising",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 60,
+    "applicationId": 1755193217290
+  }
+}

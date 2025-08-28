@@ -27,7 +27,8 @@ export async function GET() {
     };
 
     for (const project of projects) {
-      const { projectId, title: projectTitle, logoUrl, tasks } = project;
+      const { projectId, title: projectTitle, tasks } = project;
+      const logoUrl = (project as any).logoUrl || null;
 
       for (const task of tasks) {
         if (task.completed) continue;
@@ -43,7 +44,7 @@ export async function GET() {
         if (task.status === 'In review') {
           result.awaitingReview.push(enrichedTask);
         } else if (isSameDay(dueDate, today)) {
-          enrichedTask.priorityScore = calculateTaskPriority(task);
+          (enrichedTask as any).priorityScore = calculateTaskPriority(task);
           result.today.push(enrichedTask);
         } else if (dueDate > today && dueDate <= endOfWeek) {
           result.thisWeek.push(enrichedTask);

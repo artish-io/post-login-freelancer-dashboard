@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
 import { appendTransaction, type TransactionRecord, findByMetadataKey } from '@/app/api/payments/repos/transactions-repo';
 import { getWallet, upsertWallet } from '@/app/api/payments/repos/wallets-repo';
 import { ok, err, RefreshHints, ErrorCodes, withErrorHandling } from '@/lib/http/envelope';
@@ -11,7 +12,7 @@ import type { Wallet, Currency } from '@/app/api/payments/repos/wallets-repo';
  * TODO: Replace with real orders/products repos when available
  * This is a mock function to resolve the freelancer owner from order/product data
  */
-async function resolveOrderOwner(orderId: string, productId: string | number): Promise<number | null> {
+async function resolveOrderOwner(orderId: string, _productId: string | number): Promise<number | null> {
   // Mock implementation - in real system this would:
   // 1. Look up the order by orderId
   // 2. Get the product by productId from the order
@@ -30,7 +31,7 @@ async function resolveOrderOwner(orderId: string, productId: string | number): P
   return 1;
 }
 
-async function handleStorefrontCredit(req: Request) {
+async function handleStorefrontCredit(req: NextRequest) {
   try {
     // 🔒 Auth - get session and validate (system/admin only for storefront credits)
     const { userId: actorId } = await requireSession(req);

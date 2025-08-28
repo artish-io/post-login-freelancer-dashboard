@@ -103,7 +103,7 @@ export function getPaymentNotificationsHealthcheck(): PaymentNotificationsHealth
   return {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'unknown',
-    featureFlags: flags,
+    featureFlags: flags as any,
     handlers: {
       paymentNotifHandlersRegisteredCount: handlerCounts.paymentNotifHandlersCount,
       approvalHandlersRegisteredCount: handlerCounts.approvalHandlersCount,

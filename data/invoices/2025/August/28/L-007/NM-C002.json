@@ -1,0 +1,34 @@
+{
+  "invoiceNumber": "NM-C002",
+  "projectId": "L-007",
+  "freelancerId": 25,
+  "commissionerId": 32,
+  "projectTitle": "Completion Sender for Data Farm Handbook",
+  "totalAmount": 42,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-28T11:47:36.168Z",
+  "dueDate": "2025-09-11T11:47:36.168Z",
+  "createdAt": "2025-08-28T11:47:36.168Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 42,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "paymentId": "TXN-NM-C002",
+    "paymentMethod": "mock",
+    "platformFee": 2.21,
+    "freelancerAmount": 39.79,
+    "currency": "USD",
+    "processedAt": "2025-08-28T11:47:36.671Z"
+  },
+  "paidDate": "2025-08-28",
+  "paidAmount": 42,
+  "updatedAt": "2025-08-28T11:47:36.672Z"
+}

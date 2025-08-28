@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756346531786_0t81iudal",
+  "type": "completion.project_activated",
+  "notificationType": 150,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-002",
+  "projectId": "L-002",
+  "message": "Neilsan Mando accepted your application for Smart Gated Communities: Building Self-Sustaining Futures in Lagos. This project is now active and includes 3 milestones due by August 31, 2025",
+  "context": {
+    "projectId": "L-002",
+    "projectTitle": "Smart Gated Communities: Building Self-Sustaining Futures in Lagos",
+    "dueDate": "2025-09-01",
+    "totalTasks": 3,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-002",
+    "projectTitle": "Smart Gated Communities: Building Self-Sustaining Futures in Lagos",
+    "dueDate": "2025-09-01",
+    "totalTasks": 3,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T02:02:11.785Z",
+  "subsystem": "completion_invoicing"
+}

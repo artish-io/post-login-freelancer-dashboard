@@ -1,0 +1,27 @@
+{
+  "id": "comp_1756385129842_a6omzkiqm",
+  "type": "completion.rating_prompt",
+  "notificationType": 157,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-007",
+  "projectId": "L-007",
+  "message": "Rate your experience with Neilsan Mando. All tasks for Completion Sender for Data Farm Handbook have been approved. Click here to rate your collaboration.",
+  "context": {
+    "projectId": "L-007",
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "commissionerName": "Neilsan Mando",
+    "freelancerName": "Lucas Meyer",
+    "orgName": "Lagos State Parks Services"
+  },
+  "metadata": {
+    "projectId": "L-007",
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "commissionerName": "Neilsan Mando",
+    "freelancerName": "Lucas Meyer",
+    "orgName": "Lagos State Parks Services"
+  },
+  "timestamp": "2025-08-28T12:45:29.840Z",
+  "subsystem": "completion_invoicing"
+}

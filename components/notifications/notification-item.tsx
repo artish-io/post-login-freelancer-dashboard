@@ -43,6 +43,7 @@ export interface NotificationData {
     invoiceNumber?: string;
     productId?: string;
     requestId?: string;
+    freelancerId?: number;
   };
   metadata?: {
     [key: string]: any;
@@ -60,6 +61,19 @@ interface NotificationItemProps {
 }
 
 const getNotificationIcon = (type: string, notification: NotificationData): string => {
+  // 🔔 ATOMIC CONSOLE LOG: Track completion commissioner notification icon resolution
+  if (type.startsWith('completion.')) {
+    const actorId = (notification as any).actorId || notification.metadata?.actorId;
+    console.log('🔔 COMPLETION NOTIFICATION ICON:', {
+      type,
+      notificationId: notification.id,
+      targetId: notification.user?.id,
+      actorId: actorId,
+      isCommissionerNotification: actorId === notification.user?.id,
+      timestamp: new Date().toISOString()
+    });
+  }
+
   // If notification has a specific iconPath, use it
   if (notification.iconPath) {
     return notification.iconPath;
@@ -75,6 +89,8 @@ const getNotificationIcon = (type: string, notification: NotificationData): stri
     case 'gig_application':
       return '/icons/gig-applied.png';
     case 'task_submission':
+      return '/icons/task-awaiting-review.png';
+    case 'task_submitted':           // Completion project task submissions
       return '/icons/task-awaiting-review.png';
     case 'task_approved':
     case 'completion.task_approved': // Use same icon for completion task approvals
@@ -105,31 +121,43 @@ const getNotificationIcon = (type: string, notification: NotificationData): stri
     case 'rating_prompt_commissioner':
       return '/icons/rating-prompt.png';
 
-    // Completion notification icons (both underscore and dot notation)
-    case 'completion_project_activated':
+    // Completion notification icons (dot notation only)
     case 'completion.project_activated':
-      return '/icons/project-activated.png';
-    case 'completion_upfront_payment':
+      return '/icons/project-activated.png';  // Freelancer only - project activation
     case 'completion.upfront_payment':
-      return '/icons/new-payment.png';
-    case 'completion_task_approved':
+      return '/icons/new-payment.png';        // Commissioner + Freelancer - upfront payment
     case 'completion.task_approved':
-      return '/icons/task-approved.png';
-    case 'completion_invoice_received':
+      return '/icons/task-approved.png';      // Freelancer only - task approval
     case 'completion.invoice_received':
-      return '/icons/new-invoice.png';
-    case 'completion_invoice_paid':
+      return '/icons/new-invoice.png';        // Commissioner only - manual invoice received
     case 'completion.invoice_paid':
-      return '/icons/new-payment.png';
-    case 'completion_project_completed':
-    case 'completion.project_completed':
-      return '/icons/project-completed.png';
-    case 'completion_final_payment':
+      return '/icons/new-payment.png';        // Freelancer only - invoice payment received
+    case 'completion.commissioner_payment':
+      return '/icons/new-payment.png';        // Commissioner only - payment confirmation
     case 'completion.final_payment':
-      return '/icons/new-payment.png';
-    case 'completion_rating_prompt':
+      return '/icons/new-payment.png';        // Commissioner + Freelancer - final payment
+    case 'completion.project_completed':
+      return '/icons/project-completed.png';  // Commissioner + Freelancer - project completion
     case 'completion.rating_prompt':
-      return '/icons/rating-prompt.png';
+      return '/icons/rating-prompt.png';      // Commissioner + Freelancer - rate experience
+
+    // 🏢 COMMISSIONER-SPECIFIC COMPLETION NOTIFICATIONS
+    // These are the exact 7 notifications commissioners receive for completion projects:
+    // 1. completion.upfront_payment (already defined above)
+    // 2. task_submitted (defined above in general section)
+    // 3. completion.invoice_received (already defined above)
+    // 4. completion.commissioner_payment (already defined above)
+    // 5. completion.final_payment (already defined above)
+    // 6. completion.project_completed (already defined above)
+    // 7. completion.rating_prompt (already defined above)
+
+    // Legacy/Other notification types
+    case 'payment_sent':             // Completion project manual payments (legacy)
+      return '/icons/new-payment.png';
+    case 'project_completed':        // Milestone project completion
+      return '/icons/project-completed.png';
+    case 'gig_applied':              // Data uses this instead of gig_application
+      return '/icons/gig-applied.png';
 
     default:
       return '/icons/notification-default.png';
@@ -143,8 +171,18 @@ const useUserAvatar = (type: string): boolean => {
     'invoice_sent', // Freelancer sends invoice - show freelancer avatar on commissioner side
     'gig_request_accepted', // Freelancer accepts gig request - show freelancer avatar on commissioner side
     'task_submission', // Freelancer submits task - show freelancer avatar on commissioner side
+    'task_submitted',        // 🏢 COMMISSIONER: Completion task submission - show freelancer avatar
     'gig_application', // Freelancer applies for gig - show freelancer avatar on commissioner side
-    'proposal_sent' // Freelancer sends proposal - show freelancer avatar on commissioner side
+    'proposal_sent', // Freelancer sends proposal - show freelancer avatar on commissioner side
+
+    // 🏢 COMMISSIONER COMPLETION NOTIFICATIONS - Avatar vs Icon Usage:
+    // ✅ USE AVATAR: task_submitted (freelancer submits task - show freelancer avatar)
+    // ❌ USE ICON: completion.upfront_payment (payment icon)
+    // ❌ USE ICON: completion.invoice_received (invoice icon)
+    // ❌ USE ICON: completion.commissioner_payment (payment icon)
+    // ❌ USE ICON: completion.final_payment (payment icon)
+    // ❌ USE ICON: completion.project_completed (completion icon)
+    // ❌ USE ICON: completion.rating_prompt (rating icon)
   ].includes(type);
 };
 
@@ -154,6 +192,20 @@ export default function NotificationItem({
 }: NotificationItemProps) {
   const timeAgo = formatDistanceToNow(new Date(notification.timestamp), { addSuffix: true });
   const shouldUseUserAvatar = useUserAvatar(notification.type);
+
+  // 🔔 ATOMIC CONSOLE LOG: Track completion commissioner notification rendering
+  if (notification.type.startsWith('completion.')) {
+    const actorId = (notification as any).actorId || notification.metadata?.actorId;
+    console.log('🔔 COMPLETION NOTIFICATION RENDER:', {
+      type: notification.type,
+      notificationId: notification.id,
+      targetId: notification.user?.id,
+      actorId: actorId,
+      isCommissionerNotification: actorId === notification.user?.id,
+      message: notification.message,
+      timestamp: new Date().toISOString()
+    });
+  }
 
   return (
     <div

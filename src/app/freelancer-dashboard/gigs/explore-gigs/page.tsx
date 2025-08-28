@@ -289,7 +289,7 @@ export default function ExploreGigsPage() {
         <div className="flex items-center gap-32 border-b border-gray-200">
           {[
             { key: 'active', label: 'Active Listings', count: tabCounts.active },
-            { key: 'applied', label: 'Applied Listings', count: tabCounts.applied },
+            { key: 'applied', label: 'Pending Applications', count: tabCounts.applied },
             { key: 'accepted', label: 'Accepted', count: tabCounts.accepted },
             { key: 'rejected', label: 'Rejected Applications', count: tabCounts.rejected }
           ].map((tab) => (

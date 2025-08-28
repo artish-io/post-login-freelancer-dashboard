@@ -167,7 +167,7 @@ export async function readProject(projectId: string | number): Promise<Project |
 
       if (scannedProject) {
         // Auto-repair: Add found project back to index
-        await addProjectToIndex(projectId, scannedProject.createdAt);
+        await addProjectToIndex(projectId, scannedProject.createdAt || new Date().toISOString());
         console.log(`[readProject] Auto-repaired index for project ${projectId}`);
         return scannedProject;
       }
@@ -254,10 +254,10 @@ export async function updateProject(projectId: string | number, updates: Partial
   const updatedProject = {
     ...existingProject,
     ...updates,
-    projectId // Ensure projectId doesn't get overwritten
+    projectId: projectId // Ensure projectId doesn't get overwritten
   };
-  
-  await saveProject(updatedProject);
+
+  await saveProject(updatedProject as any);
 }
 
 /**
@@ -353,7 +353,7 @@ export async function removeProjectFromIndex(projectId: string | number): Promis
 /**
  * Add a project to the index (auto-repair)
  */
-export async function addProjectToIndex(projectId: number, createdAt: string): Promise<void> {
+export async function addProjectToIndex(projectId: string | number, createdAt: string): Promise<void> {
   try {
     const indexPath = getProjectMetadataPath();
 
@@ -369,7 +369,7 @@ export async function addProjectToIndex(projectId: number, createdAt: string): P
       index = JSON.parse(indexData);
     }
 
-    index[projectId.toString()] = createdAt;
+    (index as any)[projectId.toString()] = createdAt;
 
     await fsPromises.writeFile(indexPath, JSON.stringify(index, null, 2), 'utf-8');
     console.log(`[addProjectToIndex] Auto-added project ${projectId} to index`);
@@ -382,7 +382,7 @@ export async function addProjectToIndex(projectId: number, createdAt: string): P
  * Scan filesystem for a project (resilient fallback)
  * This is the fallback when index lookup fails
  */
-export async function scanForProject(projectId: number): Promise<Project | null> {
+export async function scanForProject(projectId: string | number): Promise<Project | null> {
   try {
     const projectsBasePath = path.join(process.cwd(), 'data', 'projects');
 
@@ -419,7 +419,7 @@ export async function scanForProject(projectId: number): Promise<Project | null>
           }
         }
       } catch (error) {
-        console.warn(`[scanForProject] Error scanning year ${year}:`, error.message);
+        console.warn(`[scanForProject] Error scanning year ${year}:`, error instanceof Error ? error.message : error);
         continue;
       }
     }

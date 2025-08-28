@@ -1,0 +1,20 @@
+{
+  "projectId": "L-008",
+  "title": "Test Portfolio Styling",
+  "description": "The model should balance real estate, energy, utilities, commerce, and community services to ensure both profitability and long-term resilience. The right partner will help us structure a blueprint that blends financial viability with innovation in sustainable living.",
+  "organizationId": 1,
+  "typeTags": [
+    "Writing"
+  ],
+  "commissionerId": 32,
+  "freelancerId": 25,
+  "status": "ongoing",
+  "dueDate": "2025-08-31",
+  "totalTasks": 1,
+  "invoicingMethod": "completion",
+  "totalBudget": 250,
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-28T12:51:08.313Z",
+  "updatedAt": "2025-08-28T12:51:08.313Z"
+}

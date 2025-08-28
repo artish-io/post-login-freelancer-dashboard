@@ -5,6 +5,7 @@ import { getCommissionedTotalSync } from '@/lib/utils/getCommissionedTotal';
 import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { readAllGigs } from '@/lib/gigs/hierarchical-storage';
 import { getAllInvoices } from '@/lib/invoice-storage';
+import { getCommissionerTotals } from '@/lib/commissioner-totals-service';
 
 export async function GET(
   _req: Request,
@@ -119,8 +120,9 @@ export async function GET(
         ? gigs.filter((gig: any) => gig.organizationId === organization.id)
         : [];
 
-      // Calculate total budget from hierarchical invoice structure
-      const totalBudget = organization ? getCommissionedTotalSync(organization.id) : 0;
+      // 🎯 FIX: Use comprehensive commissioner totals service for accurate calculations
+      const commissionerTotals = await getCommissionerTotals(user.id);
+      const totalBudget = commissionerTotals.totalSpent;
 
       // Calculate quarterly change (mock data for now - in real app would compare with previous quarter)
       const previousQuarterTotal = totalBudget * 0.85; // Mock 15% growth
@@ -134,15 +136,28 @@ export async function GET(
       const isActivelyCommissioning = activeUnfilledGigs.length > 0;
 
       // Format gig listings for display
-      const gigListings = organizationGigs.slice(0, 8).map((gig: any) => ({
-        id: gig.id,
-        title: gig.title,
-        category: gig.category,
-        budget: gig.budget || '$5,000 - $10,000',
-        deadline: new Date(gig.deadline || Date.now()).toLocaleDateString(),
-        applicants: Math.floor(Math.random() * 20) + 1, // Mock data
-        status: gig.status || 'active'
-      }));
+      const gigListings = organizationGigs.slice(0, 8).map((gig: any) => {
+        // 🎯 FIX: Use actual created/updated timestamps instead of today's date
+        // Prefer lastModified if available, otherwise use postedDate
+        const displayDate = gig.lastModified || gig.postedDate;
+        const formattedDate = displayDate
+          ? new Date(displayDate).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric'
+            })
+          : 'No date';
+
+        return {
+          id: gig.id,
+          title: gig.title,
+          category: gig.category,
+          budget: gig.budget || '$5,000 - $10,000',
+          deadline: formattedDate,
+          applicants: Math.floor(Math.random() * 20) + 1, // Mock data
+          status: gig.status || 'active'
+        };
+      });
 
       return NextResponse.json({
         id: user.id,
@@ -160,7 +175,7 @@ export async function GET(
           logo: organization.logo,
           address: organization.address
         } : null,
-        projectsCommissioned: organizationGigs.length,
+        projectsCommissioned: commissionerTotals.projectsCount,
         totalBudget,
         quarterlyChange,
         isActivelyCommissioning,

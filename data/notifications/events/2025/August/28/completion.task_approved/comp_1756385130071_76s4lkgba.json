@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756385130071_76s4lkgba",
+  "type": "completion.task_approved",
+  "notificationType": 152,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-007",
+  "projectId": "L-007",
+  "message": "Neilsan Mando has approved your submission for \"Implementation Roadmap Presentation\" in Completion Sender for Data Farm Handbook. Task approved and milestone completed. Click here to see its project tracker.",
+  "context": {
+    "projectId": "L-007",
+    "taskId": "1756382283202",
+    "taskTitle": "Implementation Roadmap Presentation",
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "commissionerName": "Neilsan Mando",
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer"
+  },
+  "metadata": {
+    "projectId": "L-007",
+    "taskId": "1756382283202",
+    "taskTitle": "Implementation Roadmap Presentation",
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "commissionerName": "Neilsan Mando",
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer"
+  },
+  "timestamp": "2025-08-28T12:45:30.013Z",
+  "subsystem": "completion_invoicing"
+}

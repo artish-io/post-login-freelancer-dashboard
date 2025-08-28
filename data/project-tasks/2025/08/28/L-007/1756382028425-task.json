@@ -1,0 +1,27 @@
+{
+  "taskId": 1756382028425,
+  "projectId": "L-007",
+  "projectTitle": "Completion Sender for Data Farm Handbook",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Design"
+  ],
+  "title": "Model Design & Simulation Brainstorm",
+  "status": "Approved",
+  "completed": true,
+  "order": 2,
+  "link": "bit.ly234324",
+  "dueDate": "2025-08-28T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Develop a detailed economic framework incorporating revenue streams (housing, services, retail, energy), cost structures, and reinvestment loops. Run simulations for sustainability, scalability, and resilience under different growth and risk scenarios.\n\n",
+  "submittedDate": "2025-08-28T12:37:32.860Z",
+  "createdDate": "2025-08-28T11:47:33.924Z",
+  "lastModified": "2025-08-28T12:38:18.074Z",
+  "manualInvoiceEligible": true,
+  "invoicePaid": false,
+  "approvedBy": 32,
+  "approvedAt": "2025-08-28T12:38:18.073Z"
+}

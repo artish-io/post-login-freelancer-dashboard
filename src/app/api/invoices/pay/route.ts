@@ -199,8 +199,7 @@ export async function POST(request: Request) {
 
       // Get project budget for remaining budget calculation
       if (invoice.projectId) {
-        const projectIdNum = typeof invoice.projectId === 'string' ? parseInt(invoice.projectId) : invoice.projectId;
-        const project = await getProjectById(projectIdNum);
+        const project = await getProjectById(invoice.projectId);
         if (project) {
           projectBudget = project.totalBudget || 0;
         }

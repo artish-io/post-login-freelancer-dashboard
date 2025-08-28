@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_L-008_1756385471383",
+  "timestamp": "2025-08-28T12:51:11.383Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "L-008",
+  "metadata": {
+    "projectTitle": "Test Portfolio Styling",
+    "gigTitle": "Test Portfolio Styling",
+    "taskCount": 1,
+    "commissionerName": "Neilsan Mando",
+    "organizationName": "Lagos State Parks Services",
+    "dueDate": "2025-08-31"
+  },
+  "context": {
+    "projectId": 8,
+    "gigId": 58
+  }
+}

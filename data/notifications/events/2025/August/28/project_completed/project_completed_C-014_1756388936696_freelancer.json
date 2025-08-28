@@ -1,0 +1,19 @@
+{
+  "id": "project_completed_C-014_1756388936696_freelancer",
+  "timestamp": "2025-08-28T13:48:56.696Z",
+  "type": "project_completed",
+  "notificationType": 28,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "C-014",
+  "metadata": {
+    "projectTitle": "Milestone Modelling For Series A Fundraising",
+    "commissionerName": "Matte Hannery",
+    "completedTaskTitle": "Building",
+    "priority": "high"
+  },
+  "context": {
+    "projectId": "C-014"
+  }
+}

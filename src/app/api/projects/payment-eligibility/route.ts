@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getProjectById } from '@/app/api/payments/repos/projects-repo';
-import { listTasksByProject } from '@/app/api/payments/repos/tasks-repo';
-import { listInvoicesByProject } from '@/app/api/payments/repos/invoices-repo';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
+import { getAllInvoices } from '@/lib/invoice-storage';
 import { normalizeTaskStatus } from '@/app/api/payments/domain/types';
 
 export async function GET(request: Request) {
@@ -13,14 +12,19 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Project ID is required' }, { status: 400 });
     }
 
-    const projectId = Number(projectIdParam);
+    const projectId = projectIdParam;
 
-    // Load via repos (single source of truth)
-    const [project, tasks, invoices] = await Promise.all([
-      getProjectById(projectId),
-      listTasksByProject(projectId),
-      listInvoicesByProject(projectId),
+    // Load via UnifiedStorageService (single source of truth)
+    const [project, tasks, allInvoices] = await Promise.all([
+      UnifiedStorageService.readProject(projectId),
+      UnifiedStorageService.listTasks(projectId),
+      getAllInvoices(),
     ]);
+
+    // Filter invoices by project ID
+    const invoices = allInvoices.filter(invoice =>
+      invoice.projectId?.toString() === projectId.toString()
+    );
 
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
@@ -61,7 +65,7 @@ export async function GET(request: Request) {
         if (match) {
           eligibleInvoices.push({
             invoiceNumber: String(match.invoiceNumber),
-            taskId: task.id || task.taskId,
+            taskId: task.taskId,
             taskTitle: (task as any).title,
             taskOrder,
             amount: Number(match.totalAmount ?? 0),

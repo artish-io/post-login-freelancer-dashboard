@@ -126,7 +126,8 @@ function createNotificationEvent(payload: PaymentNotificationPayload): any {
   let message: string;
   
   if (payload.type === 'milestone_payment_sent') {
-    title = `You just paid ${payload.freelancerName || 'freelancer'} $${payload.amount}`;
+    // Use organization name in title instead of "You paid..." format per UX guide
+    title = `${payload.organizationName || 'Organization'} paid ${payload.freelancerName || 'freelancer'} $${payload.amount}`;
     message = `You just paid ${payload.freelancerName || 'freelancer'} $${payload.amount} for submitting ${payload.taskTitle || 'task'} for ${payload.projectTitle || 'project'}. Remaining budget: $${payload.remainingBudget || 0}. Click here to see transaction activity`;
   } else {
     title = `${payload.organizationName || 'Organization'} paid $${payload.amount}`;

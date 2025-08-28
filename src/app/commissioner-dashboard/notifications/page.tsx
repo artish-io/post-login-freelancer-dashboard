@@ -25,6 +25,17 @@ export default function NotificationsPage() {
   const handleNotificationClick = (notification: NotificationData) => {
     const { type, context } = notification;
 
+    // 🔔 ATOMIC CONSOLE LOG: Track completion commissioner notification clicks
+    if (type.startsWith('completion.')) {
+      console.log('🔔 COMPLETION COMMISSIONER NOTIFICATION CLICK:', {
+        type,
+        notificationId: notification.id,
+        userId: session?.user?.id,
+        context,
+        timestamp: new Date().toISOString()
+      });
+    }
+
     // Use the link from the notification if available for any type
     if (notification.link && notification.link !== '#') {
       try {

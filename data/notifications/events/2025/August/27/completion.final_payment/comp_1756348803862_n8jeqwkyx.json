@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756348803862_n8jeqwkyx",
+  "type": "completion.final_payment",
+  "notificationType": 156,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-006",
+  "projectId": "L-006",
+  "message": "Lagos State Parks Services has paid you $140.8 for Market Research for Longer Divide final payment (remaining 88% of budget). Click here to view invoice details.",
+  "context": {
+    "projectId": "L-006",
+    "finalAmount": 140.8,
+    "projectTitle": "Market Research for Longer Divide",
+    "finalPercent": 88,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-006",
+    "finalAmount": 140.8,
+    "projectTitle": "Market Research for Longer Divide",
+    "finalPercent": 88,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T02:40:03.861Z",
+  "subsystem": "completion_invoicing"
+}

@@ -2,12 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
-import { writeJsonAtomic, readJson, fileExists } from '@/lib/fs-json';
+import { writeJsonAtomic, fileExists } from '@/lib/fs-json';
 import {
   ProjectRating,
   RatingSubmissionRequest,
   generateRatingId,
-  getRatingStoragePath,
   getHierarchicalRatingStoragePath,
   isValidProjectRating
 } from '../../../../../types/ratings';
@@ -191,17 +190,17 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiError 
         details: {
           receivedData: newRating,
           validationChecks: {
-            hasRatingId: typeof newRating.ratingId === 'string',
-            hasProjectId: typeof newRating.projectId === 'number' || typeof newRating.projectId === 'string',
-            hasRaterUserId: typeof newRating.raterUserId === 'number',
-            hasValidRaterUserType: ['freelancer', 'commissioner'].includes(newRating.raterUserType),
-            hasSubjectUserId: typeof newRating.subjectUserId === 'number',
-            hasValidSubjectUserType: ['freelancer', 'commissioner'].includes(newRating.subjectUserType),
-            hasValidRating: typeof newRating.rating === 'number' && newRating.rating >= 1 && newRating.rating <= 5,
-            hasCreatedAt: typeof newRating.createdAt === 'string',
-            hasValidComment: newRating.comment === undefined || typeof newRating.comment === 'string',
-            hasValidProjectTitle: newRating.projectTitle === undefined || typeof newRating.projectTitle === 'string',
-            hasValidOrgLogoUrl: newRating.organizationLogoUrl === undefined || typeof newRating.organizationLogoUrl === 'string'
+            hasRatingId: typeof (newRating as any).ratingId === 'string',
+            hasProjectId: typeof (newRating as any).projectId === 'number' || typeof (newRating as any).projectId === 'string',
+            hasRaterUserId: typeof (newRating as any).raterUserId === 'number',
+            hasValidRaterUserType: ['freelancer', 'commissioner'].includes((newRating as any).raterUserType),
+            hasSubjectUserId: typeof (newRating as any).subjectUserId === 'number',
+            hasValidSubjectUserType: ['freelancer', 'commissioner'].includes((newRating as any).subjectUserType),
+            hasValidRating: typeof (newRating as any).rating === 'number' && (newRating as any).rating >= 1 && (newRating as any).rating <= 5,
+            hasCreatedAt: typeof (newRating as any).createdAt === 'string',
+            hasValidComment: (newRating as any).comment === undefined || typeof (newRating as any).comment === 'string',
+            hasValidProjectTitle: (newRating as any).projectTitle === undefined || typeof (newRating as any).projectTitle === 'string',
+            hasValidOrgLogoUrl: (newRating as any).organizationLogoUrl === undefined || typeof (newRating as any).organizationLogoUrl === 'string'
           }
         }
       }, { status: 400 });

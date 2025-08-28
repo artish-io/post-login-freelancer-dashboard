@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756348078995_iolk9rqu3",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-006",
+  "projectId": "L-006",
+  "message": "Lagos State Parks Services has paid $19.2 upfront for your newly activated Market Research for Longer Divide project. This project has a budget of $140.8 left. Click here to view invoice details",
+  "context": {
+    "projectId": "L-006",
+    "upfrontAmount": 19.2,
+    "projectTitle": "Market Research for Longer Divide",
+    "remainingBudget": 140.8,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-006",
+    "upfrontAmount": 19.2,
+    "projectTitle": "Market Research for Longer Divide",
+    "remainingBudget": 140.8,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T02:27:58.991Z",
+  "subsystem": "completion_invoicing"
+}

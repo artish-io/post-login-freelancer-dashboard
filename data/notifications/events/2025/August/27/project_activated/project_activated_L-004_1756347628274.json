@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_L-004_1756347628274",
+  "timestamp": "2025-08-28T02:20:28.274Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "L-004",
+  "metadata": {
+    "projectTitle": "Financial Modelling For Series A Fundraising",
+    "gigTitle": "Financial Modelling For Series A Fundraising",
+    "taskCount": 1,
+    "commissionerName": "Neilsan Mando",
+    "organizationName": "Lagos State Parks Services",
+    "dueDate": "2025-08-31"
+  },
+  "context": {
+    "projectId": 4,
+    "gigId": 54
+  }
+}

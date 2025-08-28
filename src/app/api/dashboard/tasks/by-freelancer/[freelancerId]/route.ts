@@ -50,9 +50,9 @@ export async function GET(
       getAllOrganizations(),
     ]);
 
-    // Read project tasks from hierarchical storage
+    // Use hierarchical storage directly
     const hierarchicalTasks = await readAllTasks();
-    const projects: Project[] = convertHierarchicalToLegacy(hierarchicalTasks);
+    const hierarchicalProjects = await import('@/lib/projects-utils').then(m => m.readAllProjects());
 
     const freelancer = users.find(
       (u) => u.id === freelancerId && u.type === 'freelancer'
@@ -71,17 +71,17 @@ export async function GET(
     });
 
     // Filter valid projects tied to known organizations with commissioner users
-    const validProjects = projects.filter((project) => {
+    const validProjects = hierarchicalProjects.filter((project: any) => {
       const commissioner = commissionerByOrgId.get(project.organizationId);
       return Boolean(commissioner);
     });
 
     // Map tasks with org and project data
-    const results = validProjects.flatMap((project) => {
+    const results = validProjects.flatMap((project: any) => {
       const org = orgs.find((o) => o.id === project.organizationId);
       if (!org) return [];
 
-      return project.tasks.map((task) => ({
+      return project.tasks.map((task: any) => ({
         taskId: task.id,
         taskTitle: task.title,
         status: task.status,

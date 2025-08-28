@@ -1,0 +1,22 @@
+{
+  "id": "task_submitted_1756387862391_1756388409076",
+  "timestamp": "2025-08-28T13:40:09.076Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756387862391,
+  "metadata": {
+    "taskId": 1756387862391,
+    "taskTitle": "Phase 2 – Audience Outreach & Campaign Rollout",
+    "projectTitle": "Easy Resumé Writing",
+    "action": "submit",
+    "invoiceGenerated": false,
+    "message": "\"Phase 2 – Audience Outreach & Campaign Rollout\" is awaiting your review for Easy Resumé Writing"
+  },
+  "context": {
+    "projectId": "C-013",
+    "taskId": 1756387862391
+  }
+}

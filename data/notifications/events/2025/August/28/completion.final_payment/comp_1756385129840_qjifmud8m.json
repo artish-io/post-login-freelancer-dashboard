@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756385129840_qjifmud8m",
+  "type": "completion.final_payment",
+  "notificationType": 156,
+  "actorId": 32,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "L-007",
+  "projectId": "L-007",
+  "message": "You just paid Lucas Meyer a final payment of $102.67 for your now completed project, Completion Sender for Data Farm Handbook. Remaining budget: $0. Click here to see invoice details",
+  "context": {
+    "projectId": "L-007",
+    "finalAmount": 102.67,
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "finalPercent": 29,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-007",
+    "finalAmount": 102.67,
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "finalPercent": 29,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T12:45:29.829Z",
+  "subsystem": "completion_invoicing"
+}

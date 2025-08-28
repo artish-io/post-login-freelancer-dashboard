@@ -1,0 +1,22 @@
+{
+  "id": "gig_request_sent_1756398686092_1756398686108",
+  "timestamp": "2025-08-28T16:31:26.087Z",
+  "type": "gig_request_sent",
+  "notificationType": 61,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "1756398686092",
+  "metadata": {
+    "gigTitle": "Test Gig Request After Payment ",
+    "organizationName": "Corlax Wellness",
+    "organizationLogo": "/logos/corlax-ios-logo.png",
+    "budgetMin": 400,
+    "budgetMax": 450
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 3,
+    "requestId": 1756398686092
+  }
+}

@@ -34,7 +34,7 @@ async function handleProjectPause(request: NextRequest) {
       ...unifiedProject,
       status: 'paused',
       updatedAt: new Date().toISOString()
-    });
+    } as any);
 
     // Log the transition
     logProjectTransition(
@@ -69,7 +69,7 @@ async function handleProjectPause(request: NextRequest) {
     };
 
     // Store the event
-    NotificationStorage.addEvent(event);
+    NotificationStorage.addEvent(event as any);
 
     return NextResponse.json(
       ok({
@@ -149,7 +149,7 @@ export async function PUT(request: NextRequest) {
     };
 
     // Store the event
-    NotificationStorage.addEvent(event);
+    NotificationStorage.addEvent(event as any);
 
     return NextResponse.json({
       success: true,

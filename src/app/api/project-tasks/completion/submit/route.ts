@@ -163,7 +163,7 @@ export async function POST(req: NextRequest) {
       console.log(`[NOTIFY] Sending task approval notification for task ${normalizedTaskId} in project ${normalizedProjectId}`);
       const { handleCompletionNotification } = await import('@/app/api/notifications-v2/completion-handler');
 
-      // Always emit task approval notification
+      // Task approval notification for freelancer only
       await handleCompletionNotification({
         type: 'completion.task_approved',
         actorId: actorId,

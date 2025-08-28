@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_58_25_1756385417140",
+  "timestamp": "2025-08-28T12:50:17.140Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "58",
+  "metadata": {
+    "gigTitle": "Test Portfolio Styling",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 58,
+    "applicationId": 1755193217288
+  }
+}

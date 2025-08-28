@@ -44,16 +44,16 @@ export async function POST(req: NextRequest) {
     // Check if final payment already processed
     const existingFinalInvoices = await getInvoicesByProject(projectId, 'completion_final');
     if (existingFinalInvoices.length > 0) {
-      return NextResponse.json(err('Final payment already processed', 409), { status: 409 });
+      return NextResponse.json(err('Final payment already processed', '409'), { status: 409 });
     }
     
     // ✅ ENHANCED: Calculate remaining amount by checking all existing paid invoices
-    const actualRemainingBudget = await calculateActualRemainingBudgetForFinal(projectId, project.totalBudget);
+    const actualRemainingBudget = await calculateActualRemainingBudgetForFinal(projectId, project.totalBudget || 0);
     const finalAmount = Math.round(actualRemainingBudget * 100) / 100;
 
     // LEGACY: Keep original calculation for comparison/logging
     const { CompletionCalculationService } = await import('@/app/api/payments/services/completion-calculation-service');
-    const legacyFinalAmount = await CompletionCalculationService.calculateRemainingBudget(projectId, project.totalBudget);
+    const legacyFinalAmount = await CompletionCalculationService.calculateRemainingBudget(projectId, project.totalBudget || 0);
 
     console.log(`[BUDGET_TRACKING] Final payment calculation - Enhanced: $${finalAmount}, Legacy: $${legacyFinalAmount}`);
 
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
 
     if (!budgetValidation.isValid) {
       console.error(`[REMAINDER_BUDGET] Budget validation failed for project ${projectId}:`, budgetValidation.errors);
-      return NextResponse.json(err(`Budget validation failed: ${budgetValidation.errors.join(', ')}`, 400), { status: 400 });
+      return NextResponse.json(err(`Budget validation failed: ${budgetValidation.errors.join(', ')}`, '400'), { status: 400 });
     }
 
     // Skip if no remaining amount
@@ -72,9 +72,8 @@ export async function POST(req: NextRequest) {
       console.log(`[COMPLETION_PAY] Project ${projectId} completed with no remaining payment needed`);
       return NextResponse.json(ok({
         message: 'No remaining amount to pay - project marked as completed',
-        finalAmount: 0,
         project: { status: 'completed' }
-      }));
+      } as any));
     }
     
     // ✅ SAFE: Create final invoice and process payment
@@ -84,7 +83,7 @@ export async function POST(req: NextRequest) {
     try {
       // Get commissioner data using hierarchical storage
       const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
-      const commissioner = await UnifiedStorageService.getUserById(project.commissionerId);
+      const commissioner = await UnifiedStorageService.getUserById(project.commissionerId || 0);
 
       if (commissioner?.name) {
         // Extract initials from commissioner name
@@ -153,7 +152,7 @@ export async function POST(req: NextRequest) {
     // ✅ SAFE: Process payment using existing gateway
     const paymentRecord = await processMockPayment({
       invoiceNumber: invoice.invoiceNumber,
-      projectId: Number(projectId),
+      projectId: projectId,
       freelancerId: Number(project.freelancerId),
       commissionerId: Number(project.commissionerId),
       totalAmount: finalAmount
@@ -167,7 +166,7 @@ export async function POST(req: NextRequest) {
     
     // ✅ SAFE: Update wallet using existing infrastructure
     const wallet = await getWallet(project.freelancerId, 'freelancer', 'USD');
-    const updatedWallet = PaymentsService.creditWallet(wallet, finalAmount);
+    const updatedWallet = PaymentsService.creditWallet(wallet!, finalAmount);
     await upsertWallet(updatedWallet);
     
     // ✅ SAFE: Log transaction using existing infrastructure
@@ -175,23 +174,23 @@ export async function POST(req: NextRequest) {
       invoiceNumber: invoice.invoiceNumber,
       projectId,
       freelancerId: project.freelancerId,
-      commissionerId: project.commissionerId,
+      commissionerId: project.commissionerId || 0,
       totalAmount: finalAmount,
     }, 'execute', 'mock');
     await appendTransaction(transaction);
     
     // 🔒 COMPLETION-SPECIFIC: Mark project as completed and update paidToDate
-    await updateProjectStatusAndPaidToDate(projectId, 'completed', project.totalBudget);
+    await updateProjectStatusAndPaidToDate(projectId, 'completed', project.totalBudget || 0);
     
     // ✅ SAFE: Log transitions using existing infrastructure
-    await logInvoiceTransition(invoiceNumber, 'processing', 'paid', Subsystems.COMPLETION_PAYMENTS);
+    await logInvoiceTransition(invoiceNumber, 'processing', 'paid', Subsystems.PAYMENTS_EXECUTE);
     await logWalletChange(
-      project.freelancerId, 
-      'freelancer', 
-      wallet.availableBalance, 
-      updatedWallet.availableBalance, 
+      project.freelancerId,
+      'freelancer',
+      'credit',
+      finalAmount,
       'completion_final_payment',
-      Subsystems.COMPLETION_PAYMENTS
+      Subsystems.PAYMENTS_EXECUTE
     );
     
     // 🔔 COMPLETION-SPECIFIC: Emit three separate events (project completion + final payment + rating prompt)
@@ -203,7 +202,7 @@ export async function POST(req: NextRequest) {
       let commissionerName = 'Commissioner';
       try {
         const { getUserById } = await import('@/lib/storage/unified-storage-service');
-        const commissioner = await getUserById(project.commissionerId);
+        const commissioner = await getUserById(project.commissionerId || 0);
         if (commissioner && commissioner.name) {
           commissionerName = commissioner.name;
         }
@@ -211,10 +210,23 @@ export async function POST(req: NextRequest) {
         console.warn('Could not fetch commissioner name for project completion notification');
       }
 
+      // Freelancer project completion notification
       await handleCompletionNotification({
         type: 'completion.project_completed',
-        actorId: project.commissionerId,
+        actorId: project.commissionerId || 0,
         targetId: project.freelancerId,
+        projectId,
+        context: {
+          projectTitle: project.title || 'Project',
+          commissionerName: commissionerName
+        }
+      });
+
+      // Commissioner project completion notification (self-targeted)
+      await handleCompletionNotification({
+        type: 'completion.project_completed',
+        actorId: project.commissionerId || 0,
+        targetId: project.commissionerId || 0,
         projectId,
         context: {
           projectTitle: project.title || 'Project',
@@ -224,15 +236,31 @@ export async function POST(req: NextRequest) {
 
       // 2. Final payment notification (if there's an amount to pay)
       if (finalAmount > 0) {
+        // Freelancer final payment notification
         await handleCompletionNotification({
           type: 'completion.final_payment',
-          actorId: project.commissionerId,
+          actorId: project.commissionerId || 0,
           targetId: project.freelancerId,
           projectId,
           context: {
             finalAmount,
             projectTitle: project.title || 'Project',
-            finalPercent: Math.round((finalAmount / project.totalBudget) * 100),
+            finalPercent: Math.round((finalAmount / (project.totalBudget || 1)) * 100),
+            orgName: 'Organization', // TODO: Get actual org name
+            freelancerName: 'Freelancer' // TODO: Get actual name
+          }
+        });
+
+        // Commissioner final payment notification (self-targeted)
+        await handleCompletionNotification({
+          type: 'completion.final_payment',
+          actorId: project.commissionerId || 0,
+          targetId: project.commissionerId || 0,
+          projectId,
+          context: {
+            finalAmount,
+            projectTitle: project.title || 'Project',
+            finalPercent: Math.round((finalAmount / (project.totalBudget || 1)) * 100),
             orgName: 'Organization', // TODO: Get actual org name
             freelancerName: 'Freelancer' // TODO: Get actual name
           }
@@ -240,10 +268,24 @@ export async function POST(req: NextRequest) {
       }
 
       // 3. Rating prompt notification
+      // Freelancer rating prompt notification
       await handleCompletionNotification({
         type: 'completion.rating_prompt',
-        actorId: project.commissionerId,
+        actorId: project.commissionerId || 0,
         targetId: project.freelancerId,
+        projectId,
+        context: {
+          projectTitle: project.title || 'Project',
+          commissionerName: 'Commissioner', // TODO: Get actual name
+          freelancerName: 'Freelancer' // TODO: Get actual name
+        }
+      });
+
+      // Commissioner rating prompt notification (self-targeted)
+      await handleCompletionNotification({
+        type: 'completion.rating_prompt',
+        actorId: project.commissionerId || 0,
+        targetId: project.commissionerId || 0,
         projectId,
         context: {
           projectTitle: project.title || 'Project',
@@ -271,7 +313,7 @@ export async function POST(req: NextRequest) {
       },
       summary: {
         totalBudget: project.totalBudget,
-        upfrontAmount: project.totalBudget * 0.12,
+        upfrontAmount: (project.totalBudget || 0) * 0.12,
         finalAmount
       }
     });
@@ -376,7 +418,7 @@ async function updateProjectStatus(projectId: string, status: string) {
         updatedAt: new Date().toISOString()
       };
 
-      await UnifiedStorageService.writeProject(updatedProject);
+      await UnifiedStorageService.writeProject(updatedProject as any);
     }
   } catch (error) {
     console.error('Error updating project status:', error);
@@ -399,7 +441,7 @@ async function updateProjectStatusAndPaidToDate(projectId: string, status: strin
         updatedAt: new Date().toISOString()
       };
 
-      await UnifiedStorageService.writeProject(updatedProject);
+      await UnifiedStorageService.writeProject(updatedProject as any);
       console.log(`[COMPLETION_PAY] Updated project ${projectId}: status=${status}, paidToDate=${totalBudget}`);
     }
   } catch (error) {

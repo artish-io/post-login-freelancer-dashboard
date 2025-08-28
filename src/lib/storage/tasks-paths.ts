@@ -11,12 +11,12 @@ import path from 'path';
 import { promises as fs } from 'fs';
 
 // Throttle warnings to prevent spam
-const warnedProjects = new Set<number>();
+const warnedProjects = new Set<string>();
 
 export interface Task {
   id?: number;
   taskId?: number;
-  projectId: number;
+  projectId: string | number;
   title: string;
   status: string;
   completed: boolean;
@@ -46,11 +46,11 @@ export async function resolveCanonicalTasksDir(projectId: string | number): Prom
     const project = await UnifiedStorageService.readProject(projectId);
     if (!project || !project.createdAt) {
       // Graceful handling - project may have been deleted/archived
-      if (!warnedProjects.has(projectId)) {
+      if (!warnedProjects.has(projectId.toString())) {
         console.info(`[TasksPaths] Project ${projectId} not found (may have been deleted/archived)`);
-        warnedProjects.add(projectId);
+        warnedProjects.add(projectId.toString());
         // Clear the warning after 5 minutes to allow retry
-        setTimeout(() => warnedProjects.delete(projectId), 5 * 60 * 1000);
+        setTimeout(() => warnedProjects.delete(projectId.toString()), 5 * 60 * 1000);
       }
       return null;
     }
@@ -175,7 +175,7 @@ export async function getTaskByCompositeId(projectId: number, taskId: number): P
 /**
  * Update a specific task in the project's task storage
  */
-export async function updateTaskInProject(projectId: number, taskId: number, updates: Partial<Task>): Promise<Task | null> {
+export async function updateTaskInProject(projectId: string | number, taskId: number, updates: Partial<Task>): Promise<Task | null> {
   try {
     const tasksDir = await resolveCanonicalTasksDir(projectId);
     if (!tasksDir) {

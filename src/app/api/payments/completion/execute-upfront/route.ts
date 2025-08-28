@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       console.log('🧪 TEST MODE: Using test actorId:', actorId);
     } else {
       const { userId } = await requireSession(req);
-      actorId = userId;
+      actorId = String(userId);
     }
     console.log('✅ UPFRONT PAYMENT: Auth successful, actorId:', actorId);
     console.log('📊 UPFRONT PAYMENT: Request data:', { projectId, actorId });
@@ -48,13 +48,13 @@ export async function POST(req: NextRequest) {
     });
 
     assert(project, 'Project not found', 404);
-    assert(project.invoicingMethod === 'completion', 'Project must be completion-based', 400);
-    assert(project.commissionerId === actorId, 'Unauthorized', 403);
+    assert(project!.invoicingMethod === 'completion', 'Project must be completion-based', 400);
+    assert(String(project!.commissionerId) === actorId, 'Unauthorized', 403);
     console.log('✅ UPFRONT PAYMENT: Project validation passed');
     
     // 🧮 COMPLETION-SPECIFIC: Calculate 12% upfront (separate from milestone logic)
     console.log('🧮 UPFRONT PAYMENT: Calculating upfront amount...');
-    const upfrontAmount = Math.round(project.totalBudget * 0.12 * 100) / 100;
+    const upfrontAmount = Math.round((project!.totalBudget || 0) * 0.12 * 100) / 100;
     console.log('💰 UPFRONT PAYMENT: Calculated upfront amount:', upfrontAmount);
 
     // Check if upfront already paid
@@ -82,19 +82,18 @@ export async function POST(req: NextRequest) {
         console.log('✅ UPFRONT PAYMENT: Upfront already paid, returning success');
         return NextResponse.json(ok({
           message: 'Upfront payment already completed',
-          invoice: existingInvoice,
           alreadyPaid: true
-        }));
+        } as any));
       }
 
-      // If processing, complete the payment
-      if (existingInvoice.status === 'processing') {
+      // If sent, complete the payment
+      if (existingInvoice.status === 'sent') {
         console.log('💳 UPFRONT PAYMENT: Processing existing upfront invoice...');
         try {
           // Process payment using existing infrastructure
           const paymentRecord = await processMockPayment({
             invoiceNumber: existingInvoice.invoiceNumber,
-            projectId: Number(projectId),
+            projectId: projectId,
             freelancerId: Number(existingInvoice.freelancerId),
             commissionerId: Number(existingInvoice.commissionerId),
             totalAmount: Number(existingInvoice.totalAmount)
@@ -124,13 +123,8 @@ export async function POST(req: NextRequest) {
           console.log('✅ UPFRONT PAYMENT: Existing invoice processed successfully');
           return NextResponse.json(ok({
             message: 'Upfront payment completed',
-            invoice: {
-              ...existingInvoice,
-              status: 'paid',
-              paidDate: new Date().toISOString().split('T')[0]
-            },
-            payment: paymentRecord
-          }));
+            status: 'paid'
+          } as any));
 
         } catch (paymentError: any) {
           console.error('❌ UPFRONT PAYMENT: Error processing existing invoice:', paymentError);
@@ -158,7 +152,7 @@ export async function POST(req: NextRequest) {
     try {
       // Get commissioner data using hierarchical storage
       const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
-      const commissioner = await UnifiedStorageService.getUserById(project.commissionerId);
+      const commissioner = await UnifiedStorageService.getUserById(project!.commissionerId || 0);
 
       if (commissioner?.name) {
         // Extract initials from commissioner name
@@ -169,7 +163,7 @@ export async function POST(req: NextRequest) {
 
         // Get existing COMPLETION invoices to determine next number
         const { getAllInvoices } = await import('@/lib/invoice-storage');
-        const existingInvoices = await getAllInvoices({ commissionerId: project.commissionerId });
+        const existingInvoices = await getAllInvoices({ commissionerId: project!.commissionerId });
         const completionInvoices = existingInvoices.filter(inv =>
           inv.invoiceType && (
             inv.invoiceType.includes('completion') ||
@@ -202,9 +196,9 @@ export async function POST(req: NextRequest) {
     const invoice = {
       invoiceNumber,
       projectId,
-      freelancerId: project.freelancerId,
-      commissionerId: project.commissionerId,
-      projectTitle: project.title || 'Completion-Based Project',
+      freelancerId: project!.freelancerId,
+      commissionerId: project!.commissionerId,
+      projectTitle: project!.title || 'Completion-Based Project',
       totalAmount: upfrontAmount,
       invoiceType: 'completion_upfront', // 🔒 COMPLETION-SPECIFIC type
       milestoneNumber: 1, // 1 = upfront
@@ -234,9 +228,9 @@ export async function POST(req: NextRequest) {
     console.log('💳 UPFRONT PAYMENT: Processing mock payment...');
     const paymentRecord = await processMockPayment({
       invoiceNumber: invoice.invoiceNumber,
-      projectId: Number(projectId),
-      freelancerId: Number(project.freelancerId),
-      commissionerId: Number(project.commissionerId),
+      projectId: projectId,
+      freelancerId: Number(project!.freelancerId),
+      commissionerId: Number(project!.commissionerId),
       totalAmount: upfrontAmount
     }, 'execute');
     console.log('✅ UPFRONT PAYMENT: Payment processed:', {
@@ -269,16 +263,16 @@ export async function POST(req: NextRequest) {
     
     // ✅ SAFE: Update wallet using existing infrastructure
     console.log('💰 UPFRONT PAYMENT: Getting freelancer wallet...');
-    const wallet = await getWallet(project.freelancerId, 'freelancer', 'USD');
+    const wallet = await getWallet(project!.freelancerId, 'freelancer', 'USD');
     console.log('📊 UPFRONT PAYMENT: Wallet lookup result:', {
       walletExists: !!wallet,
-      freelancerId: project.freelancerId,
+      freelancerId: project!.freelancerId,
       walletData: wallet
     });
 
     if (!wallet) {
       console.error('❌ UPFRONT PAYMENT: Freelancer wallet not found');
-      throw new Error(`Freelancer wallet not found for freelancerId: ${project.freelancerId}`);
+      throw new Error(`Freelancer wallet not found for freelancerId: ${project!.freelancerId}`);
     }
 
     console.log('📊 UPFRONT PAYMENT: Current wallet balance:', wallet.availableBalance);
@@ -295,9 +289,9 @@ export async function POST(req: NextRequest) {
     console.log('📝 UPFRONT PAYMENT: Building transaction record...');
     const transaction = PaymentsService.buildTransaction({
       invoiceNumber: invoice.invoiceNumber,
-      projectId,
-      freelancerId: project.freelancerId,
-      commissionerId: project.commissionerId,
+      projectId: projectId,
+      freelancerId: project!.freelancerId,
+      commissionerId: project!.commissionerId || 0,
       totalAmount: upfrontAmount,
     }, 'execute', 'mock');
     console.log('📋 UPFRONT PAYMENT: Transaction record:', {
@@ -307,39 +301,56 @@ export async function POST(req: NextRequest) {
     });
 
     console.log('💾 UPFRONT PAYMENT: Saving transaction to hierarchical storage...');
-    await saveTransaction(transaction);
+    await saveTransaction(transaction as any);
     console.log('✅ UPFRONT PAYMENT: Transaction saved successfully to hierarchical storage');
     
     // ✅ SAFE: Log transitions using existing infrastructure
     console.log('📝 UPFRONT PAYMENT: Logging transitions...');
-    await logInvoiceTransition(invoiceNumber, 'processing', 'paid', Subsystems.COMPLETION_PAYMENTS);
+    await logInvoiceTransition(invoiceNumber, 'processing', 'paid', Subsystems.PAYMENTS_EXECUTE);
     await logWalletChange(
-      project.freelancerId,
+      project!.freelancerId,
       'freelancer',
-      wallet.availableBalance,
-      updatedWallet.availableBalance,
+      'credit',
+      upfrontAmount,
       'completion_upfront_payment',
-      Subsystems.COMPLETION_PAYMENTS
+      Subsystems.PAYMENTS_EXECUTE
     );
     console.log('✅ UPFRONT PAYMENT: Transitions logged successfully');
 
     // 🔔 COMPLETION-SPECIFIC: Emit upfront payment event only (project activation handled separately)
-    console.log('🔔 UPFRONT PAYMENT: Emitting completion notification...');
+    console.log('🔔 UPFRONT PAYMENT: Emitting completion notifications...');
     try {
       const { handleCompletionNotification } = await import('@/app/api/notifications-v2/completion-handler');
+
+      // Freelancer upfront payment notification
       await handleCompletionNotification({
         type: 'completion.upfront_payment',
-        actorId: project.commissionerId,
-        targetId: project.freelancerId,
+        actorId: project!.commissionerId || 0,
+        targetId: project!.freelancerId,
         projectId,
         context: {
           upfrontAmount,
-          projectTitle: project.title || 'Project',
-          remainingBudget: project.totalBudget * 0.88
+          projectTitle: project!.title || 'Project',
+          remainingBudget: (project!.totalBudget || 0) * 0.88
           // orgName and freelancerName will be enriched automatically
         }
       });
-      console.log('✅ UPFRONT PAYMENT: Completion notification emitted successfully');
+
+      // 🔔 FIX: Commissioner upfront payment notification (self-targeted)
+      await handleCompletionNotification({
+        type: 'completion.upfront_payment',
+        actorId: project!.commissionerId || 0,
+        targetId: project!.commissionerId || 0,
+        projectId,
+        context: {
+          upfrontAmount,
+          projectTitle: project!.title || 'Project',
+          remainingBudget: (project!.totalBudget || 0) * 0.88
+          // orgName and freelancerName will be enriched automatically
+        }
+      });
+
+      console.log('✅ UPFRONT PAYMENT: Completion notifications emitted successfully');
     } catch (e) {
       console.warn('⚠️ UPFRONT PAYMENT: Completion event emission failed:', e);
     }
@@ -361,7 +372,7 @@ export async function POST(req: NextRequest) {
     console.log('📋 UPFRONT PAYMENT: Success response data:', successResponse);
 
     console.log('✅ UPFRONT PAYMENT: Returning success response');
-    return NextResponse.json(ok(successResponse));
+    return NextResponse.json(ok(successResponse as any));
 
   } catch (error: any) {
     console.error('❌ UPFRONT PAYMENT: Caught error:', {
@@ -372,7 +383,7 @@ export async function POST(req: NextRequest) {
 
     // Return proper error response
     return NextResponse.json(
-      err(error.message || 'Internal server error', 500),
+      err(error.message || 'Internal server error', '500'),
       { status: 500 }
     );
   }

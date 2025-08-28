@@ -205,7 +205,7 @@ export default function ProjectTimeline({ projectId, title, logoUrl }: Props) {
           workingFileUrl={selectedTask.workingFileUrl}
           columnId={selectedTask.status === 'In review' ? 'review' : 'todo'}
           status={selectedTask.status as any}
-          projectId={projectId}
+          projectId={typeof projectId === 'string' ? parseInt(projectId) : projectId}
           taskId={selectedTask.id}
           onTaskSubmitted={handleTaskSubmitted}
         />

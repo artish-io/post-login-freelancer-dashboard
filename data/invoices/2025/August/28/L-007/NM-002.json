@@ -1,0 +1,30 @@
+{
+  "invoiceNumber": "NM-002",
+  "projectId": "L-007",
+  "freelancerId": 25,
+  "commissionerId": 32,
+  "projectTitle": "Completion Sender for Data Farm Handbook",
+  "totalAmount": 102.67,
+  "invoiceType": "completion_final",
+  "milestoneNumber": 99,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-28T12:45:28.058Z",
+  "dueDate": "2025-09-11T12:45:28.058Z",
+  "createdAt": "2025-08-28T12:45:28.058Z",
+  "description": "Final completion payment (remaining 88%)",
+  "milestones": [
+    {
+      "description": "Final completion payment (remaining 88%)",
+      "rate": 102.67,
+      "title": "Final Payment",
+      "taskId": "final"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 97.26,
+    "platformFee": 5.41
+  },
+  "paidDate": "2025-08-28T12:45:28.562Z",
+  "updatedAt": "2025-08-28T12:45:28.569Z"
+}

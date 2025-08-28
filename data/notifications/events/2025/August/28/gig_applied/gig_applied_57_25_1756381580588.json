@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_57_25_1756381580588",
+  "timestamp": "2025-08-28T11:46:20.588Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "57",
+  "metadata": {
+    "gigTitle": "Completion Sender for Data Farm Handbook",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 57,
+    "applicationId": 1755193217287
+  }
+}

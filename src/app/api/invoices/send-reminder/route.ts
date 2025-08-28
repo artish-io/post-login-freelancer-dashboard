@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { getAllUsers } from '@/lib/storage/unified-storage-service';
 import { NotificationStorage } from '@/lib/notifications/notification-storage';
-import { ok, err, RefreshHints, ErrorCodes } from '@/lib/http/envelope';
+import { ok, RefreshHints, ErrorCodes } from '@/lib/http/envelope';
 
 const INVOICES_PATH = path.join(process.cwd(), 'data', 'invoices.json');
 const COMMISSIONER_NOTIFICATIONS_PATH = path.join(process.cwd(), 'data', 'notifications', 'commissioners.json');
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Add event to notification storage
-    NotificationStorage.addEvent(notificationEvent);
+    NotificationStorage.addEvent(notificationEvent as any);
 
     // Save updated invoice data
     await fs.promises.writeFile(INVOICES_PATH, JSON.stringify(invoices, null, 2));
@@ -172,11 +172,11 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error sending invoice reminder:', error);
     return NextResponse.json(
-      err({
+      {
+        success: false,
         code: ErrorCodes.INTERNAL_ERROR,
         message: 'Internal server error',
-        status: 500,
-      }),
+      },
       { status: 500 }
     );
   }

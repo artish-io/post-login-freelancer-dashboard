@@ -22,6 +22,14 @@ export default function NotificationsPageLayout({
   // Determine user type based on the current path
   const userType = pathname?.includes('/freelancer-dashboard/') ? 'freelancer' : 'commissioner';
 
+  // 🔔 ATOMIC CONSOLE LOG: Track user type detection for completion notifications
+  console.log('🔔 NOTIFICATIONS PAGE LAYOUT:', {
+    pathname,
+    userType,
+    commissionerId,
+    timestamp: new Date().toISOString()
+  });
+
   const [activeTab, setActiveTab] = useState<'all' | 'network' | 'projects' | 'gigs'>('all');
   const [notificationCounts, setNotificationCounts] = useState({
     all: 0,

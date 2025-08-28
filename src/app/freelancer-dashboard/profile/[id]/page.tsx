@@ -9,6 +9,7 @@ import ProfileInfo from '../../../../../components/user-profiles/profile-info';
 import WorkSamples from '../../../../../components/user-profiles/work-samples';
 import AddWorkSampleModal from '../../../../../components/user-profiles/add-work-sample-modal';
 import CommissionerProfileView from '../../../../../components/user-profiles/recruiter/commissioner-profile-view';
+import ResumeUpload from '../../../../../components/freelancer-dashboard/profile/resume-upload';
 
 interface WorkSample {
   id: string;
@@ -65,6 +66,7 @@ export default function ProfilePage() {
   const [availableSkills, setAvailableSkills] = useState<string[]>([]);
   const [availableTools, setAvailableTools] = useState<string[]>([]);
   const [accessDenied, setAccessDenied] = useState(false);
+  const [resumeInfo, setResumeInfo] = useState<any>(null);
 
   const userId = params?.id as string;
   const currentUserId = session?.user?.id;
@@ -131,8 +133,21 @@ export default function ProfilePage() {
     if (userId) {
       fetchProfile();
       fetchDropdownData();
+      if (isOwnProfile) {
+        fetchResumeInfo();
+      }
     }
-  }, [userId]);
+  }, [userId, isOwnProfile]);
+
+  const fetchResumeInfo = async () => {
+    try {
+      const response = await fetch('/api/freelancer/resume');
+      const data = await response.json();
+      setResumeInfo(data.resume);
+    } catch (error) {
+      console.error('Error fetching resume info:', error);
+    }
+  };
 
   const handleAddWorkSample = async (data: any) => {
     try {
@@ -315,13 +330,23 @@ export default function ProfilePage() {
           />
         </div>
 
-        {/* Right Column: Work Samples */}
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-          <WorkSamples
-            workSamples={workSamplesData}
+        {/* Right Column: Work Samples and Resume */}
+        <div className="space-y-6">
+          {/* Resume Section */}
+          <ResumeUpload
+            currentResume={resumeInfo}
+            onResumeUpdate={setResumeInfo}
             isOwnProfile={isOwnProfile}
-            onAddWorkSample={() => setShowAddWorkSampleModal(true)}
           />
+
+          {/* Work Samples Section */}
+          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <WorkSamples
+              workSamples={workSamplesData}
+              isOwnProfile={isOwnProfile}
+              onAddWorkSample={() => setShowAddWorkSampleModal(true)}
+            />
+          </div>
         </div>
       </div>
 

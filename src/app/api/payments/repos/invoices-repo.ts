@@ -52,7 +52,8 @@ export interface InvoiceRecord {
 export async function readAllInvoices(): Promise<InvoiceRecord[]> {
   try {
     console.warn('⚠️ Using deprecated readAllInvoices from invoices-repo. Consider using getAllInvoices directly.');
-    return await getAllInvoices();
+    const invoices = await getAllInvoices();
+    return invoices as any; // Type conversion for legacy compatibility
   } catch (error) {
     console.error('Error reading invoices from storage:', error);
     throw error;
@@ -66,7 +67,8 @@ export async function readAllInvoices(): Promise<InvoiceRecord[]> {
 export async function getInvoiceByNumber(invoiceNumber: string): Promise<InvoiceRecord | null> {
   try {
     console.warn('⚠️ Using deprecated getInvoiceByNumber from invoices-repo. Consider using getInvoiceByNumber directly.');
-    return await getInvoiceByNumberFromStorage(invoiceNumber);
+    const invoice = await getInvoiceByNumberFromStorage(invoiceNumber);
+    return invoice as any; // Type conversion for legacy compatibility
   } catch (error) {
     console.error(`Error reading invoice ${invoiceNumber}:`, error);
     return null;
@@ -81,7 +83,7 @@ export async function listInvoicesByProject(projectId: number): Promise<InvoiceR
   try {
     console.warn('⚠️ Using deprecated listInvoicesByProject from invoices-repo. Consider using getAllInvoices and filtering directly.');
     const allInvoices = await getAllInvoices();
-    return allInvoices.filter(invoice => invoice.projectId === projectId);
+    return allInvoices.filter(invoice => invoice.projectId === projectId) as any;
   } catch (error) {
     console.error(`Error reading invoices for project ${projectId}:`, error);
     throw error;
@@ -96,7 +98,7 @@ export async function listInvoicesByFreelancer(freelancerId: number): Promise<In
   try {
     console.warn('⚠️ Using deprecated listInvoicesByFreelancer from invoices-repo. Consider using getAllInvoices and filtering directly.');
     const allInvoices = await getAllInvoices();
-    return allInvoices.filter(invoice => invoice.freelancerId === freelancerId);
+    return allInvoices.filter(invoice => invoice.freelancerId === freelancerId) as any;
   } catch (error) {
     console.error(`Error reading invoices for freelancer ${freelancerId}:`, error);
     throw error;
@@ -111,7 +113,7 @@ export async function listInvoicesByCommissioner(commissionerId: number): Promis
   try {
     console.warn('⚠️ Using deprecated listInvoicesByCommissioner from invoices-repo. Consider using getAllInvoices and filtering directly.');
     const allInvoices = await getAllInvoices();
-    return allInvoices.filter(invoice => invoice.commissionerId === commissionerId);
+    return allInvoices.filter(invoice => invoice.commissionerId === commissionerId) as any;
   } catch (error) {
     console.error(`Error reading invoices for commissioner ${commissionerId}:`, error);
     throw error;
@@ -128,11 +130,12 @@ export async function saveInvoiceRecord(invoice: InvoiceRecord): Promise<Invoice
     
     const invoiceToSave = {
       ...invoice,
+      projectId: invoice.projectId || null, // Handle undefined projectId
       updatedAt: new Date().toISOString()
     };
-    
-    await saveInvoice(invoiceToSave);
-    return invoiceToSave;
+
+    await saveInvoice(invoiceToSave as any);
+    return invoiceToSave as any;
   } catch (error) {
     console.error('Error saving invoice:', error);
     throw error;
@@ -155,11 +158,12 @@ export async function updateInvoice(invoiceNumber: string, updates: Partial<Invo
     const updatedInvoice = {
       ...existingInvoice,
       ...updates,
+      projectId: (updates.projectId !== undefined ? updates.projectId : existingInvoice.projectId) || null,
       updatedAt: new Date().toISOString()
     };
-    
-    await saveInvoice(updatedInvoice);
-    return updatedInvoice;
+
+    await saveInvoice(updatedInvoice as any);
+    return updatedInvoice as any;
   } catch (error) {
     console.error(`Error updating invoice ${invoiceNumber}:`, error);
     throw error;
@@ -177,12 +181,14 @@ export async function createInvoice(invoice: Omit<InvoiceRecord, 'createdAt' | '
     const now = new Date().toISOString();
     const newInvoice = {
       ...invoice,
+      projectId: invoice.projectId ? String(invoice.projectId) : null, // Handle undefined projectId and convert to string
+      projectTitle: invoice.projectTitle || '', // Handle undefined projectTitle
       createdAt: now,
       updatedAt: now
     };
     
-    await saveInvoice(newInvoice);
-    return newInvoice;
+    await saveInvoice(newInvoice as any);
+    return newInvoice as any;
   } catch (error) {
     console.error('Error creating invoice:', error);
     throw error;

@@ -1,0 +1,55 @@
+{
+  "id": 50,
+  "title": "Economic Model Design for Smart Gated Communities: Building Self-Sustaining Futures in Lagos",
+  "organizationId": 1,
+  "commissionerId": "32",
+  "category": "Accounting",
+  "subcategory": "Financial Forecasting",
+  "tags": [
+    "Financial Forecasting"
+  ],
+  "hourlyRateMin": 33.33,
+  "hourlyRateMax": 39.58,
+  "description": "We’re developing a smart gated community in Lagos and need a freelancer to design an economic model that supports a self-sustaining ecosystem. The model should balance real estate, energy, utilities, commerce, and community services to ensure both profitability and long-term resilience. The right partner will help us structure a blueprint that blends financial viability with innovation in sustainable living.",
+  "deliveryTimeWeeks": 0.5714285714285714,
+  "estimatedHours": 24,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Excel",
+    "Google Docs"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "aaa63bf6-8ec5-4790-966b-94a99c72e220",
+      "title": "Phase 1 – Research & Benchmarking",
+      "description": "Analyze comparable smart community projects worldwide, assess Lagos’ local economic conditions, and map out regulatory, infrastructural, and demographic realities that shape feasibility.\n\n",
+      "startDate": "2025-08-28T04:00:00.000Z",
+      "endDate": "2025-08-28T04:00:00.000Z"
+    },
+    {
+      "id": "43d33f38-a694-4ef2-9161-ccd61af43140",
+      "title": "Phase 2 – Model Design & Simulation",
+      "description": "Develop a detailed economic framework incorporating revenue streams (housing, services, retail, energy), cost structures, and reinvestment loops. Run simulations for sustainability, scalability, and resilience under different growth and risk scenarios.\n\n",
+      "startDate": "2025-08-29T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z"
+    },
+    {
+      "id": "dca2d2ba-8e7a-4f40-bab6-73e571062fde",
+      "title": "Phase 3 – Implementation Roadmap",
+      "description": "Deliver a strategic plan with KPIs, funding structures, and governance recommendations. Provide documentation and presentation materials that investors, policymakers, and community stakeholders can easily understand and act upon.",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 800,
+  "upperBudget": 950,
+  "postedDate": "2025-08-27",
+  "notes": "Budget range: $800 - $950",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

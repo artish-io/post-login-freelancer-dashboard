@@ -128,7 +128,7 @@ export default function InvoiceReminderActions({ invoiceData, onReminderSent, on
       <Button
         onClick={handleSendReminder}
         disabled={!canSendReminder || sending}
-        variant={isOverdue ? "destructive" : "secondary"}
+        variant={isOverdue ? "primary" : "secondary"}
         className="w-full flex items-center justify-center gap-2"
       >
         {sending ? (

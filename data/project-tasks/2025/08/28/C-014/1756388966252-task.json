@@ -1,0 +1,24 @@
+{
+  "taskId": 1756388966252,
+  "projectId": "C-014",
+  "projectTitle": "Milestone Modelling For Series A Fundraising",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Design"
+  ],
+  "title": "Rollout",
+  "status": "Approved",
+  "completed": true,
+  "order": 2,
+  "link": "bit.ly23423",
+  "dueDate": "2025-08-28T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Run digital campaigns targeting academics, journalists, and activists; foster partnerships with progressive organizations; and amplify voices of key speakers through content drops and video teasers. Drive early RSVPs with thought-leadership articles and community engagement.\n\n",
+  "submittedDate": "2025-08-28T13:47:40.404Z",
+  "approvedDate": "2025-08-28T13:48:47.211Z",
+  "createdDate": "2025-08-28T13:44:23.206Z",
+  "lastModified": "2025-08-28T13:48:47.211Z"
+}

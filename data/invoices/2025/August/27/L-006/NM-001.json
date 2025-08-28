@@ -1,0 +1,30 @@
+{
+  "invoiceNumber": "NM-001",
+  "projectId": "L-006",
+  "freelancerId": 25,
+  "commissionerId": 32,
+  "projectTitle": "Market Research for Longer Divide",
+  "totalAmount": 140.8,
+  "invoiceType": "completion_final",
+  "milestoneNumber": 99,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-28T02:40:03.139Z",
+  "dueDate": "2025-09-11T02:40:03.139Z",
+  "createdAt": "2025-08-28T02:40:03.139Z",
+  "description": "Final completion payment (remaining 88%)",
+  "milestones": [
+    {
+      "description": "Final completion payment (remaining 88%)",
+      "rate": 140.8,
+      "title": "Final Payment",
+      "taskId": "final"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 133.38,
+    "platformFee": 7.42
+  },
+  "paidDate": "2025-08-28T02:40:03.643Z",
+  "updatedAt": "2025-08-28T02:40:03.649Z"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756385470799_t6tly9n23",
+  "type": "completion.project_activated",
+  "notificationType": 150,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-008",
+  "projectId": "L-008",
+  "message": "Neilsan Mando accepted your application for Test Portfolio Styling. This project is now active and includes 1 milestones due by August 30, 2025",
+  "context": {
+    "projectId": "L-008",
+    "projectTitle": "Test Portfolio Styling",
+    "dueDate": "2025-08-31",
+    "totalTasks": 1,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-008",
+    "projectTitle": "Test Portfolio Styling",
+    "dueDate": "2025-08-31",
+    "totalTasks": 1,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T12:51:10.792Z",
+  "subsystem": "completion_invoicing"
+}

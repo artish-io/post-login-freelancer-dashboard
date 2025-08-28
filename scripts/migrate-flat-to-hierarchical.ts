@@ -282,4 +282,5 @@ if (require.main === module) {
   main();
 }
 
-export { migrate, MigrationOptions, MigrationResult };
+export { migrate };
+export type { MigrationOptions, MigrationResult };

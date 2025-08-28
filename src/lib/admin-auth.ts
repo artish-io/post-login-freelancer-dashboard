@@ -13,7 +13,7 @@ export interface AdminUser {
 export async function verifyAdminToken(token: string): Promise<AdminUser | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload as AdminUser;
+    return payload as unknown as AdminUser;
   } catch (error) {
     console.error('Token verification failed:', error);
     return null;

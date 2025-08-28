@@ -61,14 +61,38 @@ export default function SendInvoiceClientActions({
         showSuccessToast('Invoice Sent', 'Invoice sent successfully!');
         setTimeout(() => {
           // Check if this is a completion project invoice
-          if (invoiceData.invoiceType === 'completion' || invoiceData.projectInvoicingMethod === 'completion') {
+          const isCompletionInvoice = invoiceData.invoiceType?.includes('completion') ||
+                                    invoiceData.invoiceType === 'auto_completion' ||
+                                    invoiceData.projectInvoicingMethod === 'completion';
+
+          console.log('[NAVIGATION] Invoice type detection:', {
+            invoiceType: invoiceData.invoiceType,
+            projectInvoicingMethod: invoiceData.projectInvoicingMethod,
+            isCompletionInvoice,
+            projectId: invoiceData.projectId
+          });
+
+          if (isCompletionInvoice) {
             // For completion projects, navigate to project tracking
-            console.log('[NAVIGATION] Completion project - redirecting to project tracking:', invoiceData.projectId);
-            router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking/${invoiceData.projectId}`);
+            const projectTrackingUrl = `/freelancer-dashboard/projects-and-invoices/project-tracking/${invoiceData.projectId}`;
+            console.log('[NAVIGATION] Completion project - redirecting to project tracking:', projectTrackingUrl);
+            try {
+              router.push(projectTrackingUrl);
+              console.log('[NAVIGATION] Project tracking navigation initiated successfully');
+            } catch (navError) {
+              console.error('[NAVIGATION] Project tracking navigation failed:', navError);
+              showErrorToast('Navigation Failed', 'Could not return to project tracking. Please navigate manually.');
+            }
           } else {
             // For milestone projects, navigate to invoices list
             console.log('[NAVIGATION] Milestone project - redirecting to invoices list');
-            router.push('/freelancer-dashboard/projects-and-invoices/invoices');
+            try {
+              router.push('/freelancer-dashboard/projects-and-invoices/invoices');
+              console.log('[NAVIGATION] Invoices list navigation initiated successfully');
+            } catch (navError) {
+              console.error('[NAVIGATION] Invoices list navigation failed:', navError);
+              showErrorToast('Navigation Failed', 'Could not return to invoices list. Please navigate manually.');
+            }
           }
         }, 2000);
       } else {

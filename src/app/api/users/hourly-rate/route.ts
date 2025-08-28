@@ -71,12 +71,12 @@ export async function POST(request: Request) {
     const currentRate = await getCurrentHourlyRate(userId);
     
     // Attempt to update the rate
-    const updateResult = await updateHourlyRate(userId, newRate, currentRate);
+    const updateResult = await updateHourlyRate(userId, newRate, currentRate || undefined);
     
     if (!updateResult.allowed) {
       return NextResponse.json({
         success: false,
-        error: updateResult.reason,
+        error: updateResult.reason || undefined,
         daysRemaining: updateResult.daysRemaining,
         currentRate,
         attemptedRate: newRate

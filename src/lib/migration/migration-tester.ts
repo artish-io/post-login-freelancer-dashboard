@@ -392,4 +392,4 @@ export async function quickMigrationHealthCheck(): Promise<{
   };
 }
 
-export { TestResult, MigrationTestSuite };
+export type { TestResult, MigrationTestSuite };

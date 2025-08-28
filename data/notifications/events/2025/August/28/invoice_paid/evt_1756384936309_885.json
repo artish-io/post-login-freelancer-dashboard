@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756384936309_885",
+  "timestamp": "2025-08-28T12:42:16.309Z",
+  "type": "invoice_paid",
+  "notificationType": 41,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "NM-C004",
+  "metadata": {
+    "invoiceNumber": "NM-C004",
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "amount": 102.66666666666667,
+    "organizationName": "Lagos State Parks Services",
+    "commissionerName": "Neilsan Mando",
+    "projectBudget": 350
+  },
+  "context": {
+    "projectId": "L-007",
+    "invoiceNumber": "NM-C004"
+  }
+}

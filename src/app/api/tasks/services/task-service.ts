@@ -44,7 +44,7 @@ export class TaskService {
 
     // Create the patch
     const taskPatch: Partial<TaskRecord> = {
-      status: 'Approved' as TaskStatus,
+      status: 'Approved',
       completed: true,
       updatedAt: new Date().toISOString(),
       approvedBy: actorId,
@@ -78,7 +78,7 @@ export class TaskService {
 
     // Create the patch
     const taskPatch: Partial<TaskRecord> = {
-      status: 'Ongoing' as TaskStatus, // Reset to ongoing for rework
+      status: 'Ongoing', // Reset to ongoing for rework
       completed: false,
       rejected: true,
       updatedAt: new Date().toISOString(),
@@ -120,7 +120,7 @@ export class TaskService {
 
     // Create the patch
     const taskPatch: Partial<TaskRecord> = {
-      status: 'In review' as TaskStatus,
+      status: 'In review',
       completed: false, // Not completed until approved
       rejected: false, // Clear any previous rejection
       updatedAt: new Date().toISOString(),
@@ -142,11 +142,11 @@ export class TaskService {
    * Validate task status transition
    */
   static canTransitionStatus(
-    currentStatus: TaskStatus,
-    newStatus: TaskStatus,
+    currentStatus: string,
+    newStatus: string,
     actorType: 'freelancer' | 'commissioner'
   ): { ok: boolean; reason?: string } {
-    const validTransitions: Record<TaskStatus, TaskStatus[]> = {
+    const validTransitions: Record<string, string[]> = {
       'Ongoing': ['In review'],
       'In review': ['Approved', 'Ongoing'], // Ongoing = rejected/needs rework
       'Approved': [], // Final state

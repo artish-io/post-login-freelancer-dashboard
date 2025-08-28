@@ -447,6 +447,10 @@ export async function POST(
       // Create default task if no milestones
       const maxTaskId = Math.max(...allTasks.map((t: any) => t.taskId || 0), 0);
 
+      // 🎯 FIX: Ensure newly activated project tasks default to "Upcoming This Week"
+      // Add 1 day buffer to prevent tasks from landing in "Today's To Do"
+      const taskDueDate = new Date(Date.now() + 8 * 24 * 60 * 60 * 1000); // 8 days instead of 7
+
       tasksToCreate = [{
         taskId: maxTaskId + 1,
         projectId: newProjectId,
@@ -459,7 +463,7 @@ export async function POST(
         completed: false,
         order: 1,
         link: '',
-        dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        dueDate: taskDueDate.toISOString(),
         rejected: false,
         feedbackCount: 0,
         pushedBack: false,

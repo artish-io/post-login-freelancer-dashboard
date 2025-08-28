@@ -1,0 +1,34 @@
+{
+  "invoiceNumber": "NM-C001",
+  "projectId": "L-003",
+  "freelancerId": 25,
+  "commissionerId": 32,
+  "projectTitle": "Economic Model Design for Smart Completion",
+  "totalAmount": 48,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-28T02:14:20.738Z",
+  "dueDate": "2025-09-11T02:14:20.738Z",
+  "createdAt": "2025-08-28T02:14:20.738Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 48,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "paymentId": "TXN-NM-C001",
+    "paymentMethod": "mock",
+    "platformFee": 2.53,
+    "freelancerAmount": 45.47,
+    "currency": "USD",
+    "processedAt": "2025-08-28T02:14:21.241Z"
+  },
+  "paidDate": "2025-08-28",
+  "paidAmount": 48,
+  "updatedAt": "2025-08-28T02:14:21.242Z"
+}

@@ -1,0 +1,27 @@
+{
+  "taskId": 1756348701651,
+  "projectId": "L-006",
+  "projectTitle": "Market Research for Longer Divide",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Design"
+  ],
+  "title": "Phase 2 – Model Design & Simulation",
+  "status": "Approved",
+  "completed": true,
+  "order": 1,
+  "link": "bit.ly324324",
+  "dueDate": "2025-08-30T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Develop a detailed economic framework incorporating revenue streams (housing, services, retail, energy), cost structures, and reinvestment loops. Run simulations for sustainability, scalability, and resilience under different growth and risk scenarios.\n\n",
+  "submittedDate": "2025-08-28T02:39:36.748Z",
+  "createdDate": "2025-08-28T02:27:54.504Z",
+  "lastModified": "2025-08-28T02:40:02.485Z",
+  "manualInvoiceEligible": true,
+  "invoicePaid": false,
+  "approvedBy": 32,
+  "approvedAt": "2025-08-28T02:40:02.485Z"
+}

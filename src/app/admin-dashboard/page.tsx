@@ -13,17 +13,24 @@ import {
   User
 } from 'lucide-react';
 
-type TabType = 'invoices' | 'storefront' | 'products';
+type TabType = 'invoices' | 'storefront' | 'products' | 'skills';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>('invoices');
   const [invoices, setInvoices] = useState<any[]>([]);
   const [purchases, setPurchases] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
+  const [storefrontSubmissions, setStorefrontSubmissions] = useState<any[]>([]);
+  const [unmappedSkills, setUnmappedSkills] = useState<any[]>([]);
+  const [gigCategories, setGigCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [processingId, setProcessingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAllData();
+    fetchUnmappedSkills();
+    fetchGigCategories();
+    fetchStorefrontSubmissions();
   }, []);
 
   const fetchAllData = async () => {
@@ -56,6 +63,61 @@ export default function AdminDashboard() {
     }
   };
 
+  const fetchUnmappedSkills = async () => {
+    try {
+      const response = await fetch('/api/admin/unmapped-skills');
+      const data = await response.json();
+      if (data.success) {
+        setUnmappedSkills(data.skills || []);
+      }
+    } catch (error) {
+      console.error('Error fetching unmapped skills:', error);
+    }
+  };
+
+  const fetchGigCategories = async () => {
+    try {
+      const response = await fetch('/data/gigs/gig-categories.json');
+      const data = await response.json();
+      setGigCategories(data || []);
+    } catch (error) {
+      console.error('Error fetching gig categories:', error);
+    }
+  };
+
+  const fetchStorefrontSubmissions = async () => {
+    try {
+      const response = await fetch('/storefront-submissions/submissions.json');
+      const data = await response.json();
+      setStorefrontSubmissions(data || []);
+    } catch (error) {
+      console.error('Error fetching storefront submissions:', error);
+    }
+  };
+
+  const approveProduct = async (submissionId: string) => {
+    setProcessingId(submissionId);
+    try {
+      const response = await fetch('/api/storefront/approve-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ submissionId }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        await fetchStorefrontSubmissions(); // Reload to get updated status
+        alert('Product approved successfully!');
+      } else {
+        alert(result.error || 'Failed to approve product');
+      }
+    } catch (error) {
+      alert('Failed to approve product');
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
   // Calculate totals from real data
   const paidInvoices = invoices.filter(inv => inv.status === 'paid');
   const totalServiceFees = paidInvoices.reduce((sum, inv) => sum + (inv.paymentDetails?.platformFee || 0), 0);
@@ -66,6 +128,10 @@ export default function AdminDashboard() {
   const totalStorefrontSales = completedPurchases.reduce((sum, p) => sum + p.amount, 0);
 
   const pendingProducts = products.filter(p => p.status === 'pending');
+  const pendingStorefrontSubmissions = storefrontSubmissions.filter(s => s.status === 'pending');
+  const totalPendingApprovals = pendingProducts.length + pendingStorefrontSubmissions.length;
+
+  const pendingSkills = unmappedSkills.filter(s => s.status === 'pending');
 
   const tabs = [
     {
@@ -84,7 +150,13 @@ export default function AdminDashboard() {
       id: 'products' as TabType,
       label: 'Product Approval',
       icon: CheckCircle,
-      count: pendingProducts.length
+      count: totalPendingApprovals
+    },
+    {
+      id: 'skills' as TabType,
+      label: 'Skills Management',
+      icon: User,
+      count: pendingSkills.length
     }
   ];
 
@@ -359,11 +431,83 @@ export default function AdminDashboard() {
               {activeTab === 'products' && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Product Approval Queue</h3>
-                  <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-                    {products.filter(p => ['pending', 'under_review'].includes(p.status)).map((product) => (
-                      <div key={product.id} className="bg-white border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-start justify-between mb-3">
-                          <h4 className="font-medium text-gray-900 line-clamp-2">{product.title}</h4>
+
+                  {/* Storefront Submissions Section */}
+                  <div className="mb-8">
+                    <h4 className="text-md font-medium mb-4 text-gray-800">Storefront Submissions</h4>
+                    <div className="space-y-4">
+                      {pendingStorefrontSubmissions.map((submission) => (
+                        <div key={submission.id} className="bg-white border border-gray-200 rounded-lg p-4">
+                          <div className="flex items-start justify-between mb-3">
+                            <div>
+                              <h5 className="font-medium text-gray-900">{submission.productName}</h5>
+                              <p className="text-sm text-gray-500 mt-1">
+                                Submitted {new Date(submission.submittedAt).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </p>
+                            </div>
+                            <span className="px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
+                              {submission.status}
+                            </span>
+                          </div>
+
+                          <p className="text-sm text-gray-600 mb-3">{submission.description}</p>
+
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4 text-sm text-gray-500">
+                              <span>Category: {submission.category}</span>
+                              {submission.fileName && (
+                                <span>File: {submission.fileName} ({(submission.fileSize / (1024 * 1024)).toFixed(2)} MB)</span>
+                              )}
+                            </div>
+
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => approveProduct(submission.id)}
+                                disabled={processingId === submission.id}
+                                className="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700 disabled:opacity-50"
+                              >
+                                {processingId === submission.id ? 'Processing...' : 'Approve'}
+                              </button>
+                              <button className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                                Reject
+                              </button>
+                            </div>
+                          </div>
+
+                          {submission.tags && submission.tags.length > 0 && (
+                            <div className="mt-3 flex flex-wrap gap-1">
+                              {submission.tags.map((tag: string, index: number) => (
+                                <span key={index} className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {pendingStorefrontSubmissions.length === 0 && (
+                      <div className="text-center py-8 text-gray-500">
+                        No pending storefront submissions
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Regular Product Approvals Section */}
+                  <div>
+                    <h4 className="text-md font-medium mb-4 text-gray-800">Product Approvals</h4>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                      {products.filter(p => ['pending', 'under_review'].includes(p.status)).map((product) => (
+                        <div key={product.id} className="bg-white border border-gray-200 rounded-lg p-4">
+                          <div className="flex items-start justify-between mb-3">
+                            <h4 className="font-medium text-gray-900 line-clamp-2">{product.title}</h4>
                           <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                             product.status === 'pending'
                               ? 'bg-yellow-100 text-yellow-800'
@@ -405,10 +549,52 @@ export default function AdminDashboard() {
                     ))}
                   </div>
 
-                  {products.filter(p => ['pending', 'under_review'].includes(p.status)).length === 0 && (
+                    {products.filter(p => ['pending', 'under_review'].includes(p.status)).length === 0 && (
+                      <div className="text-center py-12">
+                        <CheckCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                        <p className="text-gray-500">No products pending approval</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Skills Management Tab */}
+              {activeTab === 'skills' && (
+                <div>
+                  <h3 className="text-lg font-semibold mb-4">Skills Management</h3>
+                  <p className="text-gray-600 mb-6">
+                    Manage unmapped skills that users have entered. Assign them to appropriate gig categories to improve search results.
+                  </p>
+
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Skill</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Frequency</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Context</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white divide-y divide-gray-200">
+                        {unmappedSkills.map((skill) => (
+                          <SkillMappingRow
+                            key={skill.id}
+                            skill={skill}
+                            categories={gigCategories}
+                            onUpdate={fetchUnmappedSkills}
+                          />
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {unmappedSkills.length === 0 && (
                     <div className="text-center py-12">
-                      <CheckCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-500">No products pending approval</p>
+                      <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-500">No unmapped skills found</p>
                     </div>
                   )}
                 </div>
@@ -418,5 +604,141 @@ export default function AdminDashboard() {
         </div>
       </div>
     </section>
+  );
+}
+
+// Skills mapping row component
+function SkillMappingRow({ skill, categories, onUpdate }: {
+  skill: any;
+  categories: any[];
+  onUpdate: () => void;
+}) {
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const handleMapSkill = async () => {
+    if (!selectedSubcategory) return;
+
+    setIsUpdating(true);
+    try {
+      const response = await fetch('/api/admin/unmapped-skills', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: skill.id,
+          status: 'mapped',
+          mappedTo: selectedSubcategory,
+          mappedCategory: selectedCategory
+        })
+      });
+
+      if (response.ok) {
+        onUpdate();
+      }
+    } catch (error) {
+      console.error('Error mapping skill:', error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const handleIgnoreSkill = async () => {
+    setIsUpdating(true);
+    try {
+      const response = await fetch('/api/admin/unmapped-skills', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id: skill.id,
+          status: 'ignored'
+        })
+      });
+
+      if (response.ok) {
+        onUpdate();
+      }
+    } catch (error) {
+      console.error('Error ignoring skill:', error);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const selectedCategoryData = categories.find(c => c.id === selectedCategory);
+  const subcategories = selectedCategoryData?.subcategories || [];
+
+  return (
+    <tr className="hover:bg-gray-50">
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+        {skill.skill}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+        {skill.frequency}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        {skill.context}
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap">
+        <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+          skill.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+          skill.status === 'mapped' ? 'bg-green-100 text-green-800' :
+          'bg-gray-100 text-gray-800'
+        }`}>
+          {skill.status}
+        </span>
+      </td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+        {skill.status === 'pending' && (
+          <div className="flex gap-2 items-center">
+            <select
+              value={selectedCategory}
+              onChange={(e) => {
+                setSelectedCategory(e.target.value);
+                setSelectedSubcategory('');
+              }}
+              className="text-xs border border-gray-300 rounded px-2 py-1"
+            >
+              <option value="">Select Category</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.label}</option>
+              ))}
+            </select>
+
+            {selectedCategory && (
+              <select
+                value={selectedSubcategory}
+                onChange={(e) => setSelectedSubcategory(e.target.value)}
+                className="text-xs border border-gray-300 rounded px-2 py-1"
+              >
+                <option value="">Select Subcategory</option>
+                {subcategories.map((sub: any) => (
+                  <option key={sub.name} value={sub.name}>{sub.name}</option>
+                ))}
+              </select>
+            )}
+
+            <button
+              onClick={handleMapSkill}
+              disabled={!selectedSubcategory || isUpdating}
+              className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:opacity-50"
+            >
+              Map
+            </button>
+
+            <button
+              onClick={handleIgnoreSkill}
+              disabled={isUpdating}
+              className="px-2 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 disabled:opacity-50"
+            >
+              Ignore
+            </button>
+          </div>
+        )}
+        {skill.status === 'mapped' && skill.mappedTo && (
+          <span className="text-xs text-green-600">→ {skill.mappedTo}</span>
+        )}
+      </td>
+    </tr>
   );
 }

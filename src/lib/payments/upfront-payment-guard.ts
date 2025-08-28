@@ -137,19 +137,19 @@ export class UpfrontPaymentGuard {
       projectId: inv.projectId,
       invoiceType: inv.invoiceType,
       status: inv.status,
-      amount: inv.totalAmount || inv.amount
+      amount: inv.totalAmount || (inv as any).amount
     })));
 
     const typeMatchingInvoices = allInvoices.filter(inv =>
       inv.projectId === projectId &&
-      expectedTypes.includes(inv.invoiceType)
+      inv.invoiceType && expectedTypes.includes(inv.invoiceType)
     );
 
     console.log('🔍 [ATOMIC] Debug - Type matching invoices:', typeMatchingInvoices.map(inv => ({
       invoiceNumber: inv.invoiceNumber,
       invoiceType: inv.invoiceType,
       status: inv.status,
-      amount: inv.totalAmount || inv.amount
+      amount: inv.totalAmount || (inv as any).amount
     })));
 
     const paidInvoices = typeMatchingInvoices.filter(inv => inv.status === 'paid');
@@ -169,17 +169,17 @@ export class UpfrontPaymentGuard {
         invoiceNumber: inv.invoiceNumber,
         invoiceType: inv.invoiceType,
         status: inv.status,
-        amount: inv.totalAmount || inv.amount
+        amount: inv.totalAmount || (inv as any).amount
       })));
 
       const typeMatchingInvoices = allInvoices.filter(inv =>
-        inv.projectId === projectId && expectedTypes.includes(inv.invoiceType)
+        inv.projectId === projectId && inv.invoiceType && expectedTypes.includes(inv.invoiceType)
       );
       console.log('🔍 [ATOMIC] Debug - Type matching invoices:', typeMatchingInvoices.map(inv => ({
         invoiceNumber: inv.invoiceNumber,
         invoiceType: inv.invoiceType,
         status: inv.status,
-        amount: inv.totalAmount || inv.amount
+        amount: inv.totalAmount || (inv as any).amount
       })));
     }
 
@@ -227,7 +227,7 @@ export class UpfrontPaymentGuard {
 
       // Look for transactions with matching project and amount but no invoiceNumber
       const orphanedTransaction = allTransactions.find(tx =>
-        Number(tx.projectId) === Number(projectId.replace(/\D/g, '')) && // Extract numeric part
+        String(tx.projectId) === String(projectId) && // Compare as strings to handle both "C-010" and numeric IDs
         Math.abs(tx.amount - invoiceAmount) < 0.01 && // Allow for floating point precision
         tx.status === 'paid' &&
         !tx.invoiceNumber
@@ -268,8 +268,8 @@ export class UpfrontPaymentGuard {
       const { updateInvoice } = await import('../invoice-storage');
       await updateInvoice(invoice.invoiceNumber, {
         totalAmount: normalizedAmount,
-        amount: normalizedAmount
-      });
+        // amount: normalizedAmount // Property not in Invoice type
+      } as any);
     }
 
     return normalizedAmount;
@@ -282,9 +282,8 @@ export class UpfrontPaymentGuard {
     const { getAllTransactions } = await import('../transactions/hierarchical-storage');
     const allTransactions = await getAllTransactions();
     
-    const numericProjectId = Number(projectId.replace(/\D/g, ''));
     return allTransactions.filter(tx =>
-      Number(tx.projectId) === numericProjectId &&
+      String(tx.projectId) === String(projectId) &&
       tx.metadata?.invoiceType === invoiceType
     );
   }

@@ -1,0 +1,21 @@
+{
+  "projectId": "C-014",
+  "title": "Milestone Modelling For Series A Fundraising",
+  "description": "Develop a strong narrative framework that captures the stakes of techno-feudalism (concentration of power, erosion of democracy, worker precarity). Create brand assets, talking points, and media kits that position the conference as the leading forum on the issue.\n",
+  "organizationId": 3,
+  "typeTags": [
+    "Design"
+  ],
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "status": "completed",
+  "dueDate": "2025-08-31",
+  "totalTasks": 3,
+  "invoicingMethod": "milestone",
+  "totalBudget": 750,
+  "paidToDate": 750,
+  "currency": "USD",
+  "createdAt": "2025-08-28T13:44:23.206Z",
+  "updatedAt": "2025-08-28T13:48:56.512Z",
+  "completedAt": "2025-08-28T13:48:56.512Z"
+}

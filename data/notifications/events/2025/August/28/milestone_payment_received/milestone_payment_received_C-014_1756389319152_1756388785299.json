@@ -1,0 +1,24 @@
+{
+  "id": "milestone_payment_received_C-014_1756389319152_1756388785299",
+  "timestamp": "2025-08-28T13:46:25.299Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 34,
+  "entityType": 5,
+  "entityId": "C-014_1756389319152",
+  "metadata": {
+    "taskTitle": "Messaging",
+    "projectTitle": "Milestone Modelling For Series A Fundraising",
+    "projectId": "C-014",
+    "taskId": 1756389319152,
+    "invoiceGenerated": true,
+    "amount": 0,
+    "invoiceNumber": "MH-017",
+    "organizationName": "Corlax Wellness"
+  },
+  "context": {
+    "projectId": "C-014",
+    "taskId": 1756389319152,
+    "invoiceNumber": "MH-017"
+  }
+}

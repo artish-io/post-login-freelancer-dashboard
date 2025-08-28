@@ -74,7 +74,7 @@ export class CompletionCalculationService {
       const allTasksApproved = approvedTasks === totalTasks && totalTasks > 0;
 
       // Calculate remaining budget
-      const remainingBudget = await this.calculateRemainingBudget(projectId, project.totalBudget);
+      const remainingBudget = await this.calculateRemainingBudget(projectId, project.totalBudget || 0);
       const hasRemainingBudget = remainingBudget > 0;
 
       // Determine final eligibility
@@ -184,7 +184,7 @@ export class CompletionCalculationService {
       }
 
       // Calculate current remaining budget
-      const currentRemainingBudget = await this.calculateRemainingBudget(projectId, project.totalBudget);
+      const currentRemainingBudget = await this.calculateRemainingBudget(projectId, project.totalBudget || 0);
 
       // Check if proposed payment would result in negative balance
       const wouldResultInNegative = (currentRemainingBudget - proposedPaymentAmount) < 0;
@@ -292,13 +292,13 @@ export class CompletionCalculationService {
       const manualPaymentsTotal = manualInvoices.reduce((sum, inv) => sum + inv.totalAmount, 0);
       
       // Calculate amounts
-      const upfrontAmount = this.calculateUpfrontAmount(project.totalBudget);
-      const remainingAmount = await this.calculateRemainingBudget(projectId, project.totalBudget);
+      const upfrontAmount = this.calculateUpfrontAmount(project.totalBudget || 0);
+      const remainingAmount = await this.calculateRemainingBudget(projectId, project.totalBudget || 0);
       
       // Validate budget integrity
       const totalPaid = (upfrontPaid ? upfrontAmount : 0) + manualPaymentsTotal;
-      if (totalPaid > project.totalBudget) {
-        errors.push(`Total payments (${totalPaid}) exceed project budget (${project.totalBudget})`);
+      if (totalPaid > (project.totalBudget || 0)) {
+        errors.push(`Total payments (${totalPaid}) exceed project budget (${project.totalBudget || 0})`);
       }
       
       return {
@@ -308,7 +308,7 @@ export class CompletionCalculationService {
         remainingAmount,
         errors,
         summary: {
-          totalBudget: project.totalBudget,
+          totalBudget: project.totalBudget || 0,
           upfrontAmount,
           manualPaymentsTotal,
           finalAmount: remainingAmount
@@ -366,21 +366,7 @@ export class CompletionCalculationService {
   }
   
   // Helper methods
-  private static async getProjectById(projectId: string) {
-    try {
-      const fs = await import('fs').promises;
-      const path = await import('path');
-      
-      const projectsPath = path.join(process.cwd(), 'data', 'projects.json');
-      const projectsData = await fs.readFile(projectsPath, 'utf8');
-      const projects = JSON.parse(projectsData);
-      
-      return projects.find((p: any) => p.projectId === projectId);
-    } catch (error) {
-      console.error('Error reading project:', error);
-      return null;
-    }
-  }
+  // Duplicate function removed - using hierarchical storage version below
   
   private static async getInvoicesByProject(projectId: string, invoiceType: string, status?: string) {
     try {

@@ -1,0 +1,40 @@
+{
+  "id": 58,
+  "title": "Test Portfolio Styling",
+  "organizationId": 1,
+  "commissionerId": "32",
+  "category": "Writing",
+  "subcategory": "Copywriting",
+  "tags": [
+    "Writing"
+  ],
+  "hourlyRateMin": 8.33,
+  "hourlyRateMax": 10.42,
+  "description": "The model should balance real estate, energy, utilities, commerce, and community services to ensure both profitability and long-term resilience. The right partner will help us structure a blueprint that blends financial viability with innovation in sustainable living.",
+  "deliveryTimeWeeks": 0.42857142857142855,
+  "estimatedHours": 24,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Google Docs"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "38276aa0-4a2f-4f9c-a0fb-05cb3d1b8fb2",
+      "title": "Phase One: Concept & Style Guide",
+      "description": " map out regulatory, infrastructural, and demographic realities that shape feasibility.",
+      "startDate": "2025-08-29T04:00:00.000Z",
+      "endDate": "2025-08-30T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 200,
+  "upperBudget": 250,
+  "postedDate": "2025-08-28",
+  "notes": "Budget range: $200 - $250",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

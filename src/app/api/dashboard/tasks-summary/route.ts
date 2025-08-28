@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     ]);
 
     // Get all tasks across all projects
-    const allTasks = [];
+    const allTasks: any[] = [];
     for (const project of projects) {
       const projectTasks = await UnifiedStorageService.listTasks(project.projectId);
       allTasks.push(...projectTasks);

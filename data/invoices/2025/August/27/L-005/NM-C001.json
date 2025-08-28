@@ -1,0 +1,34 @@
+{
+  "invoiceNumber": "NM-C001",
+  "projectId": "L-005",
+  "freelancerId": 25,
+  "commissionerId": 32,
+  "projectTitle": "Completion for 2Baba 40-Year Concert",
+  "totalAmount": 18,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-28T02:24:26.116Z",
+  "dueDate": "2025-09-11T02:24:26.116Z",
+  "createdAt": "2025-08-28T02:24:26.116Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 18,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "paymentId": "TXN-NM-C001",
+    "paymentMethod": "mock",
+    "platformFee": 0.95,
+    "freelancerAmount": 17.05,
+    "currency": "USD",
+    "processedAt": "2025-08-28T02:24:26.621Z"
+  },
+  "paidDate": "2025-08-28",
+  "paidAmount": 18,
+  "updatedAt": "2025-08-28T02:24:26.621Z"
+}

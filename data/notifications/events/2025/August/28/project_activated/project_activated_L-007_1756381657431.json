@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_L-007_1756381657431",
+  "timestamp": "2025-08-28T11:47:37.431Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "L-007",
+  "metadata": {
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "gigTitle": "Completion Sender for Data Farm Handbook",
+    "taskCount": 3,
+    "commissionerName": "Neilsan Mando",
+    "organizationName": "Lagos State Parks Services",
+    "dueDate": "2025-08-31"
+  },
+  "context": {
+    "projectId": 7,
+    "gigId": 57
+  }
+}

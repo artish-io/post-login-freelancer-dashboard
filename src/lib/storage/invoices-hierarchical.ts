@@ -38,7 +38,7 @@ export async function sumPaidInvoicesByProject(projectId: string): Promise<PaidI
       invoices: paidInvoices.map(invoice => ({
         invoiceNumber: invoice.invoiceNumber,
         amount: invoice.totalAmount || 0,
-        paidDate: invoice.paidDate || invoice.updatedAt || invoice.createdAt
+        paidDate: invoice.paidDate || invoice.updatedAt || invoice.createdAt || new Date().toISOString()
       }))
     };
   } catch (error) {

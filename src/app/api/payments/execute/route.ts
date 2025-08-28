@@ -100,7 +100,7 @@ async function handleExecutePayment(req: Request) {
 
     const invoice: InvoiceLike = {
       invoiceNumber: String(invRaw!.invoiceNumber),
-      projectId: Number(invRaw!.projectId ?? 0),
+      projectId: invRaw!.projectId ?? '',
       freelancerId: Number(invRaw!.freelancerId),
       commissionerId: Number(invRaw!.commissionerId),
       totalAmount: Number(invRaw!.totalAmount),
@@ -132,7 +132,7 @@ async function handleExecutePayment(req: Request) {
       console.log('[payments.execute] Using mock gateway');
       paymentRecord = await processMockPayment({
         invoiceNumber: invoice.invoiceNumber,
-        projectId: Number(invoice.projectId ?? 0),
+        projectId: invoice.projectId ?? '',
         freelancerId: Number(invoice.freelancerId),
         commissionerId: Number(invoice.commissionerId),
         totalAmount: Number(invoice.totalAmount)

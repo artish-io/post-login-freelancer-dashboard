@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_61_1_1756394880104",
+  "timestamp": "2025-08-28T15:28:00.104Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "61",
+  "metadata": {
+    "gigTitle": "Final Test Notification Test Hopefully for Longer Divide",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 61,
+    "applicationId": 1755193217291
+  }
+}

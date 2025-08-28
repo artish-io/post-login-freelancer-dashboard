@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_56_25_1756348059640",
+  "timestamp": "2025-08-28T02:27:39.640Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "56",
+  "metadata": {
+    "gigTitle": "Market Research for Longer Divide",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 56,
+    "applicationId": 1755193217286
+  }
+}

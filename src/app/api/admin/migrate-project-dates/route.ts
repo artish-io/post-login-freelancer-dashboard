@@ -24,9 +24,11 @@ export async function POST(req: Request) {
     
     if (projectsToMigrate.length === 0) {
       return NextResponse.json(ok({
-        message: 'No projects need migration',
-        migratedCount: 0,
-        totalProjects: allProjects.length
+        entities: {
+          migratedCount: 0,
+          totalProjects: allProjects.length
+        },
+        message: 'No projects need migration'
       }));
     }
     
@@ -127,11 +129,13 @@ export async function POST(req: Request) {
     console.log(`✅ Migration completed: ${successCount} successful, ${errorCount} failed`);
     
     return NextResponse.json(ok({
-      message: `Migration completed: ${successCount} projects migrated successfully, ${errorCount} failed`,
-      migratedCount: successCount,
-      errorCount,
-      totalProjects: allProjects.length,
-      results: migrationResults
+      entities: {
+        migratedCount: successCount,
+        errorCount,
+        totalProjects: allProjects.length,
+        results: migrationResults
+      },
+      message: `Migration completed: ${successCount} projects migrated successfully, ${errorCount} failed`
     }));
     
   } catch (error: any) {
@@ -159,16 +163,19 @@ export async function GET() {
     );
     
     return NextResponse.json(ok({
-      totalProjects: allProjects.length,
-      projectsWithNewFields: projectsWithNewFields.length,
-      projectsNeedingMigration: projectsNeedingMigration.length,
-      migrationNeeded: projectsNeedingMigration.length > 0,
-      projectsNeedingMigrationList: projectsNeedingMigration.map(p => ({
-        projectId: p.projectId,
-        createdAt: p.createdAt,
-        dueDate: p.dueDate,
-        hasGigId: !!p.gigId
-      }))
+      entities: {
+        totalProjects: allProjects.length,
+        projectsWithNewFields: projectsWithNewFields.length,
+        projectsNeedingMigration: projectsNeedingMigration.length,
+        migrationNeeded: projectsNeedingMigration.length > 0,
+        projectsNeedingMigrationList: projectsNeedingMigration.map(p => ({
+          projectId: p.projectId,
+          createdAt: p.createdAt,
+          dueDate: p.dueDate,
+          hasGigId: !!p.gigId
+        }))
+      },
+      message: 'Migration status check completed'
     }));
     
   } catch (error: any) {

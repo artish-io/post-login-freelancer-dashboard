@@ -63,7 +63,7 @@ export interface LegacyTask {
  * Generate file path for a task based on project creation date (NOT due date)
  * This ensures tasks are stored with their parent project
  */
-export function generateTaskFilePath(projectCreatedAt: string, projectId: number, taskId: number): string {
+export function generateTaskFilePath(projectCreatedAt: string, projectId: string | number, taskId: number): string {
   const date = new Date(projectCreatedAt);
   const year = format(date, 'yyyy');
   const month = format(date, 'MM');
@@ -84,7 +84,7 @@ export function generateTaskFilePath(projectCreatedAt: string, projectId: number
 /**
  * Generate directory path for a project's tasks based on project creation date
  */
-export function generateProjectTasksDir(projectCreatedAt: string, projectId: number): string {
+export function generateProjectTasksDir(projectCreatedAt: string, projectId: string | number): string {
   const date = new Date(projectCreatedAt);
   const year = format(date, 'yyyy');
   const month = format(date, 'MM');
@@ -104,7 +104,7 @@ export function generateProjectTasksDir(projectCreatedAt: string, projectId: num
 /**
  * DEPRECATED: Legacy function that used due date - kept for migration purposes
  */
-export function generateTaskFilePathByDueDate(dueDate: string, projectId: number, taskId: number): string {
+export function generateTaskFilePathByDueDate(dueDate: string, projectId: string | number, taskId: number): string {
   const date = new Date(dueDate);
   const year = format(date, 'yyyy');
   const month = format(date, 'MM');
@@ -136,7 +136,7 @@ export async function ensureDirectoryExists(dirPath: string): Promise<void> {
 /**
  * Find existing task file location by searching through the hierarchical structure
  */
-async function findExistingTaskFile(projectId: number, taskId: number): Promise<string | null> {
+async function findExistingTaskFile(projectId: string | number, taskId: number): Promise<string | null> {
   const basePath = path.join(process.cwd(), 'data', 'project-tasks');
 
   try {
@@ -225,7 +225,7 @@ export async function writeTask(task: HierarchicalTask, projectCreatedAt?: strin
  * Read a single task from hierarchical storage
  * First tries to find by existing file location, then by project creation date
  */
-export async function readTask(projectCreatedAt: string, projectId: number, taskId: number): Promise<HierarchicalTask | null> {
+export async function readTask(projectCreatedAt: string, projectId: string | number, taskId: number): Promise<HierarchicalTask | null> {
   try {
     // First try to find the existing file location
     const existingFilePath = await findExistingTaskFile(projectId, taskId);
@@ -248,7 +248,7 @@ export async function readTask(projectCreatedAt: string, projectId: number, task
 /**
  * Read a single task by searching through all possible locations
  */
-export async function readTaskById(projectId: number, taskId: number): Promise<HierarchicalTask | null> {
+export async function readTaskById(projectId: string | number, taskId: number): Promise<HierarchicalTask | null> {
   try {
     const existingFilePath = await findExistingTaskFile(projectId, taskId);
 
@@ -267,7 +267,7 @@ export async function readTaskById(projectId: number, taskId: number): Promise<H
 /**
  * Read all tasks for a specific project
  */
-export async function readProjectTasks(projectId: number): Promise<HierarchicalTask[]> {
+export async function readProjectTasks(projectId: string | number): Promise<HierarchicalTask[]> {
   const tasks: HierarchicalTask[] = [];
   const basePath = path.join(process.cwd(), 'data', 'project-tasks');
   
@@ -398,7 +398,7 @@ export async function readAllTasks(): Promise<HierarchicalTask[]> {
 /**
  * Delete a task from hierarchical storage
  */
-export async function deleteTask(dueDate: string, projectId: number, taskId: number): Promise<boolean> {
+export async function deleteTask(dueDate: string, projectId: string | number, taskId: number): Promise<boolean> {
   try {
     const filePath = generateTaskFilePath(dueDate, projectId, taskId);
     await fs.unlink(filePath);
@@ -425,9 +425,9 @@ export async function deleteTask(dueDate: string, projectId: number, taskId: num
  * Move a task to a new due date (changes file location)
  */
 export async function moveTaskToNewDate(
-  oldDueDate: string, 
-  newDueDate: string, 
-  projectId: number, 
+  oldDueDate: string,
+  newDueDate: string,
+  projectId: string | number,
   taskId: number
 ): Promise<boolean> {
   try {

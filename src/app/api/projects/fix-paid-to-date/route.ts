@@ -68,11 +68,11 @@ async function fixProjectPaidToDate(projectId: string) {
     const oldPaidToDate = project.paidToDate || 0;
     
     // Update project
-    await UnifiedStorageService.writeProject(projectId, {
+    await UnifiedStorageService.writeProject({
       ...project,
       paidToDate: totalPaid,
       updatedAt: new Date().toISOString()
-    });
+    } as any);
     
     return {
       projectId,

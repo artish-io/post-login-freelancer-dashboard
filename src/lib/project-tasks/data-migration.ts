@@ -62,22 +62,22 @@ export async function analyzeTaskStorageInconsistencies(): Promise<MigrationResu
         if (!project?.createdAt) {
           result.errors.push({
             taskId: task.taskId,
-            projectId: task.projectId,
+            projectId: Number(task.projectId),
             error: 'Project not found or missing creation date'
           });
           continue;
         }
 
         // Calculate where the task should be stored
-        const correctLocation = generateTaskFilePath(project.createdAt, task.projectId, task.taskId);
-        
+        const correctLocation = generateTaskFilePath(project.createdAt, Number(task.projectId), task.taskId);
+
         // Find where the task is currently stored
-        const currentLocation = await findCurrentTaskLocation(task.projectId, task.taskId);
+        const currentLocation = await findCurrentTaskLocation(Number(task.projectId), task.taskId);
         
         if (!currentLocation) {
           result.errors.push({
             taskId: task.taskId,
-            projectId: task.projectId,
+            projectId: Number(task.projectId),
             error: 'Task file not found in storage'
           });
           continue;
@@ -87,7 +87,7 @@ export async function analyzeTaskStorageInconsistencies(): Promise<MigrationResu
         if (currentLocation !== correctLocation) {
           result.inconsistencies.push({
             taskId: task.taskId,
-            projectId: task.projectId,
+            projectId: Number(task.projectId),
             currentLocation,
             correctLocation,
             issue: 'Task stored in wrong date directory'
@@ -97,7 +97,7 @@ export async function analyzeTaskStorageInconsistencies(): Promise<MigrationResu
       } catch (error) {
         result.errors.push({
           taskId: task.taskId,
-          projectId: task.projectId,
+          projectId: Number(task.projectId),
           error: `Analysis error: ${error instanceof Error ? error.message : 'Unknown error'}`
         });
       }

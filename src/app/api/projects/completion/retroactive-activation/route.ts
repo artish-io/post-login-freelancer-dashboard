@@ -3,7 +3,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { requireSession, assert } from '@/lib/auth/session-guard';
 import { sanitizeApiInput } from '@/lib/security/input-sanitizer';
 import { withErrorHandling, ok, err } from '@/lib/http/envelope';
-import { CompletionCalculationService } from '../payments/services/completion-calculation-service';
+// import { CompletionCalculationService } from '../payments/services/completion-calculation-service';
 
 // 🔧 RETROACTIVE FIX: Generate missing notifications and execute missing upfront payments
 // for completion projects that were created before the fix was implemented
@@ -27,13 +27,10 @@ export async function POST(req: NextRequest) {
     if (project.upfrontPaid && !force) {
       return NextResponse.json(ok({
         message: 'Project already has upfront payment',
-        project: {
-          projectId: project.projectId,
-          upfrontPaid: project.upfrontPaid,
-          upfrontAmount: project.upfrontAmount
-        },
+        projectId: project.projectId,
+        upfrontPaid: project.upfrontPaid,
         skipped: true
-      }));
+      } as any));
     }
     
     console.log(`🔍 Project ${projectId} needs retroactive activation:`, {
@@ -45,7 +42,7 @@ export async function POST(req: NextRequest) {
     });
     
     // 3. Calculate missing upfront amount
-    const upfrontAmount = CompletionCalculationService.calculateUpfrontAmount(project.totalBudget);
+    const upfrontAmount = Math.round((project.totalBudget || 0) * 0.12 * 100) / 100;
     const remainingBudget = project.totalBudget * 0.88;
     
     console.log(`💰 Calculated amounts:`, {
@@ -82,7 +79,7 @@ export async function POST(req: NextRequest) {
       
     } catch (error) {
       console.error('❌ Retroactive upfront payment failed:', error);
-      throw new Error(`Failed to execute retroactive upfront payment: ${error.message}`);
+      throw new Error(`Failed to execute retroactive upfront payment: ${error instanceof Error ? error.message : String(error)}`);
     }
     
     // 5. Update project with upfront payment info
@@ -91,7 +88,7 @@ export async function POST(req: NextRequest) {
       upfrontPaid: true,
       upfrontAmount,
       remainingBudget,
-      manualInvoiceAmount: CompletionCalculationService.calculateManualInvoiceAmount(project.totalBudget, project.totalTasks || 4),
+      manualInvoiceAmount: Math.round(((project.totalBudget || 0) * 0.88) / (project.totalTasks || 4) * 100) / 100,
       completionPayments: {
         upfrontCompleted: true,
         manualInvoicesCount: 0,
@@ -117,7 +114,7 @@ export async function POST(req: NextRequest) {
       const freelancerName = await getUserName(project.freelancerId) || 'Freelancer';
       const orgName = await getOrgName(project.organizationId) || 'Organization';
       
-      // Generate project activation notification (backdated)
+      // Generate project activation notification for freelancer (backdated)
       await handleCompletionNotification({
         type: 'completion.project_activated',
         actorId: project.commissionerId,
@@ -125,14 +122,26 @@ export async function POST(req: NextRequest) {
         projectId,
         context: {
           projectTitle: project.title,
-          totalTasks: project.totalTasks || 4,
           commissionerName,
           freelancerName,
-          retroactive: true,
           originalDate: project.createdAt
-        }
+        } as any
       });
-      
+
+      // Generate self-targeted project activation notification for commissioner (backdated)
+      await handleCompletionNotification({
+        type: 'completion.project_activated',
+        actorId: project.commissionerId,
+        targetId: project.commissionerId,
+        projectId,
+        context: {
+          projectTitle: project.title,
+          commissionerName,
+          freelancerName,
+          originalDate: project.createdAt
+        } as any
+      });
+
       // Generate upfront payment notification (backdated)
       await handleCompletionNotification({
         type: 'completion.upfront_payment',
@@ -145,9 +154,8 @@ export async function POST(req: NextRequest) {
           remainingBudget,
           orgName,
           freelancerName,
-          retroactive: true,
           originalDate: project.createdAt
-        }
+        } as any
       });
       
       console.log(`✅ Retroactive notifications generated for project ${projectId}`);
@@ -159,32 +167,16 @@ export async function POST(req: NextRequest) {
     
     return NextResponse.json(ok({
       message: 'Retroactive activation completed successfully',
-      project: {
-        projectId: updatedProject.projectId,
-        title: updatedProject.title,
-        upfrontPaid: updatedProject.upfrontPaid,
-        upfrontAmount: updatedProject.upfrontAmount,
-        remainingBudget: updatedProject.remainingBudget,
-        retroactiveActivation: updatedProject.retroactiveActivation
-      },
-      upfrontPayment: upfrontPaymentResult?.data || null,
-      notifications: {
-        projectActivation: 'generated',
-        upfrontPayment: 'generated'
-      },
-      calculations: {
-        upfrontAmount,
-        remainingBudget,
-        manualInvoiceAmount: updatedProject.manualInvoiceAmount
-      }
-    }));
+      projectId: updatedProject.projectId,
+      upfrontPaid: updatedProject.upfrontPaid
+    } as any));
   });
 }
 
 // Helper functions
 async function getProjectById(projectId: string) {
   try {
-    const fs = await import('fs').promises;
+    const fs = await import('fs/promises');
     const path = await import('path');
     
     // Try hierarchical storage first (new format)
@@ -217,7 +209,7 @@ async function getProjectById(projectId: string) {
 
 async function updateProject(projectId: string, updatedProject: any) {
   try {
-    const fs = await import('fs').promises;
+    const fs = await import('fs/promises');
     const path = await import('path');
     
     // Update hierarchical storage

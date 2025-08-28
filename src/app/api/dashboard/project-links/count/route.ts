@@ -20,9 +20,7 @@ export async function GET(req: Request) {
       readAllTasks()
     ]);
 
-    // Convert to legacy format for compatibility
-    const projectTasks = convertHierarchicalToLegacy(hierarchicalTasks);
-
+    // Use hierarchical storage directly
     const freelancerId = parseInt(userId);
 
     // Get projects for this freelancer
@@ -35,20 +33,12 @@ export async function GET(req: Request) {
 
     const taskIdsWithLinks: number[] = [];
 
-    projectTasks.forEach(
-      (project: {
-        projectId: number;
-        tasks: { id: number; link?: string }[];
-      }) => {
-        if (projectIds.includes(project.projectId)) {
-          project.tasks.forEach((task) => {
-            if (typeof task.link === 'string' && task.link.length > 0) {
-              taskIdsWithLinks.push(task.id);
-            }
-          });
-        }
+    // Use hierarchical tasks directly
+    hierarchicalTasks.forEach((task: any) => {
+      if (projectIds.includes(task.projectId) && task.link && task.link.length > 0) {
+        taskIdsWithLinks.push(task.taskId);
       }
-    );
+    });
 
     return NextResponse.json({
       count: taskIdsWithLinks.length,

@@ -1,0 +1,27 @@
+{
+  "taskId": 1756382283202,
+  "projectId": "L-007",
+  "projectTitle": "Completion Sender for Data Farm Handbook",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Design"
+  ],
+  "title": "Implementation Roadmap Presentation",
+  "status": "Approved",
+  "completed": true,
+  "order": 3,
+  "link": "bit.ly433234",
+  "dueDate": "2025-08-28T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Deliver a strategic plan with KPIs, funding structures, and governance recommendations. Provide documentation and presentation materials that investors, policymakers, and community stakeholders can easily understand and act upon.",
+  "submittedDate": "2025-08-28T12:43:09.024Z",
+  "createdDate": "2025-08-28T11:47:33.924Z",
+  "lastModified": "2025-08-28T12:45:27.400Z",
+  "manualInvoiceEligible": true,
+  "invoicePaid": false,
+  "approvedBy": 32,
+  "approvedAt": "2025-08-28T12:45:27.400Z"
+}

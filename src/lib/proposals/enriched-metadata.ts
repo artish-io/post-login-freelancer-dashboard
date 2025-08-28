@@ -88,7 +88,7 @@ export async function generateEnrichedProposalMetadata(
   const users = await getAllUsers();
 
   // Find freelancer and commissioner
-  const freelancer = users.find((u: any) => u.id === proposal.freelancerId);
+  const freelancer = users.find((u: any) => u.id === (proposal as any).freelancerId);
   const commissioner = users.find((u: any) => u.id === proposal.commissionerId);
 
   if (!freelancer || !commissioner) {
@@ -152,7 +152,7 @@ export async function generateEnrichedProposalMetadata(
     
     metadata: {
       sentAt: proposal.sentAt || proposal.createdAt,
-      status: proposal.status,
+      status: proposal.status as any,
       typeTags: proposal.typeTags || [],
       logoUrl: proposal.logoUrl,
       milestones: proposal.milestones || []

@@ -192,7 +192,7 @@ async function resolveOrganizationName(
     }
 
     // 6) (last resort) project.commissionerLabel (must be non-empty)
-    if (project?.commissionerLabel && project.commissionerLabel.trim()) {
+    if (project?.commissionerLabel && typeof project.commissionerLabel === 'string' && project.commissionerLabel.trim()) {
       return project.commissionerLabel;
     }
   } catch (error) {
@@ -241,7 +241,7 @@ async function resolveProjectDetails(
       return {
         projectTitle: project.title,
         remainingBudget: remainingAfterThisPayment > 0 ? remainingAfterThisPayment : 0,
-        taskTitle: project.currentTaskTitle || 'task' // Fallback
+        taskTitle: (typeof project.currentTaskTitle === 'string' ? project.currentTaskTitle : null) || 'task' // Fallback
       };
     }
   } catch (error) {

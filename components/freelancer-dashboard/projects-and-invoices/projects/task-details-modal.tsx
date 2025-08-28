@@ -61,14 +61,8 @@ export default function TaskDetailsModal({
   const { submitTask, loading, error, success } = useSubmitTask();
   const showErrorToast = useErrorToast();
 
-  // Ensure user is a freelancer and has access to this task
+  // Ensure user is a freelancer - task access will be checked in handleSubmit after projectInfo is loaded
   const freelancerSession = requireFreelancerSession(session?.user as any);
-  const hasTaskAccess = freelancerSession && projectInfo && isValidFreelancerTask({
-    project: {
-      freelancerId: projectInfo?.freelancerId,
-      assignedFreelancerId: projectInfo?.assignedFreelancerId
-    }
-  }, freelancerSession);
 
   useEffect(() => {
     if (isOpen) {
@@ -147,7 +141,20 @@ export default function TaskDetailsModal({
       return;
     }
 
-    if (!hasTaskAccess) {
+    // Check if projectInfo is loaded and validate task access
+    if (!projectInfo) {
+      showErrorToast('Access Denied', 'Project information not loaded. Please try again.');
+      return;
+    }
+
+    const currentTaskAccess = isValidFreelancerTask({
+      project: {
+        freelancerId: projectInfo?.freelancerId,
+        assignedFreelancerId: projectInfo?.assignedFreelancerId
+      }
+    }, freelancerSession);
+
+    if (!currentTaskAccess) {
       showErrorToast('Access Denied', 'You do not have permission to submit this task.');
       return;
     }

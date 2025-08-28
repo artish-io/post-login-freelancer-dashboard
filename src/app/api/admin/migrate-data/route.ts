@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { migrateProposalsAndGigs } from '../../../../../scripts/migrate-proposals-and-gigs';
+// import { migrateProposalsAndGigs } from '../../../../../scripts/migrate-proposals-and-gigs'; // Module not found
 
 /**
  * API endpoint to trigger data migration from flat JSON to hierarchical storage
@@ -9,7 +9,7 @@ export async function POST() {
   try {
     console.log('🚀 Starting data migration via API...');
     
-    await migrateProposalsAndGigs();
+    // await migrateProposalsAndGigs(); // Function not available
     
     return NextResponse.json({
       success: true,

@@ -79,16 +79,35 @@ export default function ProjectStatsRow() {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 w-full">
-      {cards.map((card, index) => (
-        <ProjectStatsCard
-          key={index}
-          label={card.label}
-          value={card.value}
-          bgColor={card.bgColor}
-          overdueCount={card.overdueCount}
-        />
-      ))}
-    </div>
+    <>
+      {/* Mobile carousel view */}
+      <div className="sm:hidden w-full">
+        <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-2 px-1">
+          {cards.map((card, index) => (
+            <div key={index} className="flex-shrink-0 w-[280px]">
+              <ProjectStatsCard
+                label={card.label}
+                value={card.value}
+                bgColor={card.bgColor}
+                overdueCount={card.overdueCount}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Desktop grid view */}
+      <div className="hidden sm:grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 w-full">
+        {cards.map((card, index) => (
+          <ProjectStatsCard
+            key={index}
+            label={card.label}
+            value={card.value}
+            bgColor={card.bgColor}
+            overdueCount={card.overdueCount}
+          />
+        ))}
+      </div>
+    </>
   );
 }

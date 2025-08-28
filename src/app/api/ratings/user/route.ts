@@ -180,7 +180,7 @@ async function collectUserRatings(userId: number, userType: 'freelancer' | 'comm
                   const ratingFilePath = path.join(ratingsPath, ratingFile);
                   const rating = await readJson(ratingFilePath, null);
                   
-                  if (rating && isValidProjectRating(rating) && rating.subjectUserId === userId) {
+                  if (rating && isValidProjectRating(rating) && (rating as any).subjectUserId === userId) {
                     ratings.push(rating);
                   }
                 }
@@ -234,7 +234,7 @@ async function checkFlatStructureRatings(
             const ratingFilePath = path.join(ratingsPath, ratingFile);
             const rating = await readJson(ratingFilePath, null);
 
-            if (rating && isValidProjectRating(rating) && rating.subjectUserId === userId) {
+            if (rating && isValidProjectRating(rating) && (rating as any).subjectUserId === userId) {
               ratings.push(rating);
             }
           }

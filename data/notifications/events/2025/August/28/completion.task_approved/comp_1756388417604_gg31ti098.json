@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756388417604_gg31ti098",
+  "type": "completion.task_approved",
+  "notificationType": 152,
+  "actorId": 34,
+  "targetId": 31,
+  "entityType": 3,
+  "entityId": "C-013",
+  "projectId": "C-013",
+  "message": "Matte Hannery has approved your submission for \"Phase 2 – Audience Outreach & Campaign Rollout\" in Easy Resumé Writing. Task approved and milestone completed. Click here to see its project tracker.",
+  "context": {
+    "projectId": "C-013",
+    "taskId": "1756387862391",
+    "taskTitle": "Phase 2 – Audience Outreach & Campaign Rollout",
+    "projectTitle": "Easy Resumé Writing",
+    "commissionerName": "Matte Hannery",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Margsate Flether"
+  },
+  "metadata": {
+    "projectId": "C-013",
+    "taskId": "1756387862391",
+    "taskTitle": "Phase 2 – Audience Outreach & Campaign Rollout",
+    "projectTitle": "Easy Resumé Writing",
+    "commissionerName": "Matte Hannery",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Margsate Flether"
+  },
+  "timestamp": "2025-08-28T13:40:17.590Z",
+  "subsystem": "completion_invoicing"
+}

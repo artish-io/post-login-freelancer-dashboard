@@ -1,0 +1,27 @@
+{
+  "taskId": 1756387862391,
+  "projectId": "C-013",
+  "projectTitle": "Easy Resumé Writing",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Writing"
+  ],
+  "title": "Phase 2 – Audience Outreach & Campaign Rollout",
+  "status": "Approved",
+  "completed": true,
+  "order": 2,
+  "link": "bitl.ly23423",
+  "dueDate": "2025-08-28T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Run digital campaigns targeting academics, journalists, and activists; foster partnerships with progressive organizations; and amplify voices of key speakers through content drops and video teasers. Drive early RSVPs with thought-leadership articles and community engagement.\n\n",
+  "submittedDate": "2025-08-28T13:40:09.056Z",
+  "createdDate": "2025-08-28T13:28:59.922Z",
+  "lastModified": "2025-08-28T13:40:16.851Z",
+  "manualInvoiceEligible": true,
+  "invoicePaid": false,
+  "approvedBy": 34,
+  "approvedAt": "2025-08-28T13:40:16.850Z"
+}

@@ -123,12 +123,14 @@ export async function POST(req: Request) {
     console.log(`📊 Total tasks: ${totalTasks}, Tasks migrated: ${tasksToMigrate}`);
     
     return NextResponse.json(ok({
-      message: `Task migration completed: ${successCount} tasks migrated successfully, ${errorCount} failed`,
-      totalTasks,
-      tasksToMigrate,
-      migratedCount: successCount,
-      errorCount,
-      results: migrationResults
+      entities: {
+        totalTasks,
+        tasksToMigrate,
+        migratedCount: successCount,
+        errorCount,
+        results: migrationResults
+      },
+      message: `Task migration completed: ${successCount} tasks migrated successfully, ${errorCount} failed`
     }));
     
   } catch (error: any) {
@@ -176,11 +178,14 @@ export async function GET() {
     }
     
     return NextResponse.json(ok({
-      totalTasks,
-      tasksWithNewFields,
-      tasksNeedingMigration,
-      migrationNeeded: tasksNeedingMigration > 0,
-      tasksNeedingMigrationList: tasksNeedingMigrationList.slice(0, 10) // Limit to first 10 for readability
+      entities: {
+        totalTasks,
+        tasksWithNewFields,
+        tasksNeedingMigration,
+        migrationNeeded: tasksNeedingMigration > 0,
+        tasksNeedingMigrationList: tasksNeedingMigrationList.slice(0, 10) // Limit to first 10 for readability
+      },
+      message: 'Task migration status check completed'
     }));
     
   } catch (error: any) {

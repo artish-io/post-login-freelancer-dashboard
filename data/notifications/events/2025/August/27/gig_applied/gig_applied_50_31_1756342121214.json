@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_50_31_1756342121214",
+  "timestamp": "2025-08-28T00:48:41.214Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "50",
+  "metadata": {
+    "gigTitle": "Economic Model Design for Smart Gated Communities: Building Self-Sustaining Futures in Lagos",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 50,
+    "applicationId": 1755193217279
+  }
+}

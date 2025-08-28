@@ -118,7 +118,7 @@ export class UnifiedTaskService {
 
     return {
       success: true,
-      task: updatedTask as UnifiedTask,
+      task: updatedTask as unknown as UnifiedTask,
       shouldNotify: true,
       notificationTarget: project.commissionerId,
       message: `Task "${task.title}" submitted for review`
@@ -264,7 +264,7 @@ export class UnifiedTaskService {
 
     return {
       success: true,
-      task: updatedTask as UnifiedTask,
+      task: updatedTask as unknown as UnifiedTask,
       shouldNotify: true,
       notificationTarget: project.freelancerId,
       message: `Task "${task.title}" rejected and returned for revision`
@@ -297,7 +297,7 @@ export class UnifiedTaskService {
 
     const newTask: UnifiedTask = {
       taskId,
-      projectId,
+      projectId: projectId.toString(),
       projectTitle: project.title,
       organizationId: project.organizationId || 0,
       projectTypeTags: project.typeTags || [],
@@ -377,7 +377,7 @@ export class UnifiedTaskService {
   static async isProjectReadyForCompletion(projectId: number): Promise<{
     ready: boolean;
     reason?: string;
-    tasksSummary: Awaited<ReturnType<typeof this.getProjectTaskSummary>>;
+    tasksSummary: any;
   }> {
     const summary = await this.getProjectTaskSummary(projectId);
     

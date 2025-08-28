@@ -9,6 +9,10 @@ export async function GET(request: Request) {
   const id = url.searchParams.get('id');
 
   try {
+    if (!id) {
+      return NextResponse.json({ error: 'id parameter is required' }, { status: 400 });
+    }
+
     const [freelancer, user] = await Promise.all([
       import('@/lib/storage/unified-storage-service').then(m => m.getFreelancerById(id)),
       import('@/lib/storage/unified-storage-service').then(async m => {

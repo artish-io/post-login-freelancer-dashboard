@@ -44,7 +44,7 @@ export async function GET(
     }
 
     // Check if user can access this balance - only own balance or admin
-    if (session.user.id !== userId.toString() && session.user.role !== 'admin') {
+    if (session.user.id !== userId.toString() && (session.user as any).role !== 'admin') {
       return NextResponse.json(
         { error: 'Forbidden', code: 'FORBIDDEN' },
         { status: 403 }
@@ -109,7 +109,7 @@ export async function GET(
     return NextResponse.json(response);
     
   } catch (error) {
-    console.error(`❌ Balance API error for user ${params.userId}:`, error);
+    console.error(`❌ Balance API error:`, error);
     
     if (error instanceof TransactionError) {
       return NextResponse.json(
@@ -164,7 +164,7 @@ export async function POST(
     }
 
     // Check if user can refresh this balance - only own balance or admin
-    if (session.user.id !== userId.toString() && session.user.role !== 'admin') {
+    if (session.user.id !== userId.toString() && (session.user as any).role !== 'admin') {
       return NextResponse.json(
         { error: 'Forbidden', code: 'FORBIDDEN' },
         { status: 403 }
@@ -200,7 +200,7 @@ export async function POST(
     return NextResponse.json(response);
     
   } catch (error) {
-    console.error(`❌ Balance refresh API error for user ${params.userId}:`, error);
+    console.error(`❌ Balance refresh API error:`, error);
     
     if (error instanceof TransactionError) {
       return NextResponse.json(

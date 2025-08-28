@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756347627698_yn57eifvh",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-004",
+  "projectId": "L-004",
+  "message": "Lagos State Parks Services has paid $36 upfront for your newly activated Financial Modelling For Series A Fundraising project. This project has a budget of $264 left. Click here to view invoice details",
+  "context": {
+    "projectId": "L-004",
+    "upfrontAmount": 36,
+    "projectTitle": "Financial Modelling For Series A Fundraising",
+    "remainingBudget": 264,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-004",
+    "upfrontAmount": 36,
+    "projectTitle": "Financial Modelling For Series A Fundraising",
+    "remainingBudget": 264,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T02:20:27.694Z",
+  "subsystem": "completion_invoicing"
+}

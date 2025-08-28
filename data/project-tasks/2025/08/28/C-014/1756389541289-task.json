@@ -1,0 +1,24 @@
+{
+  "taskId": 1756389541289,
+  "projectId": "C-014",
+  "projectTitle": "Milestone Modelling For Series A Fundraising",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Design"
+  ],
+  "title": "Building",
+  "status": "Approved",
+  "completed": true,
+  "order": 3,
+  "link": "bit.ly324324",
+  "dueDate": "2025-08-28T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Manage the conference’s ideas outlast the event itself by building a digital archive and ongoing community channel.",
+  "submittedDate": "2025-08-28T13:47:51.232Z",
+  "approvedDate": "2025-08-28T13:48:53.081Z",
+  "createdDate": "2025-08-28T13:44:23.206Z",
+  "lastModified": "2025-08-28T13:48:53.081Z"
+}

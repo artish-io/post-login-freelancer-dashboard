@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { X, Mail, ExternalLink, UserX } from 'lucide-react';
@@ -85,8 +85,41 @@ export default function CandidateDetailsSidebar({
 }: CandidateDetailsSidebarProps) {
   const [isMatching, setIsMatching] = useState(false);
   const [isRejecting, setIsRejecting] = useState(false);
+  const [isDownloadingResume, setIsDownloadingResume] = useState(false);
+  const [freelancerHasResume, setFreelancerHasResume] = useState(false);
+  const [checkingResume, setCheckingResume] = useState(false);
   const showSuccessToast = useSuccessToast();
   const showErrorToast = useErrorToast();
+
+  // Check if freelancer has uploaded a resume
+  useEffect(() => {
+    const checkFreelancerResume = async () => {
+      if (!candidate?.application?.freelancerId) {
+        setFreelancerHasResume(false);
+        return;
+      }
+
+      setCheckingResume(true);
+      try {
+        const response = await fetch(`/api/freelancer/resume/info/${candidate.application.freelancerId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFreelancerHasResume(!!data.resume);
+        } else {
+          setFreelancerHasResume(false);
+        }
+      } catch (error) {
+        console.error('Error checking freelancer resume:', error);
+        setFreelancerHasResume(false);
+      } finally {
+        setCheckingResume(false);
+      }
+    };
+
+    if (isOpen && candidate) {
+      checkFreelancerResume();
+    }
+  }, [candidate, isOpen]);
 
   const handleMatchWithFreelancer = async () => {
     console.log('🚀 [ATOMIC] handleMatchWithFreelancer TRIGGERED');
@@ -319,6 +352,48 @@ export default function CandidateDetailsSidebar({
     }
   };
 
+  const handleDownloadResume = async (freelancerId: number) => {
+    if (!freelancerId) return;
+
+    setIsDownloadingResume(true);
+    try {
+      const response = await fetch(`/api/freelancer/resume/download/${freelancerId}`);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to download resume');
+      }
+
+      // Get filename from response headers or use default
+      const contentDisposition = response.headers.get('content-disposition');
+      let filename = 'resume.pdf';
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+        if (filenameMatch) {
+          filename = filenameMatch[1];
+        }
+      }
+
+      // Create blob and download
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      showSuccessToast('Resume downloaded successfully');
+    } catch (error) {
+      console.error('Error downloading resume:', error);
+      showErrorToast('Failed to download resume', error instanceof Error ? error.message : 'Please try again');
+    } finally {
+      setIsDownloadingResume(false);
+    }
+  };
+
   const renderStars = (rating: number) => {
     return (
       <div className="flex items-center">
@@ -515,13 +590,27 @@ export default function CandidateDetailsSidebar({
                       <div className="space-y-2">
                         {isPublicApplication && (
                           <>
-                            {/* CV for public applications */}
-                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                              </svg>
-                              CV.pdf
-                            </div>
+                            {/* CV for public applications - only show if freelancer has uploaded a resume */}
+                            {freelancerHasResume && (
+                              <button
+                                onClick={() => candidate.application?.freelancerId && handleDownloadResume(candidate.application.freelancerId)}
+                                disabled={isDownloadingResume || !candidate.application?.freelancerId}
+                                className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-2 py-1 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                {isDownloadingResume ? 'Downloading...' : 'Download CV'}
+                              </button>
+                            )}
+                            {checkingResume && (
+                              <div className="flex items-center gap-2 text-sm text-gray-500">
+                                <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                Checking for CV...
+                              </div>
+                            )}
                             {/* Sample links for public applications */}
                             {candidate.application?.sampleLinks?.map((link, index) => (
                               <div key={index} className="flex items-center gap-2">

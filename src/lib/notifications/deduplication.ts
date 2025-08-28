@@ -47,11 +47,36 @@ export class PersistentDeduplication {
       const { UnifiedStorageService } = await import('../storage/unified-storage-service');
       const key = generateNotificationKey(notification);
       const now = Date.now();
-      
+
+      // 🔔 ATOMIC CONSOLE LOG: Track completion notification deduplication
+      if (notification.type?.startsWith('completion.')) {
+        console.log('🔔 COMPLETION NOTIFICATION DEDUP CHECK:', {
+          type: notification.type,
+          targetId: notification.targetId,
+          actorId: notification.actorId,
+          entityId: notification.entityId,
+          dedupKey: key,
+          isCommissionerNotification: notification.actorId === notification.targetId,
+          timestamp: new Date().toISOString()
+        });
+      }
+
       // Try to get existing deduplication record
       const dedupRecord = await this.getDedupRecord(key);
-      
+
       if (dedupRecord && (now - dedupRecord.timestamp) < (timeWindowMinutes * 60 * 1000)) {
+        // 🔔 ATOMIC CONSOLE LOG: Track duplicate detection
+        if (notification.type?.startsWith('completion.')) {
+          console.log('🔔 COMPLETION NOTIFICATION DUPLICATE DETECTED:', {
+            type: notification.type,
+            targetId: notification.targetId,
+            dedupKey: key,
+            existingTimestamp: dedupRecord.timestamp,
+            timeDiff: now - dedupRecord.timestamp,
+            windowMs: timeWindowMinutes * 60 * 1000,
+            timestamp: new Date().toISOString()
+          });
+        }
         return true; // Duplicate found
       }
 

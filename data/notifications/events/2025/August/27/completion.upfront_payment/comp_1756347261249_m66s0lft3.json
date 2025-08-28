@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756347261249_m66s0lft3",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-003",
+  "projectId": "L-003",
+  "message": "Lagos State Parks Services has paid $48 upfront for your newly activated Economic Model Design for Smart Completion project. This project has a budget of $352 left. Click here to view invoice details",
+  "context": {
+    "projectId": "L-003",
+    "upfrontAmount": 48,
+    "projectTitle": "Economic Model Design for Smart Completion",
+    "remainingBudget": 352,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-003",
+    "upfrontAmount": 48,
+    "projectTitle": "Economic Model Design for Smart Completion",
+    "remainingBudget": 352,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T02:14:21.246Z",
+  "subsystem": "completion_invoicing"
+}

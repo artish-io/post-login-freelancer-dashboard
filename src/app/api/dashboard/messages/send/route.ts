@@ -27,11 +27,11 @@ export async function POST(request: Request) {
     // If thread doesn't exist, create it now (deferred thread creation)
     if (!threadMetadata) {
       const threadParts = threadId.split('-').map(Number);
-      if (threadParts.length !== 2 || !threadParts.every(id => !isNaN(id))) {
+      if (threadParts.length !== 2 || !threadParts.every((id: number) => !isNaN(id))) {
         return NextResponse.json({ error: 'Invalid thread ID format' }, { status: 400 });
       }
 
-      const [userId1, userId2] = threadParts.sort((a, b) => a - b);
+      const [userId1, userId2] = threadParts.sort((a: number, b: number) => a - b);
 
       // Create new thread metadata
       threadMetadata = {

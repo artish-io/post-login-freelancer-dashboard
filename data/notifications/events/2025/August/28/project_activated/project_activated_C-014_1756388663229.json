@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_C-014_1756388663229",
+  "timestamp": "2025-08-28T13:44:23.229Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "C-014",
+  "metadata": {
+    "projectTitle": "Milestone Modelling For Series A Fundraising",
+    "gigTitle": "Milestone Modelling For Series A Fundraising",
+    "taskCount": 3,
+    "commissionerName": "Matte Hannery",
+    "organizationName": "Corlax Wellness",
+    "dueDate": "2025-08-31"
+  },
+  "context": {
+    "projectId": 14,
+    "gigId": 60
+  }
+}

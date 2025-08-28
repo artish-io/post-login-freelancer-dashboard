@@ -52,11 +52,13 @@ export default function SendInvoicePage() {
   const [error, setError] = useState<string | null>(null);
   const [statusWarning, setStatusWarning] = useState<string | null>(null);
 
-  const invoiceNumber = params.invoiceNumber as string;
+  const rawInvoiceNumber = params.invoiceNumber as string;
+  const invoiceNumber = rawInvoiceNumber ? decodeURIComponent(rawInvoiceNumber) : '';
 
   useEffect(() => {
     const fetchInvoiceData = async () => {
-      console.log('[SEND_INVOICE_PAGE] Loading invoice:', invoiceNumber);
+      console.log('[SEND_INVOICE_PAGE] Raw invoice number from params:', rawInvoiceNumber);
+      console.log('[SEND_INVOICE_PAGE] Decoded invoice number:', invoiceNumber);
       console.log('[SEND_INVOICE_PAGE] Session:', session?.user?.id);
 
       if (!invoiceNumber) {
@@ -69,16 +71,22 @@ export default function SendInvoicePage() {
       try {
         console.log('[SEND_INVOICE_PAGE] Fetching invoice details from API...');
         // Fetch enhanced invoice details (includes freelancer and commissioner info)
-        const invoiceRes = await fetch(`/api/invoices/details/${invoiceNumber}`);
+        const apiUrl = `/api/invoices/details/${encodeURIComponent(invoiceNumber)}`;
+        console.log('[SEND_INVOICE_PAGE] API URL:', apiUrl);
+
+        const invoiceRes = await fetch(apiUrl);
         console.log('[SEND_INVOICE_PAGE] API response status:', invoiceRes.status);
 
         if (!invoiceRes.ok) {
+          const errorText = await invoiceRes.text();
+          console.error('[SEND_INVOICE_PAGE] API error response:', errorText);
+
           if (invoiceRes.status === 404) {
             console.error('[SEND_INVOICE_PAGE] Invoice not found');
-            setError('Invoice not found');
+            setError(`Invoice not found: ${invoiceNumber}`);
           } else {
             console.error('[SEND_INVOICE_PAGE] Failed to load invoice, status:', invoiceRes.status);
-            throw new Error('Failed to load invoice');
+            setError(`Failed to load invoice (${invoiceRes.status}): ${errorText}`);
           }
           setLoading(false);
           return;
@@ -114,8 +122,15 @@ export default function SendInvoicePage() {
             console.log('[SECURITY] Auto-redirecting from non-draft invoice page');
 
             // Check if this is a completion project invoice
-            const isCompletionInvoice = invoice.invoiceType === 'completion' ||
+            const isCompletionInvoice = invoice.invoiceType?.includes('completion') ||
+                                      invoice.invoiceType === 'auto_completion' ||
                                       invoice.invoiceType?.startsWith('completion_');
+
+            console.log('[SECURITY] Invoice type detection for redirect:', {
+              invoiceType: invoice.invoiceType,
+              isCompletionInvoice,
+              projectId: invoice.projectId
+            });
 
             if (isCompletionInvoice) {
               // For completion projects, redirect to project tracking
@@ -158,7 +173,8 @@ export default function SendInvoicePage() {
           <button
             onClick={() => {
               // Check if this is a completion project invoice for better redirect
-              const isCompletionInvoice = invoiceData?.invoiceType === 'completion' ||
+              const isCompletionInvoice = invoiceData?.invoiceType?.includes('completion') ||
+                                        invoiceData?.invoiceType === 'auto_completion' ||
                                         invoiceData?.invoiceType?.startsWith('completion_');
 
               if (isCompletionInvoice && invoiceData?.projectId) {
@@ -169,7 +185,9 @@ export default function SendInvoicePage() {
             }}
             className="px-4 py-2 bg-[#eb1966] text-white rounded-lg hover:bg-[#d1175a] transition-colors"
           >
-            {(invoiceData?.invoiceType === 'completion' || invoiceData?.invoiceType?.startsWith('completion_'))
+            {(invoiceData?.invoiceType?.includes('completion') ||
+              invoiceData?.invoiceType === 'auto_completion' ||
+              invoiceData?.invoiceType?.startsWith('completion_'))
               ? 'Back to Project'
               : 'Back to Invoices'}
           </button>
@@ -229,7 +247,9 @@ export default function SendInvoicePage() {
                 <p>{statusWarning}</p>
                 <p className="mt-1">
                   You will be redirected to the {
-                    (invoiceData?.invoiceType === 'completion' || invoiceData?.invoiceType?.startsWith('completion_'))
+                    (invoiceData?.invoiceType?.includes('completion') ||
+                     invoiceData?.invoiceType === 'auto_completion' ||
+                     invoiceData?.invoiceType?.startsWith('completion_'))
                       ? 'project tracking page'
                       : 'invoices page'
                   } in a few seconds.

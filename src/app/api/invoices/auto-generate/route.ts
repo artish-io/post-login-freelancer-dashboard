@@ -1,11 +1,7 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import { promises as fs } from 'fs';
 import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
-import { getAllInvoices } from '../../../../lib/invoice-storage';
-import { getInitialInvoiceStatus, AUTO_MILESTONE_CONFIG } from '../../../../lib/invoice-status-definitions';
-
-const EVENTS_LOG_PATH = path.join(process.cwd(), 'data/notifications/notifications-log.json');
+import { getAllInvoices, saveInvoice } from '../../../../lib/invoice-storage';
+import { getInitialInvoiceStatus } from '../../../../lib/invoice-status-definitions';
 
 interface Task {
   id: number;
@@ -42,11 +38,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'No invoice generation needed' });
     }
 
-    // Load all required data
-    const [projects, invoices, eventsData] = await Promise.all([
+    // Load all required data using hierarchical storage
+    const [projects, invoices] = await Promise.all([
       UnifiedStorageService.listProjects(),
       getAllInvoices(), // Use hierarchical storage for invoices
-      fs.readFile(EVENTS_LOG_PATH, 'utf-8').catch(() => '[]') // Handle missing file gracefully
     ]);
 
     console.log('📊 Loaded data:', {
@@ -72,8 +67,7 @@ export async function POST(request: Request) {
       })));
     }
 
-    // invoices is already parsed from hierarchical storage
-    const events = JSON.parse(eventsData);
+    // Remove events data usage - use hierarchical storage for notifications
 
     // Find the project and task - handle both string and number project IDs
     const project = projects.find(p => String(p.projectId) === String(projectId));
@@ -152,7 +146,9 @@ export async function POST(request: Request) {
 
     try {
       // Get commissioner data using hierarchical storage
-      const commissioner = await UnifiedStorageService.getUserById(project.commissionerId);
+      const commissioner = project.commissionerId
+        ? await UnifiedStorageService.getUserById(project.commissionerId)
+        : null;
 
       if (commissioner?.name) {
         // Extract initials from commissioner name
@@ -221,80 +217,26 @@ export async function POST(request: Request) {
 
     // Save invoice using hierarchical storage structure
     try {
-      const [year, month, day] = newInvoice.issueDate.split("-");
-      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-                         'July', 'August', 'September', 'October', 'November', 'December'];
-      const monthIndex = parseInt(month) - 1;
+      // Date parsing removed - hierarchical storage handles this
+      console.log('📁 Using hierarchical storage for invoice:', {
+        invoiceNumber: newInvoice.invoiceNumber,
+        projectId: newInvoice.projectId
+      });
 
-      if (monthIndex < 0 || monthIndex >= 12) {
-        throw new Error(`Invalid month: ${month}`);
-      }
-
-      const monthName = monthNames[monthIndex];
-      const projectFolder = newInvoice.projectId ? String(newInvoice.projectId) : 'custom';
-
-      console.log('📁 Building invoice path:', { year, month, day, monthName, projectFolder });
-
-      const invoiceDir = path.join(
-        process.cwd(),
-        'data/invoices',
-        year,
-        monthName,
-        day,
-        projectFolder
-      );
-
-      console.log('📂 Invoice directory:', invoiceDir);
-
-      // Create directory if it doesn't exist
-      await fs.mkdir(invoiceDir, { recursive: true });
-      console.log('✅ Directory created/verified');
-
-      // Write invoice to hierarchical location
-      const invoiceFilePath = path.join(invoiceDir, `${newInvoice.invoiceNumber}.json`);
-      await fs.writeFile(invoiceFilePath, JSON.stringify(newInvoice, null, 2));
-
-      console.log(`✅ Invoice saved to: ${invoiceFilePath}`);
+      // Use hierarchical storage to save invoice
+      await saveInvoice({
+        ...newInvoice,
+        commissionerId: newInvoice.commissionerId || 0,
+        nextRetryDate: undefined
+      });
+      console.log(`✅ Invoice saved using hierarchical storage: ${newInvoice.invoiceNumber}`);
     } catch (saveError) {
       console.error('❌ Error saving invoice:', saveError);
-      throw new Error(`Failed to save invoice: ${saveError.message}`);
+      throw new Error(`Failed to save invoice: ${saveError instanceof Error ? saveError.message : String(saveError)}`);
     }
 
-    // Create invoice generation event
-    const invoiceEvent = {
-      id: `evt_${Date.now()}_invoice_auto`,
-      timestamp: new Date().toISOString(),
-      type: 'invoice_auto_generated',
-      notificationType: 42, // New type for auto-generated invoices
-      actorId: project.freelancerId,
-      targetId: project.commissionerId,
-      entityType: 5, // Invoice entity type
-      entityId: invoiceNumber,
-      metadata: {
-        taskTitle: task.title,
-        projectTitle: project.title,
-        amount: milestoneAmount,
-        invoiceNumber
-      },
-      context: {
-        projectId: project.projectId,
-        taskId: task.id,
-        invoiceId: invoiceNumber
-      }
-    };
-
-    events.push(invoiceEvent);
-
-    // Save events log with error handling
-    try {
-      const eventsDir = path.dirname(EVENTS_LOG_PATH);
-      await fs.mkdir(eventsDir, { recursive: true });
-      await fs.writeFile(EVENTS_LOG_PATH, JSON.stringify(events, null, 2));
-      console.log('✅ Events log updated');
-    } catch (eventsError) {
-      console.error('⚠️  Failed to update events log:', eventsError);
-      // Don't fail the entire operation for events logging
-    }
+    // Events logging removed - use hierarchical notification storage instead
+    console.log('✅ Invoice generation completed');
 
     return NextResponse.json({
       success: true,

@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_53_25_1756347232158",
+  "timestamp": "2025-08-28T02:13:52.158Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 25,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "53",
+  "metadata": {
+    "gigTitle": "Economic Model Design for Smart Completion",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Lucas Meyer"
+  },
+  "context": {
+    "gigId": 53,
+    "applicationId": 1755193217283
+  }
+}

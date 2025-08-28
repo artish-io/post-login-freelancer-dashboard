@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { 
+import {
   executeTaskApprovalTransaction,
   executeProjectCompletionTransaction,
-  executeCustomTransaction 
+  executeCustomTransaction,
+  TransactionStep
 } from '@/lib/transactions/transaction-service';
 
 /**
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
 
     const transactionParams = {
       taskId: Number(taskId),
-      projectId: Number(projectId),
+      projectId: projectId,
       freelancerId: Number(freelancerId),
       commissionerId: Number(commissionerId),
       taskTitle,
@@ -122,7 +123,7 @@ export async function PATCH(request: Request) {
 
     if (steps.length === 0) {
       // Create a sample custom transaction for testing
-      const sampleSteps = [
+      const sampleSteps: TransactionStep[] = [
         {
           id: 'step1',
           type: 'custom',

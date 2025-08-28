@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import path from 'path';
-import { promises as fs } from 'fs';
+
 import { getInvoiceByNumber, saveInvoice } from '@/lib/invoice-storage';
 
 /**
@@ -103,7 +102,7 @@ export async function POST(request: Request) {
     // For completion invoices, all milestones represent approved tasks (except upfront)
     // For milestone invoices, only count milestones with approvedAt
     const approvedTasks = (invoice.milestones || []).filter(milestone => {
-      if (milestone.taskId === 'upfront') return true; // Upfront payments always count
+      if (String(milestone.taskId) === 'upfront') return true; // Upfront payments always count
 
       // Check if this is a completion invoice by looking at invoice number or type
       const isCompletionInvoice = invoice.invoiceNumber?.includes('-C') ||
@@ -111,10 +110,10 @@ export async function POST(request: Request) {
 
       if (isCompletionInvoice) {
         // For completion invoices, all non-upfront milestones represent approved tasks
-        return milestone.taskId !== 'upfront';
+        return String(milestone.taskId) !== 'upfront';
       } else {
         // For milestone invoices, only count explicitly approved milestones
-        return milestone.approvedAt;
+        return (milestone as any).approvedAt;
       }
     });
     const approvedTasksCount = approvedTasks.length;
@@ -163,7 +162,7 @@ export async function POST(request: Request) {
       };
 
       // Use hierarchical storage system instead of legacy flat file
-      NotificationStorage.addEvent(newNotification);
+      NotificationStorage.addEvent(newNotification as any);
     }
 
     // SIMULATION: Save updated data

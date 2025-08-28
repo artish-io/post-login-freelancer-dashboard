@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       lastReconciled: new Date().toISOString()
     };
     
-    await UnifiedStorageService.writeProject(projectId, updatedProject);
+    await UnifiedStorageService.writeProject(updatedProject as any);
     
     return NextResponse.json({
       success: true,

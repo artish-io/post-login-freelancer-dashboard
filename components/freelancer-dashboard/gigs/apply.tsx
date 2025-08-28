@@ -226,8 +226,13 @@ export default function ApplyModal({ gigId, gigTitle, isOpen, onClose, onSuccess
       'presentation': ['Presentation Design', 'Graphic Design'],
       'slides': ['Presentation Design'],
       'accounting': ['Freelancer Invoicing', 'Project Budgeting', 'Bookkeeping'],
+      'bookkeeping': ['Bookkeeping', 'Freelancer Invoicing', 'Project Budgeting'],
       'invoice': ['Freelancer Invoicing', 'Bookkeeping'],
+      'invoicing': ['Freelancer Invoicing', 'Bookkeeping'],
       'budget': ['Project Budgeting', 'Bookkeeping'],
+      'budgeting': ['Project Budgeting', 'Bookkeeping'],
+      'finance': ['Bookkeeping', 'Project Budgeting', 'Freelancer Invoicing'],
+      'financial': ['Bookkeeping', 'Project Budgeting', 'Freelancer Invoicing'],
       'devops': ['DevOps', 'Backend Development'],
       'infrastructure': ['DevOps', 'Backend Development'],
       'strategy': ['Product Strategy', 'Campaign Strategy', 'Influencer Strategy'],
@@ -314,9 +319,28 @@ export default function ApplyModal({ gigId, gigTitle, isOpen, onClose, onSuccess
     return trimmedUrl; // Return as-is if it doesn't look like a URL
   };
 
-  const addSkill = () => {
-    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-      setSkills([...skills, newSkill.trim()]);
+  const addSkill = async () => {
+    const skillToAdd = newSkill.trim();
+    if (skillToAdd && !skills.includes(skillToAdd)) {
+      setSkills([...skills, skillToAdd]);
+
+      // Check if this skill matches any existing categories/subcategories
+      const hasMatch = getSkillSuggestions(skillToAdd).length > 0;
+
+      // If no match found, log it as an unmapped skill for admin review
+      if (!hasMatch) {
+        try {
+          await fetch('/api/admin/unmapped-skills', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ skill: skillToAdd, context: 'gig-application' })
+          });
+        } catch (error) {
+          console.log('Could not log unmapped skill:', error);
+          // Don't block the user if logging fails
+        }
+      }
+
       setNewSkill('');
       setSkillSuggestions([]); // Clear suggestions array
       setShowSuggestions(false);

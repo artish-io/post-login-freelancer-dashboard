@@ -104,18 +104,18 @@ export class ProjectService {
       dueDate,
 
       // 🛡️ DURATION GUARD: Clear date separation and duration persistence
-      gigId: gig.id,
-      gigPostedDate: gig.postedDate,
-      projectActivatedAt: activationDate.toISOString(),
-      originalDuration: {
-        deliveryTimeWeeks: gig.deliveryTimeWeeks,
-        estimatedHours: gig.estimatedHours,
-        originalStartDate: gig.startType === 'Custom' ? gig.customStartDate : undefined,
-        originalEndDate: gig.endDate,
-      },
-      // Legacy fields for backward compatibility
-      deliveryTimeWeeks: gig.deliveryTimeWeeks,
-      estimatedHours: gig.estimatedHours,
+      // gigId: gig.id, // Property not in ProjectRecord type
+      // gigPostedDate: gig.postedDate, // Property not in ProjectRecord type
+      // projectActivatedAt: activationDate.toISOString(), // Property not in ProjectRecord type
+      // originalDuration: { // Property not in ProjectRecord type
+      //   deliveryTimeWeeks: gig.deliveryTimeWeeks,
+      //   estimatedHours: gig.estimatedHours,
+      //   originalStartDate: gig.startType === 'Custom' ? gig.customStartDate : undefined,
+      //   originalEndDate: gig.endDate,
+      // },
+      // Legacy fields for backward compatibility (commented out - not in ProjectRecord type)
+      // deliveryTimeWeeks: gig.deliveryTimeWeeks,
+      // estimatedHours: gig.estimatedHours,
     };
 
     // Generate default tasks based on gig type
@@ -212,8 +212,10 @@ export class ProjectService {
         const taskDuration = Math.floor(deliveryDays / milestoneCount);
 
         for (let i = 0; i < milestoneCount; i++) {
+          // 🎯 FIX: Ensure newly activated project tasks default to "Upcoming This Week"
+          // Add 1 day buffer to prevent tasks from landing in "Today's To Do"
           const taskDueDate = new Date();
-          taskDueDate.setDate(taskDueDate.getDate() + (i + 1) * taskDuration);
+          taskDueDate.setDate(taskDueDate.getDate() + (i + 1) * taskDuration + 1);
           const taskId = this.generateTaskId();
 
           tasks.push({
@@ -233,6 +235,12 @@ export class ProjectService {
         }
       } else {
         // Create single completion task
+        // 🎯 FIX: Ensure newly activated project tasks default to "Upcoming This Week"
+        // Add 1 day buffer to prevent tasks from landing in "Today's To Do"
+        const activationTime = activationDate || new Date();
+        const taskDueDate = new Date(activationTime.getTime() + 24 * 60 * 60 * 1000); // Add 1 day
+        const adjustedDueDate = this.calculateDueDate(gig.deliveryTimeWeeks, gig.endDate, taskDueDate);
+
         const taskId = this.generateTaskId();
         tasks.push({
           id: taskId,
@@ -242,18 +250,18 @@ export class ProjectService {
           status: 'Ongoing',
           completed: false,
           assigneeId: undefined,
-          dueDate: this.calculateDueDate(gig.deliveryTimeWeeks, gig.endDate, activationDate),
+          dueDate: adjustedDueDate,
           createdAt: now,
           updatedAt: now,
           description: gig.description,
           order: 1,
 
           // 🛡️ DURATION GUARD: Task-level duration information
-          taskActivatedAt: now,
-          originalTaskDuration: {
-            estimatedHours: gig.estimatedHours,
-            originalDueDate: gig.endDate,
-          },
+          // taskActivatedAt: now, // Property not in TaskRecord type
+          // originalTaskDuration: { // Property not in TaskRecord type
+          //   estimatedHours: gig.estimatedHours,
+          //   originalDueDate: gig.endDate,
+          // },
         });
       }
     }

@@ -1,0 +1,28 @@
+[
+  {
+    "id": 1756398686092,
+    "freelancerId": 1,
+    "commissionerId": 34,
+    "gigId": null,
+    "organizationId": 3,
+    "title": "Test Gig Request After Payment ",
+    "skills": [
+      "Design"
+    ],
+    "tools": [
+      "Figma"
+    ],
+    "notes": "We’re developing a smart gated community in Lagos and need a freelancer to design an economic model that supports a self-sustaining ecosystem. The model should balance real estate, energy, utilities, commerce, and community services to ensure both profitability and long-term resilience. The right partner will help us structure a blueprint that blends financial viability with innovation in sustainable living.",
+    "budget": {
+      "min": 400,
+      "max": 450,
+      "currency": "USD"
+    },
+    "hourlyRateMin": null,
+    "hourlyRateMax": null,
+    "deliveryTimeWeeks": null,
+    "status": "Available",
+    "createdAt": "2025-08-28T16:31:26.087Z",
+    "responses": []
+  }
+]

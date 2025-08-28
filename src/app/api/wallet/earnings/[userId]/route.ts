@@ -99,11 +99,11 @@ export async function GET(
       transactions.forEach(transaction => {
         if (transaction.type === 'payment' && transaction.status === 'completed') {
           // Group by source
-          const source = transaction.source || 'unknown';
+          const source = (transaction as any).source || 'unknown';
           earningsBySource[source] = (earningsBySource[source] || 0) + transaction.amount;
           
           // Group by project
-          const project = transaction.projectId || 'unknown';
+          const project = (transaction as any).projectId || 'unknown';
           earningsByProject[project] = (earningsByProject[project] || 0) + transaction.amount;
         }
       });
@@ -127,9 +127,9 @@ export async function GET(
         amount: transaction.amount,
         timestamp: transaction.timestamp,
         status: transaction.status,
-        projectId: transaction.type === 'payment' ? transaction.projectId : undefined,
-        invoiceNumber: transaction.type === 'payment' ? transaction.invoiceNumber : undefined,
-        source: transaction.type === 'payment' ? transaction.source : undefined
+        projectId: transaction.type === 'payment' ? (transaction as any).projectId : undefined,
+        invoiceNumber: transaction.type === 'payment' ? (transaction as any).invoiceNumber : undefined,
+        source: transaction.type === 'payment' ? (transaction as any).source : undefined
       }));
     }
     
@@ -150,7 +150,7 @@ export async function GET(
     return NextResponse.json(response);
     
   } catch (error) {
-    console.error(`❌ Earnings API error for user ${params.userId}:`, error);
+    console.error(`❌ Earnings API error:`, error);
     
     if (error instanceof TransactionError) {
       return NextResponse.json(
@@ -264,7 +264,7 @@ export async function POST(
     return NextResponse.json(response);
     
   } catch (error) {
-    console.error(`❌ Earnings analysis API error for user ${params.userId}:`, error);
+    console.error(`❌ Earnings analysis API error:`, error);
     
     if (error instanceof TransactionError) {
       return NextResponse.json(

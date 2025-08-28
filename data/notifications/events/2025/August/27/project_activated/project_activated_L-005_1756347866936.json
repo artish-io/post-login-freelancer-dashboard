@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_L-005_1756347866936",
+  "timestamp": "2025-08-28T02:24:26.936Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "L-005",
+  "metadata": {
+    "projectTitle": "Completion for 2Baba 40-Year Concert",
+    "gigTitle": "Completion for 2Baba 40-Year Concert",
+    "taskCount": 1,
+    "commissionerName": "Neilsan Mando",
+    "organizationName": "Lagos State Parks Services",
+    "dueDate": "2025-08-31"
+  },
+  "context": {
+    "projectId": 5,
+    "gigId": 55
+  }
+}

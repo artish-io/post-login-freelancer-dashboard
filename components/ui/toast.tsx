@@ -65,7 +65,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
     setToasts((prev) => [...prev, newToast]);
 
     // Auto-remove toast after duration (except for confirmations)
-    if (newToast.duration > 0 && newToast.type !== 'confirmation') {
+    if (newToast.duration && newToast.duration > 0 && newToast.type !== 'confirmation') {
       setTimeout(() => {
         hideToast(id);
       }, newToast.duration);

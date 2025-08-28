@@ -44,7 +44,37 @@ export default function NotificationsList({
       }
 
       const data = await response.json();
-      setNotifications(data.notifications || []);
+
+      // 🔔 ATOMIC CONSOLE LOG: Track completion commissioner notifications in list
+      const completionNotifications = (data.notifications || []).filter((n: any) => n.type.startsWith('completion.'));
+      if (completionNotifications.length > 0) {
+        console.log('🔔 COMPLETION NOTIFICATIONS RECEIVED:', {
+          userType,
+          userId: commissionerId,
+          activeTab,
+          totalNotifications: data.notifications?.length || 0,
+          completionNotifications: completionNotifications.length,
+          completionTypes: completionNotifications.map((n: any) => n.type),
+          timestamp: new Date().toISOString()
+        });
+      }
+
+      // Simple filter: For commissioners, hide milestone payment notifications that lack organization name and remaining budget
+      let filteredNotifications = data.notifications || [];
+
+      if (userType === 'commissioner') {
+        filteredNotifications = filteredNotifications.filter((notification: any) => {
+          // For milestone payment notifications, only show the ones with full enrichment
+          if (notification.type === 'milestone_payment_sent') {
+            return notification.metadata?.organizationName &&
+                   notification.metadata?.remainingBudget !== undefined;
+          }
+          // Keep all other notification types
+          return true;
+        });
+      }
+
+      setNotifications(filteredNotifications);
 
       // Update counts in parent component
       if (onCountsUpdate && data.counts) {

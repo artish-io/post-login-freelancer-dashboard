@@ -116,7 +116,7 @@ async function getRecentMilestoneProjects(maxAgeDays: number): Promise<any[]> {
     if (project.invoicingMethod !== 'milestone') return false;
 
     // Check if project is recent enough
-    const projectDate = new Date(project.createdAt || project.startDate || '2024-01-01');
+    const projectDate = new Date((project as any).createdAt || (project as any).startDate || '2024-01-01');
     return projectDate >= cutoffDate;
   });
 }
@@ -163,7 +163,7 @@ async function checkProjectNotifications(project: any): Promise<MissingNotificat
           type: 'milestone_payment',
           projectId,
           taskId: task.taskId,
-          invoiceNumber: task.invoiceNumber,
+          invoiceNumber: typeof task.invoiceNumber === 'string' ? task.invoiceNumber : undefined,
           reason: `Missing payment notification for task ${task.taskId}`
         });
       }

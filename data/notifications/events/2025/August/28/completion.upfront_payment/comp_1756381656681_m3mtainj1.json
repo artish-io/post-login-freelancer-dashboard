@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756381656681_m3mtainj1",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-007",
+  "projectId": "L-007",
+  "message": "Lagos State Parks Services has paid $42 upfront for your newly activated Completion Sender for Data Farm Handbook project. This project has a budget of $308 left. Click here to view invoice details",
+  "context": {
+    "projectId": "L-007",
+    "upfrontAmount": 42,
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "remainingBudget": 308,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-007",
+    "upfrontAmount": 42,
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "remainingBudget": 308,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T11:47:36.677Z",
+  "subsystem": "completion_invoicing"
+}

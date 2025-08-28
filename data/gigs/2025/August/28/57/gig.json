@@ -1,0 +1,54 @@
+{
+  "id": 57,
+  "title": "Completion Sender for Data Farm Handbook",
+  "organizationId": 1,
+  "commissionerId": "32",
+  "category": "Design",
+  "subcategory": "UI/UX Design",
+  "tags": [
+    "Design"
+  ],
+  "hourlyRateMin": 12.5,
+  "hourlyRateMax": 14.58,
+  "description": "We’re developing a smart gated community in Lagos and need a freelancer to design an economic model that supports a self-sustaining ecosystem. The model should balance real estate, energy, utilities, commerce, and community services to ensure both profitability and long-term resilience. The right partner will help us structure a blueprint that blends financial viability with innovation in sustainable living.",
+  "deliveryTimeWeeks": 0.42857142857142855,
+  "estimatedHours": 24,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Figma"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "656d66c8-5b6c-41db-b7a7-8a3790c7beee",
+      "title": "Benchmarking Meeting",
+      "description": "Analyze comparable smart community projects worldwide, assess Lagos’ local economic conditions, and map out regulatory, infrastructural, and demographic realities that shape feasibility.\n\n",
+      "startDate": "2025-08-29T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z"
+    },
+    {
+      "id": "89f7d8e0-c097-4206-a543-0bbfaf5ccbcf",
+      "title": "Model Design & Simulation Brainstorm",
+      "description": "Develop a detailed economic framework incorporating revenue streams (housing, services, retail, energy), cost structures, and reinvestment loops. Run simulations for sustainability, scalability, and resilience under different growth and risk scenarios.\n\n",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-08-30T04:00:00.000Z"
+    },
+    {
+      "id": "5731df4f-f5aa-43d4-beb8-4079d981f77d",
+      "title": "Implementation Roadmap Presentation",
+      "description": "Deliver a strategic plan with KPIs, funding structures, and governance recommendations. Provide documentation and presentation materials that investors, policymakers, and community stakeholders can easily understand and act upon.",
+      "startDate": "2025-08-29T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 300,
+  "upperBudget": 350,
+  "postedDate": "2025-08-28",
+  "notes": "Budget range: $300 - $350",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

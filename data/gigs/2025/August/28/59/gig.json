@@ -1,0 +1,54 @@
+{
+  "id": 59,
+  "title": "Easy Resumé Writing",
+  "organizationId": 3,
+  "commissionerId": "34",
+  "category": "Writing",
+  "subcategory": "Content Writing",
+  "tags": [
+    "Writing"
+  ],
+  "hourlyRateMin": 37.5,
+  "hourlyRateMax": 50,
+  "description": "Drive visibility and engagement for a conference uniting thinkers, activists, and academics critiquing techno-feudalism—the consolidation of power by digital platforms and algorithmic systems.",
+  "deliveryTimeWeeks": 0.42857142857142855,
+  "estimatedHours": 24,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Google Docs"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "695eab47-f54a-4d60-9680-848005054567",
+      "title": "Phase 1 – Positioning & Messaging",
+      "description": "Develop a strong narrative framework that captures the stakes of techno-feudalism (concentration of power, erosion of democracy, worker precarity). Create brand assets, talking points, and media kits that position the conference as the leading forum on the issue.\n\n",
+      "startDate": "2025-08-29T04:00:00.000Z",
+      "endDate": "2025-08-29T04:00:00.000Z"
+    },
+    {
+      "id": "9c40d313-79b6-47fb-bd9c-8a13ec0da460",
+      "title": "Phase 2 – Audience Outreach & Campaign Rollout",
+      "description": "Run digital campaigns targeting academics, journalists, and activists; foster partnerships with progressive organizations; and amplify voices of key speakers through content drops and video teasers. Drive early RSVPs with thought-leadership articles and community engagement.\n\n",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-08-30T04:00:00.000Z"
+    },
+    {
+      "id": "3ad7c7d5-ef25-4ec8-b850-7b592bbe6ee3",
+      "title": "Phase 3 – Event Amplification & Legacy Building",
+      "description": "Manage live coverage during the conference (live tweets, recap reels, press placements) and publish a post-event whitepaper or highlight reel. Ensure the conference’s ideas outlast the event itself by building a digital archive and ongoing community channel.",
+      "startDate": "2025-08-31T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 900,
+  "upperBudget": 1200,
+  "postedDate": "2025-08-28",
+  "notes": "Budget range: $900 - $1,200",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

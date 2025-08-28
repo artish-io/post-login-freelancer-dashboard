@@ -1,0 +1,26 @@
+{
+  "id": "milestone_payment_sent_C-014_1756388966252_1756388929342",
+  "timestamp": "2025-08-28T13:48:49.342Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "C-014_1756388966252",
+  "metadata": {
+    "taskTitle": "Rollout",
+    "projectTitle": "Milestone Modelling For Series A Fundraising",
+    "projectId": "C-014",
+    "taskId": 1756388966252,
+    "freelancerName": "Freelancer",
+    "amount": 0,
+    "invoiceNumber": "MH-018",
+    "remainingBudget": 250,
+    "projectBudget": 750
+  },
+  "context": {
+    "projectId": "C-014",
+    "taskId": 1756388966252,
+    "invoiceNumber": "MH-018"
+  }
+}

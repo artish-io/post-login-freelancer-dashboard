@@ -5,7 +5,7 @@ import { readFile, writeFile } from 'fs/promises';
 const filePath = path.join(process.cwd(), 'data', 'invoices.json');
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ freelancerId: string }> }
 ) {
   try {
@@ -24,9 +24,12 @@ export async function GET(
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ freelancerId: string }> }
+) {
   try {
-    const freelancerId = extractFreelancerId(request);
+    const { freelancerId } = await params;
     const body = await request.json();
     const { invoiceNumber, updates } = body;
 
@@ -53,9 +56,12 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ freelancerId: string }> }
+) {
   try {
-    const freelancerId = extractFreelancerId(request);
+    const { freelancerId } = await params;
     const { invoiceNumber } = await request.json();
 
     const data = await readFile(filePath, 'utf-8');

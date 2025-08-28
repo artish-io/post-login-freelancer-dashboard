@@ -69,7 +69,7 @@ export async function POST(req: Request) {
           }
         };
 
-        NotificationStorage.addEvent(rejectionEvent);
+        NotificationStorage.addEvent(rejectionEvent as any);
       }
     } catch (notificationError) {
       console.error('Failed to send rejection notification:', notificationError);

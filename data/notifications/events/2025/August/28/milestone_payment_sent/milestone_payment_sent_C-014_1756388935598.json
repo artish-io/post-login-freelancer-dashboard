@@ -1,0 +1,23 @@
+{
+  "id": "milestone_payment_sent_C-014_1756388935598",
+  "timestamp": "2025-08-28T13:48:55.598Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 10,
+  "entityId": "C-014_Building",
+  "metadata": {
+    "taskTitle": "Building",
+    "amount": 250,
+    "freelancerName": "Tobi Philly",
+    "invoiceNumber": "MH-019",
+    "projectBudget": 750,
+    "projectTitle": "Milestone Modelling For Series A Fundraising",
+    "priority": "medium"
+  },
+  "context": {
+    "projectId": null,
+    "invoiceNumber": "MH-019"
+  }
+}

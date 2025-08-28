@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_59_31_1756387725259",
+  "timestamp": "2025-08-28T13:28:45.259Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 31,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "59",
+  "metadata": {
+    "gigTitle": "Easy Resumé Writing",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Margsate Flether"
+  },
+  "context": {
+    "gigId": 59,
+    "applicationId": 1755193217289
+  }
+}

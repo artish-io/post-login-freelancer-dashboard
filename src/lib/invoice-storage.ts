@@ -144,7 +144,7 @@ function getInvoiceDirectoryPath(invoice: Invoice): string {
 // Helper function to determine if a new invoice should replace an existing one
 function shouldReplaceInvoice(existing: Invoice, candidate: Invoice): boolean {
   // Status priority: paid > sent > draft
-  const statusPriority = { 'paid': 3, 'sent': 2, 'draft': 1 };
+  const statusPriority: Record<string, number> = { 'paid': 3, 'sent': 2, 'draft': 1 };
 
   const existingPriority = statusPriority[existing.status] || 0;
   const candidatePriority = statusPriority[candidate.status] || 0;

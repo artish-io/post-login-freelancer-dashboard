@@ -132,7 +132,7 @@ async function syncAllProjectsPaidToDate(): Promise<{
   try {
     // Get all projects
     const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
-    const allProjects = await UnifiedStorageService.getAllProjects();
+    const allProjects = await UnifiedStorageService.listProjects();
     
     // Filter to completion-based projects only
     const completionProjects = allProjects.filter(project => 

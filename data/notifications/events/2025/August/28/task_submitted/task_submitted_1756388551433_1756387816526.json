@@ -1,0 +1,22 @@
+{
+  "id": "task_submitted_1756388551433_1756387816526",
+  "timestamp": "2025-08-28T13:30:16.526Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756388551433,
+  "metadata": {
+    "taskId": 1756388551433,
+    "taskTitle": "Phase 1 – Positioning & Messaging",
+    "projectTitle": "Easy Resumé Writing",
+    "action": "submit",
+    "invoiceGenerated": false,
+    "message": "\"Phase 1 – Positioning & Messaging\" is awaiting your review for Easy Resumé Writing"
+  },
+  "context": {
+    "projectId": "C-013",
+    "taskId": 1756388551433
+  }
+}

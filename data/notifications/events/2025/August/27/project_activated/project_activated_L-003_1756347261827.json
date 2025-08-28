@@ -1,0 +1,22 @@
+{
+  "id": "project_activated_L-003_1756347261827",
+  "timestamp": "2025-08-28T02:14:21.827Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 2,
+  "entityId": "L-003",
+  "metadata": {
+    "projectTitle": "Economic Model Design for Smart Completion",
+    "gigTitle": "Economic Model Design for Smart Completion",
+    "taskCount": 1,
+    "commissionerName": "Neilsan Mando",
+    "organizationName": "Lagos State Parks Services",
+    "dueDate": "2025-08-31"
+  },
+  "context": {
+    "projectId": 3,
+    "gigId": 53
+  }
+}

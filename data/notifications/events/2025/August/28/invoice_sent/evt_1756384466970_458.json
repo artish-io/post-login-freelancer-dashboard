@@ -1,0 +1,22 @@
+{
+  "id": "evt_1756384466970_458",
+  "timestamp": "2025-08-28T12:34:26.971Z",
+  "type": "invoice_sent",
+  "notificationType": 40,
+  "actorId": 25,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "NM-C003",
+  "metadata": {
+    "invoiceNumber": "NM-C003",
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "amount": 102.66666666666667,
+    "approvedTasksCount": 1,
+    "freelancerName": "Lucas Meyer",
+    "notificationText": "Lucas Meyer sent you an invoice for $102.66666666666667 for 1 approved task, of your active project, Completion Sender for Data Farm Handbook."
+  },
+  "context": {
+    "projectId": "L-007",
+    "invoiceNumber": "NM-C003"
+  }
+}

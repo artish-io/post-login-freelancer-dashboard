@@ -46,9 +46,12 @@ export async function POST(request: Request) {
 
         // Update the invoice with proper payment details
         const updatedPaymentDetails = {
-          ...invoice.paymentDetails,
+          paymentId: invoice.paymentDetails?.paymentId || 'migrated',
+          paymentMethod: invoice.paymentDetails?.paymentMethod || 'milestone',
           platformFee: platformFee,
           freelancerAmount: freelancerAmount,
+          currency: invoice.paymentDetails?.currency || 'USD',
+          processedAt: invoice.paymentDetails?.processedAt || new Date().toISOString(),
           migratedAt: new Date().toISOString(),
           migrationNote: 'Retroactively added 5.2666% platform fee for milestone-based invoice'
         };

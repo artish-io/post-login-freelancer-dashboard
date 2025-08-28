@@ -33,7 +33,7 @@ export async function POST(request: Request) {
 
     const invoiceRequest = {
       taskId: Number(taskId),
-      projectId: Number(projectId),
+      projectId: projectId,
       freelancerId: Number(freelancerId),
       commissionerId: Number(commissionerId),
       taskTitle: taskTitle || `Test Task ${taskId}`,

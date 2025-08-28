@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756348079565_acslkeqv0",
+  "type": "completion.project_activated",
+  "notificationType": 150,
+  "actorId": 32,
+  "targetId": 32,
+  "entityType": 3,
+  "entityId": "L-006",
+  "projectId": "L-006",
+  "message": "Neilsan Mando accepted your application for Market Research for Longer Divide. This project is now active and includes 1 milestones due by August 30, 2025",
+  "context": {
+    "projectId": "L-006",
+    "projectTitle": "Market Research for Longer Divide",
+    "dueDate": "2025-08-31",
+    "totalTasks": 1,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "metadata": {
+    "projectId": "L-006",
+    "projectTitle": "Market Research for Longer Divide",
+    "dueDate": "2025-08-31",
+    "totalTasks": 1,
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Neilsan Mando"
+  },
+  "timestamp": "2025-08-28T02:27:59.564Z",
+  "subsystem": "completion_invoicing"
+}

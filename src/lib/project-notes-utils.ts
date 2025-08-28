@@ -9,7 +9,7 @@ export interface Note {
 }
 
 export interface TaskNoteBlock {
-  projectId: number;
+  projectId: string | number;
   taskId: number;
   taskTitle: string;
   notes: Note[];
@@ -39,7 +39,7 @@ export function parseNoteDate(dateString: string): { year: string; month: string
 /**
  * Generate note file path based on date, project ID, and task ID
  */
-export function getNoteFilePath(date: string, projectId: number, taskId: number): string {
+export function getNoteFilePath(date: string, projectId: string | number, taskId: number): string {
   const { year, month, day } = parseNoteDate(date);
   return path.join(
     process.cwd(),
@@ -246,7 +246,7 @@ export async function readProjectNotes(projectId: string | number): Promise<Task
           }
           
           taskNoteBlocks.push({
-            projectId,
+            projectId: projectId,
             taskId,
             taskTitle,
             notes

@@ -1,0 +1,27 @@
+{
+  "taskId": 1756382379045,
+  "projectId": "L-007",
+  "projectTitle": "Completion Sender for Data Farm Handbook",
+  "organizationId": 1,
+  "projectTypeTags": [
+    "Design"
+  ],
+  "title": "Benchmarking Meeting",
+  "status": "Approved",
+  "completed": true,
+  "order": 1,
+  "link": "bit.ly324234",
+  "dueDate": "2025-08-29T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Analyze comparable smart community projects worldwide, assess Lagos’ local economic conditions, and map out regulatory, infrastructural, and demographic realities that shape feasibility.\n\n",
+  "submittedDate": "2025-08-28T12:30:03.704Z",
+  "createdDate": "2025-08-28T11:47:33.924Z",
+  "lastModified": "2025-08-28T12:30:26.658Z",
+  "manualInvoiceEligible": true,
+  "invoicePaid": false,
+  "approvedBy": 32,
+  "approvedAt": "2025-08-28T12:30:26.658Z"
+}

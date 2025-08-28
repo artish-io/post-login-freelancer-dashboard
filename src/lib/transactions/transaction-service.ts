@@ -151,7 +151,10 @@ export async function executeTaskApprovalTransaction(
             };
           } else {
             // Use existing completion invoice generation
-            const invoiceResult = await generateInvoiceWithRetry(invoiceRequest);
+            const invoiceResult = await generateInvoiceWithRetry({
+              ...invoiceRequest,
+              projectId: Number(invoiceRequest.projectId)
+            } as any);
 
             if (!invoiceResult.success) {
               throw new Error(`Invoice generation failed: ${invoiceResult.error}`);
@@ -209,8 +212,8 @@ export async function executeTaskApprovalTransaction(
           invoiceNumber: invoice.invoiceNumber,
           amount: invoice.totalAmount,
           commissionerId: invoice.commissionerId,
-          freelancerId: invoice.freelancerId,
-          projectId: invoice.projectId,
+          freelancerId: Number(invoice.freelancerId) || 0,
+          projectId: invoice.projectId?.toString() || '',
           source: 'auto_milestone_payment',
           invoiceType: params.invoiceType // Pass through the invoiceType from transaction params
         });
@@ -283,7 +286,7 @@ export async function executeTaskApprovalTransaction(
                 invoice.totalAmount,
                 freelancerName,
                 invoice.invoiceNumber,
-                project?.totalBudget || project?.budget?.upper || project?.budget?.lower,
+                project?.totalBudget || (project as any)?.budget?.upper || (project as any)?.budget?.lower,
                 project?.title
               );
               console.log(`📧 Payment sent notification created for commissioner ${invoice.commissionerId}`);
@@ -311,7 +314,7 @@ export async function executeTaskApprovalTransaction(
       },
       description: `Execute payment for task ${params.taskId}`,
       data: { taskId: params.taskId }
-    });
+    } as any);
       } // End of milestone payment execution block
     }
 
@@ -450,7 +453,11 @@ export async function executeCommissionerMatchingTransaction(
       operation: async () => {
         // Use existing project creation logic
         const { ProjectService } = await import('../../app/api/projects/services/project-service');
-        const project = await ProjectService.acceptGig(params.gigData, params.freelancerId, params.commissionerId);
+        const project = await ProjectService.acceptGig({
+          ...params.gigData,
+          freelancerId: params.freelancerId,
+          commissionerId: params.commissionerId
+        } as any);
         return project;
       },
       rollback: async () => {

@@ -14,12 +14,6 @@ type SalesTransaction = {
   amount: number;
 };
 
-type SalesTransaction = {
-  productId: string;
-  date: string;
-  amount: number;
-};
-
 type CombinedTransaction = {
   id: string;
   type: 'spending' | 'earning';

@@ -1,0 +1,22 @@
+{
+  "id": "task_submitted_1756382028425_1756384652888",
+  "timestamp": "2025-08-28T12:37:32.888Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 25,
+  "targetId": 32,
+  "entityType": 1,
+  "entityId": 1756382028425,
+  "metadata": {
+    "taskId": 1756382028425,
+    "taskTitle": "Model Design & Simulation Brainstorm",
+    "projectTitle": "Completion Sender for Data Farm Handbook",
+    "action": "submit",
+    "invoiceGenerated": false,
+    "message": "\"Model Design & Simulation Brainstorm\" is awaiting your review for Completion Sender for Data Farm Handbook"
+  },
+  "context": {
+    "projectId": "L-007",
+    "taskId": 1756382028425
+  }
+}

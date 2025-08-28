@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756348804270_13yexgpp8",
+  "type": "completion.task_approved",
+  "notificationType": 152,
+  "actorId": 32,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "L-006",
+  "projectId": "L-006",
+  "message": "Neilsan Mando has approved your submission for \"Phase 2 – Model Design & Simulation\" in Market Research for Longer Divide. Task approved and milestone completed. Click here to see its project tracker.",
+  "context": {
+    "projectId": "L-006",
+    "taskId": "1756348701651",
+    "taskTitle": "Phase 2 – Model Design & Simulation",
+    "projectTitle": "Market Research for Longer Divide",
+    "commissionerName": "Neilsan Mando",
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer"
+  },
+  "metadata": {
+    "projectId": "L-006",
+    "taskId": "1756348701651",
+    "taskTitle": "Phase 2 – Model Design & Simulation",
+    "projectTitle": "Market Research for Longer Divide",
+    "commissionerName": "Neilsan Mando",
+    "orgName": "Lagos State Parks Services",
+    "freelancerName": "Lucas Meyer"
+  },
+  "timestamp": "2025-08-28T02:40:04.073Z",
+  "subsystem": "completion_invoicing"
+}

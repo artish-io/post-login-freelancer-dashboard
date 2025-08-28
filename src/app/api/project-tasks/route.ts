@@ -31,7 +31,7 @@ export async function GET() {
     }
 
     // Get all projects and their tasks
-    console.log('📋 Fetching all projects for user:', session.user.id, 'type:', (session.user as any)?.userType || (session.user as any)?.type);
+    console.log('📋 Fetching all projects for user:', session?.user?.id || 'no-session', 'type:', (session?.user as any)?.userType || (session?.user as any)?.type || 'unknown');
     const allProjectsInfo = await UnifiedStorageService.listProjects();
     console.log('📋 Found projects:', allProjectsInfo.length);
 
@@ -59,8 +59,8 @@ export async function GET() {
     }
 
     // For freelancers, filter to only show their assigned projects and tasks
-    const userType = (session.user as any)?.userType || (session.user as any)?.type;
-    const userId = parseInt(session.user.id);
+    const userType = (session?.user as any)?.userType || (session?.user as any)?.type || 'unknown';
+    const userId = parseInt(session?.user?.id || '0');
 
     // Guard: Validate user ID is a valid number
     if (isNaN(userId)) {
