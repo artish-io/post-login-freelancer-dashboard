@@ -1,0 +1,22 @@
+{
+  "id": "task_submitted_1756505761484_1756506168209",
+  "timestamp": "2025-08-29T22:22:48.209Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 25,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756505761484,
+  "metadata": {
+    "taskId": 1756505761484,
+    "taskTitle": "Research & Data Gathering",
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "action": "submit",
+    "invoiceGenerated": false,
+    "message": "\"Research & Data Gathering\" is awaiting your review for Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup"
+  },
+  "context": {
+    "projectId": "C-R006",
+    "taskId": 1756505761484
+  }
+}

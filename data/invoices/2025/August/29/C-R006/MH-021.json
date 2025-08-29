@@ -1,0 +1,30 @@
+{
+  "invoiceNumber": "MH-021",
+  "projectId": "C-R006",
+  "freelancerId": 25,
+  "commissionerId": 34,
+  "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+  "totalAmount": 484,
+  "invoiceType": "completion_final",
+  "milestoneNumber": 99,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-29T22:23:23.456Z",
+  "dueDate": "2025-09-12T22:23:23.456Z",
+  "createdAt": "2025-08-29T22:23:23.456Z",
+  "description": "Final completion payment (remaining 88%)",
+  "milestones": [
+    {
+      "description": "Final completion payment (remaining 88%)",
+      "rate": 484,
+      "title": "Final Payment",
+      "taskId": "final"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 458.51,
+    "platformFee": 25.49
+  },
+  "paidDate": "2025-08-29T22:23:23.969Z",
+  "updatedAt": "2025-08-29T22:23:23.974Z"
+}

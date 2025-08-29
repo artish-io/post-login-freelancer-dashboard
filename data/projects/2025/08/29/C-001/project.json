@@ -1,0 +1,21 @@
+{
+  "projectId": "C-001",
+  "title": "Venture X Financial Modelling Housekeeping ",
+  "description": "We’re preparing Venture X, a Corlax Wellness subsidiary, to raise capital and need a freelancer to build a compelling financial model and fundraising roadmap. The model should clearly outline revenue streams, cost structures, growth projections, and investor ROI scenarios. The goal is to give us a data-driven story that attracts investors and positions Venture X as a scalable, high-growth opportunity in the wellness space.",
+  "organizationId": 3,
+  "typeTags": [
+    "Accounting"
+  ],
+  "commissionerId": 34,
+  "freelancerId": 25,
+  "status": "ongoing",
+  "dueDate": "2025-08-30",
+  "totalTasks": 2,
+  "invoicingMethod": "completion",
+  "totalBudget": 450,
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-29T20:43:47.393Z",
+  "updatedAt": "2025-08-29T20:43:47.394Z",
+  "gigRequestId": 1756500179686
+}

@@ -192,7 +192,9 @@ export async function GET(request: NextRequest) {
         'completion.commissioner_payment',
         'completion.final_payment',
         'completion.project_completed',
-        'completion.rating_prompt'
+        'completion.rating_prompt',
+        'completion.gig-request-upfront-commissioner',  // 🔔 FIX: Add gig request upfront commissioner notifications
+        'completion.gig-request-commissioner-accepted'  // 🔔 FIX: Add gig request acceptance notifications for commissioners
         // NOTE: completion.project_activated is intentionally excluded - commissioners don't need to be notified of their own project activation
         // NOTE: task_submitted is handled separately below as it's not a self-notification
       ];
@@ -522,6 +524,8 @@ export async function GET(request: NextRequest) {
     filteredNotifications.sort((a, b) => {
       const aTime = new Date(a.timestamp).getTime();
       const bTime = new Date(b.timestamp).getTime();
+      const timeDifference = Math.abs(bTime - aTime);
+      const FIVE_MINUTES = 5 * 60 * 1000; // 5 minutes in milliseconds
 
       // Check if both notifications are from the same project
       const aIsCompletion = a.type.startsWith('completion.');
@@ -530,18 +534,28 @@ export async function GET(request: NextRequest) {
       const bIsMilestone = !bIsCompletion && b.project?.id && ['project_activated', 'task_submission', 'task_approved', 'milestone_payment_sent', 'milestone_payment_received', 'project_completed', 'rating_prompt_freelancer', 'rating_prompt_commissioner'].includes(b.type);
       const sameProject = a.project?.id === b.project?.id;
 
+      // If notifications are more than 5 minutes apart, always prioritize chronological order
+      if (timeDifference > FIVE_MINUTES) {
+        return bTime - aTime;
+      }
+
       if (aIsCompletion && bIsCompletion && sameProject && a.project?.id) {
         // Define logical order for completion project notifications
         const completionOrder = {
+          'completion.gig-request-commissioner-accepted': 1,
+          'completion.gig-request-project_activated': 1,
           'completion.project_activated': 1,
+          'completion.gig-request-upfront': 2,
+          'completion.gig-request-upfront-commissioner': 2,
           'completion.upfront_payment': 2,
-          'completion.task_approved': 3,
-          'completion.invoice_received': 4,
-          'completion.invoice_paid': 5,
-          'completion.commissioner_payment': 6,
-          'completion.final_payment': 7,
-          'completion.project_completed': 8,
-          'completion.rating_prompt': 9
+          'completion.task_submitted': 3,
+          'completion.task_approved': 4,
+          'completion.invoice_received': 5,
+          'completion.invoice_paid': 6,
+          'completion.commissioner_payment': 7,
+          'completion.final_payment': 8,
+          'completion.project_completed': 9,
+          'completion.rating_prompt': 10
         };
 
         const aOrder = completionOrder[a.type as keyof typeof completionOrder] || 999;
@@ -1011,6 +1025,22 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
       const gigCommissionerFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
       return `${gigCommissionerFreelancerName} accepted your gig request`;
 
+    case 'completion.gig-request-project_activated':
+      // Title: Project activated for freelancer
+      return `This project is now active`;
+
+    case 'milestone.gig-request-project_activated':
+      // Title: Milestone project activated for freelancer
+      return `This milestone project is now active`;
+
+    case 'completion.gig-request-upfront':
+      // Title: Upfront payment received for freelancer
+      return `Upfront payment received`;
+
+    case 'completion.gig-request-upfront-commissioner':
+      // Title: Upfront payment confirmation for commissioner
+      return `Upfront payment processed`;
+
     default:
       // Skip generic events - they shouldn't reach here if properly filtered
       console.warn(`Unknown notification type: ${event.type}`, event);
@@ -1213,6 +1243,45 @@ async function generateGranularMessage(event: EventData, _actor: any, _project?:
     case 'completion.rating_prompt':
       // JUST USE THE MESSAGE FROM THE EVENT JSON - STOP OVERENGINEERING
       return (event as any).message || 'Rate your experience';
+
+    case 'completion.gig-request-project_activated':
+      // Message: Project details with milestone count
+      const gigProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'Project';
+      const gigTotalTasks = (event.metadata as any)?.totalTasks || (event.context as any)?.totalTasks || 1;
+      const gigCommissionerName = (event.metadata as any)?.commissionerName || (event.context as any)?.commissionerName || 'Commissioner';
+      const gigDueDate = (event.metadata as any)?.dueDate || (event.context as any)?.dueDate;
+      const gigDueDateText = gigDueDate ? ` due by ${new Date(gigDueDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}` : '';
+      return `${gigProjectTitle} is now active, managed by ${gigCommissionerName} and includes ${gigTotalTasks} milestone${gigTotalTasks !== 1 ? 's' : ''}${gigDueDateText}`;
+
+    case 'milestone.gig-request-project_activated':
+      // Message: Milestone project details
+      const gigMilestoneProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'Project';
+      const gigMilestoneTotalTasks = (event.metadata as any)?.totalTasks || (event.context as any)?.totalTasks || 1;
+      const gigMilestoneCommissionerName = (event.metadata as any)?.commissionerName || (event.context as any)?.commissionerName || 'Commissioner';
+      const gigMilestoneDueDate = (event.metadata as any)?.dueDate || (event.context as any)?.dueDate;
+      const gigMilestoneDueDateText = gigMilestoneDueDate ? ` due by ${new Date(gigMilestoneDueDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}` : '';
+      return `${gigMilestoneProjectTitle} milestone project is now active, managed by ${gigMilestoneCommissionerName} and includes ${gigMilestoneTotalTasks} milestone${gigMilestoneTotalTasks !== 1 ? 's' : ''}${gigMilestoneDueDateText}`;
+
+    case 'completion.gig-request-upfront':
+      // Message: Upfront payment details for freelancer
+      const gigUpfrontAmount = (event.metadata as any)?.upfrontAmount || (event.context as any)?.upfrontAmount || 0;
+      const gigUpfrontProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
+      const gigOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
+      return `You received $${gigUpfrontAmount} upfront payment for ${gigUpfrontProjectTitle} from ${gigOrgName}. Complete the project to receive the remaining payment.`;
+
+    case 'completion.gig-request-upfront-commissioner':
+      // Message: Upfront payment confirmation for commissioner
+      const gigCommissionerUpfrontAmount = (event.metadata as any)?.upfrontAmount || (event.context as any)?.upfrontAmount || 0;
+      const gigCommissionerUpfrontProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
+      const gigFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'freelancer';
+      return `You paid $${gigCommissionerUpfrontAmount} upfront to ${gigFreelancerName} for ${gigCommissionerUpfrontProjectTitle}. Payment will be completed when the project is finished.`;
+
+    case 'completion.gig-request-commissioner-accepted':
+      // Message: Gig request acceptance details for commissioner
+      const gigAcceptedProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'gig request';
+      const gigAcceptedTotalTasks = (event.metadata as any)?.totalTasks || (event.context as any)?.totalTasks || 1;
+      const gigAcceptedFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'freelancer';
+      return `Your ${gigAcceptedProjectTitle} gig request is now an active project with ${gigAcceptedTotalTasks} milestone${gigAcceptedTotalTasks !== 1 ? 's' : ''} managed by ${gigAcceptedFreelancerName}`;
 
     default:
       console.warn(`Unknown notification message type: ${event.type}`, event);

@@ -1,0 +1,33 @@
+{
+  "id": "comp_1756505646759_3v3z0hjhh",
+  "type": "completion.gig-request-commissioner-accepted",
+  "notificationType": 162,
+  "actorId": 25,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "C-R006",
+  "projectId": "C-R006",
+  "message": "Your Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup gig request is now an active project with 1 milestone",
+  "context": {
+    "projectId": "C-R006",
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "totalTasks": 1,
+    "dueDate": "2025-08-31",
+    "invoicingMethod": "completion",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "C-R006",
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "totalTasks": 1,
+    "dueDate": "2025-08-31",
+    "invoicingMethod": "completion",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-29T22:14:06.666Z",
+  "subsystem": "completion_invoicing"
+}

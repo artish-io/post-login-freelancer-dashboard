@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756503790437_osck1p4t6",
+  "type": "completion.gig-request-upfront-commissioner",
+  "notificationType": 161,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "C-R005",
+  "projectId": "C-R005",
+  "message": "You just paid $48 upfront for your newly activated Financial Modeling & Fundraising Strategy for Venture X (Corlax Wellness Subsidiary) project. This project has a budget of $352 left. Click here to view invoice details",
+  "context": {
+    "projectId": "C-R005",
+    "upfrontAmount": 48,
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X (Corlax Wellness Subsidiary)",
+    "remainingBudget": 352,
+    "orgName": "Organization",
+    "freelancerName": "Freelancer",
+    "commissionerName": "Commissioner"
+  },
+  "metadata": {
+    "projectId": "C-R005",
+    "upfrontAmount": 48,
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X (Corlax Wellness Subsidiary)",
+    "remainingBudget": 352,
+    "orgName": "Organization",
+    "freelancerName": "Freelancer",
+    "commissionerName": "Commissioner"
+  },
+  "timestamp": "2025-08-29T21:43:10.401Z",
+  "subsystem": "completion_invoicing"
+}

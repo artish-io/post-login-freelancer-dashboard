@@ -34,9 +34,35 @@ export async function POST(request: Request) {
     assert(sessionUserId === freelancerId, 'Unauthorized: Only the freelancer can trigger gig request payment', 403);
     console.log('✅ GIG REQUEST UPFRONT PAYMENT: Freelancer authorization validated');
     
-    // Get project details
+    // Get project details - check both atomic storage and legacy storage
     console.log('🔍 GIG REQUEST UPFRONT PAYMENT: Looking up project...');
-    const project = await readProject(projectId);
+    let project = await readProject(projectId);
+
+    // 🔧 FALLBACK: If not found in legacy storage, try hierarchical atomic storage (for new -R format projects)
+    if (!project && projectId.includes('-R')) {
+      try {
+        // Try UnifiedStorageService first (hierarchical)
+        const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+        project = await UnifiedStorageService.getProjectById(projectId);
+        if (project) {
+          console.log('🔧 GIG REQUEST UPFRONT PAYMENT: Found project in hierarchical storage');
+        }
+      } catch (error) {
+        console.log('🔧 GIG REQUEST UPFRONT PAYMENT: Project not found in hierarchical storage, trying flat storage');
+
+        // Fallback to flat storage
+        try {
+          const { promises: fs } = await import('fs');
+          const path = await import('path');
+          const projectPath = path.join(process.cwd(), 'data', 'projects', `${projectId}.json`);
+          const projectData = await fs.readFile(projectPath, 'utf-8');
+          project = JSON.parse(projectData);
+          console.log('🔧 GIG REQUEST UPFRONT PAYMENT: Found project in flat storage');
+        } catch (flatError) {
+          console.log('🔧 GIG REQUEST UPFRONT PAYMENT: Project not found in either storage location');
+        }
+      }
+    }
     console.log('📋 GIG REQUEST UPFRONT PAYMENT: Project lookup result:', {
       found: !!project,
       projectId,
@@ -166,10 +192,33 @@ export async function POST(request: Request) {
     // Update project paid-to-date
     console.log('📊 GIG REQUEST UPFRONT PAYMENT: Updating project paid-to-date...');
     const currentPaidToDate = project!.paidToDate || 0;
-    await updateProject(projectId, {
-      paidToDate: currentPaidToDate + upfrontAmount,
-      updatedAt: new Date().toISOString()
-    });
+
+    // 🔧 SURGICAL FIX: Update project in hierarchical storage for -R format projects
+    if (projectId.includes('-R')) {
+      try {
+        // Use UnifiedStorageService for hierarchical storage
+        const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+
+        // Update the project data
+        const updatedProject = {
+          ...project,
+          paidToDate: currentPaidToDate + upfrontAmount,
+          updatedAt: new Date().toISOString()
+        };
+
+        await UnifiedStorageService.writeProject(updatedProject);
+        console.log('✅ GIG REQUEST UPFRONT PAYMENT: Updated project in hierarchical storage');
+      } catch (error) {
+        console.error('❌ GIG REQUEST UPFRONT PAYMENT: Failed to update project in hierarchical storage:', error);
+        throw new Error('Failed to update project');
+      }
+    } else {
+      // Use legacy updateProject for traditional projects
+      await updateProject(projectId, {
+        paidToDate: currentPaidToDate + upfrontAmount,
+        updatedAt: new Date().toISOString()
+      });
+    }
 
     // 🔔 GIG REQUEST SPECIFIC: Emit gig request upfront payment notification
     console.log('🔔 GIG REQUEST UPFRONT PAYMENT: Emitting gig request upfront notification...');

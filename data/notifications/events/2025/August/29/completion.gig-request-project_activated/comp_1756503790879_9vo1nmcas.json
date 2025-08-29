@@ -1,0 +1,33 @@
+{
+  "id": "comp_1756503790879_9vo1nmcas",
+  "type": "completion.gig-request-project_activated",
+  "notificationType": 159,
+  "actorId": 34,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "C-R005",
+  "projectId": "C-R005",
+  "message": "This project is now active, managed by Commissioner and includes 1 milestone due by August 30, 2025",
+  "context": {
+    "projectId": "C-R005",
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X (Corlax Wellness Subsidiary)",
+    "totalTasks": 1,
+    "dueDate": "2025-08-31",
+    "invoicingMethod": "completion",
+    "orgName": "Organization",
+    "freelancerName": "Freelancer",
+    "commissionerName": "Commissioner"
+  },
+  "metadata": {
+    "projectId": "C-R005",
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X (Corlax Wellness Subsidiary)",
+    "totalTasks": 1,
+    "dueDate": "2025-08-31",
+    "invoicingMethod": "completion",
+    "orgName": "Organization",
+    "freelancerName": "Freelancer",
+    "commissionerName": "Commissioner"
+  },
+  "timestamp": "2025-08-29T21:43:10.871Z",
+  "subsystem": "completion_invoicing"
+}

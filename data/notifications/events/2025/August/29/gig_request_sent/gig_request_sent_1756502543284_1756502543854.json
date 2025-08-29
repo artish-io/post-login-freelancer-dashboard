@@ -1,0 +1,22 @@
+{
+  "id": "gig_request_sent_1756502543284_1756502543854",
+  "timestamp": "2025-08-29T21:22:23.277Z",
+  "type": "gig_request_sent",
+  "notificationType": 61,
+  "actorId": 34,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "1756502543284",
+  "metadata": {
+    "gigTitle": "Financial Modeling & Fundraising Strategy for Venture X (Corlax Wellness Subsidiary)",
+    "organizationName": "Corlax Wellness",
+    "organizationLogo": "/logos/corlax-ios-logo.png",
+    "budgetMin": 300,
+    "budgetMax": 400
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 3,
+    "requestId": 1756502543284
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id": "comp_1756500229824_8a56rpw4m",
+  "type": "completion.gig-request-commissioner-accepted",
+  "notificationType": 162,
+  "actorId": 25,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "C-001",
+  "projectId": "C-001",
+  "message": "Your Venture X Financial Modelling Housekeeping  gig request is now an active project with 1 milestone",
+  "context": {
+    "projectId": "C-001",
+    "projectTitle": "Venture X Financial Modelling Housekeeping ",
+    "totalTasks": 1,
+    "dueDate": "2025-08-30",
+    "invoicingMethod": "completion",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "C-001",
+    "projectTitle": "Venture X Financial Modelling Housekeeping ",
+    "totalTasks": 1,
+    "dueDate": "2025-08-30",
+    "invoicingMethod": "completion",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-29T20:43:49.796Z",
+  "subsystem": "completion_invoicing"
+}

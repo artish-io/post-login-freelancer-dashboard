@@ -1,0 +1,33 @@
+{
+  "id": "comp_1756500229880_xvk2dzeay",
+  "type": "completion.gig-request-project_activated",
+  "notificationType": 159,
+  "actorId": 34,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "C-001",
+  "projectId": "C-001",
+  "message": "This project is now active, managed by Matte Hannery and includes 1 milestone due by August 29, 2025",
+  "context": {
+    "projectId": "C-001",
+    "projectTitle": "Venture X Financial Modelling Housekeeping ",
+    "totalTasks": 1,
+    "dueDate": "2025-08-30",
+    "invoicingMethod": "completion",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "C-001",
+    "projectTitle": "Venture X Financial Modelling Housekeeping ",
+    "totalTasks": 1,
+    "dueDate": "2025-08-30",
+    "invoicingMethod": "completion",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-29T20:43:49.841Z",
+  "subsystem": "completion_invoicing"
+}

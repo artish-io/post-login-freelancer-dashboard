@@ -173,6 +173,62 @@ export const CompletionEventHandlers = {
 
     console.log(`[COMPLETION] Rating prompt notification processed: ${projectTitle} (${commissionerName} <-> ${freelancerName})`);
     // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
+  },
+
+  // 🔒 GIG REQUEST SPECIFIC: Completion notification handlers
+  'completion.gig-request-upfront': async (event: CompletionEvent) => {
+    // Freelancer upfront payment notification for gig requests
+    // Business logic only - notification creation handled by completion-handler
+    const projectTitle = event.context.projectTitle || 'Project';
+    const upfrontAmount = event.context.upfrontAmount || 0;
+    const orgName = event.context.orgName || 'Organization';
+
+    console.log(`[COMPLETION] Gig request upfront payment notification processed: $${upfrontAmount} for ${projectTitle} (${orgName} -> freelancer)`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
+  },
+
+  'completion.gig-request-upfront-commissioner': async (event: CompletionEvent) => {
+    // Commissioner upfront payment confirmation for gig requests
+    // Business logic only - notification creation handled by completion-handler
+    const projectTitle = event.context.projectTitle || 'Project';
+    const upfrontAmount = event.context.upfrontAmount || 0;
+    const orgName = event.context.orgName || 'Organization';
+
+    console.log(`[COMPLETION] Gig request commissioner upfront payment notification processed: $${upfrontAmount} for ${projectTitle} (${orgName})`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
+  },
+
+  'completion.gig-request-project_activated': async (event: CompletionEvent) => {
+    // Freelancer project activation notification for completion-based gig requests
+    // Business logic only - notification creation handled by completion-handler
+    const projectTitle = event.context.projectTitle || 'Project';
+    const totalTasks = event.context.totalTasks || 1;
+    const orgName = event.context.orgName || 'Organization';
+
+    console.log(`[COMPLETION] Gig request completion project activation notification processed: ${projectTitle} with ${totalTasks} tasks (${orgName} -> freelancer)`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
+  },
+
+  'milestone.gig-request-project_activated': async (event: CompletionEvent) => {
+    // Freelancer project activation notification for milestone-based gig requests
+    // Business logic only - notification creation handled by completion-handler
+    const projectTitle = event.context.projectTitle || 'Project';
+    const totalTasks = event.context.totalTasks || 1;
+    const orgName = event.context.orgName || 'Organization';
+
+    console.log(`[COMPLETION] Gig request milestone project activation notification processed: ${projectTitle} with ${totalTasks} milestones (${orgName} -> freelancer)`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
+  },
+
+  'completion.gig-request-commissioner-accepted': async (event: CompletionEvent) => {
+    // Commissioner notification when freelancer accepts gig request
+    // Business logic only - notification creation handled by completion-handler
+    const projectTitle = event.context.projectTitle || 'Project';
+    const totalTasks = event.context.totalTasks || 1;
+    const freelancerName = event.context.freelancerName || 'Freelancer';
+
+    console.log(`[COMPLETION] Gig request commissioner acceptance notification processed: ${projectTitle} with ${totalTasks} milestones (${freelancerName} -> commissioner)`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
   }
 };
 

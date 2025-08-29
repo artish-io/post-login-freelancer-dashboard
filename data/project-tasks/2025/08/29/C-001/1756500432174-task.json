@@ -1,0 +1,20 @@
+{
+  "taskId": 1756500432174,
+  "projectId": "C-001",
+  "projectTitle": "Venture X Financial Modelling Housekeeping ",
+  "title": " Financial Model Development",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 2,
+  "dueDate": "2025-08-29T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Build a dynamic, investor-ready financial model covering P&L, cash flow, unit economics, and valuation scenarios. Run multiple fundraising and growth cases (conservative, base, aggressive) to show resilience.",
+  "createdDate": "2025-08-29T20:43:47.395Z",
+  "lastModified": "2025-08-29T22:22:49.785Z",
+  "id": 1756500432174,
+  "createdAt": "2025-08-29T20:43:47.393Z",
+  "updatedAt": "2025-08-29T20:43:47.393Z"
+}

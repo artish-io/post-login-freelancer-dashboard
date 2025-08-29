@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756505645348_9xxne9xug",
+  "type": "completion.gig-request-upfront",
+  "notificationType": 158,
+  "actorId": 34,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "C-R006",
+  "projectId": "C-R006",
+  "message": "Corlax Wellness has paid $66 upfront for your newly activated Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup project. This project has a budget of $484 left. Click here to view invoice details",
+  "context": {
+    "projectId": "C-R006",
+    "upfrontAmount": 66,
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "remainingBudget": 484,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "C-R006",
+    "upfrontAmount": 66,
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "remainingBudget": 484,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-29T22:14:05.344Z",
+  "subsystem": "completion_invoicing"
+}

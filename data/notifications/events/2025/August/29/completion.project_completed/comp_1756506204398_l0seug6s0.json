@@ -1,0 +1,27 @@
+{
+  "id": "comp_1756506204398_l0seug6s0",
+  "type": "completion.project_completed",
+  "notificationType": 155,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "C-R006",
+  "projectId": "C-R006",
+  "message": "You have approved all tasks for Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup. This project is now complete",
+  "context": {
+    "projectId": "C-R006",
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "commissionerName": "Matte Hannery",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer"
+  },
+  "metadata": {
+    "projectId": "C-R006",
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "commissionerName": "Matte Hannery",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer"
+  },
+  "timestamp": "2025-08-29T22:23:24.114Z",
+  "subsystem": "completion_invoicing"
+}

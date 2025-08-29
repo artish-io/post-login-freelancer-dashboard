@@ -1,0 +1,22 @@
+{
+  "id": "gig_request_sent_1756500179686_1756500181039",
+  "timestamp": "2025-08-29T20:42:59.684Z",
+  "type": "gig_request_sent",
+  "notificationType": 61,
+  "actorId": 34,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "1756500179686",
+  "metadata": {
+    "gigTitle": "Venture X Financial Modelling Housekeeping ",
+    "organizationName": "Corlax Wellness",
+    "organizationLogo": "/logos/corlax-ios-logo.png",
+    "budgetMin": 400,
+    "budgetMax": 450
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 3,
+    "requestId": 1756500179686
+  }
+}

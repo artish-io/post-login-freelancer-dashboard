@@ -3,8 +3,9 @@ import { readGig, updateGig } from '@/lib/gigs/hierarchical-storage';
 import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 import { updateGigRequestStatus } from '@/lib/gigs/gig-request-storage';
-import { withErrorHandling, ok, err, ErrorCodes } from '@/lib/http/envelope';
+import { withErrorHandling, err, ErrorCodes } from '@/lib/http/envelope';
 import { ProjectService } from '@/app/api/projects/services/project-service';
+import { generateProjectId, auditLog, type ProjectIdMode } from '@/lib/projects/gig-request-project-id-generator';
 
 // File locking mechanism to prevent concurrent writes
 const fileLocks = new Map<string, Promise<void>>();
@@ -117,26 +118,10 @@ async function handleGigRequestAcceptance(
 
     console.log(`🔍 Standalone gig request (gigId=${gigId}): checking request status instead of project existence`);
 
-    // Check if project already exists for this specific request to prevent duplicates
-    const { readAllProjects } = await import('@/lib/projects-utils');
-    const projectsData = await readAllProjects();
-
-    // Improved duplicate detection logic
+    // 🔧 SURGICAL FIX: Skip expensive project scanning for gig requests
+    // Gig requests should create new projects, not check for existing ones
+    console.log(`🔍 Skipping existing project check for gig request - will create new project`);
     let existingProject = null;
-    if (gigId) {
-      // For gig-based requests, check by gigId and freelancerId
-      existingProject = projectsData.find((p: any) => 
-        p.gigId === gigId && p.freelancerId === gigRequest.freelancerId
-      );
-    } else {
-      // For standalone requests, check by request ID or unique combination
-      existingProject = projectsData.find((p: any) => 
-        p.gigRequestId === gigRequest.id || 
-        (p.title === gigRequest.title && p.freelancerId === gigRequest.freelancerId && p.commissionerId === gigRequest.commissionerId)
-      );
-    }
-
-    console.log(`🔍 Found existing project:`, existingProject ? existingProject.projectId : 'None');
 
     if (existingProject) {
       console.log(`❌ Project already exists for gig ${gigId} and freelancer ${gigRequest.freelancerId}`);
@@ -239,7 +224,40 @@ async function handleGigRequestAcceptance(
 
     console.log(`🔍 Creating ${gigLikeData.invoicingMethod} project with budget: $${totalBudget}`);
 
-    // Use ProjectService.acceptGig for consistent project creation
+    // 🔒 SURGICAL FIX: Generate gig-request project ID with collision prevention
+    const orgFirstLetter = organization.name.charAt(0).toUpperCase();
+    const projectIdResult = await generateProjectId({
+      mode: 'request' as ProjectIdMode,
+      organizationFirstLetter: orgFirstLetter,
+      origin: 'request'
+    });
+
+    if (!projectIdResult.success) {
+      auditLog('project_creation_failed', {
+        requestId: gigRequest.id,
+        organizationName: organization.name,
+        error: projectIdResult.error,
+        attempts: projectIdResult.attempts
+      });
+
+      const errorMessage = projectIdResult.error === 'project_creation_collision'
+        ? 'Project ID collision detected - please try again'
+        : 'Failed to generate valid project ID';
+
+      return NextResponse.json(
+        err(ErrorCodes.OPERATION_NOT_ALLOWED, errorMessage, 400),
+        { status: 400 }
+      );
+    }
+
+    const generatedProjectId = projectIdResult.projectId!;
+    auditLog('project_id_assigned', {
+      requestId: gigRequest.id,
+      projectId: generatedProjectId,
+      organizationName: organization.name
+    });
+
+    // Use ProjectService.acceptGig for consistent project creation with pre-generated ID
     let acceptResult;
     try {
       acceptResult = ProjectService.acceptGig({
@@ -247,34 +265,46 @@ async function handleGigRequestAcceptance(
         freelancerId: gigRequest.freelancerId,
         commissionerId: gigRequest.commissionerId,
         organizationName: organization.name,
-        existingProjectIds: new Set(projectsData.map((p: any) => p.projectId.toString()))
+        existingProjectIds: new Set(), // 🔧 SURGICAL: Gig requests don't need existing project check
+        projectId: generatedProjectId // 🔒 SURGICAL: Force use of collision-safe ID
       });
-      
-      console.log('✅ ProjectService.acceptGig completed successfully');
+
+      console.log(`✅ ProjectService.acceptGig completed successfully with ID: ${generatedProjectId}`);
     } catch (serviceError: any) {
       console.error('❌ ProjectService.acceptGig failed:', serviceError);
+      auditLog('project_service_error', {
+        projectId: generatedProjectId,
+        error: serviceError.message
+      });
       return NextResponse.json(
         err(ErrorCodes.OPERATION_NOT_ALLOWED, `Failed to create project: ${serviceError.message}`, 400),
         { status: 400 }
       );
     }
 
-    // 🛡️ CRITICAL ORDERING: Save project and tasks to storage
+    // 🛡️ CRITICAL ORDERING: Save project and tasks to storage with create-only behavior
     console.log('🔄 Saving project to unified storage...');
-    try {
-      // Save project using unified storage
-      await UnifiedStorageService.writeProject({
-        ...acceptResult.project,
-        status: 'ongoing',
-        invoicingMethod: (acceptResult.project.invoicingMethod as "completion" | "milestone") || 'completion',
-        createdAt: acceptResult.project.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        gigRequestId: gigRequest.id // Link back to gig request
-      } as any);
 
-      console.log(`✅ Project saved to unified storage: ${acceptResult.project.projectId}`);
+    // 🔒 SURGICAL FIX: Use create-only project creation to prevent overwrites (when feature enabled)
+    const projectData = {
+      ...acceptResult.project,
+      status: 'ongoing',
+      invoicingMethod: (acceptResult.project.invoicingMethod as "completion" | "milestone") || 'completion',
+      createdAt: acceptResult.project.createdAt || new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      gigRequestId: gigRequest.id // Link back to gig request
+    };
+
+    // 🔧 CRITICAL FIX: Always use UnifiedStorageService for hierarchical storage consistency
+    try {
+      await UnifiedStorageService.writeProject(projectData as any);
+      console.log(`✅ Project saved to hierarchical storage: ${generatedProjectId}`);
     } catch (projectSaveError) {
-      console.error('❌ Failed to save project to unified storage:', projectSaveError);
+      console.error('❌ Failed to save project to hierarchical storage:', projectSaveError);
+      auditLog('project_storage_failed', {
+        projectId: generatedProjectId,
+        error: String(projectSaveError)
+      });
       return NextResponse.json(
         err(ErrorCodes.INTERNAL_ERROR, 'Failed to save project', 500),
         { status: 500 }

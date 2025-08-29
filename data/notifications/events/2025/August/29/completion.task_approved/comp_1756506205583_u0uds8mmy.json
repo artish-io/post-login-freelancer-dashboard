@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756506205583_u0uds8mmy",
+  "type": "completion.task_approved",
+  "notificationType": 152,
+  "actorId": 34,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "C-R006",
+  "projectId": "C-R006",
+  "message": "Matte Hannery has approved your submission for \"Research & Data Gathering\" in Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup. Task approved and milestone completed. Click here to see its project tracker.",
+  "context": {
+    "projectId": "C-R006",
+    "taskId": "1756505761484",
+    "taskTitle": "Research & Data Gathering",
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "commissionerName": "Matte Hannery",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer"
+  },
+  "metadata": {
+    "projectId": "C-R006",
+    "taskId": "1756505761484",
+    "taskTitle": "Research & Data Gathering",
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "commissionerName": "Matte Hannery",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer"
+  },
+  "timestamp": "2025-08-29T22:23:25.571Z",
+  "subsystem": "completion_invoicing"
+}

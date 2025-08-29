@@ -1,0 +1,22 @@
+{
+  "id": "gig_request_sent_1756499579233_1756499580301",
+  "timestamp": "2025-08-29T20:32:59.230Z",
+  "type": "gig_request_sent",
+  "notificationType": 61,
+  "actorId": 34,
+  "targetId": 25,
+  "entityType": 3,
+  "entityId": "1756499579233",
+  "metadata": {
+    "gigTitle": "4 Year Financial Model Forecasting",
+    "organizationName": "Corlax Wellness",
+    "organizationLogo": "/logos/corlax-ios-logo.png",
+    "budgetMin": 400,
+    "budgetMax": 450
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 3,
+    "requestId": 1756499579233
+  }
+}

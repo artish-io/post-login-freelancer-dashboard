@@ -1,0 +1,193 @@
+[
+  {
+    "id": 1756499579233,
+    "freelancerId": 25,
+    "commissionerId": 34,
+    "gigId": null,
+    "organizationId": 3,
+    "title": "4 Year Financial Model Forecasting",
+    "skills": [
+      "Design"
+    ],
+    "tools": [
+      "QuickBooks"
+    ],
+    "notes": "The page should capture the energy of competitive gaming while making it simple for fans, teams, and sponsors to get information, register, and engage. The ideal partner will deliver a design that is bold, interactive, and aligned with both ROBLOX’s creative culture and esports best practices.",
+    "budget": {
+      "min": 400,
+      "max": 450,
+      "currency": "USD"
+    },
+    "category": "Accounting",
+    "subcategory": "Financial Forecasting",
+    "hourlyRateMin": 0,
+    "hourlyRateMax": 0,
+    "deliveryTimeWeeks": 0.2857142857142857,
+    "estimatedHours": 16,
+    "executionMethod": "completion",
+    "invoicingMethod": "completion",
+    "startType": "Immediately",
+    "customStartDate": null,
+    "endDate": "2025-09-01T04:00:00.000Z",
+    "milestones": [
+      {
+        "id": "84689e5c-4d59-431d-afe7-4d240d87b617",
+        "title": "Research & Concept Wireframing",
+        "description": "Analyze top esports event pages and ROBLOX brand guidelines, then deliver wireframes for registration, ticketing, and event info flows tailored for a West African audience.",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-09-01T04:00:00.000Z"
+      }
+    ],
+    "organizationData": null,
+    "status": "accepted",
+    "createdAt": "2025-08-29T20:32:59.230Z",
+    "responses": [],
+    "acceptedAt": "2025-08-29T20:33:44.909Z",
+    "projectId": null
+  },
+  {
+    "id": 1756500179686,
+    "freelancerId": 25,
+    "commissionerId": 34,
+    "gigId": null,
+    "organizationId": 3,
+    "title": "Venture X Financial Modelling Housekeeping ",
+    "skills": [
+      "Accounting"
+    ],
+    "tools": [
+      "QuickBooks"
+    ],
+    "notes": "We’re preparing Venture X, a Corlax Wellness subsidiary, to raise capital and need a freelancer to build a compelling financial model and fundraising roadmap. The model should clearly outline revenue streams, cost structures, growth projections, and investor ROI scenarios. The goal is to give us a data-driven story that attracts investors and positions Venture X as a scalable, high-growth opportunity in the wellness space.",
+    "budget": {
+      "min": 400,
+      "max": 450,
+      "currency": "USD"
+    },
+    "category": "Accounting",
+    "subcategory": "Financial Forecasting",
+    "hourlyRateMin": 0,
+    "hourlyRateMax": 0,
+    "deliveryTimeWeeks": 0.14285714285714285,
+    "estimatedHours": 8,
+    "executionMethod": "completion",
+    "invoicingMethod": "completion",
+    "startType": "Immediately",
+    "customStartDate": null,
+    "endDate": "2025-08-31T04:00:00.000Z",
+    "milestones": [
+      {
+        "id": "7f8659d4-27dd-4bcc-a7d7-3b20e4be78f7",
+        "title": "Discovery & Data Gathering",
+        "description": "Review Corlax Wellness’s existing operations, Venture X’s business plan, and market benchmarks. Collect assumptions, KPIs, and financial inputs to frame realistic yet ambitious projections.",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-08-30T04:00:00.000Z"
+      },
+      {
+        "id": "bcf8b4c7-85df-490c-8f2b-b4980310b89a",
+        "title": " Financial Model Development",
+        "description": "Build a dynamic, investor-ready financial model covering P&L, cash flow, unit economics, and valuation scenarios. Run multiple fundraising and growth cases (conservative, base, aggressive) to show resilience.",
+        "startDate": "2025-08-31T04:00:00.000Z",
+        "endDate": "2025-08-31T04:00:00.000Z"
+      }
+    ],
+    "organizationData": null,
+    "status": "accepted",
+    "createdAt": "2025-08-29T20:42:59.684Z",
+    "responses": [],
+    "acceptedAt": "2025-08-29T20:43:49.779Z",
+    "projectId": null
+  },
+  {
+    "id": 1756502543284,
+    "freelancerId": 25,
+    "commissionerId": 34,
+    "gigId": null,
+    "organizationId": 3,
+    "title": "Financial Modeling & Fundraising Strategy for Venture X (Corlax Wellness Subsidiary)",
+    "skills": [
+      "UI/UX Design"
+    ],
+    "tools": [
+      "Figma"
+    ],
+    "notes": "The model should clearly outline revenue streams, cost structures, growth projections, and investor ROI scenarios. The goal is to give us a data-driven story that attracts investors and positions Venture X as a scalable, high-growth opportunity in the wellness space.",
+    "budget": {
+      "min": 300,
+      "max": 400,
+      "currency": "USD"
+    },
+    "category": "Accounting",
+    "subcategory": "Financial Forecasting",
+    "hourlyRateMin": 0,
+    "hourlyRateMax": 0,
+    "deliveryTimeWeeks": 0.2857142857142857,
+    "estimatedHours": 16,
+    "executionMethod": "completion",
+    "invoicingMethod": "completion",
+    "startType": "Immediately",
+    "customStartDate": null,
+    "endDate": "2025-09-01T04:00:00.000Z",
+    "milestones": [
+      {
+        "id": "62c4ea87-fe37-4a9c-afc9-15545624551c",
+        "title": "Discovery & Data Gathering",
+        "description": "Review Corlax Wellness’s existing operations, Venture X’s business plan, and market benchmarks. Collect assumptions, KPIs, and financial inputs to frame realistic yet ambitious projections.",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-09-01T04:00:00.000Z"
+      }
+    ],
+    "organizationData": null,
+    "status": "accepted",
+    "createdAt": "2025-08-29T21:22:23.277Z",
+    "responses": [],
+    "acceptedAt": "2025-08-29T21:43:10.449Z",
+    "projectId": null
+  },
+  {
+    "id": 1756505354078,
+    "freelancerId": 25,
+    "commissionerId": 34,
+    "gigId": null,
+    "organizationId": 3,
+    "title": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "skills": [
+      "Accounting"
+    ],
+    "tools": [
+      "QuickBooks"
+    ],
+    "notes": "We’re launching Venture X, a green energy startup under Corlax Wellness, and need a freelancer to build a professional financial model to support our fundraising efforts. The model should clearly articulate revenue streams, cost structures, and growth scenarios while highlighting the sustainability and market opportunity of our technology. The right partner will help us produce investor-ready materials that attract capital and inspire confidence.",
+    "budget": {
+      "min": 400,
+      "max": 550,
+      "currency": "USD"
+    },
+    "category": "Accounting",
+    "subcategory": "Financial Forecasting",
+    "hourlyRateMin": 0,
+    "hourlyRateMax": 0,
+    "deliveryTimeWeeks": 0.2857142857142857,
+    "estimatedHours": 16,
+    "executionMethod": "completion",
+    "invoicingMethod": "completion",
+    "startType": "Immediately",
+    "customStartDate": null,
+    "endDate": "2025-09-01T04:00:00.000Z",
+    "milestones": [
+      {
+        "id": "54967203-5608-4ab1-8eef-1f9a69bb546c",
+        "title": "Research & Data Gathering",
+        "description": "Review existing business plans, sustainability metrics, and green energy benchmarks. Collect assumptions on costs, pricing, market size, and projected adoption.",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-09-01T04:00:00.000Z"
+      }
+    ],
+    "organizationData": null,
+    "status": "accepted",
+    "createdAt": "2025-08-29T22:09:14.074Z",
+    "responses": [],
+    "acceptedAt": "2025-08-29T22:14:06.062Z",
+    "projectId": null
+  }
+]

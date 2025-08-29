@@ -1,0 +1,20 @@
+{
+  "taskId": 1756501104557,
+  "projectId": "C-001",
+  "projectTitle": "Venture X Financial Modelling Housekeeping ",
+  "title": "Discovery & Data Gathering",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "dueDate": "2025-08-29T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Review Corlax Wellness’s existing operations, Venture X’s business plan, and market benchmarks. Collect assumptions, KPIs, and financial inputs to frame realistic yet ambitious projections.",
+  "createdDate": "2025-08-29T20:43:47.395Z",
+  "lastModified": "2025-08-29T22:22:49.786Z",
+  "id": 1756501104557,
+  "createdAt": "2025-08-29T20:43:47.393Z",
+  "updatedAt": "2025-08-29T20:43:47.393Z"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756506204951_nbay61whq",
+  "type": "completion.final_payment",
+  "notificationType": 156,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "C-R006",
+  "projectId": "C-R006",
+  "message": "You just paid Lucas Meyer a final payment of $484 for your now completed project, Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup. Remaining budget: $0. Click here to see invoice details",
+  "context": {
+    "projectId": "C-R006",
+    "finalAmount": 484,
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "finalPercent": 88,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "C-R006",
+    "finalAmount": 484,
+    "projectTitle": "Financial Modeling & Fundraising Strategy for Venture X – A Corlax Wellness Green Energy Startup",
+    "finalPercent": 88,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Lucas Meyer",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-29T22:23:24.676Z",
+  "subsystem": "completion_invoicing"
+}

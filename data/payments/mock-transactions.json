@@ -138,5 +138,17 @@
     "commissionerId": 35,
     "amount": 308,
     "timestamp": "2025-08-28T21:19:20.523Z"
+  },
+  {
+    "transactionId": "TXN-MH-021",
+    "type": "invoice",
+    "integration": "mock",
+    "status": "paid",
+    "invoiceNumber": "MH-021",
+    "projectId": "C-R006",
+    "freelancerId": 25,
+    "commissionerId": 34,
+    "amount": 484,
+    "timestamp": "2025-08-29T22:23:23.975Z"
   }
 ]

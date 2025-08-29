@@ -191,7 +191,7 @@
     "brand": "mastercard",
     "isDefault": true,
     "isActive": true,
-    "availableBalance": 36972.01999999999,
+    "availableBalance": 36488.01999999999,
     "transactionHistory": [
       {
         "transactionId": "TXN-1755629849443",
@@ -522,11 +522,22 @@
         "freelancerId": 1,
         "timestamp": "2025-08-28T19:44:53.294Z",
         "balanceAfter": 36972.01999999999
+      },
+      {
+        "transactionId": "TXN-1756506203968",
+        "amount": -484,
+        "type": "payment",
+        "description": "Payment for invoice MH-021",
+        "invoiceNumber": "MH-021",
+        "projectId": "C-R006",
+        "freelancerId": 25,
+        "timestamp": "2025-08-29T22:23:23.968Z",
+        "balanceAfter": 36488.01999999999
       }
     ],
     "createdAt": "2025-08-19T00:00:00.000Z",
     "lastUsed": "2025-08-26T23:59:41.475Z",
-    "updatedAt": "2025-08-28T19:44:53.294Z"
+    "updatedAt": "2025-08-29T22:23:23.968Z"
   },
   {
     "id": "card_test_033",
