@@ -1,0 +1,22 @@
+{
+  "id": "gig_request_sent_1756408892338_1756408892869",
+  "timestamp": "2025-08-28T19:21:32.331Z",
+  "type": "gig_request_sent",
+  "notificationType": 61,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "1756408892338",
+  "metadata": {
+    "gigTitle": "Dance Tutorial, Who is Leading",
+    "organizationName": "Corlax Wellness",
+    "organizationLogo": "/logos/corlax-ios-logo.png",
+    "budgetMin": 300,
+    "budgetMax": 400
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 3,
+    "requestId": 1756408892338
+  }
+}

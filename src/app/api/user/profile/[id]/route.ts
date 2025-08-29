@@ -6,6 +6,7 @@ import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import { readAllGigs } from '@/lib/gigs/hierarchical-storage';
 import { getAllInvoices } from '@/lib/invoice-storage';
 import { getCommissionerTotals } from '@/lib/commissioner-totals-service';
+import { readJson } from '@/lib/fs-json';
 
 export async function GET(
   _req: Request,
@@ -73,6 +74,15 @@ export async function GET(
         );
       }
 
+      // Load additional profile data from data/users/{id}/profile.json
+      let userProfileData = {};
+      try {
+        const userProfilePath = path.join(root, 'data', 'users', id, 'profile.json');
+        userProfileData = await readJson(userProfilePath, {});
+      } catch (error) {
+        console.log(`No additional profile data found for user ${id}`);
+      }
+
       const userSamples = workSamples.filter(
         (ws: any) => String(ws.userId) === id
       );
@@ -89,6 +99,30 @@ export async function GET(
         return tool || { name: toolName, icon: null };
       });
 
+      // Merge rate data - prioritize rateRange from userProfileData, fallback to legacy fields
+      const rateRange = (userProfileData as any).rateRange || {
+        rateMin: freelancer.minRate || 0,
+        rateMax: freelancer.maxRate || 0,
+        rateUnit: 'hour'
+      };
+
+      // Use the newer rate format if available, otherwise legacy rate
+      const displayRate = (userProfileData as any).rate || freelancer.rate;
+
+      // Migrate socialLinks to outlinks format if outlinks don't exist
+      let outlinks = (userProfileData as any).outlinks || [];
+      if (outlinks.length === 0 && freelancer.socialLinks && freelancer.socialLinks.length > 0) {
+        // Convert socialLinks to outlinks format
+        outlinks = freelancer.socialLinks.map((link: any, index: number) => ({
+          id: `migrated_${Date.now()}_${index}`,
+          platform: link.platform,
+          url: link.url,
+          label: link.platform.charAt(0).toUpperCase() + link.platform.slice(1),
+          order: index,
+          createdAt: new Date().toISOString()
+        }));
+      }
+
       return NextResponse.json({
         id: user.id,
         name: user.name,
@@ -97,7 +131,9 @@ export async function GET(
         isOnline,
         type: user.type,
         location: freelancer.location,
-        rate: freelancer.rate,
+        rate: displayRate,
+        rateRange: rateRange,
+        outlinks: outlinks,
         availability: freelancer.availability ?? 'Unavailable',
         hourlyRate: {
           min: freelancer.minRate,

@@ -96,9 +96,7 @@
     "category": "Data & Analytics",
     "tools": [
       { "name": "Excel", "icon": "/icons/tools/excel.png" },
-      { "name": "Google Sheets", "icon": "/icons/tools/google-sheets.png" },
       { "name": "Tableau", "icon": "/icons/tools/tableau.png" },
-      { "name": "Python", "icon": "/icons/tools/python.png" },
       { "name": "Jupyter Notebook", "icon": "/icons/tools/jupyter-notebook.png" }
     ]
   },
@@ -108,8 +106,7 @@
       { "name": "Miro", "icon": "/icons/tools/miro.png" },
       { "name": "Productboard", "icon": "/icons/tools/productboard.png" },
       { "name": "Hotjar", "icon": "/icons/tools/hotjar.png" },
-      { "name": "Maze", "icon": "/icons/tools/maze.png" },
-      { "name": "Figma", "icon": "/icons/tools/figma.png" }
+      { "name": "Maze", "icon": "/icons/tools/maze.png" }
     ]
   },
   {
@@ -117,8 +114,7 @@
     "tools": [
       { "name": "QuickBooks", "icon": "/icons/tools/quickbooks.png" },
       { "name": "Xero", "icon": "/icons/tools/xero.png" },
-      { "name": "FreshBooks", "icon": "/icons/tools/freshbooks.png" },
-      { "name": "Google Sheets", "icon": "/icons/tools/google-sheets.png" }
+      { "name": "FreshBooks", "icon": "/icons/tools/freshbooks.png" }
     ]
   },
   {
@@ -126,9 +122,7 @@
     "tools": [
       { "name": "Zoom", "icon": "/icons/tools/zoom.png" },
       { "name": "Hopin", "icon": "/icons/tools/hopin.png" },
-      { "name": "Eventbrite", "icon": "/icons/tools/eventbrite.png" },
-      { "name": "Airtable", "icon": "/icons/tools/airtable.png" },
-      { "name": "Notion", "icon": "/icons/tools/notion.png" }
+      { "name": "Eventbrite", "icon": "/icons/tools/eventbrite.png" }
     ]
   },
   {
@@ -136,7 +130,7 @@
     "tools": [
       { "name": "Zapier", "icon": "/icons/tools/zapier.png" },
       { "name": "IFTTT", "icon": "/icons/tools/ifttt.png" },
-      { "name": "Notion", "icon": "/icons/tools/notion.png" },
+
       { "name": "Trello", "icon": "/icons/tools/trello.png" }
     ]
   }

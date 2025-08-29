@@ -148,7 +148,9 @@ export type EventType =
   // Completion events
   | 'completion.project_activated' | 'completion.upfront_payment' | 'completion.task_approved'
   | 'completion.invoice_received' | 'completion.invoice_paid' | 'completion.commissioner_payment'
-  | 'completion.project_completed' | 'completion.final_payment' | 'completion.rating_prompt';
+  | 'completion.project_completed' | 'completion.final_payment' | 'completion.rating_prompt'
+  // Gig request specific completion notifications
+  | 'completion.gig-request-upfront' | 'completion.gig-request-upfront-commissioner' | 'completion.gig-request-project_activated' | 'milestone.gig-request-project_activated' | 'completion.gig-request-commissioner-accepted';
 
 export type EntityType =
   | 'task' | 'project' | 'gig' | 'message' | 'invoice' | 'product' | 'proposal' | 'user' | 'organization' | 'milestone';

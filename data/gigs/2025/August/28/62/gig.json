@@ -1,0 +1,40 @@
+{
+  "id": 62,
+  "title": "Modelling For Series A Logos",
+  "organizationId": 3,
+  "commissionerId": "34",
+  "category": "Design",
+  "subcategory": "UI/UX Design",
+  "tags": [
+    "Design"
+  ],
+  "hourlyRateMin": 12.5,
+  "hourlyRateMax": 14.58,
+  "description": "I specialize in building realistic, future-proof economic models that merge sustainability with profitability. For your Lagos smart gated community, ",
+  "deliveryTimeWeeks": 0.42857142857142855,
+  "estimatedHours": 24,
+  "status": "Unavailable",
+  "toolsRequired": [
+    "Figma"
+  ],
+  "executionMethod": "completion",
+  "invoicingMethod": "completion",
+  "milestones": [
+    {
+      "id": "7776b3fd-db27-471a-b9df-48a65cf0cd75",
+      "title": "Phase 1",
+      "description": "I’ll design a framework that not only covers housing and services but also integrates renewable energy, local commerce, and reinvestment cycles to keep the economy self-sustaining.",
+      "startDate": "2025-08-29T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z"
+    }
+  ],
+  "startType": "Immediately",
+  "endDate": "2025-08-31T04:00:00.000Z",
+  "lowerBudget": 300,
+  "upperBudget": 350,
+  "postedDate": "2025-08-28",
+  "notes": "Budget range: $300 - $350",
+  "isPublic": true,
+  "targetFreelancerId": null,
+  "isTargetedRequest": false
+}

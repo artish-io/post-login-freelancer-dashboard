@@ -18,9 +18,33 @@ interface GigRequestPayload {
     max: number;
     currency: string;
   };
+  // Enhanced fields for 1:1 parity with gig creation
+  category?: string;
+  subcategory?: string;
   hourlyRateMin?: number;
   hourlyRateMax?: number;
   deliveryTimeWeeks?: number;
+  estimatedHours?: number;
+  executionMethod?: 'completion' | 'milestone';
+  invoicingMethod?: 'completion' | 'milestone';
+  startType?: 'Immediately' | 'Custom';
+  customStartDate?: string;
+  endDate?: string;
+  milestones?: Array<{
+    id: string;
+    title: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+  }>;
+  organizationData?: {
+    name: string;
+    email: string;
+    logo: string;
+    address: string;
+    website?: string;
+    description: string;
+  };
 }
 
 export async function POST(req: Request) {
@@ -48,7 +72,7 @@ export async function POST(req: Request) {
     // Generate unique ID based on timestamp
     const id = Date.now();
     
-    // Create gig request object
+    // Create gig request object with full parity to gig creation
     const gigRequest = {
       id,
       freelancerId: payload.freelancerId,
@@ -60,9 +84,23 @@ export async function POST(req: Request) {
       tools: payload.tools || [],
       notes: payload.notes || '',
       budget: payload.budget || null,
-      hourlyRateMin: payload.hourlyRateMin || null,
-      hourlyRateMax: payload.hourlyRateMax || null,
-      deliveryTimeWeeks: payload.deliveryTimeWeeks || null,
+
+      // Enhanced fields for 1:1 parity with gig creation
+      category: payload.category || 'General',
+      subcategory: payload.subcategory || '',
+      hourlyRateMin: payload.hourlyRateMin || 0,
+      hourlyRateMax: payload.hourlyRateMax || 0,
+      deliveryTimeWeeks: payload.deliveryTimeWeeks || 4,
+      estimatedHours: payload.estimatedHours || 40,
+      executionMethod: payload.executionMethod || 'completion',
+      invoicingMethod: payload.invoicingMethod || payload.executionMethod || 'completion',
+      startType: payload.startType || 'Immediately',
+      customStartDate: payload.customStartDate || null,
+      endDate: payload.endDate || null,
+      milestones: payload.milestones || [],
+      organizationData: payload.organizationData || null,
+
+      // Status and metadata
       status: 'Available',
       createdAt: now.toISOString(),
       responses: []

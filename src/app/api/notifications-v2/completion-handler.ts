@@ -108,7 +108,14 @@ async function integrateWithExistingNotificationSystem(event: CompletionEvent): 
       'completion.commissioner_payment': 45, // Custom completion payment type (not in old system)
       'completion.project_completed': 155, // COMPLETION_PROJECT_COMPLETED
       'completion.final_payment': 156, // COMPLETION_FINAL_PAYMENT
-      'completion.rating_prompt': 157 // COMPLETION_RATING_PROMPT
+      'completion.rating_prompt': 157, // COMPLETION_RATING_PROMPT
+
+      // Gig request specific completion notifications
+      'completion.gig-request-upfront': 158, // GIG_REQUEST_UPFRONT_PAYMENT
+      'completion.gig-request-upfront-commissioner': 161, // GIG_REQUEST_UPFRONT_PAYMENT_COMMISSIONER
+      'completion.gig-request-project_activated': 159, // GIG_REQUEST_PROJECT_ACTIVATED
+      'milestone.gig-request-project_activated': 160, // MILESTONE_GIG_REQUEST_PROJECT_ACTIVATED
+      'completion.gig-request-commissioner-accepted': 162 // GIG_REQUEST_COMMISSIONER_ACCEPTED
     };
 
     const notificationEvent = {
@@ -309,6 +316,56 @@ function generateNotificationMessage(event: CompletionEvent): string {
         // Freelancer message: "Rate your experience with [commissioner]"
         return `Rate your experience with ${commissionerName}. All tasks for ${projectTitle} have been approved. Click here to rate your collaboration.`;
       }
+
+    // Gig request specific notifications
+    case 'completion.gig-request-upfront':
+      // Only for freelancers - upfront payment from gig request acceptance
+      return `${orgName} has paid $${upfrontAmount} upfront for your newly activated ${projectTitle} project. This project has a budget of $${event.context.remainingBudget || 0} left. Click here to view invoice details`;
+
+    case 'completion.gig-request-upfront-commissioner':
+      // Only for commissioners - upfront payment confirmation from gig request acceptance
+      return `You just paid $${upfrontAmount} upfront for your newly activated ${projectTitle} project. This project has a budget of $${event.context.remainingBudget || 0} left. Click here to view invoice details`;
+
+    case 'completion.gig-request-project_activated':
+      // Only for freelancers - completion-based project activation from gig request
+      const totalTasksGigCompletion = event.context.totalTasks || 1;
+      let dueDateTextGigCompletion = 'the deadline';
+      if (context?.dueDate) {
+        try {
+          const date = new Date(context.dueDate);
+          dueDateTextGigCompletion = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        } catch (e) {
+          dueDateTextGigCompletion = context.dueDate;
+        }
+      }
+      return `This project is now active, managed by ${commissionerName} and includes ${totalTasksGigCompletion} milestone${totalTasksGigCompletion !== 1 ? 's' : ''} due by ${dueDateTextGigCompletion}`;
+
+    case 'milestone.gig-request-project_activated':
+      // Only for freelancers - milestone-based project activation from gig request
+      const totalTasksGigMilestone = event.context.totalTasks || 1;
+      let dueDateTextGigMilestone = 'the deadline';
+      if (context?.dueDate) {
+        try {
+          const date = new Date(context.dueDate);
+          dueDateTextGigMilestone = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        } catch (e) {
+          dueDateTextGigMilestone = context.dueDate;
+        }
+      }
+      return `This project is now active, managed by ${commissionerName} and includes ${totalTasksGigMilestone} milestone${totalTasksGigMilestone !== 1 ? 's' : ''} due by ${dueDateTextGigMilestone}`;
+
+    case 'completion.gig-request-commissioner-accepted':
+      // Only for commissioners - freelancer accepted their gig request
+      const totalTasksCommissioner = event.context.totalTasks || 1;
+      return `Your ${projectTitle} gig request is now an active project with ${totalTasksCommissioner} milestone${totalTasksCommissioner !== 1 ? 's' : ''}`;
 
     default:
       return `Completion event: ${event.type}`;

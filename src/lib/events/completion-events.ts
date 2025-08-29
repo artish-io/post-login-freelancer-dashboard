@@ -8,7 +8,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-// 🔒 COMPLETION-SPECIFIC: Event type definitions (9 types total)
+// 🔒 COMPLETION-SPECIFIC: Event type definitions (12 types total)
 export type CompletionEventType =
   | 'completion.project_activated'      // Project acceptance
   | 'completion.upfront_payment'        // 12% upfront payment
@@ -18,7 +18,12 @@ export type CompletionEventType =
   | 'completion.commissioner_payment'   // Commissioner payment confirmation
   | 'completion.project_completed'      // All tasks completed
   | 'completion.final_payment'          // 88% final payment
-  | 'completion.rating_prompt';         // Rating request
+  | 'completion.rating_prompt'          // Rating request
+  | 'completion.gig-request-upfront'    // Gig request upfront payment
+  | 'completion.gig-request-upfront-commissioner'  // Gig request upfront payment (commissioner)
+  | 'completion.gig-request-project_activated'  // Gig request completion project activation
+  | 'milestone.gig-request-project_activated'  // Gig request milestone project activation
+  | 'completion.gig-request-commissioner-accepted';  // Gig request acceptance (commissioner notification)
 
 export interface CompletionEvent {
   type: CompletionEventType;
@@ -38,6 +43,9 @@ export interface CompletionEvent {
     freelancerName?: string;
     orgName?: string;
     finalPercent?: number;
+    totalTasks?: number;
+    dueDate?: string;
+    invoicingMethod?: string;
   };
   timestamp?: string;
 }

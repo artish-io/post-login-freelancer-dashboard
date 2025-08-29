@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_62_1_1756410279866",
+  "timestamp": "2025-08-28T19:44:39.866Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "62",
+  "metadata": {
+    "gigTitle": "Modelling For Series A Logos",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 62,
+    "applicationId": 1755193217293
+  }
+}

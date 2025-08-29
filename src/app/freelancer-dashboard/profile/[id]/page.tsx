@@ -9,7 +9,9 @@ import ProfileInfo from '../../../../../components/user-profiles/profile-info';
 import WorkSamples from '../../../../../components/user-profiles/work-samples';
 import AddWorkSampleModal from '../../../../../components/user-profiles/add-work-sample-modal';
 import CommissionerProfileView from '../../../../../components/user-profiles/recruiter/commissioner-profile-view';
-import ResumeUpload from '../../../../../components/freelancer-dashboard/profile/resume-upload';
+import { updateOutlinks, updateRateRange } from '../../../../../lib/api/profile';
+import type { Outlink } from '../../../../../components/profile/PortfolioIcons';
+import type { RateRange } from '../../../../../components/profile/RateRangeEditor';
 
 interface WorkSample {
   id: string;
@@ -67,6 +69,7 @@ export default function ProfilePage() {
   const [availableTools, setAvailableTools] = useState<string[]>([]);
   const [accessDenied, setAccessDenied] = useState(false);
   const [resumeInfo, setResumeInfo] = useState<any>(null);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const userId = params?.id as string;
   const currentUserId = session?.user?.id;
@@ -100,6 +103,34 @@ export default function ProfilePage() {
 
         const data = await response.json();
         setProfile(data);
+
+        // Set resume info from profile data
+        if (data.resume) {
+          setResumeInfo(data.resume);
+        }
+
+        // Auto-migrate social links to outlinks if needed (only for own profile)
+        if (isOwnProfile && data.socialLinks && data.socialLinks.length > 0 && (!data.outlinks || data.outlinks.length === 0)) {
+          try {
+            const migrateResponse = await fetch('/api/profile/migrate-social-links', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (migrateResponse.ok) {
+              const migrateData = await migrateResponse.json();
+              if (migrateData.success && migrateData.outlinks) {
+                // Update profile with migrated outlinks
+                setProfile(prev => prev ? { ...prev, outlinks: migrateData.outlinks } : null);
+                console.log('Successfully migrated social links to outlinks');
+              }
+            }
+          } catch (error) {
+            console.log('Migration not needed or failed:', error);
+          }
+        }
       } catch (err) {
         console.error('Error fetching profile:', err);
         setError(err instanceof Error ? err.message : 'Failed to load profile');
@@ -241,6 +272,80 @@ export default function ProfilePage() {
     }
   };
 
+  const handleUpdateBio = async (newBio: string) => {
+    try {
+      const response = await fetch(`/api/freelancer/profile/${userId}/bio`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ bio: newBio }),
+      });
+
+      if (response.ok) {
+        // Update local state
+        setProfile(prev => prev ? { ...prev, about: newBio } : null);
+      }
+    } catch (error) {
+      console.error('Error updating bio:', error);
+    }
+  };
+
+  const handleUpdateProfile = async (field: string, value: string) => {
+    try {
+      const response = await fetch(`/api/freelancer/profile/${userId}/${field}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ [field]: value }),
+      });
+
+      if (response.ok) {
+        // Update local state
+        setProfile(prev => prev ? { ...prev, [field]: value } : null);
+
+        // Update profileHeaderData if it affects header fields
+        if (field === 'location' || field === 'rate' || field === 'avatar') {
+          // Trigger a re-render by refetching the profile
+          window.location.reload();
+        }
+      }
+    } catch (error) {
+      console.error(`Error updating ${field}:`, error);
+    }
+  };
+
+  const handleUpdateOutlinks = async (outlinks: Outlink[]) => {
+    try {
+      const response = await updateOutlinks(outlinks);
+      if (response.success) {
+        // Update local state
+        setProfile(prev => prev ? { ...prev, outlinks: response.outlinks } : null);
+      }
+    } catch (error) {
+      console.error('Error updating outlinks:', error);
+      alert('Failed to update portfolio links. Please try again.');
+    }
+  };
+
+  const handleUpdateRateRange = async (rateRange: RateRange) => {
+    try {
+      const response = await updateRateRange(rateRange.rateMin, rateRange.rateMax, rateRange.rateUnit);
+      if (response.success) {
+        // Update local state
+        setProfile(prev => prev ? {
+          ...prev,
+          rateRange: response.rateRange,
+          rate: `$${rateRange.rateMin}–${rateRange.rateMax}/${rateRange.rateUnit === 'hour' ? 'hr' : rateRange.rateUnit}`
+        } : null);
+      }
+    } catch (error) {
+      console.error('Error updating rate range:', error);
+      alert('Failed to update rate range. Please try again.');
+    }
+  };
+
   // Transform profile data for components
   const profileHeaderData = profile ? {
     id: profile.id.toString(),
@@ -249,6 +354,8 @@ export default function ProfilePage() {
     avatar: profile.avatar,
     location: profile.location || '',
     rate: profile.rate,
+    rateRange: (profile as any).rateRange,
+    outlinks: (profile as any).outlinks || [],
     rating: profile.rating,
     socialLinks: profile.socialLinks || []
   } : null;
@@ -313,6 +420,13 @@ export default function ProfilePage() {
               isOwnProfile={isOwnProfile}
               viewerUserType={currentUserType}
               profileType={profile.type}
+              currentResume={resumeInfo}
+              onResumeUpdate={setResumeInfo}
+              isEditMode={isEditMode}
+              onToggleEditMode={() => setIsEditMode(!isEditMode)}
+              onUpdateProfile={handleUpdateProfile}
+              onUpdateOutlinks={handleUpdateOutlinks}
+              onUpdateRateRange={handleUpdateRateRange}
             />
           )}
           
@@ -327,18 +441,13 @@ export default function ProfilePage() {
             availableTools={availableTools}
             onAddSkillTool={handleAddSkillTool}
             onRemoveSkillTool={handleRemoveSkillTool}
+            isEditMode={isEditMode}
+            onUpdateBio={handleUpdateBio}
           />
         </div>
 
-        {/* Right Column: Work Samples and Resume */}
+        {/* Right Column: Work Samples */}
         <div className="space-y-6">
-          {/* Resume Section */}
-          <ResumeUpload
-            currentResume={resumeInfo}
-            onResumeUpdate={setResumeInfo}
-            isOwnProfile={isOwnProfile}
-          />
-
           {/* Work Samples Section */}
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
             <WorkSamples

@@ -71,13 +71,16 @@ export default function CreateInvoicePage() {
     }
   }, [isResumeMode, resumeInvoiceNumber]);
 
-  // Only generate invoice number if not resuming
+  // Generate invoice number on mount and when project selection changes
   useEffect(() => {
     const fetchInvoiceNumber = async () => {
       if (isResumeMode && resumeInvoiceNumber) return;
 
       try {
-        const res = await fetch('/api/dashboard/invoice-meta/generate-number');
+        // Invoice numbers should ALWAYS use freelancer initials (TB-001, TB-002)
+        // UNQ format is only for project IDs, not invoice numbers
+        const url = `/api/dashboard/invoice-meta/generate-number`;
+        const res = await fetch(url);
         const data = await res.json();
         setInvoiceNumber(data.invoiceNumber);
         console.log('🧾 Generated Invoice Number:', data.invoiceNumber);
@@ -87,7 +90,7 @@ export default function CreateInvoicePage() {
     };
 
     fetchInvoiceNumber();
-  }, [isResumeMode, resumeInvoiceNumber]);
+  }, [isResumeMode, resumeInvoiceNumber, selectedProject?.projectId, selectedProject?.title]);
 
   // Load saved form data on mount
   useEffect(() => {

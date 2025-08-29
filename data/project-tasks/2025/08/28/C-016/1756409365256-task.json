@@ -1,0 +1,24 @@
+{
+  "taskId": 1756409365256,
+  "projectId": "C-016",
+  "projectTitle": "Completion Web 3 Graphic Design Asssets ",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Graphic Design",
+    "Web Development",
+    "Smart Contracts"
+  ],
+  "title": "Phase 3 – Launch Package & Iteration",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 3,
+  "link": "",
+  "dueDate": "2025-08-31T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Assemble a ready-to-use asset library with export formats optimized for multiple platforms, and refine based on early community feedback. Provide ongoing support for launch campaigns and potential partnerships.",
+  "createdDate": "2025-08-28T19:13:02.564Z",
+  "lastModified": "2025-08-28T19:13:02.566Z"
+}

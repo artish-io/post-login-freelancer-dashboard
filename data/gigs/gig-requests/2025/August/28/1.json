@@ -24,5 +24,187 @@
     "status": "Available",
     "createdAt": "2025-08-28T16:31:26.087Z",
     "responses": []
+  },
+  {
+    "id": 1756408892338,
+    "freelancerId": 1,
+    "commissionerId": 34,
+    "gigId": null,
+    "organizationId": 3,
+    "title": "Dance Tutorial, Who is Leading",
+    "skills": [
+      "Design"
+    ],
+    "tools": [
+      "Figma"
+    ],
+    "notes": "I specialize in building realistic, future-proof economic models that merge sustainability with profitability. For your Lagos smart gated community, I’ll design a framework that not only covers housing and services but also integrates renewable energy, local commerce, and reinvestment cycles to keep the economy self-sustaining.",
+    "budget": {
+      "min": 300,
+      "max": 400,
+      "currency": "USD"
+    },
+    "category": "Design",
+    "subcategory": "UI/UX Design",
+    "hourlyRateMin": 0,
+    "hourlyRateMax": 0,
+    "deliveryTimeWeeks": 0.2857142857142857,
+    "estimatedHours": 16,
+    "executionMethod": "milestone",
+    "invoicingMethod": "milestone",
+    "startType": "Immediately",
+    "customStartDate": null,
+    "endDate": "2025-08-31T04:00:00.000Z",
+    "milestones": [
+      {
+        "id": "7aa98d07-f65a-48fa-b816-37db425c812c",
+        "title": "Lagos Love Stories",
+        "description": "For your Lagos smart gated community, I’ll design a framework that not only covers housing and services but also integrates renewable energy, local commerce, and reinvestment cycles to keep the economy self-sustaining.",
+        "startDate": "2025-08-29T04:00:00.000Z",
+        "endDate": "2025-08-31T04:00:00.000Z"
+      }
+    ],
+    "organizationData": null,
+    "status": "Available",
+    "createdAt": "2025-08-28T19:21:32.331Z",
+    "responses": []
+  },
+  {
+    "id": 1756410620277,
+    "freelancerId": 1,
+    "commissionerId": 35,
+    "gigId": null,
+    "organizationId": 4,
+    "title": "Pricing & ticket page design for the NATIVELAND music festival",
+    "skills": [
+      "Design"
+    ],
+    "tools": [
+      "Figma"
+    ],
+    "notes": "We’re producing the next NATIVELAND music festival and need a freelancer to design a sleek, conversion-focused pricing and ticketing page. The page should capture NATIVELAND’s bold creative identity while making it seamless for fans to explore ticket tiers, add-ons, and secure their purchase. The ideal partner will deliver a design that is visually iconic, mobile-first, and optimized for high sales.",
+    "budget": {
+      "min": 300,
+      "max": 350,
+      "currency": "USD"
+    },
+    "category": "Design",
+    "subcategory": "UI/UX Design",
+    "hourlyRateMin": 0,
+    "hourlyRateMax": 0,
+    "deliveryTimeWeeks": 0.2857142857142857,
+    "estimatedHours": 16,
+    "executionMethod": "completion",
+    "invoicingMethod": "completion",
+    "startType": "Immediately",
+    "customStartDate": null,
+    "endDate": "2025-08-31T04:00:00.000Z",
+    "milestones": [
+      {
+        "id": "ec160951-8835-4cca-9fe0-e3ac7abf0faf",
+        "title": "Phase One: Research & Wireframing",
+        "description": "Study NATIVELAND’s brand style, audience expectations, and competitor ticketing flows. Deliver wireframes and user journeys that prioritize clarity and excitement.",
+        "startDate": "2025-08-29T04:00:00.000Z",
+        "endDate": "2025-08-31T04:00:00.000Z"
+      }
+    ],
+    "organizationData": null,
+    "status": "accepted",
+    "createdAt": "2025-08-28T19:50:20.275Z",
+    "responses": [],
+    "acceptedAt": "2025-08-28T20:04:57.584Z",
+    "projectId": null
+  },
+  {
+    "id": 1756416140277,
+    "freelancerId": 1,
+    "commissionerId": 35,
+    "gigId": null,
+    "organizationId": 4,
+    "title": "Lagos design for the NATIVELAND music festival",
+    "skills": [
+      "Design"
+    ],
+    "tools": [
+      "Figma"
+    ],
+    "notes": "The page should capture NATIVELAND’s bold creative identity while making it seamless for fans to explore ticket tiers, add-ons, and secure their purchase. ",
+    "budget": {
+      "min": 300,
+      "max": 350,
+      "currency": "USD"
+    },
+    "category": "Design",
+    "subcategory": "UI/UX Design",
+    "hourlyRateMin": 0,
+    "hourlyRateMax": 0,
+    "deliveryTimeWeeks": 0.2857142857142857,
+    "estimatedHours": 16,
+    "executionMethod": "completion",
+    "invoicingMethod": "completion",
+    "startType": "Immediately",
+    "customStartDate": null,
+    "endDate": "2025-08-31T04:00:00.000Z",
+    "milestones": [
+      {
+        "id": "f96a712c-c84c-4350-9a45-e5ad7d3dc70b",
+        "title": "Phase One: That is visually iconic",
+        "description": "The ideal partner will deliver a design that is visually iconic, mobile-first, and optimized for high sales.",
+        "startDate": "2025-08-29T04:00:00.000Z",
+        "endDate": "2025-08-31T04:00:00.000Z"
+      }
+    ],
+    "organizationData": null,
+    "status": "accepted",
+    "createdAt": "2025-08-28T21:22:20.273Z",
+    "responses": [],
+    "acceptedAt": "2025-08-28T21:24:53.466Z",
+    "projectId": null
+  },
+  {
+    "id": 1756431469866,
+    "freelancerId": 1,
+    "commissionerId": 32,
+    "gigId": null,
+    "organizationId": 1,
+    "title": "Event Marketing & Page Design for ROBLOX World Builders Championship – West Africa Regional Finals (Lagos)",
+    "skills": [
+      "Design"
+    ],
+    "tools": [
+      "Figma"
+    ],
+    "notes": "We’re hosting the ROBLOX World Builders Championship – West Africa Regional Finals in Lagos, and we need a freelancer to design a high-impact marketing and event page. The page should capture the energy of competitive gaming while making it simple for fans, teams, and sponsors to get information, register, and engage. The ideal partner will deliver a design that is bold, interactive, and aligned with both ROBLOX’s creative culture and esports best practices.",
+    "budget": {
+      "min": 400,
+      "max": 550,
+      "currency": "USD"
+    },
+    "category": "Design",
+    "subcategory": "UI/UX Design",
+    "hourlyRateMin": 0,
+    "hourlyRateMax": 0,
+    "deliveryTimeWeeks": 0.2857142857142857,
+    "estimatedHours": 16,
+    "executionMethod": "completion",
+    "invoicingMethod": "completion",
+    "startType": "Immediately",
+    "customStartDate": null,
+    "endDate": "2025-08-31T04:00:00.000Z",
+    "milestones": [
+      {
+        "id": "47d3c701-c46e-4328-aa88-dab33934d0af",
+        "title": "Phase 1 – Research & Concept Wireframing",
+        "description": "Analyze top esports event pages and ROBLOX brand guidelines, then deliver wireframes for registration, ticketing, and event info flows tailored for a West African audience.",
+        "startDate": "2025-08-29T04:00:00.000Z",
+        "endDate": "2025-08-31T04:00:00.000Z"
+      }
+    ],
+    "organizationData": null,
+    "status": "accepted",
+    "createdAt": "2025-08-29T01:37:49.835Z",
+    "responses": [],
+    "acceptedAt": "2025-08-29T01:38:42.002Z",
+    "projectId": null
   }
 ]

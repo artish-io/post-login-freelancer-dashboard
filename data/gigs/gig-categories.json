@@ -4,36 +4,58 @@
     "label": "Design",
     "subcategories": [
       {
+        "id": "ui-ux-design",
         "name": "UI/UX Design",
-        "description": "User interface and experience design for digital products and applications."
+        "description": "User interface and experience design for digital products and applications.",
+        "tags": ["figma", "sketch", "adobe-xd", "prototyping", "wireframing"]
       },
       {
+        "id": "graphic-design",
         "name": "Graphic Design",
-        "description": "Visual communication through typography, imagery, and layout design."
+        "description": "Visual communication through typography, imagery, and layout design.",
+        "tags": ["photoshop", "illustrator", "indesign", "typography", "layout"]
       },
       {
+        "id": "brand-design",
         "name": "Brand Design",
-        "description": "Creating cohesive visual identity systems including logos and brand guidelines."
+        "description": "Creating cohesive visual identity systems including logos and brand guidelines.",
+        "tags": ["logo-design", "brand-identity", "style-guides", "visual-identity"]
       },
       {
+        "id": "product-design",
         "name": "Product Design",
-        "description": "End-to-end product design from concept to user-centered solutions."
+        "description": "End-to-end product design from concept to user-centered solutions.",
+        "tags": ["user-research", "design-thinking", "prototyping", "user-testing"]
       },
       {
+        "id": "3d-design",
         "name": "3D Design",
-        "description": "Three-dimensional visual representations using specialized software."
+        "description": "Three-dimensional visual representations using specialized software.",
+        "tags": ["blender", "maya", "3ds-max", "cinema-4d", "modeling", "rendering"]
       },
       {
+        "id": "advertising-design",
         "name": "Advertising Design",
-        "description": "Creative design for marketing campaigns and promotional materials."
+        "description": "Creative design for marketing campaigns and promotional materials.",
+        "tags": ["marketing", "campaigns", "print-design", "digital-ads"]
       },
       {
+        "id": "mobile-design",
         "name": "Mobile Design",
-        "description": "User interface design specifically optimized for mobile applications."
+        "description": "User interface design specifically optimized for mobile applications.",
+        "tags": ["ios-design", "android-design", "mobile-ui", "app-design"]
       },
       {
+        "id": "presentation-design",
         "name": "Presentation Design",
-        "description": "Professional slide deck design for business and educational presentations."
+        "description": "Professional slide deck design for business and educational presentations.",
+        "tags": ["powerpoint", "keynote", "google-slides", "business-presentations"]
+      },
+      {
+        "id": "dribbble-portfolio",
+        "name": "Dribbble Portfolio",
+        "description": "Showcase design work and creative projects on Dribbble platform.",
+        "tags": ["dribbble", "portfolio", "design-showcase", "creative-work"]
       }
     ]
   },
@@ -292,6 +314,42 @@
       {
         "name": "Consulting Services",
         "description": "Expert advice and strategic consultation across various industries."
+      }
+    ]
+  },
+  {
+    "id": "portfolio-services",
+    "label": "Portfolio Services",
+    "subcategories": [
+      {
+        "id": "notion-portfolio",
+        "name": "Notion Portfolio",
+        "description": "Create professional portfolios and documentation using Notion platform.",
+        "tags": ["notion", "portfolio", "documentation", "personal-branding"]
+      },
+      {
+        "id": "github-portfolio",
+        "name": "GitHub Portfolio",
+        "description": "Showcase coding projects and technical work on GitHub platform.",
+        "tags": ["github", "coding", "open-source", "technical-portfolio"]
+      },
+      {
+        "id": "behance-curation",
+        "name": "Behance Curation",
+        "description": "Curate and optimize creative portfolios on Behance platform.",
+        "tags": ["behance", "creative-portfolio", "design-showcase", "curation"]
+      },
+      {
+        "id": "linkedin-optimization",
+        "name": "LinkedIn Optimization",
+        "description": "Professional profile optimization and personal branding on LinkedIn.",
+        "tags": ["linkedin", "professional-branding", "networking", "career"]
+      },
+      {
+        "id": "personal-website",
+        "name": "Personal Website",
+        "description": "Custom personal websites and online portfolios.",
+        "tags": ["web-development", "personal-branding", "portfolio-website", "custom-design"]
       }
     ]
   }

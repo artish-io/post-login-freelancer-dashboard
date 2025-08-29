@@ -321,6 +321,7 @@ export default function GigRequestsPage() {
                   toolIconUrl: "/icons/figma.svg",
                   briefUrl: "https://example.com/brief",
                   notes: selectedGigRequest.notes,
+                  milestones: (selectedGigRequest as any).milestones || [],
                   postedByName: getCommissioner(selectedGigRequest.commissionerId)?.name || 'Unknown Commissioner',
                   postedByAvatar: getCommissioner(selectedGigRequest.commissionerId)?.avatar || '/default-avatar.png',
                   status: selectedGigRequest.status,
@@ -328,7 +329,8 @@ export default function GigRequestsPage() {
                   hoursOfWork: "40 hours",
                   maxRate: selectedGigRequest.budget?.max.toString() || '5000',
                   minRate: selectedGigRequest.budget?.min.toString() || '3000',
-                  projectId: selectedGigRequest.projectId
+                  projectId: selectedGigRequest.projectId,
+                  invoicingMethod: (selectedGigRequest as any).invoicingMethod || 'completion' // Default to completion-based
                 }}
               />
             </motion.div>

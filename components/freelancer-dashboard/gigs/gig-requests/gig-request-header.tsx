@@ -12,6 +12,7 @@ type GigRequestHeaderProps = {
   createdAt: string;
   status?: 'Available' | 'Pending' | 'Accepted' | 'Rejected';
   projectId?: number;
+  invoicingMethod?: 'completion' | 'milestone';
 };
 
 const GigRequestHeader: FC<GigRequestHeaderProps> = ({
@@ -22,6 +23,7 @@ const GigRequestHeader: FC<GigRequestHeaderProps> = ({
   createdAt,
   status,
   projectId,
+  invoicingMethod,
 }) => {
   const router = useRouter();
 
@@ -34,7 +36,7 @@ const GigRequestHeader: FC<GigRequestHeaderProps> = ({
     <div className="flex flex-col gap-3 relative border border-transparent rounded-xl px-4 pt-4 pb-2 bg-white">
       <div className="absolute left-0 top-4 h-[calc(100%-2rem)] w-[4px] bg-pink-500 rounded-r-full" />
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
         {skills.map((skill, index) => (
           <span
             key={index}
@@ -47,6 +49,11 @@ const GigRequestHeader: FC<GigRequestHeaderProps> = ({
             {skill}
           </span>
         ))}
+        {invoicingMethod && (
+          <span className="bg-white px-3 py-1 rounded-full text-xs font-medium text-gray-700 shadow-sm border border-gray-200">
+            {invoicingMethod === 'milestone' ? 'Milestone-Based Invoicing' : 'Completion-Based Invoicing'}
+          </span>
+        )}
       </div>
 
       {/* Title - clickable if accepted and has valid projectId */}

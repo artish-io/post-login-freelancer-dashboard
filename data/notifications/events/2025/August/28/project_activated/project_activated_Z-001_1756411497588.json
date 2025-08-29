@@ -1,0 +1,19 @@
+{
+  "id": "project_activated_Z-001_1756411497588",
+  "timestamp": "2025-08-28T20:04:57.588Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 35,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "Z-001",
+  "metadata": {
+    "projectId": "Z-001",
+    "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival",
+    "invoicingMethod": "completion"
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 4
+  }
+}

@@ -58,6 +58,13 @@ export async function GET(
     // Combine existing and targeted requests
     const allRequests = [...existingRequests, ...targetedRequests];
 
+    // Sort all requests by createdAt (newest first)
+    allRequests.sort((a, b) => {
+      const dateA = new Date(a.createdAt || a.postedDate || 0).getTime();
+      const dateB = new Date(b.createdAt || b.postedDate || 0).getTime();
+      return dateB - dateA;
+    });
+
     const grouped = {
       available: [] as any[],
       pending: [] as any[],

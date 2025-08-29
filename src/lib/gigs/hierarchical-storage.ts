@@ -111,18 +111,24 @@ export async function saveGig(gig: Gig): Promise<void> {
 /**
  * Read a gig from hierarchical storage
  */
-export async function readGig(gigId: number): Promise<Gig | null> {
+export async function readGig(gigId: number | null): Promise<Gig | null> {
   try {
+    // Handle null gigId case
+    if (gigId === null || gigId === undefined) {
+      console.warn('readGig called with null/undefined gigId');
+      return null;
+    }
+
     // First, get the posted date from the index
     const indexPath = getGigMetadataPath();
-    
+
     if (!await fs.access(indexPath).then(() => true).catch(() => false)) {
       return null;
     }
-    
+
     const indexData = await fs.readFile(indexPath, 'utf-8');
     const index = JSON.parse(indexData);
-    
+
     const postedDate = index[gigId.toString()];
     if (!postedDate) {
       return null;

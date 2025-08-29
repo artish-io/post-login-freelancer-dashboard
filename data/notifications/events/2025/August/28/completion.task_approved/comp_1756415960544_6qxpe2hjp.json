@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756415960544_6qxpe2hjp",
+  "type": "completion.task_approved",
+  "notificationType": 152,
+  "actorId": 35,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "Z-001",
+  "projectId": "Z-001",
+  "message": "Tilly Burzinsky has approved your submission for \"Phase One: Research & Wireframing\" in Pricing & ticket page design for the NATIVELAND music festival. Task approved and milestone completed. Click here to see its project tracker.",
+  "context": {
+    "projectId": "Z-001",
+    "taskId": "1756412133828",
+    "taskTitle": "Phase One: Research & Wireframing",
+    "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Tobi Philly"
+  },
+  "metadata": {
+    "projectId": "Z-001",
+    "taskId": "1756412133828",
+    "taskTitle": "Phase One: Research & Wireframing",
+    "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Tobi Philly"
+  },
+  "timestamp": "2025-08-28T21:19:20.540Z",
+  "subsystem": "completion_invoicing"
+}

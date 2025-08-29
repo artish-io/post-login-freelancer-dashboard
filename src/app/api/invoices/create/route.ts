@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { saveInvoice, getAllInvoices, updateInvoice } from '../../../../lib/invoice-storage';
 import { readProject } from '../../../../lib/projects-utils';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 const ALLOWED_STATUSES = ['draft', 'sent', 'paid'];
 const ALLOWED_EXECUTION_MODES = ['milestone', 'completion'];
@@ -74,29 +75,73 @@ export async function POST(request: Request) {
       }
     }
 
-    const newInvoiceId = Math.floor(100000 + Math.random() * 900000);
+    // Generate proper invoice number using the modern system
+    let invoiceNumber: string;
+    try {
+      // Get freelancer name for invoice number generation
+      const freelancer = await UnifiedStorageService.getUserById(freelancerId);
+      const freelancerName = freelancer?.name || 'Generic User';
+
+      // Generate invoice number using freelancer initials (always TB-001, TB-002, etc.)
+      // Invoice numbers always use freelancer initials, regardless of project type
+      const prefix = getInitials(freelancerName);
+      const existingInvoices = await getAllInvoices();
+      const existingNumbers = new Set(existingInvoices.map((inv: any) => inv.invoiceNumber));
+
+      let maxCounter = 0;
+      const pattern = new RegExp(`^${prefix}-(\\d+)$`);
+
+      for (const existingNumber of existingNumbers) {
+        const match = existingNumber.match(pattern);
+        if (match) {
+          const counter = parseInt(match[1], 10);
+          if (counter > maxCounter) {
+            maxCounter = counter;
+          }
+        }
+      }
+
+      const nextCounter = maxCounter + 1;
+      const paddedCounter = nextCounter.toString().padStart(3, '0');
+      invoiceNumber = `${prefix}-${paddedCounter}`;
+    } catch (error) {
+      console.error('Failed to generate modern invoice number, using fallback:', error);
+      const newInvoiceId = Math.floor(100000 + Math.random() * 900000);
+      invoiceNumber = `INV-${newInvoiceId}`;
+    }
 
     const newInvoice = {
-      id: newInvoiceId,
-      invoiceNumber: `INV-${newInvoiceId}`,
+      invoiceNumber,
       freelancerId,
       projectId,
       commissionerId: client,
       projectTitle,
       issueDate,
       dueDate,
-      executionMode, // immutable after creation
-      milestones,
       totalAmount,
       status: status || 'draft',
+      invoiceType: 'manual' as const, // Mark as manually created
+      milestones,
+      isManualInvoice: true, // Flag for manual invoices
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
 
+    // Helper function for initials (same as in generate-number route)
+    function getInitials(name: string) {
+      const parts = name.trim().split(' ');
+      const initials = parts.slice(0, 2).map(p => p[0]?.toUpperCase()).join('');
+      return initials || 'XX';
+    }
+
     await saveInvoice(newInvoice);
 
     return NextResponse.json(
-      { message: 'Invoice created successfully', invoiceId: newInvoiceId },
+      {
+        message: 'Invoice created successfully',
+        invoiceNumber: newInvoice.invoiceNumber,
+        invoiceId: newInvoice.invoiceNumber // For backward compatibility
+      },
       { status: 201 }
     );
   } catch (error) {

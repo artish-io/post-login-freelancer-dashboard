@@ -1,0 +1,22 @@
+{
+  "id": "task_submitted_1756412133828_1756415939190",
+  "timestamp": "2025-08-28T21:18:59.190Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 1,
+  "entityId": 1756412133828,
+  "metadata": {
+    "taskId": 1756412133828,
+    "taskTitle": "Phase One: Research & Wireframing",
+    "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival",
+    "action": "submit",
+    "invoiceGenerated": false,
+    "message": "\"Phase One: Research & Wireframing\" is awaiting your review for Pricing & ticket page design for the NATIVELAND music festival"
+  },
+  "context": {
+    "projectId": "Z-001",
+    "taskId": 1756412133828
+  }
+}

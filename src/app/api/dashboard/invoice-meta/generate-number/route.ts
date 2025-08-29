@@ -5,13 +5,14 @@ import { readFile, writeFile } from 'fs/promises';
 import { v4 as uuidv4 } from 'uuid';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { getAllInvoices } from '@/lib/invoice-storage';
+import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 
 // Rate limiting for invoice number generation
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const RATE_LIMIT_MAX_REQUESTS = 10; // Max 10 invoice numbers per minute per user
 
-const INVOICES_PATH = path.join(process.cwd(), 'data', 'invoices.json');
 const AUDIT_LOG_PATH = path.join(process.cwd(), 'data', 'logs', 'invoice-audit.json');
 
 /**
@@ -24,22 +25,35 @@ function getInitials(name: string) {
 }
 
 /**
- * Generate a unique invoice number with user-specific prefix.
+ * Generate a unique invoice number with user-specific prefix using modern hierarchical storage.
+ * Format: TB-001, TB-002, etc. for freelancer "Tobi Philly"
+ * Invoice numbers ALWAYS use freelancer initials, never UNQ format.
  */
 async function generateUniqueInvoiceNumber(freelancerName: string): Promise<string> {
-  let invoiceNumber = '';
-  let isUnique = false;
   const prefix = getInitials(freelancerName);
 
-  const existingData = await readFile(INVOICES_PATH, 'utf-8');
-  const invoices = JSON.parse(existingData);
-  const existingNumbers = new Set(invoices.map((inv: any) => inv.invoiceNumber));
+  // Get all existing invoices using modern hierarchical storage
+  const existingInvoices = await getAllInvoices();
+  const existingNumbers = new Set(existingInvoices.map((inv: any) => inv.invoiceNumber));
 
-  while (!isUnique) {
-    const suffix = Math.random().toString(36).slice(2, 7).toUpperCase(); // 5-char base36
-    invoiceNumber = `${prefix}-${suffix}`;
-    isUnique = !existingNumbers.has(invoiceNumber);
+  // Find the highest counter for this prefix
+  let maxCounter = 0;
+  const pattern = new RegExp(`^${prefix}-(\\d+)$`);
+
+  for (const invoiceNumber of existingNumbers) {
+    const match = invoiceNumber.match(pattern);
+    if (match) {
+      const counter = parseInt(match[1], 10);
+      if (counter > maxCounter) {
+        maxCounter = counter;
+      }
+    }
   }
+
+  // Generate next sequential number
+  const nextCounter = maxCounter + 1;
+  const paddedCounter = nextCounter.toString().padStart(3, '0');
+  const invoiceNumber = `${prefix}-${paddedCounter}`;
 
   return invoiceNumber;
 }

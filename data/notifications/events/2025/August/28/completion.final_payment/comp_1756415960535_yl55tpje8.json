@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756415960535_yl55tpje8",
+  "type": "completion.final_payment",
+  "notificationType": 156,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "Z-001",
+  "projectId": "Z-001",
+  "message": "You just paid Tobi Philly a final payment of $308 for your now completed project, Pricing & ticket page design for the NATIVELAND music festival. Remaining budget: $0. Click here to see invoice details",
+  "context": {
+    "projectId": "Z-001",
+    "finalAmount": 308,
+    "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival",
+    "finalPercent": 88,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "metadata": {
+    "projectId": "Z-001",
+    "finalAmount": 308,
+    "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival",
+    "finalPercent": 88,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "timestamp": "2025-08-28T21:19:20.533Z",
+  "subsystem": "completion_invoicing"
+}

@@ -1,0 +1,68 @@
+{
+  "id": 34,
+  "name": "Tobi Philly",
+  "email": "tobi@example.com",
+  "type": "freelancer",
+  "avatar": "/api/freelancer/avatar/34/avatar_123.jpg",
+  "location": "San Francisco, CA",
+  "about": "Experienced UI/UX designer with a passion for creating intuitive digital experiences. I specialize in mobile app design and have worked with startups and Fortune 500 companies.",
+  "skills": ["UI/UX Design", "Figma", "Prototyping", "User Research"],
+  "tools": [
+    { "name": "Figma", "category": "design" },
+    { "name": "Sketch", "category": "design" },
+    { "name": "Adobe XD", "category": "design" }
+  ],
+  "outlinks": [
+    {
+      "id": "ol_01",
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/tobiphilly",
+      "label": "LinkedIn",
+      "order": 0,
+      "createdAt": "2024-01-15T10:30:00Z"
+    },
+    {
+      "id": "ol_02", 
+      "platform": "behance",
+      "url": "https://behance.net/tobiphilly",
+      "label": "Behance",
+      "order": 1,
+      "createdAt": "2024-01-15T10:31:00Z"
+    },
+    {
+      "id": "ol_03",
+      "platform": "website",
+      "url": "https://tobiphilly.design",
+      "label": "Portfolio",
+      "order": 2,
+      "createdAt": "2024-01-15T10:32:00Z"
+    }
+  ],
+  "rateRange": {
+    "rateMin": 80,
+    "rateMax": 200,
+    "rateUnit": "hour"
+  },
+  "rate": "$80–200/hr",
+  "rating": 4.8,
+  "socialLinks": [
+    {
+      "platform": "twitter",
+      "url": "https://twitter.com/tobiphilly",
+      "username": "@tobiphilly"
+    }
+  ],
+  "workSamples": [
+    {
+      "id": "ws_01",
+      "title": "Mobile Banking App",
+      "image": "/uploads/work-samples/banking-app.jpg",
+      "url": "https://behance.net/gallery/banking-app",
+      "skill": "UI/UX Design",
+      "tool": "Figma",
+      "year": 2024
+    }
+  ],
+  "createdAt": "2023-06-15T08:00:00Z",
+  "updatedAt": "2024-01-15T10:32:00Z"
+}

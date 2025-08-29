@@ -141,6 +141,18 @@ const getNotificationIcon = (type: string, notification: NotificationData): stri
     case 'completion.rating_prompt':
       return '/icons/rating-prompt.png';      // Commissioner + Freelancer - rate experience
 
+    // Gig request specific completion notifications
+    case 'completion.gig-request-upfront':
+      return '/icons/new-payment.png';        // Freelancer only - gig request upfront payment
+    case 'completion.gig-request-upfront-commissioner':
+      return '/icons/new-payment.png';        // Commissioner only - gig request upfront payment confirmation
+    case 'completion.gig-request-project_activated':
+      return '/icons/project-activated.png';  // Freelancer only - completion project activation from gig request
+    case 'milestone.gig-request-project_activated':
+      return '/icons/project-activated.png';  // Freelancer only - milestone project activation from gig request
+    case 'completion.gig-request-commissioner-accepted':
+      return '/icons/gig-applied.png';        // Commissioner only - gig request accepted
+
     // 🏢 COMMISSIONER-SPECIFIC COMPLETION NOTIFICATIONS
     // These are the exact 7 notifications commissioners receive for completion projects:
     // 1. completion.upfront_payment (already defined above)

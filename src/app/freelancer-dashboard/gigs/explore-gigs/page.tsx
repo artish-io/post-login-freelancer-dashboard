@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import FreelancerHeader from '../../../../../components/freelancer-dashboard/freelancer-header';
 import ApplyModal from '../../../../../components/freelancer-dashboard/gigs/apply';
 import CategoryDropdown from '../../../../../components/freelancer-dashboard/gigs/category-dropdown';
+import DeliverablesOverviewModal from '../../../../../components/freelancer-dashboard/gigs/deliverables-overview-modal';
 import { useErrorToast } from '@/components/ui/toast';
 import { Gig } from '@/lib/gigs/hierarchical-storage';
 
@@ -30,6 +31,8 @@ export default function ExploreGigsPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedGig, setSelectedGig] = useState<Gig | null>(null);
   const [showApplyModal, setShowApplyModal] = useState(false);
+  const [showDeliverablesModal, setShowDeliverablesModal] = useState(false);
+  const [selectedGigForDeliverables, setSelectedGigForDeliverables] = useState<Gig | null>(null);
   const [userApplications, setUserApplications] = useState<any[]>([]);
   const showErrorToast = useErrorToast();
 
@@ -218,6 +221,12 @@ export default function ExploreGigsPage() {
     setShowApplyModal(true);
   }, [session?.user?.id, showErrorToast, getApplicationStatus]);
 
+  // Handle deliverables overview click
+  const handleDeliverablesClick = useCallback((gig: Gig) => {
+    setSelectedGigForDeliverables(gig);
+    setShowDeliverablesModal(true);
+  }, []);
+
   // Format posted date
   const formatPostedDate = useCallback((dateStr: string) => {
     const now = new Date();
@@ -394,8 +403,9 @@ export default function ExploreGigsPage() {
                       <p className="text-gray-700 text-sm mb-3 line-clamp-2">{gig.description}</p>
                     )}
 
-                    {gig.briefFile && (
-                      <div className="mb-3">
+                    {/* Action buttons section */}
+                    <div className="mb-3 flex flex-wrap gap-2">
+                      {gig.briefFile && (
                         <button
                           onClick={async () => {
                             try {
@@ -425,15 +435,28 @@ export default function ExploreGigsPage() {
                               alert(`Brief file: ${gig.briefFile?.name} (${((gig.briefFile?.size || 0) / 1024).toFixed(1)} KB)\n\nDownload functionality will be available once files are properly uploaded.`);
                             }
                           }}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#FCD5E3] text-[#eb1966] rounded-full text-sm font-medium hover:bg-[#F8C2D4] transition-colors"
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-[#FCD5E3] text-[#eb1966] rounded-full text-xs font-medium hover:bg-[#F8C2D4] transition-colors"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                           </svg>
                           Project Brief
                         </button>
-                      </div>
-                    )}
+                      )}
+
+                      {/* Deliverables Overview button - show if milestones exist */}
+                      {gig.milestones && gig.milestones.length > 0 && (
+                        <button
+                          onClick={() => handleDeliverablesClick(gig)}
+                          className="inline-flex items-center gap-1 px-2 py-1 bg-black text-white rounded-full text-xs font-medium hover:bg-gray-800 transition-colors"
+                        >
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                          </svg>
+                          Deliverables Overview
+                        </button>
+                      )}
+                    </div>
 
                     {gig.tags && gig.tags.length > 0 && (
                       <div className="flex flex-wrap gap-2">
@@ -546,6 +569,21 @@ export default function ExploreGigsPage() {
             setShowApplyModal(false);
             setSelectedGig(null);
           }}
+        />
+      )}
+
+      {/* Deliverables Overview Modal */}
+      {showDeliverablesModal && selectedGigForDeliverables && (
+        <DeliverablesOverviewModal
+          isOpen={showDeliverablesModal}
+          onClose={() => {
+            setShowDeliverablesModal(false);
+            setSelectedGigForDeliverables(null);
+          }}
+          gigTitle={selectedGigForDeliverables.title}
+          organizationName={organizations.find(org => org.id === selectedGigForDeliverables.organizationId)?.name || 'Unknown Organization'}
+          organizationLogo={organizations.find(org => org.id === selectedGigForDeliverables.organizationId)?.logo}
+          milestones={selectedGigForDeliverables.milestones || []}
         />
       )}
     </section>

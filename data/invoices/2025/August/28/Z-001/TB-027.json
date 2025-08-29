@@ -1,0 +1,30 @@
+{
+  "invoiceNumber": "TB-027",
+  "projectId": "Z-001",
+  "freelancerId": 1,
+  "commissionerId": 35,
+  "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival",
+  "totalAmount": 308,
+  "invoiceType": "completion_final",
+  "milestoneNumber": 99,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-28T21:19:20.006Z",
+  "dueDate": "2025-09-11T21:19:20.006Z",
+  "createdAt": "2025-08-28T21:19:20.006Z",
+  "description": "Final completion payment (remaining 88%)",
+  "milestones": [
+    {
+      "description": "Final completion payment (remaining 88%)",
+      "rate": 308,
+      "title": "Final Payment",
+      "taskId": "final"
+    }
+  ],
+  "paymentDetails": {
+    "freelancerAmount": 291.78,
+    "platformFee": 16.22
+  },
+  "paidDate": "2025-08-28T21:19:20.510Z",
+  "updatedAt": "2025-08-28T21:19:20.521Z"
+}

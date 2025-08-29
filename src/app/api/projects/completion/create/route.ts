@@ -10,8 +10,7 @@ import { UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 // 🚨 CRITICAL: This is a COMPLETELY NEW route - does not modify existing project creation routes
 // 🛡️ PROTECTED: Existing project creation at /api/projects/create remains unchanged
 
-export async function POST(req: NextRequest) {
-  return withErrorHandling(async () => {
+async function handleCompletionProjectCreation(req: NextRequest) {
     // ✅ SAFE: Reuse auth infrastructure
     const { userId: commissionerId } = await requireSession(req);
     const body = await req.json();
@@ -190,13 +189,17 @@ export async function POST(req: NextRequest) {
       console.warn('Completion notification failed:', e);
     }
     
-    return NextResponse.json(ok({
-      message: 'Completion-based project created successfully',
-      projectId: project.projectId,
-      status: project.status
-    } as any));
-  });
+    return NextResponse.json({
+      success: true,
+      data: {
+        project: project
+      },
+      message: 'Completion-based project created successfully'
+    });
 }
+
+// Wrap the handler with error handling
+export const POST = withErrorHandling(handleCompletionProjectCreation);
 
 // Helper functions - NEW, doesn't modify existing functions
 

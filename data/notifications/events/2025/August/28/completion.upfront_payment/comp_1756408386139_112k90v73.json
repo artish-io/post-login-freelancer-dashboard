@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756408386139_112k90v73",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "C-016",
+  "projectId": "C-016",
+  "message": "Corlax Wellness has paid $138 upfront for your newly activated Completion Web 3 Graphic Design Asssets  project. This project has a budget of $1012 left. Click here to view invoice details",
+  "context": {
+    "projectId": "C-016",
+    "upfrontAmount": 138,
+    "projectTitle": "Completion Web 3 Graphic Design Asssets ",
+    "remainingBudget": 1012,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "C-016",
+    "upfrontAmount": 138,
+    "projectTitle": "Completion Web 3 Graphic Design Asssets ",
+    "remainingBudget": 1012,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-28T19:13:06.134Z",
+  "subsystem": "completion_invoicing"
+}

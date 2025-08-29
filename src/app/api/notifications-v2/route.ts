@@ -988,6 +988,29 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
     case 'completion.rating_prompt':
       return `Rate your experience`;
 
+    // Gig request specific completion notifications
+    case 'completion.gig-request-upfront':
+      // Title: [org name] paid upfront payment
+      const gigUpfrontOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
+      return `${gigUpfrontOrgName} paid upfront payment`;
+
+    case 'completion.gig-request-upfront-commissioner':
+      // Title: [org name] paid upfront payment
+      const gigUpfrontCommissionerOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
+      return `${gigUpfrontCommissionerOrgName} paid upfront payment`;
+
+    case 'completion.gig-request-project_activated':
+    case 'milestone.gig-request-project_activated':
+      // Title: You accepted [org name]'s gig request for [project title]
+      const gigActivationOrgName = (event.metadata as any)?.orgName || (event.context as any)?.orgName || 'Organization';
+      const gigActivationProjectTitle = (event.metadata as any)?.projectTitle || (event.context as any)?.projectTitle || 'project';
+      return `You accepted ${gigActivationOrgName}'s gig request for ${gigActivationProjectTitle}`;
+
+    case 'completion.gig-request-commissioner-accepted':
+      // Title: [freelancer name] accepted your gig request
+      const gigCommissionerFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'Freelancer';
+      return `${gigCommissionerFreelancerName} accepted your gig request`;
+
     default:
       // Skip generic events - they shouldn't reach here if properly filtered
       console.warn(`Unknown notification type: ${event.type}`, event);

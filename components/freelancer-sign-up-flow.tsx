@@ -6,6 +6,9 @@ import Image from 'next/image';
 export default function FreelancerSignUpFlow() {
   const [step, setStep] = useState(1);
   const [bio, setBio] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -22,15 +25,75 @@ export default function FreelancerSignUpFlow() {
     location: '',
   });
 
+  // New state for submission
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitMessage, setSubmitMessage] = useState('');
+
   const allSkillSuggestions = ['Programming', 'Video Editing', 'Design', 'Marketing', 'Writing'];
   const allToolSuggestions = ['VSCode', 'Canva', 'Figma', 'Notion', 'Photoshop'];
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Check file size (2MB limit)
+      if (file.size > 2 * 1024 * 1024) {
+        alert('File size must be less than 2MB');
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFinalSubmit = async () => {
+    setIsSubmitting(true);
+    setSubmitMessage('');
+
+    try {
+      const payload = {
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
+        bio: bio.trim(),
+        avatar: preview, // Base64 data URL
+        skills: skills,
+        tools: tools,
+        links: {
+          portfolio: step3Fields.portfolio,
+          twitter: step3Fields.twitter,
+          linkedin: step3Fields.linkedin,
+          instagram: step3Fields.instagram
+        }
+      };
+
+      const response = await fetch('/api/signup?role=freelancer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitMessage('Account created successfully! You can now log in with your email.');
+        console.log('✅ Freelancer account created:', data.user);
+
+        // Redirect to login or dashboard after a delay
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 2000);
+      } else {
+        setSubmitMessage(data.error || 'Something went wrong. Please try again.');
+      }
+    } catch (error) {
+      console.error('Signup failed:', error);
+      setSubmitMessage('Network error. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -123,19 +186,33 @@ export default function FreelancerSignUpFlow() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (bio.trim().length > 0) setStep(2);
+              if (firstName.trim() && lastName.trim() && email.trim() && bio.trim().length > 0) {
+                setStep(2);
+              }
             }}
             className="space-y-4"
           >
             <input
               type="text"
               placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               required
               className="w-full px-4 py-2 border rounded-md text-sm"
             />
             <input
               type="text"
               placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+              className="w-full px-4 py-2 border rounded-md text-sm"
+            />
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full px-4 py-2 border rounded-md text-sm"
             />
@@ -283,7 +360,7 @@ export default function FreelancerSignUpFlow() {
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              alert('Sign-up complete!');
+              handleFinalSubmit();
             }}
             className="space-y-3"
           >
@@ -324,11 +401,29 @@ export default function FreelancerSignUpFlow() {
             />
             <button
               type="submit"
-              className="w-full bg-black text-white py-2 rounded-md text-sm font-medium"
+              disabled={isSubmitting}
+              className="w-full bg-black text-white py-2 rounded-md text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Submit
+              {isSubmitting ? 'Creating Account...' : 'Submit'}
             </button>
           </form>
+
+          {/* Error/Success Message */}
+          {submitMessage && (
+            <div className={`mt-4 p-3 rounded-md ${
+              submitMessage.includes('successfully')
+                ? 'bg-green-50 border border-green-200'
+                : 'bg-red-50 border border-red-200'
+            }`}>
+              <p className={`text-sm ${
+                submitMessage.includes('successfully')
+                  ? 'text-green-600'
+                  : 'text-red-600'
+              }`}>
+                {submitMessage}
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

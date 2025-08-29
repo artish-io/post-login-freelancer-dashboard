@@ -6,6 +6,14 @@ import GigRequestBody from './gig-request-body';
 import GigRequestMetaPanel from './gig-request-meta-panel';
 import { useSuccessToast, useErrorToast } from '@/components/ui/toast';
 
+type Milestone = {
+  id: string;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+};
+
 type GigRequest = {
   id: number;
   skills: string[];
@@ -18,6 +26,7 @@ type GigRequest = {
   toolIconUrl: string;
   briefUrl: string;
   notes: string;
+  milestones?: Milestone[];
   postedByName: string;
   postedByAvatar: string;
   status: 'Available' | 'Pending' | 'Accepted' | 'Rejected';
@@ -26,6 +35,7 @@ type GigRequest = {
   maxRate: string;
   minRate: string;
   projectId?: number;
+  invoicingMethod?: 'completion' | 'milestone';
 };
 
 type Props = {
@@ -62,6 +72,15 @@ const GigRequestDetails: React.FC<Props> = ({ request }) => {
     }
 
     setSubmitting(true);
+
+    // 🔔 ATOMIC LOG: Track accept offer trigger
+    console.log('🔔 ATOMIC: Accept offer triggered for gig request:', {
+      requestId: request.id,
+      title: request.title,
+      invoicingMethod: request.invoicingMethod,
+      timestamp: new Date().toISOString()
+    });
+
     try {
       // API call to accept the gig request
       const res = await fetch(`/api/gig-requests/${request.id}/accept`, {
@@ -72,8 +91,11 @@ const GigRequestDetails: React.FC<Props> = ({ request }) => {
         }),
       });
 
+      console.log('🔔 ATOMIC: Accept API response status:', res.status);
+
       if (res.ok) {
         const result = await res.json();
+        console.log('🔔 ATOMIC: Accept API response data:', result);
 
         // 🚀 ENHANCED SUCCESS HANDLING: Different messages for completion vs milestone projects
         if (result.invoicingMethod === 'completion') {
@@ -154,6 +176,7 @@ const GigRequestDetails: React.FC<Props> = ({ request }) => {
           createdAt={request.createdAt}
           status={request.status}
           projectId={request.projectId}
+          invoicingMethod={request.invoicingMethod}
         />
         <GigRequestBody
           description={request.description}
@@ -162,6 +185,7 @@ const GigRequestDetails: React.FC<Props> = ({ request }) => {
           toolIconUrl={request.toolIconUrl}
           briefUrl={request.briefUrl}
           notes={request.notes}
+          milestones={request.milestones}
           createdAt={request.createdAt}
           postedByName={request.postedByName}
           postedByAvatar={request.postedByAvatar}

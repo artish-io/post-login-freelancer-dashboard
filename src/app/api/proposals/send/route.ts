@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { readFile, writeFile } from 'fs/promises';
 import { eventLogger } from '../../../../lib/events/event-logger';
-import { getUserById } from '@/lib/storage/unified-storage-service';
+import { getUserById, UnifiedStorageService } from '@/lib/storage/unified-storage-service';
 import {
   saveProposal,
   readAllProposals,
@@ -15,6 +15,7 @@ import {
   generateEnrichedProposalMetadata,
   saveEnrichedProposalMetadata
 } from '../../../../lib/proposals/enriched-metadata';
+import { generateOrganizationProjectId, generateProjectId } from '@/lib/utils/id-generation';
 
 const draftsPath = path.join(process.cwd(), 'data', 'proposals', 'proposal-drafts.json');
 
@@ -73,6 +74,56 @@ export async function POST(request: Request) {
     // Generate unique proposal ID
     const proposalId = await generateUniqueProposalId();
 
+    // Generate project ID using proven patterns
+    let projectId: string;
+    try {
+      // Try to get organization info for project ID generation
+      const organizationsData = await UnifiedStorageService.getAllOrganizations();
+      const organization = organizationsData.find((org: any) => org.id === body.organizationId);
+
+      if (organization?.name) {
+        // Get existing project IDs to avoid collisions
+        const existingProjects = await UnifiedStorageService.listProjects();
+        const existingProposals = await readAllProposals();
+        const existingProjectIds = new Set([
+          ...existingProjects.map(p => p.projectId.toString()),
+          ...existingProposals.map(p => p.projectId).filter(Boolean)
+        ]);
+
+        projectId = generateOrganizationProjectId(organization.name, existingProjectIds);
+      } else {
+        // Fallback to UNQ format for proposals without organization data
+        const existingProjects = await UnifiedStorageService.listProjects();
+        const existingProposals = await readAllProposals();
+        const existingProjectIds = new Set([
+          ...existingProjects.map(p => p.projectId.toString()),
+          ...existingProposals.map(p => p.projectId).filter(Boolean)
+        ]);
+
+        // Generate UNQ-001 format for unique proposals
+        let maxCounter = 0;
+        const unqPattern = /^UNQ-(\d+)$/;
+
+        for (const existingId of existingProjectIds) {
+          const match = existingId.toString().match(unqPattern);
+          if (match) {
+            const counter = parseInt(match[1], 10);
+            if (counter > maxCounter) {
+              maxCounter = counter;
+            }
+          }
+        }
+
+        const nextCounter = maxCounter + 1;
+        const paddedCounter = nextCounter.toString().padStart(3, '0');
+        projectId = `UNQ-${paddedCounter}`;
+      }
+    } catch (error) {
+      console.warn('Failed to generate organization-based project ID, using fallback:', error);
+      // Final fallback to numeric ID
+      projectId = generateProjectId().toString();
+    }
+
     const newProposal: Proposal = {
       ...body,
       id: proposalId,
@@ -80,6 +131,7 @@ export async function POST(request: Request) {
       description: actualDescription,
       budget: actualBudget,
       commissionerId: actualCommissionerId,
+      projectId: projectId, // Add generated project ID
       createdAt: new Date().toISOString(),
       status: 'sent',
       hiddenFor: [], // no one has hidden it yet

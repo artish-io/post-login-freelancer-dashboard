@@ -1,0 +1,30 @@
+{
+  "id": "project_activated_C-017_1756410293766",
+  "timestamp": "2025-08-28T19:44:53.766Z",
+  "type": "project_activated",
+  "notificationType": 22,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 2,
+  "entityId": "C-017",
+  "message": "Matte Hannery accepted your application for Modelling For Series A Logos. This project is now active and includes 1 milestones due by August 30, 2025",
+  "metadata": {
+    "projectTitle": "Modelling For Series A Logos",
+    "gigTitle": "Modelling For Series A Logos",
+    "taskCount": 1,
+    "commissionerName": "Matte Hannery",
+    "organizationName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "dueDate": "2025-08-31"
+  },
+  "context": {
+    "projectId": "C-017",
+    "gigId": 62,
+    "projectTitle": "Modelling For Series A Logos",
+    "dueDate": "2025-08-31",
+    "totalTasks": 1,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  }
+}

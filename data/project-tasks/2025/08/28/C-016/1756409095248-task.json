@@ -1,0 +1,24 @@
+{
+  "taskId": 1756409095248,
+  "projectId": "C-016",
+  "projectTitle": "Completion Web 3 Graphic Design Asssets ",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Graphic Design",
+    "Web Development",
+    "Smart Contracts"
+  ],
+  "title": "Phase 2 – Core Asset Creation",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 2,
+  "link": "",
+  "dueDate": "2025-08-28T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Produce essential design assets including logo variations, banners, icons, NFT/token visuals, and social media templates, ensuring consistency and adaptability across digital channels.\n",
+  "createdDate": "2025-08-28T19:13:02.564Z",
+  "lastModified": "2025-08-28T21:19:00.972Z"
+}

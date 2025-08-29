@@ -1,0 +1,27 @@
+{
+  "id": "comp_1756415960537_1n78h2tlf",
+  "type": "completion.rating_prompt",
+  "notificationType": 157,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "Z-001",
+  "projectId": "Z-001",
+  "message": "Rate your experience with Tobi Philly. All tasks for Pricing & ticket page design for the NATIVELAND music festival have been completed. Click here to rate your collaboration.",
+  "context": {
+    "projectId": "Z-001",
+    "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival",
+    "commissionerName": "Tilly Burzinsky",
+    "freelancerName": "Tobi Philly",
+    "orgName": "Zynate Events Group"
+  },
+  "metadata": {
+    "projectId": "Z-001",
+    "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival",
+    "commissionerName": "Tilly Burzinsky",
+    "freelancerName": "Tobi Philly",
+    "orgName": "Zynate Events Group"
+  },
+  "timestamp": "2025-08-28T21:19:20.536Z",
+  "subsystem": "completion_invoicing"
+}

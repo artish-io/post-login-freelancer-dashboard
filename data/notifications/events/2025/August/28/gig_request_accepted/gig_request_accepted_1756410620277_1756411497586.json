@@ -1,0 +1,20 @@
+{
+  "id": "gig_request_accepted_1756410620277_1756411497586",
+  "timestamp": "2025-08-28T20:04:57.586Z",
+  "type": "gig_request_accepted",
+  "notificationType": 62,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "1756410620277",
+  "metadata": {
+    "gigRequestId": 1756410620277,
+    "projectId": "Z-001",
+    "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival"
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 4,
+    "requestId": 1756410620277
+  }
+}

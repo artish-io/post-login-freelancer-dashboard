@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756410293312_beub4af79",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "C-017",
+  "projectId": "C-017",
+  "message": "You just paid Tobi Philly $42 upfront Modelling For Series A Logos. Remaining budget: $308. Click here to view invoice details",
+  "context": {
+    "projectId": "C-017",
+    "upfrontAmount": 42,
+    "projectTitle": "Modelling For Series A Logos",
+    "remainingBudget": 308,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "C-017",
+    "upfrontAmount": 42,
+    "projectTitle": "Modelling For Series A Logos",
+    "remainingBudget": 308,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-28T19:44:53.308Z",
+  "subsystem": "completion_invoicing"
+}

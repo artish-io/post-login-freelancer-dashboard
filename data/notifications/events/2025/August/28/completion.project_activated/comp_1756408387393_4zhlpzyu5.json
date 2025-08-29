@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756408387393_4zhlpzyu5",
+  "type": "completion.project_activated",
+  "notificationType": 150,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "C-016",
+  "projectId": "C-016",
+  "message": "Matte Hannery accepted your application for Completion Web 3 Graphic Design Asssets . This project is now active and includes 3 milestones due by September 1, 2025",
+  "context": {
+    "projectId": "C-016",
+    "projectTitle": "Completion Web 3 Graphic Design Asssets ",
+    "dueDate": "2025-09-02",
+    "totalTasks": 3,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "C-016",
+    "projectTitle": "Completion Web 3 Graphic Design Asssets ",
+    "dueDate": "2025-09-02",
+    "totalTasks": 3,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-28T19:13:07.392Z",
+  "subsystem": "completion_invoicing"
+}

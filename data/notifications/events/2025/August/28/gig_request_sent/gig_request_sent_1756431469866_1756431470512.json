@@ -1,0 +1,22 @@
+{
+  "id": "gig_request_sent_1756431469866_1756431470512",
+  "timestamp": "2025-08-29T01:37:49.835Z",
+  "type": "gig_request_sent",
+  "notificationType": 61,
+  "actorId": 32,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "1756431469866",
+  "metadata": {
+    "gigTitle": "Event Marketing & Page Design for ROBLOX World Builders Championship – West Africa Regional Finals (Lagos)",
+    "organizationName": "Lagos State Parks Services",
+    "organizationLogo": "/logos/lagos-parks-logo.png",
+    "budgetMin": 400,
+    "budgetMax": 550
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 1,
+    "requestId": 1756431469866
+  }
+}

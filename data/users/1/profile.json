@@ -1,0 +1,38 @@
+{
+  "id": "1",
+  "type": "freelancer",
+  "createdAt": "2025-08-29T18:49:43.026Z",
+  "rateRange": {
+    "rateMin": 80,
+    "rateMax": 200,
+    "rateUnit": "hour"
+  },
+  "updatedAt": "2025-08-29T20:05:49.410Z",
+  "rate": "$80–200/hr",
+  "outlinks": [
+    {
+      "id": "migrated_1756496217985_0",
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/tobi-philly",
+      "label": "Linkedin",
+      "order": 0,
+      "createdAt": "2025-08-29T19:36:57.985Z"
+    },
+    {
+      "id": "migrated_1756496217985_1",
+      "platform": "github",
+      "url": "https://behance.net/tobi-philly",
+      "label": "Behance",
+      "order": 1,
+      "createdAt": "2025-08-29T19:36:57.985Z"
+    },
+    {
+      "id": "migrated_1756496217985_2",
+      "platform": "website",
+      "url": "https://tobi-philly.dev",
+      "label": "Website",
+      "order": 2,
+      "createdAt": "2025-08-29T19:36:57.985Z"
+    }
+  ]
+}

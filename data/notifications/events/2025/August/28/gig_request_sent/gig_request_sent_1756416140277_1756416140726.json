@@ -1,0 +1,22 @@
+{
+  "id": "gig_request_sent_1756416140277_1756416140726",
+  "timestamp": "2025-08-28T21:22:20.273Z",
+  "type": "gig_request_sent",
+  "notificationType": 61,
+  "actorId": 35,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "1756416140277",
+  "metadata": {
+    "gigTitle": "Lagos design for the NATIVELAND music festival",
+    "organizationName": "Zynate Events Group",
+    "organizationLogo": "/logos/zynate-events.png",
+    "budgetMin": 300,
+    "budgetMax": 350
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 4,
+    "requestId": 1756416140277
+  }
+}

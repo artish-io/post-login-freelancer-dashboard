@@ -1,0 +1,32 @@
+{
+  "id": "31",
+  "type": "freelancer",
+  "createdAt": "2025-08-29T20:08:08.688Z",
+  "outlinks": [
+    {
+      "id": "migrated_1756498043837_0",
+      "platform": "linkedin",
+      "url": "https://linkedin.com/in/margsate-flether",
+      "label": "Linkedin",
+      "order": 0,
+      "createdAt": "2025-08-29T20:07:23.837Z"
+    },
+    {
+      "id": "migrated_1756498043837_1",
+      "platform": "dribbble",
+      "url": "https://behance.net/margsate-flether",
+      "label": "Behance",
+      "order": 1,
+      "createdAt": "2025-08-29T20:07:23.837Z"
+    },
+    {
+      "id": "migrated_1756498043837_3",
+      "platform": "website",
+      "url": "https://margsate.com",
+      "label": "Website",
+      "order": 2,
+      "createdAt": "2025-08-29T20:07:23.837Z"
+    }
+  ],
+  "updatedAt": "2025-08-29T20:08:19.588Z"
+}

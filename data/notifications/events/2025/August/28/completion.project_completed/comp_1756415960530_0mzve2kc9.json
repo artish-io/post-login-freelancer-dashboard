@@ -1,0 +1,27 @@
+{
+  "id": "comp_1756415960530_0mzve2kc9",
+  "type": "completion.project_completed",
+  "notificationType": 155,
+  "actorId": 35,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "Z-001",
+  "projectId": "Z-001",
+  "message": "Project completed - Tilly Burzinsky has approved all tasks for Pricing & ticket page design for the NATIVELAND music festival. This project is now complete.",
+  "context": {
+    "projectId": "Z-001",
+    "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Tobi Philly"
+  },
+  "metadata": {
+    "projectId": "Z-001",
+    "projectTitle": "Pricing & ticket page design for the NATIVELAND music festival",
+    "commissionerName": "Tilly Burzinsky",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Tobi Philly"
+  },
+  "timestamp": "2025-08-28T21:19:20.527Z",
+  "subsystem": "completion_invoicing"
+}

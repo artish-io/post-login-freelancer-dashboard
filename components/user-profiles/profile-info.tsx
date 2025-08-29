@@ -15,6 +15,8 @@ interface ProfileInfoProps {
   availableTools?: string[];
   onAddSkillTool?: (type: 'skill' | 'tool', value: string) => void;
   onRemoveSkillTool?: (type: 'skill' | 'tool', value: string) => void;
+  isEditMode?: boolean;
+  onUpdateBio?: (newBio: string) => void;
 }
 
 export default function ProfileInfo({
@@ -27,9 +29,12 @@ export default function ProfileInfo({
   availableSkills = [],
   availableTools = [],
   onAddSkillTool,
-  onRemoveSkillTool
+  onRemoveSkillTool,
+  isEditMode = false,
+  onUpdateBio
 }: ProfileInfoProps) {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editedBio, setEditedBio] = useState(bio || '');
   // Combine skills and tools for the unified section
   const allSkillsAndTools = [
     ...skills.map(skill => ({ name: skill, type: 'skill' })),
@@ -39,12 +44,26 @@ export default function ProfileInfo({
   return (
     <div className="space-y-8">
       {/* Bio Section */}
-      {bio && (
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-3">About</h2>
-          <p className="text-gray-600 leading-relaxed">{bio}</p>
-        </div>
-      )}
+      <div>
+        <h2 className="text-lg font-semibold text-gray-900 mb-3">About</h2>
+        {isEditMode && isOwnProfile ? (
+          <div className="space-y-3">
+            <textarea
+              value={editedBio}
+              onChange={(e) => setEditedBio(e.target.value)}
+              onBlur={() => onUpdateBio?.(editedBio)}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-[#eb1966] transition-colors bg-gray-50 focus:bg-white resize-none"
+              rows={4}
+              placeholder="Tell us about yourself..."
+            />
+            <p className="text-xs text-gray-500">Changes are saved automatically</p>
+          </div>
+        ) : (
+          <p className="text-gray-600 leading-relaxed">
+            {bio || 'No bio available.'}
+          </p>
+        )}
+      </div>
 
       {/* Skills and Tools Combined Section - Only for freelancers */}
       {userType === 'freelancer' && (

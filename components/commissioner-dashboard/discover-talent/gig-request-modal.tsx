@@ -54,13 +54,21 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
     tools: [] as string[],
     milestones: [] as Milestone[],
     budgetMin: '',
-    budgetMax: ''
+    budgetMax: '',
+    // Enhanced fields for 1:1 parity with gig creation
+    category: '',
+    subcategory: '',
+    hourlyRateMin: '',
+    hourlyRateMax: '',
+    deliveryTimeWeeks: '',
+    estimatedHours: '',
+    startType: 'Immediately' as 'Immediately' | 'Custom',
+    customStartDate: null as Date | null
   });
 
   // State for dropdowns and inputs
   const [showProjectTypeDropdown, setShowProjectTypeDropdown] = useState(false);
   const [showSpecializationDropdown, setShowSpecializationDropdown] = useState(false);
-  const [showExecutionMethodDropdown, setShowExecutionMethodDropdown] = useState(false);
   const [skillInput, setSkillInput] = useState('');
   const [toolInput, setToolInput] = useState('');
   const [skillSuggestions, setSkillSuggestions] = useState<string[]>([]);
@@ -252,7 +260,19 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
             min: parseInt(formData.budgetMin),
             max: parseInt(formData.budgetMax),
             currency: 'USD'
-          } : undefined
+          } : undefined,
+          // Enhanced fields for 1:1 parity with gig creation
+          category: formData.category || formData.projectType || 'General',
+          subcategory: formData.subcategory || formData.specialization || '',
+          hourlyRateMin: formData.hourlyRateMin ? parseFloat(formData.hourlyRateMin) : 0,
+          hourlyRateMax: formData.hourlyRateMax ? parseFloat(formData.hourlyRateMax) : 0,
+          deliveryTimeWeeks: formData.deliveryTimeWeeks ? parseFloat(formData.deliveryTimeWeeks) :
+            (formData.duration ? formData.duration / 7 : 4),
+          estimatedHours: formData.estimatedHours ? parseFloat(formData.estimatedHours) :
+            (formData.duration ? formData.duration * 8 : 40),
+          invoicingMethod: formData.executionMethod,
+          startType: formData.startType,
+          customStartDate: formData.customStartDate?.toISOString()
         }),
       });
 
@@ -272,7 +292,16 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
           tools: [],
           milestones: [],
           budgetMin: '',
-          budgetMax: ''
+          budgetMax: '',
+          // Enhanced fields for 1:1 parity with gig creation
+          category: '',
+          subcategory: '',
+          hourlyRateMin: '',
+          hourlyRateMax: '',
+          deliveryTimeWeeks: '',
+          estimatedHours: '',
+          startType: 'Immediately',
+          customStartDate: null
         });
         // Show success toast
         showSuccessToast('Request Sent', 'Your gig request was successfully delivered.');
@@ -292,15 +321,15 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
   if (!isOpen || !freelancer) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+        <div className="p-8">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Send Gig Request</h2>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-bold text-[#eb1966]">Send Gig Request</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600"
+              className="text-gray-400 hover:text-[#eb1966] transition-colors p-2 rounded-full hover:bg-gray-100"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -328,7 +357,7 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Project Title */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
                 Project Title *
               </label>
               <input
@@ -336,7 +365,7 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
                 required
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#eb1966] focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-[#eb1966] transition-colors bg-gray-50 focus:bg-white"
                 placeholder="Enter project title"
               />
             </div>
@@ -478,51 +507,45 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
             </div>
 
             {/* Invoice Execution Mode */}
-            <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
                 Invoice Execution Mode *
               </label>
-              <div className="relative">
+              <div className="flex gap-3">
                 <button
                   type="button"
-                  onClick={() => setShowExecutionMethodDropdown(!showExecutionMethodDropdown)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#eb1966] focus:border-transparent text-left flex items-center justify-between"
+                  onClick={() => setFormData(prev => ({ ...prev, executionMethod: 'completion' }))}
+                  className={`flex-1 px-4 py-3 rounded-xl border-2 transition-all duration-200 ${
+                    formData.executionMethod === 'completion'
+                      ? 'border-[#eb1966] bg-[#FCD5E3] text-[#eb1966] font-semibold'
+                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                  }`}
                 >
-                  <span className="text-gray-900">
-                    {formData.executionMethod === 'milestone' ? 'Milestone-based' : 'Completion-based'}
-                  </span>
-                  <ChevronDown className="w-4 h-4 text-gray-400" />
-                </button>
-                {showExecutionMethodDropdown && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFormData(prev => ({ ...prev, executionMethod: 'completion' }));
-                        setShowExecutionMethodDropdown(false);
-                      }}
-                      className="w-full px-3 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
-                    >
-                      Completion-based
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setFormData(prev => ({ ...prev, executionMethod: 'milestone' }));
-                        setShowExecutionMethodDropdown(false);
-                      }}
-                      className="w-full px-3 py-2 text-left hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
-                    >
-                      Milestone-based
-                    </button>
+                  <div className="text-center">
+                    <div className="text-sm font-medium">Completion-based</div>
+                    <div className="text-xs mt-1 opacity-75">Pay when project is complete</div>
                   </div>
-                )}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFormData(prev => ({ ...prev, executionMethod: 'milestone' }))}
+                  className={`flex-1 px-4 py-3 rounded-xl border-2 transition-all duration-200 ${
+                    formData.executionMethod === 'milestone'
+                      ? 'border-[#eb1966] bg-[#FCD5E3] text-[#eb1966] font-semibold'
+                      : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="text-center">
+                    <div className="text-sm font-medium">Milestone-based</div>
+                    <div className="text-xs mt-1 opacity-75">Pay per milestone completion</div>
+                  </div>
+                </button>
               </div>
             </div>
 
             {/* Project Description */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
                 Project Summary / Description *
               </label>
               <textarea
@@ -530,7 +553,7 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
                 rows={4}
                 value={formData.projectDescription}
                 onChange={(e) => setFormData(prev => ({ ...prev, projectDescription: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#eb1966] focus:border-transparent"
+                className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-[#eb1966] transition-colors bg-gray-50 focus:bg-white resize-none"
                 placeholder="Describe your project requirements and objectives"
               />
             </div>
@@ -648,26 +671,26 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
             {/* Budget Range */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
                   Min Budget ($)
                 </label>
                 <input
                   type="number"
                   value={formData.budgetMin}
                   onChange={(e) => setFormData(prev => ({ ...prev, budgetMin: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#eb1966] focus:border-transparent"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-[#eb1966] transition-colors bg-gray-50 focus:bg-white"
                   placeholder="1000"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-3">
                   Max Budget ($)
                 </label>
                 <input
                   type="number"
                   value={formData.budgetMax}
                   onChange={(e) => setFormData(prev => ({ ...prev, budgetMax: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#eb1966] focus:border-transparent"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-0 focus:border-[#eb1966] transition-colors bg-gray-50 focus:bg-white"
                   placeholder="5000"
                 />
               </div>
@@ -786,18 +809,18 @@ export default function GigRequestModal({ isOpen, onClose, freelancer }: GigRequ
             </div>
 
             {/* Submit Button */}
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-4 pt-8">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                className="flex-1 px-6 py-3 text-gray-700 border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-colors font-medium"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading || !isFormValid()}
-                className="flex-1 px-4 py-2 bg-[#eb1966] text-white rounded-lg hover:bg-[#d1175a] transition-colors disabled:opacity-50"
+                className="flex-1 px-6 py-3 bg-[#eb1966] text-white rounded-xl hover:bg-[#d91659] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold shadow-lg hover:shadow-xl"
               >
                 {loading ? 'Sending...' : 'Send Request'}
               </button>

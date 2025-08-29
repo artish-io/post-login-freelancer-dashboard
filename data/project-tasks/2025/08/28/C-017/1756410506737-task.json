@@ -1,0 +1,22 @@
+{
+  "taskId": 1756410506737,
+  "projectId": "C-017",
+  "projectTitle": "Modelling For Series A Logos",
+  "organizationId": 3,
+  "projectTypeTags": [
+    "Design"
+  ],
+  "title": "Phase 1",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "link": "",
+  "dueDate": "2025-08-28T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "I’ll design a framework that not only covers housing and services but also integrates renewable energy, local commerce, and reinvestment cycles to keep the economy self-sustaining.",
+  "createdDate": "2025-08-28T19:44:51.530Z",
+  "lastModified": "2025-08-28T21:19:00.972Z"
+}
