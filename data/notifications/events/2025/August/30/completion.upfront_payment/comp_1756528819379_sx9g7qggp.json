@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756528819379_sx9g7qggp",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "M-P004",
+  "projectId": "M-P004",
+  "message": "You just paid Margsate Flether $360 upfront The Big Test For Proposals . Remaining budget: $2640. Click here to view invoice details",
+  "context": {
+    "projectId": "M-P004",
+    "upfrontAmount": 360,
+    "projectTitle": "The Big Test For Proposals ",
+    "remainingBudget": 2640,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "M-P004",
+    "upfrontAmount": 360,
+    "projectTitle": "The Big Test For Proposals ",
+    "remainingBudget": 2640,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-30T04:40:19.111Z",
+  "subsystem": "completion_invoicing"
+}

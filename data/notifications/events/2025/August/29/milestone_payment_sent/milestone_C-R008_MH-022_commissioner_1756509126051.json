@@ -1,0 +1,32 @@
+{
+  "id": "milestone_C-R008_MH-022_commissioner_1756509126051",
+  "timestamp": "2025-08-29T23:12:06.051Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 10,
+  "entityId": "C-R008_MH-022",
+  "metadata": {
+    "type": "milestone_payment_sent",
+    "audience": "commissioner",
+    "projectId": "C-R008",
+    "invoiceNumber": "MH-022",
+    "amount": 1262.67,
+    "freelancerName": "Tobi Philly",
+    "organizationName": "Corlax Wellness",
+    "taskTitle": "Phase 1 – Requirements & Contract Design",
+    "projectTitle": "Smart Contract & NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon",
+    "remainingBudget": 2525.33,
+    "commissionerId": 34,
+    "freelancerId": 1,
+    "eventKey": "milestone_payment_sent:commissioner:C-R008:MH-022",
+    "qualityScore": 4,
+    "title": "Corlax Wellness paid Tobi Philly $1262.67",
+    "message": "You just paid Tobi Philly $1262.67 for submitting Phase 1 – Requirements & Contract Design for Smart Contract & NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon. Remaining budget: $2525.33. Click here to see transaction activity"
+  },
+  "context": {
+    "projectId": "C-R008",
+    "invoiceNumber": "MH-022"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "invoiceNumber": "MH-C022",
+  "projectId": "M-P003",
+  "freelancerId": 1,
+  "commissionerId": 34,
+  "projectTitle": "Skyfall Proposal V2 Completion ",
+  "totalAmount": 360,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-30T04:31:10.017Z",
+  "dueDate": "2025-09-13T04:31:10.017Z",
+  "createdAt": "2025-08-30T04:31:10.017Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 360,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "paymentId": "TXN-MH-C022",
+    "paymentMethod": "mock",
+    "platformFee": 18.96,
+    "freelancerAmount": 341.04,
+    "currency": "USD",
+    "processedAt": "2025-08-30T04:31:10.520Z"
+  },
+  "paidDate": "2025-08-30",
+  "paidAmount": 360,
+  "updatedAt": "2025-08-30T04:31:10.520Z"
+}

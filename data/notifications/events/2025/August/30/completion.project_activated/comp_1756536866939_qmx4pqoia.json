@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756536866939_qmx4pqoia",
+  "type": "completion.project_activated",
+  "notificationType": 150,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "Z-016",
+  "projectId": "Z-016",
+  "message": "Tilly Burzinsky accepted your application for Financial Management for James Bond Cosplay Charity Contest. This project is now active and includes 1 milestones due by September 1, 2025",
+  "context": {
+    "projectId": "Z-016",
+    "projectTitle": "Financial Management for James Bond Cosplay Charity Contest",
+    "dueDate": "2025-09-02",
+    "totalTasks": 1,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "metadata": {
+    "projectId": "Z-016",
+    "projectTitle": "Financial Management for James Bond Cosplay Charity Contest",
+    "dueDate": "2025-09-02",
+    "totalTasks": 1,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "timestamp": "2025-08-30T06:54:26.688Z",
+  "subsystem": "completion_invoicing"
+}

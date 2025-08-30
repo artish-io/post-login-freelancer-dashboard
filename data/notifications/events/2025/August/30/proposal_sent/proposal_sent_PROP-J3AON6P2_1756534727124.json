@@ -1,0 +1,19 @@
+{
+  "id": "proposal_sent_PROP-J3AON6P2_1756534727124",
+  "timestamp": "2025-08-30T06:18:47.124Z",
+  "type": "proposal_sent",
+  "notificationType": 80,
+  "actorId": 25,
+  "targetId": 35,
+  "entityType": 7,
+  "entityId": "PROP-J3AON6P2",
+  "metadata": {
+    "proposalTitle": "Bookkeeping & Financial Tracking for James Bond Cosplay Charity Contest (NFT Prize Fund)",
+    "budget": 300,
+    "timeline": "Not specified",
+    "description": "I’d love to support your upcoming James Bond look-alike cosplay charity contest, especially since th"
+  },
+  "context": {
+    "proposalId": "PROP-J3AON6P2"
+  }
+}

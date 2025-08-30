@@ -1,0 +1,21 @@
+{
+  "userId": 1,
+  "type": "payment",
+  "amount": 1196.17,
+  "currency": "USD",
+  "timestamp": "2025-08-29T23:12:06.023Z",
+  "status": "completed",
+  "invoiceNumber": "MH-022",
+  "projectId": "C-R008",
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "source": "auto_milestone",
+  "paymentMethod": "mock",
+  "gatewayTransactionId": "TXN-MH-022",
+  "description": "Payment for invoice MH-022",
+  "platformFee": 66.5,
+  "totalInvoiceAmount": 1262.67,
+  "transactionId": "TXN-PAY-MH-022-1756509126023",
+  "createdAt": "2025-08-29T23:12:06.023Z",
+  "updatedAt": "2025-08-29T23:12:06.023Z"
+}

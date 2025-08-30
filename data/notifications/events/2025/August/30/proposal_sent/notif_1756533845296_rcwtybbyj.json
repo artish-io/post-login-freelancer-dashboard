@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756533845296_rcwtybbyj",
+  "timestamp": "2025-08-30T06:04:05.296Z",
+  "type": "proposal_sent",
+  "notificationType": 0,
+  "targetId": 35,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Margsate Flether sent you a proposal",
+    "message": "New project proposal for Lagos Only Comes Alive At Night",
+    "priority": "high"
+  },
+  "context": {}
+}

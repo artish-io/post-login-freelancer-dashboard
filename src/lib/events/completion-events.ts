@@ -229,6 +229,73 @@ export const CompletionEventHandlers = {
 
     console.log(`[COMPLETION] Gig request commissioner acceptance notification processed: ${projectTitle} with ${totalTasks} milestones (${freelancerName} -> commissioner)`);
     // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
+  },
+
+  // 🔒 PROPOSAL SPECIFIC: Completion notification handlers
+  'completion.proposal-commissioner-accepted': async (event: CompletionEvent) => {
+    // Freelancer notification when commissioner accepts proposal
+    // Business logic only - notification creation handled by completion-handler
+    const projectTitle = event.context.projectTitle || 'Project';
+    const totalTasks = event.context.totalTasks || 1;
+    const commissionerName = event.context.commissionerName || 'Commissioner';
+
+    console.log(`[COMPLETION] Proposal commissioner acceptance notification processed: ${projectTitle} with ${totalTasks} tasks (${commissionerName} -> freelancer)`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
+  },
+
+  'completion.proposal-upfront-commissioner': async (event: CompletionEvent) => {
+    // Commissioner upfront payment confirmation for proposals
+    // Business logic only - notification creation handled by completion-handler
+    const projectTitle = event.context.projectTitle || 'Project';
+    const upfrontAmount = event.context.upfrontAmount || 0;
+    const orgName = event.context.orgName || 'Organization';
+
+    console.log(`[COMPLETION] Proposal commissioner upfront payment notification processed: $${upfrontAmount} for ${projectTitle} (${orgName})`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
+  },
+
+  'completion.proposal-project_activated': async (event: CompletionEvent) => {
+    // Commissioner project activation notification for completion-based proposals
+    // Business logic only - notification creation handled by completion-handler
+    const projectTitle = event.context.projectTitle || 'Project';
+    const totalTasks = event.context.totalTasks || 1;
+    const orgName = event.context.orgName || 'Organization';
+
+    console.log(`[COMPLETION] Proposal completion project activation notification processed: ${projectTitle} with ${totalTasks} tasks (${orgName} -> commissioner)`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
+  },
+
+  'completion.proposal-upfront': async (event: CompletionEvent) => {
+    // Freelancer upfront payment notification for proposals
+    // Business logic only - notification creation handled by completion-handler
+    const projectTitle = event.context.projectTitle || 'Project';
+    const upfrontAmount = event.context.upfrontAmount || 0;
+    const orgName = event.context.orgName || 'Organization';
+
+    console.log(`[COMPLETION] Proposal upfront payment notification processed: $${upfrontAmount} for ${projectTitle} (${orgName} -> freelancer)`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
+  },
+
+  'milestone.proposal-accepted': async (event: CompletionEvent) => {
+    // Freelancer notification when commissioner accepts milestone proposal
+    // Business logic only - notification creation handled by completion-handler
+    const projectTitle = event.context.projectTitle || 'Project';
+    const totalTasks = event.context.totalTasks || 1;
+    const commissionerName = event.context.commissionerName || 'Commissioner';
+
+    console.log(`[COMPLETION] Milestone proposal acceptance notification processed: ${projectTitle} with ${totalTasks} milestones (${commissionerName} -> freelancer)`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
+  },
+
+  'milestone.proposal-project_activated': async (event: CompletionEvent) => {
+    // Commissioner project activation notification for milestone-based proposals
+    // Business logic only - notification creation handled by completion-handler
+    const projectTitle = event.context.projectTitle || 'Project';
+    const totalTasks = event.context.totalTasks || 1;
+    const orgName = event.context.orgName || 'Organization';
+
+    console.log(`[COMPLETION] Milestone proposal project activation notification processed: ${projectTitle} with ${totalTasks} milestones (${orgName} -> commissioner)`);
+    // Note: Actual notification creation happens in completion-handler.ts integrateWithExistingNotificationSystem
   }
 };
 

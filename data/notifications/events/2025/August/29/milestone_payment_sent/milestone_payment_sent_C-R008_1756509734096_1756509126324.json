@@ -1,0 +1,26 @@
+{
+  "id": "milestone_payment_sent_C-R008_1756509734096_1756509126324",
+  "timestamp": "2025-08-29T23:12:06.324Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 5,
+  "entityId": "C-R008_1756509734096",
+  "metadata": {
+    "taskTitle": "Phase 1 – Requirements & Contract Design",
+    "projectTitle": "Smart Contract & NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon",
+    "projectId": "C-R008",
+    "taskId": 1756509734096,
+    "freelancerName": "Freelancer",
+    "amount": 0,
+    "invoiceNumber": "MH-022",
+    "remainingBudget": 2525.33,
+    "projectBudget": 3788
+  },
+  "context": {
+    "projectId": "C-R008",
+    "taskId": 1756509734096,
+    "invoiceNumber": "MH-022"
+  }
+}

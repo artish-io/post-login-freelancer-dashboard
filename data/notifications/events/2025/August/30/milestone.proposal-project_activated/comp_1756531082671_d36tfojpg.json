@@ -1,0 +1,35 @@
+{
+  "id": "comp_1756531082671_d36tfojpg",
+  "type": "milestone.proposal-project_activated",
+  "notificationType": 45,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "T-P001",
+  "projectId": "T-P001",
+  "message": "Your Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs) proposal is now an active project with 1 milestone",
+  "context": {
+    "projectId": "T-P001",
+    "projectTitle": "Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)",
+    "totalTasks": 1,
+    "dueDate": "2025-09-06",
+    "invoicingMethod": "milestone",
+    "proposalId": "PROP-O0E5SYEQ",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "metadata": {
+    "projectId": "T-P001",
+    "projectTitle": "Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)",
+    "totalTasks": 1,
+    "dueDate": "2025-09-06",
+    "invoicingMethod": "milestone",
+    "proposalId": "PROP-O0E5SYEQ",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "timestamp": "2025-08-30T05:18:01.803Z",
+  "subsystem": "completion_invoicing"
+}

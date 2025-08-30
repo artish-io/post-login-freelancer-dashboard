@@ -1,0 +1,17 @@
+{
+  "id": "proposal_sent_PROP-7WCFI8CV_1756517578134",
+  "timestamp": "2025-08-30T01:32:58.134Z",
+  "type": "proposal_sent",
+  "notificationType": 80,
+  "entityType": 7,
+  "entityId": "PROP-7WCFI8CV",
+  "metadata": {
+    "proposalTitle": "A Million Blessings Landing Page Proposal",
+    "budget": 700,
+    "timeline": "Not specified",
+    "description": "We’re raising funds for Wizkid’s A Million Blessings 5K charity marathon and need a freelancer to de"
+  },
+  "context": {
+    "proposalId": "PROP-7WCFI8CV"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756534727579_1yb1zebuk",
+  "timestamp": "2025-08-30T06:18:47.579Z",
+  "type": "proposal_sent",
+  "notificationType": 0,
+  "targetId": 35,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Lucas Meyer sent you a proposal",
+    "message": "New project proposal for Bookkeeping & Financial Tracking for James Bond Cosplay Charity Contest (NFT Prize Fund)",
+    "priority": "high"
+  },
+  "context": {}
+}

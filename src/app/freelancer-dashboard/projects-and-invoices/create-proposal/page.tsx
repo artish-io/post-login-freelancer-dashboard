@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { useSuccessToast, useErrorToast } from '../../../../../components/ui/toast';
 
 import ProposalHeader from '../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/proposal-header';
 import ProposalMetaInfo from '../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/proposal-meta-info';
@@ -34,6 +35,8 @@ type ExecutionMethod = 'completion' | 'milestone';
 
 export default function CreateProposalPage() {
   const router = useRouter();
+  const showSuccessToast = useSuccessToast();
+  const showErrorToast = useErrorToast();
 
   const [selectedContact, setSelectedContact] = useState<Contact | { email: string } | null>(null);
   const [typeTags, setTypeTags] = useState<string[]>([]);
@@ -182,14 +185,35 @@ export default function CreateProposalPage() {
         throw new Error(errorData.error || 'Failed to send proposal');
       }
 
-      await res.json(); // Consume the response
+      const result = await res.json(); // Get the response with proposal ID
+      console.log('✅ FRONTEND: Proposal sent successfully:', result);
 
-      // Show success message and redirect to main page
-      alert('Proposal sent successfully!');
-      router.push('/freelancer-dashboard/projects-and-invoices?tab=proposals&success=proposal-sent');
+      // Show success message and redirect to the sent proposal page
+      showSuccessToast('Proposal Sent!', 'Your proposal has been sent successfully.');
+
+      // Navigate immediately with optimized navigation
+      if (result.id) {
+        console.log(`🔄 NAVIGATION: Attempting to navigate to proposal ${result.id}`);
+        const targetUrl = `/freelancer-dashboard/projects-and-invoices/proposals/${result.id}`;
+        console.log(`🔄 NAVIGATION: Target URL: ${targetUrl}`);
+
+        // Use immediate navigation - toast will show during transition
+        try {
+          router.push(targetUrl);
+          console.log(`✅ NAVIGATION: Router.push called successfully`);
+        } catch (routerError) {
+          console.error(`❌ NAVIGATION: Router.push failed:`, routerError);
+          console.log(`🔄 NAVIGATION: Falling back to window.location.href`);
+          window.location.href = targetUrl;
+        }
+      } else {
+        console.log('🔄 NAVIGATION: No proposal ID returned, navigating to proposals list');
+        // Fallback to proposals list if no ID returned
+        router.push('/freelancer-dashboard/projects-and-invoices/proposals');
+      }
     } catch (err) {
       console.error('Send failed:', err);
-      alert(`Failed to send proposal: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      showErrorToast('Failed to Send Proposal', err instanceof Error ? err.message : 'Unknown error occurred.');
     }
   };
 

@@ -1,0 +1,32 @@
+{
+  "id": "milestone_T-P001_TB-028_commissioner_1756533579677",
+  "timestamp": "2025-08-30T05:59:39.677Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 10,
+  "entityId": "T-P001_TB-028",
+  "metadata": {
+    "type": "milestone_payment_sent",
+    "audience": "commissioner",
+    "projectId": "T-P001",
+    "invoiceNumber": "TB-028",
+    "amount": 1667,
+    "freelancerName": "Margsate Flether",
+    "organizationName": "Zynate Events Group",
+    "taskTitle": "Phase 1 – Concept & Creative Direction",
+    "projectTitle": "Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)",
+    "remainingBudget": 3334,
+    "commissionerId": 35,
+    "freelancerId": 31,
+    "eventKey": "milestone_payment_sent:commissioner:T-P001:TB-028",
+    "qualityScore": 4,
+    "title": "Zynate Events Group paid Margsate Flether $1667",
+    "message": "You just paid Margsate Flether $1667 for submitting Phase 1 – Concept & Creative Direction for Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs). Remaining budget: $3334. Click here to see transaction activity"
+  },
+  "context": {
+    "projectId": "T-P001",
+    "invoiceNumber": "TB-028"
+  }
+}

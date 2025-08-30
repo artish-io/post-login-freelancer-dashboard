@@ -1,0 +1,60 @@
+{
+  "proposalId": "PROP-95UEIYVH",
+  "title": "Bookkeeping & Financial Oversight for $5K Cancer Awareness Marathon",
+  "summary": "Review the marathon structure, entry fees, sponsorship commitments, and donation channels. Set up a bookkeeping framework with a secure ledger to track revenues, expenses (permits, logistics, marketing), and earmarked charity funds. Deliver a reporting workflow that ensures organizers can see progress in real time.",
+  "budget": 300,
+  "executionMethod": "completion",
+  "timeline": "3 days",
+  "freelancer": {
+    "id": 25,
+    "name": "Lucas Meyer",
+    "email": "lucas.meyer@example.com",
+    "avatar": "/avatars/lucas.png",
+    "skills": [],
+    "portfolio": []
+  },
+  "commissioner": {
+    "id": 35,
+    "name": "Tilly Burzinsky",
+    "email": "tilly.burzinsky@example.com",
+    "organizationId": 4
+  },
+  "financial": {
+    "totalBid": 300,
+    "currency": "USD",
+    "upfrontAmount": 36,
+    "upfrontPercentage": 12,
+    "milestoneCount": 1,
+    "amountPerMilestone": 0
+  },
+  "timeline_details": {
+    "startDate": "2025-08-30T07:06:51.939Z",
+    "endDate": "2025-09-02T04:00:00.000Z",
+    "estimatedDuration": "3 days",
+    "startType": "Immediately"
+  },
+  "metadata": {
+    "sentAt": "2025-08-30T07:06:51.386Z",
+    "status": "sent",
+    "typeTags": [
+      "Bookkeeping"
+    ],
+    "logoUrl": "/logos/zynate-events.png",
+    "milestones": [
+      {
+        "id": "7e43d709-e4f7-472f-9278-0df08fb9705b",
+        "title": "Phase 1 – Research & Financial Setup",
+        "description": "Review the marathon structure, entry fees, sponsorship commitments, and donation channels. Set up a bookkeeping framework with a secure ledger to track revenues, expenses (permits, logistics, marketing), and earmarked charity funds. Deliver a reporting workflow that ensures organisers can see progress in real time.",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-09-02T04:00:00.000Z",
+        "amount": 0
+      }
+    ]
+  },
+  "email": {
+    "subject": "New Proposal: Bookkeeping & Financial Oversight for $5K Cancer Awareness Marathon from Lucas Meyer",
+    "previewText": "Lucas Meyer has sent you a proposal for \"Bookkeeping & Financial Oversight for $5K Cancer Awareness Marathon\" with a budget of $300",
+    "actionUrl": "https://artish.app/commissioner-dashboard/projects-and-invoices/recieved-proposals/PROP-95UEIYVH",
+    "expiresAt": "2025-09-29T07:06:51.386Z"
+  }
+}

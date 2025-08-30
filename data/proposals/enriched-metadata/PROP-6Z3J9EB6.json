@@ -1,0 +1,60 @@
+{
+  "proposalId": "PROP-6Z3J9EB6",
+  "title": "Lagos Only Comes Alive At Night",
+  "summary": "Freelancer to design and run a marketing campaign that mixes spy-thriller flair with modern Web3 culture, driving buzz, sign-ups, and community engagement. The campaign should feel cinematic, stylish, and irresistible to both Bond fans and NFT collectors.",
+  "budget": 400,
+  "executionMethod": "completion",
+  "timeline": "2 days",
+  "freelancer": {
+    "id": 31,
+    "name": "Margsate Flether",
+    "email": "margsate.flether@example.com",
+    "avatar": "/avatars/margsate-flether.png",
+    "skills": [],
+    "portfolio": []
+  },
+  "commissioner": {
+    "id": 35,
+    "name": "Tilly Burzinsky",
+    "email": "tilly.burzinsky@example.com",
+    "organizationId": 4
+  },
+  "financial": {
+    "totalBid": 400,
+    "currency": "USD",
+    "upfrontAmount": 48,
+    "upfrontPercentage": 12,
+    "milestoneCount": 1,
+    "amountPerMilestone": 0
+  },
+  "timeline_details": {
+    "startDate": "2025-08-30T06:04:05.292Z",
+    "endDate": "2025-09-01T04:00:00.000Z",
+    "estimatedDuration": "2 days",
+    "startType": "Immediately"
+  },
+  "metadata": {
+    "sentAt": "2025-08-30T06:04:05.289Z",
+    "status": "sent",
+    "typeTags": [
+      "Event Marketing"
+    ],
+    "logoUrl": "/logos/zynate-events.png",
+    "milestones": [
+      {
+        "id": "5bf8766e-fd94-4369-8984-d459d08c6781",
+        "title": "Phase 1 – Concept & Creative Direction",
+        "description": "Develop a campaign theme that merges James Bond aesthetics (sleek, high-stakes, iconic) with NFT/Web3 culture. Produce branded assets, teaser visuals, and a promotional content calendar.",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-09-01T04:00:00.000Z",
+        "amount": 0
+      }
+    ]
+  },
+  "email": {
+    "subject": "New Proposal: Lagos Only Comes Alive At Night from Margsate Flether",
+    "previewText": "Margsate Flether has sent you a proposal for \"Lagos Only Comes Alive At Night\" with a budget of $400",
+    "actionUrl": "https://artish.app/commissioner-dashboard/projects-and-invoices/recieved-proposals/PROP-6Z3J9EB6",
+    "expiresAt": "2025-09-29T06:04:05.289Z"
+  }
+}

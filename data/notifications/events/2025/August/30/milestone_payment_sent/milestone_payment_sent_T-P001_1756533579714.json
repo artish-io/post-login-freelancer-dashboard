@@ -1,0 +1,23 @@
+{
+  "id": "milestone_payment_sent_T-P001_1756533579714",
+  "timestamp": "2025-08-30T05:59:39.714Z",
+  "type": "milestone_payment_sent",
+  "notificationType": 43,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 10,
+  "entityId": "T-P001_Phase 1 – Concept & Creative Direction",
+  "metadata": {
+    "taskTitle": "Phase 1 – Concept & Creative Direction",
+    "amount": 1667,
+    "freelancerName": "Margsate Flether",
+    "invoiceNumber": "TB-028",
+    "projectBudget": 5001,
+    "projectTitle": "Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)",
+    "priority": "medium"
+  },
+  "context": {
+    "projectId": null,
+    "invoiceNumber": "TB-028"
+  }
+}

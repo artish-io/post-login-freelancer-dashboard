@@ -5,7 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 export interface NotificationData {
   id: string;
-  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'project_pause_requested' | 'project_pause_refused' | 'project_paused' | 'project_pause_reminder' | 'project_activated' | 'project_reactivated' | 'gig_request' | 'gig_request_accepted' | 'gig_rejected' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase' | 'task_submitted' | 'job_application' | 'invoice_reminder' | 'invoice_overdue_reminder' | 'milestone_payment_received' | 'milestone_payment_sent' | 'task_rejected_with_comment' | 'completion_project_activated' | 'completion_upfront_payment' | 'completion_task_approved' | 'completion_invoice_received' | 'completion_invoice_paid' | 'completion_commissioner_payment' | 'completion_project_completed' | 'completion_final_payment' | 'completion_rating_prompt';
+  type: 'gig_application' | 'task_submission' | 'task_approved' | 'task_rejected' | 'project_pause' | 'project_pause_accepted' | 'project_pause_requested' | 'project_pause_refused' | 'project_paused' | 'project_pause_reminder' | 'project_activated' | 'project_reactivated' | 'gig_request' | 'gig_request_accepted' | 'gig_rejected' | 'project_accepted' | 'new_gig_request' | 'proposal_sent' | 'invoice_sent' | 'invoice_paid' | 'storefront_purchase' | 'task_submitted' | 'job_application' | 'invoice_reminder' | 'invoice_overdue_reminder' | 'milestone_payment_received' | 'milestone_payment_sent' | 'task_rejected_with_comment' | 'completion_project_activated' | 'completion_upfront_payment' | 'completion_task_approved' | 'completion_invoice_received' | 'completion_invoice_paid' | 'completion_commissioner_payment' | 'completion_project_completed' | 'completion_final_payment' | 'completion_rating_prompt' | 'completion.proposal-commissioner-accepted' | 'completion.proposal-upfront-commissioner' | 'completion.proposal-project_activated' | 'completion.proposal-upfront' | 'milestone.proposal-accepted' | 'milestone.proposal-project_activated' | 'proposal_received';
   title: string;
   message: string;
   timestamp: string;
@@ -152,6 +152,23 @@ const getNotificationIcon = (type: string, notification: NotificationData): stri
       return '/icons/project-activated.png';  // Freelancer only - milestone project activation from gig request
     case 'completion.gig-request-commissioner-accepted':
       return '/icons/gig-applied.png';        // Commissioner only - gig request accepted
+
+    // Proposal specific completion notifications
+    case 'completion.proposal-commissioner-accepted':
+      return '/icons/project-activated.png';  // Freelancer only - proposal accepted by commissioner
+    case 'completion.proposal-upfront-commissioner':
+      return '/icons/new-payment.png';        // Commissioner only - proposal upfront payment confirmation
+    case 'completion.proposal-project_activated':
+      return '/icons/project-activated.png';  // Commissioner only - proposal project activation
+    case 'completion.proposal-upfront':
+      return '/icons/new-payment.png';        // Freelancer only - proposal upfront payment
+    case 'milestone.proposal-accepted':
+      return '/icons/project-activated.png';  // Freelancer only - milestone proposal accepted
+    case 'milestone.proposal-project_activated':
+      return '/icons/project-activated.png';  // Commissioner only - milestone proposal project activation
+
+    case 'proposal_received':
+      return '/icons/proposal-sent.png';      // Commissioner only - proposal received notification
 
     // 🏢 COMMISSIONER-SPECIFIC COMPLETION NOTIFICATIONS
     // These are the exact 7 notifications commissioners receive for completion projects:

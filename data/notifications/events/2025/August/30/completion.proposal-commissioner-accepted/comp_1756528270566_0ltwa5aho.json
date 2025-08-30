@@ -1,0 +1,35 @@
+{
+  "id": "comp_1756528270566_0ltwa5aho",
+  "type": "completion.proposal-commissioner-accepted",
+  "notificationType": 45,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "M-P003",
+  "projectId": "M-P003",
+  "message": "Matte Hannery accepted your proposal for Skyfall Proposal V2 Completion . This project is now active and includes 1 task due by September 5, 2025",
+  "context": {
+    "projectId": "M-P003",
+    "projectTitle": "Skyfall Proposal V2 Completion ",
+    "totalTasks": 1,
+    "dueDate": "2025-09-06",
+    "invoicingMethod": "completion",
+    "proposalId": "PROP-B2ZI0RNQ",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "M-P003",
+    "projectTitle": "Skyfall Proposal V2 Completion ",
+    "totalTasks": 1,
+    "dueDate": "2025-09-06",
+    "invoicingMethod": "completion",
+    "proposalId": "PROP-B2ZI0RNQ",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-30T04:31:10.565Z",
+  "subsystem": "completion_invoicing"
+}

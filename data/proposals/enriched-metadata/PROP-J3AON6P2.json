@@ -1,0 +1,60 @@
+{
+  "proposalId": "PROP-J3AON6P2",
+  "title": "Bookkeeping & Financial Tracking for James Bond Cosplay Charity Contest (NFT Prize Fund)",
+  "summary": "I’d love to support your upcoming James Bond look-alike cosplay charity contest, especially since the proceeds will be donated to an orphanage in the form of $5,000 worth of 007 NFTs. My goal is to ensure full financial transparency, accurate recording of funds, and a clear audit trail for both participants and donors. By providing professional bookkeeping, I’ll help your team build trust, demonstrate accountability, and maximize the long-term impact of this charitable initiative.",
+  "budget": 300,
+  "executionMethod": "completion",
+  "timeline": "3 days",
+  "freelancer": {
+    "id": 25,
+    "name": "Lucas Meyer",
+    "email": "lucas.meyer@example.com",
+    "avatar": "/avatars/lucas.png",
+    "skills": [],
+    "portfolio": []
+  },
+  "commissioner": {
+    "id": 35,
+    "name": "Tilly Burzinsky",
+    "email": "tilly.burzinsky@example.com",
+    "organizationId": 4
+  },
+  "financial": {
+    "totalBid": 300,
+    "currency": "USD",
+    "upfrontAmount": 36,
+    "upfrontPercentage": 12,
+    "milestoneCount": 1,
+    "amountPerMilestone": 0
+  },
+  "timeline_details": {
+    "startDate": "2025-08-30T06:18:47.123Z",
+    "endDate": "2025-09-02T04:00:00.000Z",
+    "estimatedDuration": "3 days",
+    "startType": "Immediately"
+  },
+  "metadata": {
+    "sentAt": "2025-08-30T06:18:47.118Z",
+    "status": "sent",
+    "typeTags": [
+      "Bookkeeping"
+    ],
+    "logoUrl": "/logos/zynate-events.png",
+    "milestones": [
+      {
+        "id": "b3f658af-929a-4a32-a88b-f813f7b9b53d",
+        "title": "Phase 1 – Research & Financial Setup",
+        "description": "Analyse the contest structure, NFT wallet systems, and any legal or tax implications. Set up a secure bookkeeping framework for tracking incoming funds, NFT transfers, and contest-related expenses. Deliver a ledger template and reporting workflow for clear oversight.",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-09-02T04:00:00.000Z",
+        "amount": 0
+      }
+    ]
+  },
+  "email": {
+    "subject": "New Proposal: Bookkeeping & Financial Tracking for James Bond Cosplay Charity Contest (NFT Prize Fund) from Lucas Meyer",
+    "previewText": "Lucas Meyer has sent you a proposal for \"Bookkeeping & Financial Tracking for James Bond Cosplay Charity Contest (NFT Prize Fund)\" with a budget of $300",
+    "actionUrl": "https://artish.app/commissioner-dashboard/projects-and-invoices/recieved-proposals/PROP-J3AON6P2",
+    "expiresAt": "2025-09-29T06:18:47.118Z"
+  }
+}

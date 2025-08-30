@@ -46,6 +46,13 @@ export const NOTIFICATION_TYPES = {
   PROPOSAL_SENT: 80,
   PROPOSAL_ACCEPTED: 81,
   PROPOSAL_REJECTED: 82,
+  PROPOSAL_COMMISSIONER_ACCEPTED: 83,
+  PROPOSAL_UPFRONT_COMMISSIONER: 84,
+  PROPOSAL_PROJECT_ACTIVATED: 85,
+  PROPOSAL_UPFRONT: 86,
+  PROPOSAL_MILESTONE_ACCEPTED: 87,
+  PROPOSAL_MILESTONE_PROJECT_ACTIVATED: 88,
+  PROPOSAL_RECEIVED: 89,
 
   // Storefront notifications (100-119)
   PRODUCT_PURCHASED: 100,
@@ -150,7 +157,11 @@ export type EventType =
   | 'completion.invoice_received' | 'completion.invoice_paid' | 'completion.commissioner_payment'
   | 'completion.project_completed' | 'completion.final_payment' | 'completion.rating_prompt'
   // Gig request specific completion notifications
-  | 'completion.gig-request-upfront' | 'completion.gig-request-upfront-commissioner' | 'completion.gig-request-project_activated' | 'milestone.gig-request-project_activated' | 'completion.gig-request-commissioner-accepted';
+  | 'completion.gig-request-upfront' | 'completion.gig-request-upfront-commissioner' | 'completion.gig-request-project_activated' | 'milestone.gig-request-project_activated' | 'completion.gig-request-commissioner-accepted'
+  // Proposal specific completion notifications
+  | 'completion.proposal-commissioner-accepted' | 'completion.proposal-upfront-commissioner' | 'completion.proposal-project_activated' | 'completion.proposal-upfront' | 'milestone.proposal-accepted' | 'milestone.proposal-project_activated'
+  // Proposal received notification
+  | 'proposal_received';
 
 export type EntityType =
   | 'task' | 'project' | 'gig' | 'message' | 'invoice' | 'product' | 'proposal' | 'user' | 'organization' | 'milestone';
@@ -246,7 +257,16 @@ function getNotificationTypeNumber(eventType: EventType): number {
     'completion.commissioner_payment': NOTIFICATION_TYPES.COMPLETION_COMMISSIONER_PAYMENT,
     'completion.project_completed': NOTIFICATION_TYPES.COMPLETION_PROJECT_COMPLETED,
     'completion.final_payment': NOTIFICATION_TYPES.COMPLETION_FINAL_PAYMENT,
-    'completion.rating_prompt': NOTIFICATION_TYPES.COMPLETION_RATING_PROMPT
+    'completion.rating_prompt': NOTIFICATION_TYPES.COMPLETION_RATING_PROMPT,
+
+    // Proposal completion events
+    'completion.proposal-commissioner-accepted': NOTIFICATION_TYPES.PROPOSAL_COMMISSIONER_ACCEPTED,
+    'completion.proposal-upfront-commissioner': NOTIFICATION_TYPES.PROPOSAL_UPFRONT_COMMISSIONER,
+    'completion.proposal-project_activated': NOTIFICATION_TYPES.PROPOSAL_PROJECT_ACTIVATED,
+    'completion.proposal-upfront': NOTIFICATION_TYPES.PROPOSAL_UPFRONT,
+    'milestone.proposal-accepted': NOTIFICATION_TYPES.PROPOSAL_MILESTONE_ACCEPTED,
+    'milestone.proposal-project_activated': NOTIFICATION_TYPES.PROPOSAL_MILESTONE_PROJECT_ACTIVATED,
+    'proposal_received': NOTIFICATION_TYPES.PROPOSAL_RECEIVED
   };
 
   return mapping[eventType] || 0;

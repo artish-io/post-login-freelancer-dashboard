@@ -82,6 +82,46 @@ export default function NotificationsPage() {
       }
     }
 
+    // Handle gig request specific completion notifications using string comparison
+    const typeStr = String(type);
+
+    if (typeStr === 'completion.gig-request-upfront-commissioner') {
+      // Navigate to invoice details for upfront payment confirmation
+      if (context?.projectId) {
+        // Try to find the upfront invoice for this project
+        router.push(`/commissioner-dashboard/projects-and-invoices/invoices/project?projectId=${context.projectId}`);
+        return;
+      } else {
+        // Fallback to invoices page
+        router.push('/commissioner-dashboard/projects-and-invoices/invoices');
+        return;
+      }
+    }
+
+    if (typeStr === 'completion.gig-request-project_activated') {
+      // Navigate to freelancer project tracking page
+      if (context?.projectId) {
+        router.push(`/freelancer-dashboard/projects-and-invoices/project-tracking/${context.projectId}`);
+        return;
+      } else {
+        // Fallback to freelancer dashboard
+        router.push('/freelancer-dashboard');
+        return;
+      }
+    }
+
+    if (typeStr === 'completion.gig-request-commissioner-accepted') {
+      // Navigate to commissioner project tracking page
+      if (context?.projectId) {
+        router.push(`/commissioner-dashboard/projects-and-invoices/project-tracking/${context.projectId}`);
+        return;
+      } else {
+        // Fallback to commissioner projects
+        router.push('/commissioner-dashboard/projects-and-invoices/project-list');
+        return;
+      }
+    }
+
     switch (type) {
 
       case 'gig_application':

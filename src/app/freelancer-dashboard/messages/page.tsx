@@ -9,6 +9,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import MessagesExpansion from '../../../../components/freelancer-dashboard/messages-expansion';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { LoadingInline } from '../../../../components/shared/loading-ellipsis';
 
 export default function MessagesPage() {
   const { data: session, status } = useSession();
@@ -68,7 +69,7 @@ export default function MessagesPage() {
         transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
         className="w-full"
       >
-        <Suspense fallback={<div className="flex items-center justify-center h-64"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-pink-500"></div></div>}>
+        <Suspense fallback={<LoadingInline />}>
           <MessagesExpansion />
         </Suspense>
       </motion.div>

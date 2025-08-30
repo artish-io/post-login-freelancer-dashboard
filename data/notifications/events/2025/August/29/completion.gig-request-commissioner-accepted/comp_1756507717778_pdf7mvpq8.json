@@ -1,0 +1,33 @@
+{
+  "id": "comp_1756507717778_pdf7mvpq8",
+  "type": "completion.gig-request-commissioner-accepted",
+  "notificationType": 162,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "C-R007",
+  "projectId": "C-R007",
+  "message": "Your Smart Contract & NFT Fundraising Development for Venture X Green Energy Startup gig request is now an active project with 1 milestone",
+  "context": {
+    "projectId": "C-R007",
+    "projectTitle": "Smart Contract & NFT Fundraising Development for Venture X Green Energy Startup",
+    "totalTasks": 1,
+    "dueDate": "2025-09-01",
+    "invoicingMethod": "completion",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "C-R007",
+    "projectTitle": "Smart Contract & NFT Fundraising Development for Venture X Green Energy Startup",
+    "totalTasks": 1,
+    "dueDate": "2025-09-01",
+    "invoicingMethod": "completion",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-29T22:48:37.435Z",
+  "subsystem": "completion_invoicing"
+}

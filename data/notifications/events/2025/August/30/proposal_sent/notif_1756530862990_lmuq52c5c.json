@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756530862990_lmuq52c5c",
+  "timestamp": "2025-08-30T05:14:22.990Z",
+  "type": "proposal_sent",
+  "notificationType": 0,
+  "targetId": 35,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Margsate Flether sent you a proposal",
+    "message": "New project proposal for Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)",
+    "priority": "high"
+  },
+  "context": {}
+}

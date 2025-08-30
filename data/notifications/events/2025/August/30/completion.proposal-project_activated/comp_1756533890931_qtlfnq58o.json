@@ -1,0 +1,35 @@
+{
+  "id": "comp_1756533890931_qtlfnq58o",
+  "type": "completion.proposal-project_activated",
+  "notificationType": 45,
+  "actorId": 35,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "Z-P001",
+  "projectId": "Z-P001",
+  "message": "Your Lagos Only Comes Alive At Night proposal is now an active project with 1 task",
+  "context": {
+    "projectId": "Z-P001",
+    "projectTitle": "Lagos Only Comes Alive At Night",
+    "totalTasks": 1,
+    "dueDate": "2025-09-06",
+    "invoicingMethod": "completion",
+    "proposalId": "PROP-6Z3J9EB6",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "metadata": {
+    "projectId": "Z-P001",
+    "projectTitle": "Lagos Only Comes Alive At Night",
+    "totalTasks": 1,
+    "dueDate": "2025-09-06",
+    "invoicingMethod": "completion",
+    "proposalId": "PROP-6Z3J9EB6",
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "timestamp": "2025-08-30T06:04:50.829Z",
+  "subsystem": "completion_invoicing"
+}

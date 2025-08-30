@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756537612547_83t0l138x",
+  "timestamp": "2025-08-30T07:06:52.547Z",
+  "type": "proposal_sent",
+  "notificationType": 0,
+  "targetId": 35,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Lucas Meyer sent you a proposal",
+    "message": "New project proposal for Bookkeeping & Financial Oversight for $5K Cancer Awareness Marathon",
+    "priority": "high"
+  },
+  "context": {}
+}

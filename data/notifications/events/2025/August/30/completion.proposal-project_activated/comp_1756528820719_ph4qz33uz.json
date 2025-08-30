@@ -1,0 +1,35 @@
+{
+  "id": "comp_1756528820719_ph4qz33uz",
+  "type": "completion.proposal-project_activated",
+  "notificationType": 45,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "M-P004",
+  "projectId": "M-P004",
+  "message": "Your The Big Test For Proposals  proposal is now an active project with 1 task",
+  "context": {
+    "projectId": "M-P004",
+    "projectTitle": "The Big Test For Proposals ",
+    "totalTasks": 1,
+    "dueDate": "2025-09-06",
+    "invoicingMethod": "completion",
+    "proposalId": "PROP-JCFMRKXJ",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "M-P004",
+    "projectTitle": "The Big Test For Proposals ",
+    "totalTasks": 1,
+    "dueDate": "2025-09-06",
+    "invoicingMethod": "completion",
+    "proposalId": "PROP-JCFMRKXJ",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-30T04:40:20.354Z",
+  "subsystem": "completion_invoicing"
+}

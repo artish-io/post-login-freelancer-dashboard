@@ -1,0 +1,17 @@
+{
+  "id": "proposal_sent_PROP-1RR5YMU9_1756510081667",
+  "timestamp": "2025-08-29T23:28:01.667Z",
+  "type": "proposal_sent",
+  "notificationType": 80,
+  "entityType": 7,
+  "entityId": "PROP-1RR5YMU9",
+  "metadata": {
+    "proposalTitle": "NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon",
+    "budget": 3000,
+    "timeline": "Not specified",
+    "description": "We’re raising funds for Wizkid’s A Million Blessings 5K charity marathon and need a freelancer to de"
+  },
+  "context": {
+    "proposalId": "PROP-1RR5YMU9"
+  }
+}

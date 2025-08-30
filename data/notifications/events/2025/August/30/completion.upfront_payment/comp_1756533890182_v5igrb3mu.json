@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756533890182_v5igrb3mu",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 3,
+  "entityId": "Z-P001",
+  "projectId": "Z-P001",
+  "message": "Zynate Events Group has paid $48 upfront for your newly activated Lagos Only Comes Alive At Night project. This project has a budget of $352 left. Click here to view invoice details",
+  "context": {
+    "projectId": "Z-P001",
+    "upfrontAmount": 48,
+    "projectTitle": "Lagos Only Comes Alive At Night",
+    "remainingBudget": 352,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "metadata": {
+    "projectId": "Z-P001",
+    "upfrontAmount": 48,
+    "projectTitle": "Lagos Only Comes Alive At Night",
+    "remainingBudget": 352,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Margsate Flether",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "timestamp": "2025-08-30T06:04:50.136Z",
+  "subsystem": "completion_invoicing"
+}

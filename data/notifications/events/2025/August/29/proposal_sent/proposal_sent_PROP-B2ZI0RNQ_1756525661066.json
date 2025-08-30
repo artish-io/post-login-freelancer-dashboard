@@ -1,0 +1,17 @@
+{
+  "id": "proposal_sent_PROP-B2ZI0RNQ_1756525661066",
+  "timestamp": "2025-08-30T03:47:41.066Z",
+  "type": "proposal_sent",
+  "notificationType": 80,
+  "entityType": 7,
+  "entityId": "PROP-B2ZI0RNQ",
+  "metadata": {
+    "proposalTitle": "Skyfall Proposal V2 Completion ",
+    "budget": 3000,
+    "timeline": "Not specified",
+    "description": "We’re raising funds for Wizkid’s A Million Blessings 5K charity marathon and need a freelancer to de"
+  },
+  "context": {
+    "proposalId": "PROP-B2ZI0RNQ"
+  }
+}

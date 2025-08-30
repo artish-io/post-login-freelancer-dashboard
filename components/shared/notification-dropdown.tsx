@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import LoadingEllipsis from './loading-ellipsis';
 
 type NotificationItem = {
   id: string;
@@ -313,7 +314,7 @@ export default function NotificationDropdown({ dashboardType }: Props) {
   if (status === 'loading') {
     return (
       <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-gray-100">
-        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+        <LoadingEllipsis size="sm" />
       </div>
     );
   }
@@ -342,7 +343,7 @@ export default function NotificationDropdown({ dashboardType }: Props) {
           
           {loading ? (
             <div className="flex items-center justify-center py-8">
-              <div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
+              <LoadingEllipsis size="md" />
             </div>
           ) : (
             <ul className="space-y-3 max-h-[400px] overflow-y-auto">

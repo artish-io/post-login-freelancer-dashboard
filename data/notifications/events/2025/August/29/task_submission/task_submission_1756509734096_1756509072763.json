@@ -1,0 +1,22 @@
+{
+  "id": "task_submission_1756509734096_1756509072763",
+  "timestamp": "2025-08-29T23:11:12.763Z",
+  "type": "task_submission",
+  "notificationType": 1,
+  "actorId": 1,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756509734096,
+  "metadata": {
+    "taskId": 1756509734096,
+    "taskTitle": "Phase 1 – Requirements & Contract Design",
+    "projectTitle": "Smart Contract & NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon",
+    "action": "submit",
+    "invoiceGenerated": false,
+    "message": "\"Phase 1 – Requirements & Contract Design\" is awaiting your review for Smart Contract & NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon"
+  },
+  "context": {
+    "projectId": "C-R008",
+    "taskId": 1756509734096
+  }
+}

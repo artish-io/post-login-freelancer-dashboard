@@ -1,0 +1,60 @@
+{
+  "proposalId": "PROP-JCFMRKXJ",
+  "title": "The Big Test For Proposals ",
+  "summary": "We’re raising funds for Wizkid’s A Million Blessings 5K charity marathon and need a freelancer to develop smart contracts that power NFT-based fundraising. The goal is to create a secure, seamless experience where participants and donors can purchase unique NFTs tied to rewards, recognition, or exclusive access. The ideal freelancer will ensure transparency, trust, and engagement while maximizing contributions for the charity.",
+  "budget": 3000,
+  "executionMethod": "completion",
+  "timeline": "3 days",
+  "freelancer": {
+    "id": 31,
+    "name": "Margsate Flether",
+    "email": "margsate.flether@example.com",
+    "avatar": "/avatars/margsate-flether.png",
+    "skills": [],
+    "portfolio": []
+  },
+  "commissioner": {
+    "id": 34,
+    "name": "Matte Hannery",
+    "email": "matte.hannery@example.com",
+    "organizationId": 3
+  },
+  "financial": {
+    "totalBid": 3000,
+    "currency": "USD",
+    "upfrontAmount": 360,
+    "upfrontPercentage": 12,
+    "milestoneCount": 1,
+    "amountPerMilestone": 0
+  },
+  "timeline_details": {
+    "startDate": "2025-08-30T04:35:46.479Z",
+    "endDate": "2025-09-02T04:00:00.000Z",
+    "estimatedDuration": "3 days",
+    "startType": "Immediately"
+  },
+  "metadata": {
+    "sentAt": "2025-08-30T04:35:46.464Z",
+    "status": "sent",
+    "typeTags": [
+      "UI/UX Design"
+    ],
+    "logoUrl": "/logos/corlax-ios-logo.png",
+    "milestones": [
+      {
+        "id": "8a86b479-a320-4aea-ba42-7533a668ff29",
+        "title": "Requirements & Contract Design",
+        "description": "Gather fundraising goals, NFT tiers, and reward structures. Draft smart contract architecture that ensures security, audit readiness, and compatibility with major Web3 wallets.",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-09-02T04:00:00.000Z",
+        "amount": 0
+      }
+    ]
+  },
+  "email": {
+    "subject": "New Proposal: The Big Test For Proposals  from Margsate Flether",
+    "previewText": "Margsate Flether has sent you a proposal for \"The Big Test For Proposals \" with a budget of $3,000",
+    "actionUrl": "https://artish.app/commissioner-dashboard/projects-and-invoices/recieved-proposals/PROP-JCFMRKXJ",
+    "expiresAt": "2025-09-29T04:35:46.464Z"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "title": "Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)",
+  "summary": "We’re hosting a James Bond look-alike cosplay contest, where participants compete for a $5,000 prize pool paid in exclusive 007 NFTs. We’re looking for a freelancer to design and run a marketing campaign that mixes spy-thriller flair with modern Web3 culture, driving buzz, sign-ups, and community engagement. The campaign should feel cinematic, stylish, and irresistible to both Bond fans and NFT collectors.",
+  "logoUrl": "/logos/zynate-events.png",
+  "contact": {
+    "id": 35,
+    "name": "Tilly Burzinsky",
+    "title": "Events Lead",
+    "avatar": "/avatars/tilly.png",
+    "type": "commissioner",
+    "email": "tilly.burzinsky@example.com",
+    "username": "tilly",
+    "password": "password123",
+    "address": "Ottawa, Canada",
+    "organizationId": 4,
+    "bio": "Dynamic events professional specializing in large-scale corporate and cultural events. Expert in creating memorable experiences that bring communities together.",
+    "rating": 4.7,
+    "responsibilities": [
+      "Event Planning",
+      "Vendor Coordination",
+      "Budget Management",
+      "Logistics Oversight",
+      "Client Relations",
+      "Risk Management",
+      "Team Supervision"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/tilly-burzinsky"
+      }
+    ],
+    "createdAt": "2025-07-29T14:26:40.167Z",
+    "updatedAt": "2025-08-12T15:46:25.247Z",
+    "organization": {
+      "name": "Zynate Events Group",
+      "logo": "/logos/zynate-events.png",
+      "address": "12 Festival Avenue, Ottawa, Canada"
+    }
+  },
+  "typeTags": [
+    "Social Media Marketing",
+    "Event Marketing"
+  ],
+  "milestones": [
+    {
+      "id": "02f29b7b-ad1c-46a2-b1c8-106056f2432c",
+      "title": "Phase 1 – Concept & Creative Direction",
+      "description": "Develop a campaign theme that merges James Bond aesthetics (sleek, high-stakes, iconic) with NFT/Web3 culture. Produce branded assets, teaser visuals, and a promotional content calendar.",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-08-30T04:00:00.000Z",
+      "amount": 1667
+    },
+    {
+      "id": "589af42a-4144-4136-b9bf-5d5ed8ca133f",
+      "title": "Phase 2 – Campaign Activation",
+      "description": "Launch a multi-channel marketing push across social media, cosplay communities, NFT/crypto spaces, and fan forums. Partner with influencers and Bond fan clubs to maximise reach and build hype.",
+      "startDate": "2025-08-31T04:00:00.000Z",
+      "endDate": "2025-08-31T04:00:00.000Z",
+      "amount": 1667
+    },
+    {
+      "id": "a0f9520c-2fac-4e39-a775-762152970d91",
+      "title": "Phase 3 – Contest Engagement & Legacy",
+      "description": "Manage live engagement during the contest (social updates, voting campaigns, highlight reels). Deliver a post-event package that includes contest recaps, NFT showcase drops, and a content archive that extends the excitement beyond the event.",
+      "startDate": "2025-09-01T04:00:00.000Z",
+      "endDate": "2025-09-02T04:00:00.000Z",
+      "amount": 1667
+    }
+  ],
+  "totalBid": 5001,
+  "customStartDate": null,
+  "endDate": "2025-09-02T04:00:00.000Z",
+  "executionMethod": "milestone",
+  "startType": "Immediately",
+  "projectId": "UNQ-005",
+  "expectedDurationDays": 3,
+  "upfrontAmount": 0,
+  "upfrontPercentage": 0,
+  "milestoneTotal": 5001,
+  "amountPerMilestone": 1667,
+  "id": "PROP-O0E5SYEQ",
+  "proposalTitle": "Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)",
+  "description": "We’re hosting a James Bond look-alike cosplay contest, where participants compete for a $5,000 prize pool paid in exclusive 007 NFTs. We’re looking for a freelancer to design and run a marketing campaign that mixes spy-thriller flair with modern Web3 culture, driving buzz, sign-ups, and community engagement. The campaign should feel cinematic, stylish, and irresistible to both Bond fans and NFT collectors.",
+  "budget": 5001,
+  "freelancerId": 31,
+  "commissionerId": 35,
+  "createdAt": "2025-08-30T05:14:22.052Z",
+  "status": "accepted",
+  "hiddenFor": [],
+  "sentAt": "2025-08-30T05:14:22.052Z",
+  "organizationId": 4
+}

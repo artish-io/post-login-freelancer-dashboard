@@ -8,6 +8,8 @@ import CommissionerStatsRow from '../../../components/commissioner-dashboard/com
 import ProjectSummaryTable from '../../../components/shared/project-summary-table';
 import TasksPanel from '../../../components/shared/tasks-panel';
 import CommissionerNetworkPanel from '../../../components/commissioner-dashboard/commissioner-network-panel';
+import { LoadingPage } from '../../../components/shared/loading-ellipsis';
+import { NavigationOptimizer } from '../../../lib/utils/navigation-optimizer';
 
 export default function CommissionerDashboard() {
   const { data: session, status } = useSession();
@@ -87,6 +89,9 @@ export default function CommissionerDashboard() {
 
     fetchDashboardData();
 
+    // Prefetch common routes for faster navigation
+    NavigationOptimizer.prefetchDashboardRoutes(router, 'commissioner');
+
     // Listen for project status changes (e.g., when projects are paused)
     const handleProjectStatusChange = () => {
       fetchDashboardData();
@@ -101,14 +106,7 @@ export default function CommissionerDashboard() {
   }, [session, status, router]);
 
   if (status === 'loading' || loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
-        </div>
-      </div>
-    );
+    return <LoadingPage />;
   }
 
   return (

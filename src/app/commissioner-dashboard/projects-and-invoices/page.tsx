@@ -10,6 +10,8 @@ import TasksPanel from '../../../../components/shared/tasks-panel';
 import CommissionerNetworkPanel from '../../../../components/commissioner-dashboard/commissioner-network-panel';
 import InvoiceHistoryPanel from '../../../../components/commissioner-dashboard/projects-and-invoices/invoice-history-panel';
 import PostGigButton from '../../../../components/commissioner-dashboard/projects-and-invoices/post-gig-button';
+import ReceivedProposalsButton from '../../../../components/commissioner-dashboard/projects-and-invoices/received-proposals-button';
+import { LoadingPage } from '../../../../components/shared/loading-ellipsis';
 
 export default function ProjectsAndInvoicesPage() {
   const { data: session, status } = useSession();
@@ -119,15 +121,13 @@ export default function ProjectsAndInvoicesPage() {
     router.push('/commissioner-dashboard/projects-and-invoices/post-a-gig');
   };
 
+  const handleReceivedProposals = () => {
+    // Navigate to received proposals list page
+    router.push('/commissioner-dashboard/projects-and-invoices/recieved-proposals-list');
+  };
+
   if (status === 'loading' || loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard...</p>
-        </div>
-      </div>
-    );
+    return <LoadingPage />;
   }
 
   return (
@@ -174,9 +174,10 @@ export default function ProjectsAndInvoicesPage() {
           />
         </div>
 
-        {/* Right Column - Post Gig, Invoice History and Network */}
+        {/* Right Column - Post Gig, Received Proposals, Invoice History and Network */}
         <div className="space-y-6">
           <PostGigButton onClick={handlePostGig} />
+          <ReceivedProposalsButton onClick={handleReceivedProposals} />
           {commissionerId && <InvoiceHistoryPanel commissionerId={commissionerId} />}
           {commissionerId && <CommissionerNetworkPanel commissionerId={commissionerId} />}
         </div>

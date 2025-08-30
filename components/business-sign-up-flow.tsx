@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Image from 'next/image';
+import LoadingEllipsis from './shared/loading-ellipsis';
 import { motion } from "framer-motion"
 
 export default function BusinessSignUpFlow() {
@@ -24,8 +25,41 @@ export default function BusinessSignUpFlow() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
+  // Organization search/join functionality
+  const [organizationMode, setOrganizationMode] = useState<'search' | 'create'>('search');
+  const [organizationSearch, setOrganizationSearch] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [selectedOrganization, setSelectedOrganization] = useState<any>(null);
+  const [isSearching, setIsSearching] = useState(false);
+
   const handleNext = () => {
     if (step < 3) setStep(step + 1);
+  };
+
+  // Search for existing organizations
+  const searchOrganizations = async (query: string) => {
+    if (query.length < 2) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const response = await fetch('/api/organizations/all');
+      const organizations = await response.json();
+
+      const filtered = organizations.filter((org: any) =>
+        org.name.toLowerCase().includes(query.toLowerCase()) ||
+        org.email?.toLowerCase().includes(query.toLowerCase())
+      );
+
+      setSearchResults(filtered.slice(0, 5)); // Limit to 5 results
+    } catch (error) {
+      console.error('Failed to search organizations:', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,12 +97,13 @@ export default function BusinessSignUpFlow() {
         links: Object.fromEntries(
           Object.entries(links).filter(([_, value]) => value.trim() !== '')
         ),
-        organization: companyName.trim() ? {
+        organization: organizationMode === 'create' && companyName.trim() ? {
           name: companyName.trim(),
           bio: bio.trim(), // Use same bio for organization
           website: website.trim(),
           logo: preview // Use same avatar as organization logo
-        } : null
+        } : null,
+        joinOrganizationId: organizationMode === 'search' && selectedOrganization ? selectedOrganization.id : null
       };
 
       const response = await fetch('/api/signup?role=commissioner', {
@@ -271,6 +306,32 @@ export default function BusinessSignUpFlow() {
       Add company logo
     </p>
 
+    {/* Organization Mode Toggle */}
+    <div className="flex mb-4 bg-gray-100 rounded-md p-1">
+      <button
+        type="button"
+        onClick={() => setOrganizationMode('search')}
+        className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+          organizationMode === 'search'
+            ? 'bg-white text-black shadow-sm'
+            : 'text-gray-600 hover:text-black'
+        }`}
+      >
+        Join Existing
+      </button>
+      <button
+        type="button"
+        onClick={() => setOrganizationMode('create')}
+        className={`flex-1 py-2 px-4 rounded text-sm font-medium transition-colors ${
+          organizationMode === 'create'
+            ? 'bg-white text-black shadow-sm'
+            : 'text-gray-600 hover:text-black'
+        }`}
+      >
+        Create New
+      </button>
+    </div>
+
     {/* Step 2 Form */}
     <form
       onSubmit={(e) => {
@@ -279,14 +340,105 @@ export default function BusinessSignUpFlow() {
       }}
       className="space-y-4"
     >
-      <input
-        type="text"
-        placeholder="Company / Brand Name"
-        value={companyName}
-        onChange={(e) => setCompanyName(e.target.value)}
-        required
-        className="w-full px-4 py-2 border rounded-md text-sm focus:outline-none"
-      />
+      {organizationMode === 'search' ? (
+        <>
+          {/* Organization Search */}
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search for your organization..."
+              value={organizationSearch}
+              onChange={(e) => {
+                setOrganizationSearch(e.target.value);
+                searchOrganizations(e.target.value);
+              }}
+              className="w-full px-4 py-2 border rounded-md text-sm focus:outline-none"
+            />
+            {isSearching && (
+              <div className="absolute right-3 top-2.5">
+                <LoadingEllipsis size="sm" />
+              </div>
+            )}
+          </div>
+
+          {/* Search Results */}
+          {searchResults.length > 0 && (
+            <div className="border rounded-md max-h-40 overflow-y-auto">
+              {searchResults.map((org) => (
+                <button
+                  key={org.id}
+                  type="button"
+                  onClick={() => {
+                    setSelectedOrganization(org);
+                    setOrganizationSearch(org.name);
+                    setSearchResults([]);
+                  }}
+                  className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b last:border-b-0 focus:outline-none focus:bg-gray-50"
+                >
+                  <div className="font-medium text-sm">{org.name}</div>
+                  {org.email && (
+                    <div className="text-xs text-gray-500">{org.email}</div>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Selected Organization Display */}
+          {selectedOrganization && (
+            <div className="bg-green-50 border border-green-200 rounded-md p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="font-medium text-sm text-green-800">
+                    {selectedOrganization.name}
+                  </div>
+                  <div className="text-xs text-green-600">
+                    You'll join this organization
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedOrganization(null);
+                    setOrganizationSearch('');
+                  }}
+                  className="text-green-600 hover:text-green-800"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          {/* Create New Organization */}
+          <input
+            type="text"
+            placeholder="Company / Brand Name"
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
+            required
+            className="w-full px-4 py-2 border rounded-md text-sm focus:outline-none"
+          />
+          <input
+            type="url"
+            placeholder="Website"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md text-sm focus:outline-none"
+          />
+          <input
+            type="text"
+            placeholder="Location"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            className="w-full px-4 py-2 border rounded-md text-sm focus:outline-none"
+          />
+        </>
+      )}
+
+      {/* Professional Title (always shown) */}
       <input
         type="text"
         placeholder="Professional Title"
@@ -295,23 +447,11 @@ export default function BusinessSignUpFlow() {
         required
         className="w-full px-4 py-2 border rounded-md text-sm focus:outline-none"
       />
-      <input
-        type="url"
-        placeholder="Website"
-        value={website}
-        onChange={(e) => setWebsite(e.target.value)}
-        className="w-full px-4 py-2 border rounded-md text-sm focus:outline-none"
-      />
-      <input
-        type="text"
-        placeholder="Location"
-        value={location}
-        onChange={(e) => setLocation(e.target.value)}
-        className="w-full px-4 py-2 border rounded-md text-sm focus:outline-none"
-      />
+
       <button
         type="submit"
         className="w-full bg-black text-white py-2 rounded-md text-sm font-medium"
+        disabled={organizationMode === 'search' && !selectedOrganization}
       >
         Next
       </button>

@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756528270554_7khoqt8uw",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "M-P003",
+  "projectId": "M-P003",
+  "message": "You just paid Tobi Philly $360 upfront Skyfall Proposal V2 Completion . Remaining budget: $2640. Click here to view invoice details",
+  "context": {
+    "projectId": "M-P003",
+    "upfrontAmount": 360,
+    "projectTitle": "Skyfall Proposal V2 Completion ",
+    "remainingBudget": 2640,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "M-P003",
+    "upfrontAmount": 360,
+    "projectTitle": "Skyfall Proposal V2 Completion ",
+    "remainingBudget": 2640,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-30T04:31:10.548Z",
+  "subsystem": "completion_invoicing"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "gig_request_sent_1756509004646_1756509005652",
+  "timestamp": "2025-08-29T23:10:04.645Z",
+  "type": "gig_request_sent",
+  "notificationType": 61,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "1756509004646",
+  "metadata": {
+    "gigTitle": "Smart Contract & NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon",
+    "organizationName": "Corlax Wellness",
+    "organizationLogo": "/logos/corlax-ios-logo.png",
+    "budgetMin": 3000,
+    "budgetMax": 3788
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 3,
+    "requestId": 1756509004646
+  }
+}

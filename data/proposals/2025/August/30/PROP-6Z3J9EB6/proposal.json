@@ -1,0 +1,75 @@
+{
+  "title": "Lagos Only Comes Alive At Night",
+  "summary": "Freelancer to design and run a marketing campaign that mixes spy-thriller flair with modern Web3 culture, driving buzz, sign-ups, and community engagement. The campaign should feel cinematic, stylish, and irresistible to both Bond fans and NFT collectors.",
+  "logoUrl": "/logos/zynate-events.png",
+  "contact": {
+    "id": 35,
+    "name": "Tilly Burzinsky",
+    "title": "Events Lead",
+    "avatar": "/avatars/tilly.png",
+    "type": "commissioner",
+    "email": "tilly.burzinsky@example.com",
+    "username": "tilly",
+    "password": "password123",
+    "address": "Ottawa, Canada",
+    "organizationId": 4,
+    "bio": "Dynamic events professional specializing in large-scale corporate and cultural events. Expert in creating memorable experiences that bring communities together.",
+    "rating": 4.7,
+    "responsibilities": [
+      "Event Planning",
+      "Vendor Coordination",
+      "Budget Management",
+      "Logistics Oversight",
+      "Client Relations",
+      "Risk Management",
+      "Team Supervision"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/tilly-burzinsky"
+      }
+    ],
+    "createdAt": "2025-07-29T14:26:40.167Z",
+    "updatedAt": "2025-08-12T15:46:25.247Z",
+    "organization": {
+      "name": "Zynate Events Group",
+      "logo": "/logos/zynate-events.png",
+      "address": "12 Festival Avenue, Ottawa, Canada"
+    }
+  },
+  "typeTags": [
+    "Event Marketing"
+  ],
+  "milestones": [
+    {
+      "id": "5bf8766e-fd94-4369-8984-d459d08c6781",
+      "title": "Phase 1 – Concept & Creative Direction",
+      "description": "Develop a campaign theme that merges James Bond aesthetics (sleek, high-stakes, iconic) with NFT/Web3 culture. Produce branded assets, teaser visuals, and a promotional content calendar.",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-09-01T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "totalBid": 400,
+  "customStartDate": null,
+  "endDate": "2025-09-01T04:00:00.000Z",
+  "executionMethod": "completion",
+  "startType": "Immediately",
+  "projectId": "UNQ-006",
+  "expectedDurationDays": 2,
+  "upfrontAmount": 48,
+  "upfrontPercentage": 12,
+  "milestoneTotal": 0,
+  "amountPerMilestone": 0,
+  "id": "PROP-6Z3J9EB6",
+  "proposalTitle": "Lagos Only Comes Alive At Night",
+  "description": "Freelancer to design and run a marketing campaign that mixes spy-thriller flair with modern Web3 culture, driving buzz, sign-ups, and community engagement. The campaign should feel cinematic, stylish, and irresistible to both Bond fans and NFT collectors.",
+  "budget": 400,
+  "freelancerId": 31,
+  "commissionerId": 35,
+  "createdAt": "2025-08-30T06:04:05.288Z",
+  "status": "accepted",
+  "hiddenFor": [],
+  "sentAt": "2025-08-30T06:04:05.289Z"
+}

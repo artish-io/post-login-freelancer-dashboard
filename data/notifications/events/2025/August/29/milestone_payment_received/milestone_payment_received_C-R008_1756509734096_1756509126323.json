@@ -1,0 +1,24 @@
+{
+  "id": "milestone_payment_received_C-R008_1756509734096_1756509126323",
+  "timestamp": "2025-08-29T23:12:06.323Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 34,
+  "entityType": 5,
+  "entityId": "C-R008_1756509734096",
+  "metadata": {
+    "taskTitle": "Phase 1 – Requirements & Contract Design",
+    "projectTitle": "Smart Contract & NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon",
+    "projectId": "C-R008",
+    "taskId": 1756509734096,
+    "invoiceGenerated": true,
+    "amount": 0,
+    "invoiceNumber": "MH-022",
+    "organizationName": "Corlax Wellness"
+  },
+  "context": {
+    "projectId": "C-R008",
+    "taskId": 1756509734096,
+    "invoiceNumber": "MH-022"
+  }
+}

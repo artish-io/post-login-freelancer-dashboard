@@ -1,0 +1,75 @@
+{
+  "title": "Bookkeeping & Financial Oversight for $5K Cancer Awareness Marathon",
+  "summary": "Review the marathon structure, entry fees, sponsorship commitments, and donation channels. Set up a bookkeeping framework with a secure ledger to track revenues, expenses (permits, logistics, marketing), and earmarked charity funds. Deliver a reporting workflow that ensures organizers can see progress in real time.",
+  "logoUrl": "/logos/zynate-events.png",
+  "contact": {
+    "id": 35,
+    "name": "Tilly Burzinsky",
+    "title": "Events Lead",
+    "avatar": "/avatars/tilly.png",
+    "type": "commissioner",
+    "email": "tilly.burzinsky@example.com",
+    "username": "tilly",
+    "password": "password123",
+    "address": "Ottawa, Canada",
+    "organizationId": 4,
+    "bio": "Dynamic events professional specializing in large-scale corporate and cultural events. Expert in creating memorable experiences that bring communities together.",
+    "rating": 4.7,
+    "responsibilities": [
+      "Event Planning",
+      "Vendor Coordination",
+      "Budget Management",
+      "Logistics Oversight",
+      "Client Relations",
+      "Risk Management",
+      "Team Supervision"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/tilly-burzinsky"
+      }
+    ],
+    "createdAt": "2025-07-29T14:26:40.167Z",
+    "updatedAt": "2025-08-12T15:46:25.247Z",
+    "organization": {
+      "name": "Zynate Events Group",
+      "logo": "/logos/zynate-events.png",
+      "address": "12 Festival Avenue, Ottawa, Canada"
+    }
+  },
+  "typeTags": [
+    "Bookkeeping"
+  ],
+  "milestones": [
+    {
+      "id": "7e43d709-e4f7-472f-9278-0df08fb9705b",
+      "title": "Phase 1 – Research & Financial Setup",
+      "description": "Review the marathon structure, entry fees, sponsorship commitments, and donation channels. Set up a bookkeeping framework with a secure ledger to track revenues, expenses (permits, logistics, marketing), and earmarked charity funds. Deliver a reporting workflow that ensures organisers can see progress in real time.",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-09-02T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "totalBid": 300,
+  "customStartDate": null,
+  "endDate": "2025-09-02T04:00:00.000Z",
+  "executionMethod": "completion",
+  "startType": "Immediately",
+  "projectId": "UNQ-008",
+  "expectedDurationDays": 3,
+  "upfrontAmount": 36,
+  "upfrontPercentage": 12,
+  "milestoneTotal": 0,
+  "amountPerMilestone": 0,
+  "id": "PROP-95UEIYVH",
+  "proposalTitle": "Bookkeeping & Financial Oversight for $5K Cancer Awareness Marathon",
+  "description": "Review the marathon structure, entry fees, sponsorship commitments, and donation channels. Set up a bookkeeping framework with a secure ledger to track revenues, expenses (permits, logistics, marketing), and earmarked charity funds. Deliver a reporting workflow that ensures organizers can see progress in real time.",
+  "budget": 300,
+  "freelancerId": 25,
+  "commissionerId": 35,
+  "createdAt": "2025-08-30T07:06:51.386Z",
+  "status": "rejected",
+  "hiddenFor": [],
+  "sentAt": "2025-08-30T07:06:51.386Z"
+}

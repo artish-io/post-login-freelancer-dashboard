@@ -1,0 +1,19 @@
+{
+  "id": "proposal_sent_PROP-O0E5SYEQ_1756530862476",
+  "timestamp": "2025-08-30T05:14:22.476Z",
+  "type": "proposal_sent",
+  "notificationType": 80,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 7,
+  "entityId": "PROP-O0E5SYEQ",
+  "metadata": {
+    "proposalTitle": "Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)",
+    "budget": 5001,
+    "timeline": "Not specified",
+    "description": "We’re hosting a James Bond look-alike cosplay contest, where participants compete for a $5,000 prize"
+  },
+  "context": {
+    "proposalId": "PROP-O0E5SYEQ"
+  }
+}

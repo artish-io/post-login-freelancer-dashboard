@@ -518,7 +518,7 @@ export default function ProjectSummaryTable({
       )}
 
       {/* CTA */}
-      {showViewAllButton && projects.length > 0 && (
+      {showViewAllButton && (
         <div className="flex justify-end mt-4">
           <button
             onClick={handleViewAllClick}

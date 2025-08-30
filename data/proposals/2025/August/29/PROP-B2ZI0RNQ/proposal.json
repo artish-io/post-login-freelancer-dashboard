@@ -1,0 +1,75 @@
+{
+  "title": "Skyfall Proposal V2 Completion ",
+  "summary": "We’re raising funds for Wizkid’s A Million Blessings 5K charity marathon and need a freelancer to develop smart contracts that power NFT-based fundraising. The goal is to create a secure, seamless experience where participants and donors can purchase unique NFTs tied to rewards, recognition, or exclusive access. The ideal freelancer will ensure transparency, trust, and engagement while maximizing contributions for the charity.",
+  "logoUrl": "/logos/corlax-ios-logo.png",
+  "contact": {
+    "id": 34,
+    "name": "Matte Hannery",
+    "title": "Startup Founder",
+    "avatar": "/avatars/matte.png",
+    "type": "commissioner",
+    "email": "matte.hannery@example.com",
+    "address": "Toronto, Canada",
+    "organizationId": 3,
+    "username": "matte",
+    "password": "testpass",
+    "bio": "Serial entrepreneur focused on wellness technology and mental health solutions. Building products that make wellness accessible and sustainable for everyone.",
+    "rating": 4.9,
+    "responsibilities": [
+      "Product Vision",
+      "Strategic Planning",
+      "Investor Relations",
+      "Team Leadership",
+      "Market Validation",
+      "Partnership Development"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/matte-hannery"
+      }
+    ],
+    "createdAt": "2025-07-29T14:26:40.166Z",
+    "updatedAt": "2025-08-12T15:46:25.245Z",
+    "organization": {
+      "name": "Corlax Wellness",
+      "logo": "/logos/corlax-ios-logo.png",
+      "address": "100 Mindful Road, Toronto, ON, Canada"
+    }
+  },
+  "typeTags": [
+    "UI/UX Design"
+  ],
+  "milestones": [
+    {
+      "id": "45a318e3-ea46-48f7-b607-66a499ed5f80",
+      "title": "Launch & Post-Event Reporting",
+      "description": "Support mainnet deployment, integrate with the event’s website or marketplace, and ensure real-time tracking of funds and NFT ownership. Deliver documentation and analytics dashboards for post-event reporting and donor acknowledgement.",
+      "startDate": "2025-08-29T04:00:00.000Z",
+      "endDate": "2025-09-01T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "totalBid": 3000,
+  "customStartDate": null,
+  "endDate": "2025-09-01T04:00:00.000Z",
+  "executionMethod": "completion",
+  "startType": "Immediately",
+  "projectId": "UNQ-003",
+  "expectedDurationDays": 3,
+  "upfrontAmount": 360,
+  "upfrontPercentage": 12,
+  "milestoneTotal": 0,
+  "amountPerMilestone": 0,
+  "id": "PROP-B2ZI0RNQ",
+  "proposalTitle": "Skyfall Proposal V2 Completion ",
+  "description": "We’re raising funds for Wizkid’s A Million Blessings 5K charity marathon and need a freelancer to develop smart contracts that power NFT-based fundraising. The goal is to create a secure, seamless experience where participants and donors can purchase unique NFTs tied to rewards, recognition, or exclusive access. The ideal freelancer will ensure transparency, trust, and engagement while maximizing contributions for the charity.",
+  "budget": 3000,
+  "commissionerId": 34,
+  "createdAt": "2025-08-30T03:47:41.009Z",
+  "status": "accepted",
+  "hiddenFor": [],
+  "sentAt": "2025-08-30T03:47:41.009Z",
+  "organizationId": 827901,
+  "freelancerId": 1
+}

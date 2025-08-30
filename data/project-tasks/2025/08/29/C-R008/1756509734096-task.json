@@ -1,0 +1,23 @@
+{
+  "taskId": 1756509734096,
+  "projectId": "C-R008",
+  "projectTitle": "Smart Contract & NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon",
+  "title": "Phase 1 – Requirements & Contract Design",
+  "status": "Approved",
+  "completed": true,
+  "order": 1,
+  "link": "bit.ly23423",
+  "dueDate": "2025-08-30T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Gather fundraising goals, NFT tiers, and reward structures. Draft smart contract architecture that ensures security, audit readiness, and compatibility with major Web3 wallets.\n\n",
+  "submittedDate": "2025-08-29T23:11:12.735Z",
+  "approvedDate": "2025-08-29T23:12:00.125Z",
+  "createdDate": "2025-08-29T23:10:37.497Z",
+  "lastModified": "2025-08-29T23:12:00.125Z",
+  "id": 1756509734096,
+  "createdAt": "2025-08-29T23:10:37.495Z",
+  "updatedAt": "2025-08-29T23:10:37.495Z"
+}

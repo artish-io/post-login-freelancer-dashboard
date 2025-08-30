@@ -9,7 +9,7 @@ export default function ProposalInvoiceButtons() {
   return (
     <div className="space-y-4 w-full">
       <button
-        className="w-full flex items-center justify-center gap-2 bg-black text-white px-6 py-3 rounded-2xl text-sm font-medium hover:bg-gray-900 hover:shadow-lg transition duration-200"
+        className="w-full flex items-center justify-center gap-2 bg-black/80 text-white px-6 py-3 rounded-2xl text-sm font-medium hover:bg-gray-900 hover:shadow-lg transition duration-200 backdrop-blur-sm"
         onClick={() =>
           router.push('/freelancer-dashboard/projects-and-invoices/create-proposal')
         }
@@ -19,7 +19,7 @@ export default function ProposalInvoiceButtons() {
       </button>
 
       <button
-        className="w-full flex items-center justify-center gap-2 bg-black text-white px-6 py-3 rounded-2xl text-sm font-medium hover:bg-gray-900 hover:shadow-lg transition duration-200"
+        className="w-full flex items-center justify-center gap-2 bg-black/80 text-white px-6 py-3 rounded-2xl text-sm font-medium hover:bg-gray-900 hover:shadow-lg transition duration-200 backdrop-blur-sm"
         onClick={() =>
           router.push('/freelancer-dashboard/projects-and-invoices/create-invoice')
         }

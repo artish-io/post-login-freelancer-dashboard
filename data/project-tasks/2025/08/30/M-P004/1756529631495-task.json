@@ -1,0 +1,22 @@
+{
+  "taskId": 1756529631495,
+  "projectId": "M-P004",
+  "projectTitle": "The Big Test For Proposals ",
+  "title": "Requirements & Contract Design",
+  "status": "In review",
+  "completed": false,
+  "order": 1,
+  "dueDate": "2025-08-30T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Gather fundraising goals, NFT tiers, and reward structures. Draft smart contract architecture that ensures security, audit readiness, and compatibility with major Web3 wallets.",
+  "createdDate": "2025-08-30T04:40:15.317Z",
+  "lastModified": "2025-08-30T05:23:37.853Z",
+  "id": 1756529631495,
+  "createdAt": "2025-08-30T04:40:15.303Z",
+  "updatedAt": "2025-08-30T04:40:15.303Z",
+  "submittedDate": "2025-08-30T05:23:37.852Z",
+  "link": "bit.ly"
+}

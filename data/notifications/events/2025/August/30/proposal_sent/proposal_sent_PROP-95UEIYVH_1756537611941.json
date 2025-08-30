@@ -1,0 +1,19 @@
+{
+  "id": "proposal_sent_PROP-95UEIYVH_1756537611941",
+  "timestamp": "2025-08-30T07:06:51.941Z",
+  "type": "proposal_sent",
+  "notificationType": 80,
+  "actorId": 25,
+  "targetId": 35,
+  "entityType": 7,
+  "entityId": "PROP-95UEIYVH",
+  "metadata": {
+    "proposalTitle": "Bookkeeping & Financial Oversight for $5K Cancer Awareness Marathon",
+    "budget": 300,
+    "timeline": "Not specified",
+    "description": "Review the marathon structure, entry fees, sponsorship commitments, and donation channels. Set up a "
+  },
+  "context": {
+    "proposalId": "PROP-95UEIYVH"
+  }
+}

@@ -194,22 +194,27 @@ export async function GET(request: NextRequest) {
         'completion.project_completed',
         'completion.rating_prompt',
         'completion.gig-request-upfront-commissioner',  // 🔔 FIX: Add gig request upfront commissioner notifications
-        'completion.gig-request-commissioner-accepted'  // 🔔 FIX: Add gig request acceptance notifications for commissioners
-        // NOTE: completion.project_activated is intentionally excluded - commissioners don't need to be notified of their own project activation
+        'completion.gig-request-commissioner-accepted',  // 🔔 FIX: Add gig request acceptance notifications for commissioners
+        'completion.proposal-commissioner-accepted',  // 🔔 FIX: Add proposal acceptance notifications for commissioners
+        'completion.proposal-project_activated',  // 🔔 FIX: Add proposal project activation notifications for commissioners
+        'milestone.proposal-accepted',  // 🔔 FIX: Add milestone proposal acceptance notifications for commissioners
+        'milestone.proposal-project_activated'  // 🔔 FIX: Add milestone proposal project activation notifications for commissioners
         // NOTE: task_submitted is handled separately below as it's not a self-notification
       ];
 
-      // 🔔 ATOMIC CONSOLE LOG: Track completion commissioner notification filtering
-      if (event.type.startsWith('completion.') && userType === 'commissioner') {
-        console.log('🔔 COMPLETION COMMISSIONER FILTER:', {
+      // 🔔 ATOMIC CONSOLE LOG: Track completion notification filtering for both user types
+      if (event.type.startsWith('completion.')) {
+        console.log('🔔 COMPLETION NOTIFICATION FILTER:', {
           eventType: event.type,
           eventId: event.id,
           actorId: event.actorId,
           targetId: event.targetId,
           userId: parseInt(userId),
+          userType,
           isInCommissionerTypes: commissionerCompletionTypes.includes(event.type),
           isSelfNotification: event.targetId === parseInt(userId) && event.actorId === parseInt(userId),
-          willBeIncluded: commissionerCompletionTypes.includes(event.type) && event.targetId === parseInt(userId) && event.actorId === parseInt(userId),
+          isTargetNotification: event.targetId === parseInt(userId),
+          willBeIncluded: 'TBD',
           timestamp: new Date().toISOString()
         });
       }
@@ -748,7 +753,8 @@ function shouldUseAvatar(eventType: EventType): boolean {
 function shouldUseOrgLogo(eventType: EventType): boolean {
   return [
     'gig_request_sent', // Commissioner sends gig request - show organization logo on freelancer side
-    'gig_rejected' // Organization rejects freelancer application - show organization logo on freelancer side
+    'gig_rejected', // Organization rejects freelancer application - show organization logo on freelancer side
+    'proposal_rejected' // Organization rejects freelancer proposal - show organization logo on freelancer side
   ].includes(eventType);
 }
 
@@ -925,7 +931,7 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
     case 'proposal_accepted':
       return `Your proposal has been accepted`;
     case 'proposal_rejected':
-      return `${event.metadata?.organizationName || actorName} rejected your proposal`;
+      return `${event.metadata?.organizationName || actorName} rejected your proposal for "${event.metadata?.proposalTitle || 'project'}"`;
     case 'gig_rejected':
       return `${event.metadata?.organizationName || actorName} rejected your application for "${event.metadata?.gigTitle || 'gig'}"`;
     case 'rating_prompt_freelancer':
@@ -1040,6 +1046,26 @@ async function generateGranularTitle(event: EventData, actor: any, _project?: an
     case 'completion.gig-request-upfront-commissioner':
       // Title: Upfront payment confirmation for commissioner
       return `Upfront payment processed`;
+
+    // Proposal specific completion notifications
+    case 'completion.proposal-commissioner-accepted':
+      // Title: [commissioner name] accepted your proposal
+      const proposalCommissionerName = (event.metadata as any)?.commissionerName || (event.context as any)?.commissionerName || 'Commissioner';
+      return `${proposalCommissionerName} accepted your proposal`;
+
+    case 'completion.proposal-project_activated':
+      // Title: Project activated
+      return `Project activated`;
+
+    // Milestone proposal specific notifications
+    case 'milestone.proposal-accepted':
+      // Title: [commissioner name] accepted your proposal
+      const milestoneProposalCommissionerName = (event.metadata as any)?.commissionerName || (event.context as any)?.commissionerName || 'Commissioner';
+      return `${milestoneProposalCommissionerName} accepted your proposal`;
+
+    case 'milestone.proposal-project_activated':
+      // Title: Project activated
+      return `Project activated`;
 
     default:
       // Skip generic events - they shouldn't reach here if properly filtered
@@ -1188,7 +1214,7 @@ async function generateGranularMessage(event: EventData, _actor: any, _project?:
     case 'proposal_accepted':
       return `Your proposal for "${event.metadata?.proposalTitle || 'project'}" has been accepted and a project has been created`;
     case 'proposal_rejected':
-      return event.metadata?.rejectionReason || 'No reason provided';
+      return null; // No subcaption needed - title is sufficient
     case 'gig_rejected':
       return event.metadata?.rejectionMessage || 'You will be able to re-apply if this gig listing is still active after 21 days.';
     case 'rating_prompt_freelancer':
@@ -1282,6 +1308,24 @@ async function generateGranularMessage(event: EventData, _actor: any, _project?:
       const gigAcceptedTotalTasks = (event.metadata as any)?.totalTasks || (event.context as any)?.totalTasks || 1;
       const gigAcceptedFreelancerName = (event.metadata as any)?.freelancerName || (event.context as any)?.freelancerName || 'freelancer';
       return `Your ${gigAcceptedProjectTitle} gig request is now an active project with ${gigAcceptedTotalTasks} milestone${gigAcceptedTotalTasks !== 1 ? 's' : ''} managed by ${gigAcceptedFreelancerName}`;
+
+    // Proposal specific completion notifications
+    case 'completion.proposal-commissioner-accepted':
+      // JUST USE THE MESSAGE FROM THE EVENT JSON - STOP OVERENGINEERING
+      return (event as any).message || 'Your proposal has been accepted';
+
+    case 'completion.proposal-project_activated':
+      // JUST USE THE MESSAGE FROM THE EVENT JSON - STOP OVERENGINEERING
+      return (event as any).message || 'Your project is now active';
+
+    // Milestone proposal specific notifications
+    case 'milestone.proposal-accepted':
+      // JUST USE THE MESSAGE FROM THE EVENT JSON - STOP OVERENGINEERING
+      return (event as any).message || 'Your proposal has been accepted';
+
+    case 'milestone.proposal-project_activated':
+      // JUST USE THE MESSAGE FROM THE EVENT JSON - STOP OVERENGINEERING
+      return (event as any).message || 'Your project is now active';
 
     default:
       console.warn(`Unknown notification message type: ${event.type}`, event);
@@ -1396,6 +1440,34 @@ function generateNotificationLink(event: EventData, _project?: any, _task?: any,
         return `/freelancer-dashboard/projects-and-invoices/invoices?invoiceNumber=${completionInvoiceNum}`;
       }
       return `/freelancer-dashboard/projects-and-invoices/invoices`;
+
+    // Proposal notification links
+    case 'completion.proposal-commissioner-accepted':
+    case 'milestone.proposal-accepted':
+      // Navigate to project tracking page for freelancers (proposal accepted)
+      const proposalProjectId = (event as any).projectId || event.context?.projectId;
+      return `/freelancer-dashboard/projects-and-invoices/project-tracking/${proposalProjectId}`;
+
+    case 'completion.proposal-project_activated':
+    case 'milestone.proposal-project_activated':
+      // Navigate to project tracking page for commissioners (project activated)
+      const activatedProjectId = (event as any).projectId || event.context?.projectId;
+      return `/commissioner-dashboard/projects-and-invoices/project-tracking/${activatedProjectId}`;
+
+    // Legacy proposal notifications
+    case 'proposal_sent':
+      // Navigate to received proposal page for commissioners
+      const sentProposalId = event.context?.proposalId || (event as any).proposalId;
+      return `/commissioner-dashboard/projects-and-invoices/recieved-proposals/${sentProposalId}`;
+
+    case 'proposal_accepted':
+      // Navigate to project tracking page for freelancers
+      const acceptedProjectId = event.context?.projectId || (event as any).projectId;
+      return `/freelancer-dashboard/projects-and-invoices/project-tracking/${acceptedProjectId}`;
+
+    case 'proposal_rejected':
+      // Navigate to rejected proposals tab for freelancers
+      return `/freelancer-dashboard/projects-and-invoices/proposals?tab=rejected`;
 
     default:
       return '#';

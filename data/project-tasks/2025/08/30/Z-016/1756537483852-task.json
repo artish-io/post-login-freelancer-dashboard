@@ -1,0 +1,22 @@
+{
+  "taskId": 1756537483852,
+  "projectId": "Z-016",
+  "projectTitle": "Financial Management for James Bond Cosplay Charity Contest",
+  "organizationId": 4,
+  "projectTypeTags": [
+    "Content Writing"
+  ],
+  "title": "Phase 1 – Research & Financial Setup",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 1,
+  "link": "",
+  "dueDate": "2025-09-02T04:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Analyze the contest structure, NFT wallet systems, and any legal or tax implications. Set up a secure bookkeeping framework for tracking incoming funds, NFT transfers, and contest-related expenses. Deliver a ledger template and reporting workflow for clear oversight.",
+  "createdDate": "2025-08-30T06:54:23.190Z",
+  "lastModified": "2025-08-30T06:54:23.192Z"
+}

@@ -1,56 +1,68 @@
 {
-  "title": "",
-  "summary": "",
-  "logoUrl": "/logos/lagos-parks-logo.png",
-  "typeTags": [],
-  "milestones": [],
+  "title": "Bookkeeping & Financial Oversight for $5K Cancer Awareness Marathon",
+  "summary": "Review the marathon structure, entry fees, sponsorship commitments, and donation channels. Set up a bookkeeping framework with a secure ledger to track revenues, expenses (permits, logistics, marketing), and earmarked charity funds. Deliver a reporting workflow that ensures organizers can see progress in real time.",
+  "logoUrl": "/logos/zynate-events.png",
+  "typeTags": [
+    "Bookkeeping"
+  ],
+  "milestones": [
+    {
+      "id": "7e43d709-e4f7-472f-9278-0df08fb9705b",
+      "title": "Phase 1 – Research & Financial Setup",
+      "description": "Review the marathon structure, entry fees, sponsorship commitments, and donation channels. Set up a bookkeeping framework with a secure ledger to track revenues, expenses (permits, logistics, marketing), and earmarked charity funds. Deliver a reporting workflow that ensures organisers can see progress in real time.",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-09-02T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
   "paymentCycle": "Hourly Rate",
   "rate": 50,
-  "projectId": "TU-3YKP3R",
-  "totalBid": 0,
+  "projectId": "TU-EWBDJZ",
+  "totalBid": 300,
   "customStartDate": null,
-  "endDate": null,
+  "endDate": "2025-09-02T04:00:00.000Z",
   "maxHours": 50000,
   "depositRate": "",
-  "expectedDurationDays": 1,
+  "expectedDurationDays": 3,
   "executionMethod": "completion",
   "startType": "Immediately",
   "contact": {
-    "id": 32,
-    "name": "Neilsan Mando",
-    "title": "Product Manager",
-    "avatar": "/avatars/neilsan.png",
+    "id": 35,
+    "name": "Tilly Burzinsky",
+    "title": "Events Lead",
+    "avatar": "/avatars/tilly.png",
     "type": "commissioner",
-    "email": "neilsan.mando@example.com",
-    "address": "Hidden Leaf, Land of Fire",
-    "organizationId": 1,
-    "username": "neilsan",
-    "password": "testpass",
-    "bio": "Experienced product manager with over 8 years in public sector digital transformation. Passionate about creating user-centered solutions that improve community services and enhance citizen engagement.",
-    "rating": 4.8,
+    "email": "tilly.burzinsky@example.com",
+    "username": "tilly",
+    "password": "password123",
+    "address": "Ottawa, Canada",
+    "organizationId": 4,
+    "bio": "Dynamic events professional specializing in large-scale corporate and cultural events. Expert in creating memorable experiences that bring communities together.",
+    "rating": 4.7,
     "responsibilities": [
-      "Project Management",
-      "Budget Oversight",
-      "Stakeholder Communication",
-      "Quality Assurance",
-      "Timeline Management",
-      "Resource Allocation",
-      "Risk Assessment",
-      "Team Coordination"
+      "Event Planning",
+      "Vendor Coordination",
+      "Budget Management",
+      "Logistics Oversight",
+      "Client Relations",
+      "Risk Management",
+      "Team Supervision"
     ],
     "socialLinks": [
       {
         "platform": "linkedin",
-        "url": "https://linkedin.com/in/neilsan-mando"
+        "url": "https://linkedin.com/in/tilly-burzinsky"
       }
     ],
+    "createdAt": "2025-07-29T14:26:40.167Z",
+    "updatedAt": "2025-08-12T15:46:25.247Z",
     "organization": {
-      "name": "Lagos State Parks Services",
-      "logo": "/logos/lagos-parks-logo.png",
-      "address": "3471 Hirurzen Avenue, Hidden Leaf, Land of Fire"
+      "name": "Zynate Events Group",
+      "logo": "/logos/zynate-events.png",
+      "address": "12 Festival Avenue, Ottawa, Canada"
     }
   },
-  "upfrontAmount": 0,
+  "upfrontAmount": 36,
   "milestoneTotal": 0,
   "isAmountValid": true,
   "upfrontValue": 0,

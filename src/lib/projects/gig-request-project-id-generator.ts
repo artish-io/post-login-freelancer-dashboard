@@ -12,7 +12,7 @@ import path from 'path';
 
 // Feature flag - can be toggled off immediately if issues occur
 function isFeatureEnabled(): boolean {
-  return process.env.ENABLE_GIG_REQUEST_PROJECT_IDS === 'true';
+  return process.env.ENABLE_GIG_REQUEST_PROJECT_IDS === 'true' || process.env.ENABLE_PROPOSAL_PROJECT_IDS === 'true';
 }
 
 // Audit logging for project creation flow
@@ -24,12 +24,13 @@ export function auditLog(event: string, data: any) {
 // ID shapes:
 // Legacy/match: ^[A-Z]-\d{3}$ (unchanged)
 // Gig-request: ^[A-Z]-R\d{3}$ (new)
-export type ProjectIdMode = 'legacy' | 'request';
+// Proposal: ^[A-Z]-P\d{3}$ (new)
+export type ProjectIdMode = 'legacy' | 'request' | 'proposal';
 
 export interface ProjectIdGeneratorOptions {
   mode: ProjectIdMode;
   organizationFirstLetter: string;
-  origin: 'match' | 'request';
+  origin: 'match' | 'request' | 'proposal';
 }
 
 export interface ProjectIdResult {
@@ -44,12 +45,12 @@ export interface ProjectIdResult {
  */
 export async function generateProjectId(options: ProjectIdGeneratorOptions): Promise<ProjectIdResult> {
   const featureEnabled = isFeatureEnabled();
-  if (!featureEnabled && options.mode === 'request') {
+  if (!featureEnabled && (options.mode === 'request' || options.mode === 'proposal')) {
     auditLog('project_id_generation_disabled', {
       mode: options.mode,
       featureFlag: featureEnabled
     });
-    // 🔧 FALLBACK: Use legacy mode when feature flag is off to prevent breaking gig requests
+    // 🔧 FALLBACK: Use legacy mode when feature flag is off to prevent breaking gig requests and proposals
     console.log('🔧 FALLBACK: Feature flag disabled, using legacy project ID generation');
     return await generateProjectId({
       ...options,
@@ -138,11 +139,15 @@ export async function generateProjectId(options: ProjectIdGeneratorOptions): Pro
  */
 async function generateCandidateId(options: ProjectIdGeneratorOptions): Promise<string> {
   const { organizationFirstLetter, mode } = options;
-  
+
   if (mode === 'request') {
     // Gig-request format: C-R001, C-R002, etc.
     const counter = await getNextRequestCounter(organizationFirstLetter);
     return `${organizationFirstLetter}-R${counter.toString().padStart(3, '0')}`;
+  } else if (mode === 'proposal') {
+    // Proposal format: C-P001, C-P002, etc.
+    const counter = await getNextProposalCounter(organizationFirstLetter);
+    return `${organizationFirstLetter}-P${counter.toString().padStart(3, '0')}`;
   } else {
     // Legacy format: C-001, C-002, etc.
     const counter = await getNextLegacyCounter(organizationFirstLetter);
@@ -156,6 +161,8 @@ async function generateCandidateId(options: ProjectIdGeneratorOptions): Promise<
 function validateProjectIdFormat(projectId: string, mode: ProjectIdMode): boolean {
   if (mode === 'request') {
     return /^[A-Z]-R\d{3}$/.test(projectId);
+  } else if (mode === 'proposal') {
+    return /^[A-Z]-P\d{3}$/.test(projectId);
   } else {
     return /^[A-Z]-\d{3}$/.test(projectId);
   }
@@ -180,10 +187,10 @@ async function projectExists(projectId: string): Promise<boolean> {
 async function getNextRequestCounter(orgLetter: string): Promise<number> {
   // Simple atomic counter - in production this would use a proper atomic counter
   const counterPath = path.join(process.cwd(), 'data', 'counters', `${orgLetter}-request-counter.json`);
-  
+
   try {
     await fs.mkdir(path.dirname(counterPath), { recursive: true });
-    
+
     let counter = 1;
     try {
       const data = await fs.readFile(counterPath, 'utf-8');
@@ -192,12 +199,40 @@ async function getNextRequestCounter(orgLetter: string): Promise<number> {
     } catch {
       // File doesn't exist, start at 1
     }
-    
+
     // Write new counter
     await fs.writeFile(counterPath, JSON.stringify({ counter, lastUpdated: new Date().toISOString() }));
     return counter;
   } catch (error) {
     auditLog('counter_error', { orgLetter, type: 'request', error: String(error) });
+    throw error;
+  }
+}
+
+/**
+ * Get next counter for proposal IDs (atomic)
+ */
+async function getNextProposalCounter(orgLetter: string): Promise<number> {
+  // Simple atomic counter - in production this would use a proper atomic counter
+  const counterPath = path.join(process.cwd(), 'data', 'counters', `${orgLetter}-proposal-counter.json`);
+
+  try {
+    await fs.mkdir(path.dirname(counterPath), { recursive: true });
+
+    let counter = 1;
+    try {
+      const data = await fs.readFile(counterPath, 'utf-8');
+      const parsed = JSON.parse(data);
+      counter = (parsed.counter || 0) + 1;
+    } catch {
+      // File doesn't exist, start at 1
+    }
+
+    // Write new counter
+    await fs.writeFile(counterPath, JSON.stringify({ counter, lastUpdated: new Date().toISOString() }));
+    return counter;
+  } catch (error) {
+    auditLog('counter_error', { orgLetter, type: 'proposal', error: String(error) });
     throw error;
   }
 }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { X, Star, User } from 'lucide-react';
+import { LoadingInline } from './loading-ellipsis';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { RatingSubmissionRequest } from '../../types/ratings';
@@ -193,12 +194,7 @@ export default function RatingModal({
 
           {checkingRating ? (
             /* Loading State */
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-              </div>
-              <p className="text-gray-600">Checking rating status...</p>
-            </div>
+            <LoadingInline />
           ) : alreadyRated ? (
             /* Already Rated State */
             <div className="text-center py-8">

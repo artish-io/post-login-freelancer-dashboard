@@ -1,0 +1,19 @@
+{
+  "id": "proposal_sent_PROP-6Z3J9EB6_1756533845293",
+  "timestamp": "2025-08-30T06:04:05.293Z",
+  "type": "proposal_sent",
+  "notificationType": 80,
+  "actorId": 31,
+  "targetId": 35,
+  "entityType": 7,
+  "entityId": "PROP-6Z3J9EB6",
+  "metadata": {
+    "proposalTitle": "Lagos Only Comes Alive At Night",
+    "budget": 400,
+    "timeline": "Not specified",
+    "description": "Freelancer to design and run a marketing campaign that mixes spy-thriller flair with modern Web3 cul"
+  },
+  "context": {
+    "proposalId": "PROP-6Z3J9EB6"
+  }
+}

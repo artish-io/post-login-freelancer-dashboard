@@ -1,0 +1,19 @@
+{
+  "id": "proposal_rejected_PROP-J3AON6P2_1756535487370",
+  "timestamp": "2025-08-30T06:31:27.370Z",
+  "type": "proposal_rejected",
+  "notificationType": 82,
+  "actorId": 35,
+  "targetId": 25,
+  "entityType": 7,
+  "entityId": "PROP-J3AON6P2",
+  "metadata": {
+    "proposalTitle": "Bookkeeping & Financial Tracking for James Bond Cosplay Charity Contest (NFT Prize Fund)",
+    "rejectionReason": "No reason provided",
+    "originalBudget": 300,
+    "organizationName": "Organization"
+  },
+  "context": {
+    "proposalId": "PROP-J3AON6P2"
+  }
+}

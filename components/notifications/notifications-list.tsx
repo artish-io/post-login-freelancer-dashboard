@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NotificationItem, { NotificationData } from './notification-item';
 import NotificationsEmptyState from './notifications-empty-state';
+import { LoadingInline } from '../shared/loading-ellipsis';
 
 interface NotificationsListProps {
   activeTab: 'all' | 'network' | 'projects' | 'gigs';
@@ -129,21 +130,7 @@ export default function NotificationsList({
   };
 
   if (loading) {
-    return (
-      <div className="space-y-4">
-        {[...Array(5)].map((_, i) => (
-          <div key={i} className="animate-pulse">
-            <div className="flex items-start gap-3 p-4">
-              <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
-              <div className="flex-1">
-                <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/2"></div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
+    return <LoadingInline />;
   }
 
   if (notifications.length === 0) {

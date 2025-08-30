@@ -1,0 +1,19 @@
+{
+  "id": "gig_applied_63_1_1756536846587",
+  "timestamp": "2025-08-30T06:54:06.587Z",
+  "type": "gig_applied",
+  "notificationType": 60,
+  "actorId": 1,
+  "targetId": 35,
+  "entityType": 3,
+  "entityId": "63",
+  "metadata": {
+    "gigTitle": "Financial Management for James Bond Cosplay Charity Contest",
+    "applicationMessage": "Application submitted",
+    "freelancerName": "Tobi Philly"
+  },
+  "context": {
+    "gigId": 63,
+    "applicationId": 1755193217294
+  }
+}

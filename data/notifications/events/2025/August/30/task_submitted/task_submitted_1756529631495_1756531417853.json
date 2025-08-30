@@ -1,0 +1,22 @@
+{
+  "id": "task_submitted_1756529631495_1756531417853",
+  "timestamp": "2025-08-30T05:23:37.853Z",
+  "type": "task_submitted",
+  "notificationType": 1,
+  "actorId": 31,
+  "targetId": 34,
+  "entityType": 1,
+  "entityId": 1756529631495,
+  "metadata": {
+    "taskId": 1756529631495,
+    "taskTitle": "Requirements & Contract Design",
+    "projectTitle": "The Big Test For Proposals ",
+    "action": "submit",
+    "invoiceGenerated": false,
+    "message": "\"Requirements & Contract Design\" is awaiting your review for The Big Test For Proposals "
+  },
+  "context": {
+    "projectId": "M-P004",
+    "taskId": 1756529631495
+  }
+}

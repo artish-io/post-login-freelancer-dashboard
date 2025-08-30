@@ -1,0 +1,21 @@
+{
+  "userId": 31,
+  "type": "payment",
+  "amount": 1579.21,
+  "currency": "USD",
+  "timestamp": "2025-08-30T05:59:39.644Z",
+  "status": "completed",
+  "invoiceNumber": "TB-028",
+  "projectId": "T-P001",
+  "commissionerId": 35,
+  "freelancerId": 31,
+  "source": "auto_milestone",
+  "paymentMethod": "mock",
+  "gatewayTransactionId": "TXN-TB-028",
+  "description": "Payment for invoice TB-028",
+  "platformFee": 87.79,
+  "totalInvoiceAmount": 1667,
+  "transactionId": "TXN-PAY-TB-028-1756533579644",
+  "createdAt": "2025-08-30T05:59:39.644Z",
+  "updatedAt": "2025-08-30T05:59:39.644Z"
+}

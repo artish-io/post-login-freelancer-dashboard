@@ -367,6 +367,63 @@ function generateNotificationMessage(event: CompletionEvent): string {
       const totalTasksCommissioner = event.context.totalTasks || 1;
       return `Your ${projectTitle} gig request is now an active project with ${totalTasksCommissioner} milestone${totalTasksCommissioner !== 1 ? 's' : ''}`;
 
+    // Proposal specific completion notifications
+    case 'completion.proposal-commissioner-accepted':
+      // Only for freelancers - commissioner accepted their proposal
+      const totalTasksProposal = event.context.totalTasks || 1;
+      let dueDateTextProposal = 'the deadline';
+      if (context?.dueDate) {
+        try {
+          const date = new Date(context.dueDate);
+          dueDateTextProposal = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        } catch (e) {
+          dueDateTextProposal = context.dueDate;
+        }
+      }
+      return `${commissionerName} accepted your proposal for ${projectTitle}. This project is now active and includes ${totalTasksProposal} task${totalTasksProposal !== 1 ? 's' : ''} due by ${dueDateTextProposal}`;
+
+    case 'completion.proposal-upfront-commissioner':
+      // Only for commissioners - upfront payment confirmation for proposal
+      const upfrontAmountCommissioner = event.context.upfrontAmount || 0;
+      return `Upfront payment of $${upfrontAmountCommissioner.toLocaleString()} has been processed for ${projectTitle}`;
+
+    case 'completion.proposal-project_activated':
+      // Only for commissioners - proposal project activation
+      const totalTasksCommissionerProposal = event.context.totalTasks || 1;
+      return `Your ${projectTitle} proposal is now an active project with ${totalTasksCommissionerProposal} task${totalTasksCommissionerProposal !== 1 ? 's' : ''}`;
+
+    case 'completion.proposal-upfront':
+      // Only for freelancers - upfront payment received for proposal
+      const upfrontAmountFreelancer = event.context.upfrontAmount || 0;
+      return `You received an upfront payment of $${upfrontAmountFreelancer.toLocaleString()} for ${projectTitle}`;
+
+    case 'milestone.proposal-accepted':
+      // Only for freelancers - milestone proposal accepted
+      const totalMilestonesProposal = event.context.totalTasks || 1;
+      let dueDateTextMilestoneProposal = 'the deadline';
+      if (context?.dueDate) {
+        try {
+          const date = new Date(context.dueDate);
+          dueDateTextMilestoneProposal = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        } catch (e) {
+          dueDateTextMilestoneProposal = context.dueDate;
+        }
+      }
+      return `${commissionerName} accepted your proposal for ${projectTitle}. This project is now active and includes ${totalMilestonesProposal} milestone${totalMilestonesProposal !== 1 ? 's' : ''} due by ${dueDateTextMilestoneProposal}`;
+
+    case 'milestone.proposal-project_activated':
+      // Only for commissioners - milestone proposal project activation
+      const totalMilestonesCommissionerProposal = event.context.totalTasks || 1;
+      return `Your ${projectTitle} proposal is now an active project with ${totalMilestonesCommissionerProposal} milestone${totalMilestonesCommissionerProposal !== 1 ? 's' : ''}`;
+
     default:
       return `Completion event: ${event.type}`;
   }

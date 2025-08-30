@@ -1,0 +1,24 @@
+{
+  "id": "milestone_payment_received_T-P001_1756531151801_1756533580266",
+  "timestamp": "2025-08-30T05:59:40.266Z",
+  "type": "milestone_payment_received",
+  "notificationType": 42,
+  "actorId": 35,
+  "entityType": 5,
+  "entityId": "T-P001_1756531151801",
+  "metadata": {
+    "taskTitle": "Phase 1 – Concept & Creative Direction",
+    "projectTitle": "Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)",
+    "projectId": "T-P001",
+    "taskId": 1756531151801,
+    "invoiceGenerated": true,
+    "amount": 0,
+    "invoiceNumber": "TB-028",
+    "organizationName": "Zynate Events Group"
+  },
+  "context": {
+    "projectId": "T-P001",
+    "taskId": 1756531151801,
+    "invoiceNumber": "TB-028"
+  }
+}

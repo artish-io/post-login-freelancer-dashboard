@@ -35,6 +35,11 @@ const draftsPath = path.join(process.cwd(), 'data', 'proposals', 'proposal-draft
 
 export async function POST(request: Request) {
   try {
+    // 🔒 Auth - get session and validate
+    const { requireSession } = await import('@/lib/auth/session-guard');
+    const { userId: sessionUserId } = await requireSession(request);
+    console.log(`✅ PROPOSAL SEND: Authentication successful, freelancerId: ${sessionUserId}`);
+
     const body = await request.json();
     console.log('📨 Received proposal data:', body);
 
@@ -51,6 +56,9 @@ export async function POST(request: Request) {
       budget,
       timeline
     } = body;
+
+    // Use session user ID as freelancer ID (override any provided freelancerId)
+    const actualFreelancerId = sessionUserId;
 
     // Extract data from the new structure
     const actualTitle = proposalTitle || title;
@@ -82,15 +90,30 @@ export async function POST(request: Request) {
       const organization = organizationsData.find((org: any) => org.id === body.organizationId);
 
       if (organization?.name) {
-        // Get existing project IDs to avoid collisions
-        const existingProjects = await UnifiedStorageService.listProjects();
-        const existingProposals = await readAllProposals();
-        const existingProjectIds = new Set([
-          ...existingProjects.map(p => p.projectId.toString()),
-          ...existingProposals.map(p => p.projectId).filter(Boolean)
-        ]);
+        // Use proposal-specific project ID generation (C-P001, C-P002, etc.)
+        const { generateProjectId: generateProposalProjectId } = await import('@/lib/projects/gig-request-project-id-generator');
+        const orgFirstLetter = organization.name.charAt(0).toUpperCase();
+        const projectIdResult = await generateProposalProjectId({
+          mode: 'proposal' as any,
+          organizationFirstLetter: orgFirstLetter,
+          origin: 'proposal' as any
+        });
 
-        projectId = generateOrganizationProjectId(organization.name, existingProjectIds);
+        if (projectIdResult.success) {
+          projectId = projectIdResult.projectId!;
+          console.log(`✅ Generated proposal project ID: ${projectId} for organization: ${organization.name}`);
+        } else {
+          console.warn('Failed to generate proposal project ID, using fallback');
+          // Fallback to organization-based generation
+          const existingProjects = await UnifiedStorageService.listProjects();
+          const existingProposals = await readAllProposals();
+          const existingProjectIds = new Set([
+            ...existingProjects.map(p => p.projectId.toString()),
+            ...existingProposals.map(p => p.projectId).filter(Boolean)
+          ]);
+
+          projectId = generateOrganizationProjectId(organization.name, existingProjectIds);
+        }
       } else {
         // Fallback to UNQ format for proposals without organization data
         const existingProjects = await UnifiedStorageService.listProjects();
@@ -130,6 +153,7 @@ export async function POST(request: Request) {
       proposalTitle: actualTitle,
       description: actualDescription,
       budget: actualBudget,
+      freelancerId: actualFreelancerId, // ✅ Set freelancer ID from session
       commissionerId: actualCommissionerId,
       projectId: projectId, // Add generated project ID
       createdAt: new Date().toISOString(),
@@ -168,8 +192,8 @@ export async function POST(request: Request) {
         timestamp: new Date().toISOString(),
         type: 'proposal_sent',
         notificationType: 80, // NOTIFICATION_TYPES.PROPOSAL_SENT
-        actorId: freelancerId,
-        targetId: commissionerId,
+        actorId: actualFreelancerId,
+        targetId: actualCommissionerId,
         entityType: 7, // ENTITY_TYPES.PROPOSAL
         entityId: newProposal.id,
         metadata: {

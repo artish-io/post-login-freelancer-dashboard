@@ -15,8 +15,19 @@ async function handleProposalRejection(
     const { userId: actorId } = await requireSession(request);
 
     const { proposalId } = await params;
-    const body = await request.json();
-    const { reason } = body;
+
+    // Parse JSON body safely
+    let body = {};
+    let reason = '';
+    try {
+      const text = await request.text();
+      if (text.trim()) {
+        body = JSON.parse(text);
+        reason = body.reason || '';
+      }
+    } catch (error) {
+      console.warn('Failed to parse request body, using defaults:', error);
+    }
 
     // Read proposal using hierarchical storage
     const proposal = await readProposal(proposalId);
@@ -25,18 +36,33 @@ async function handleProposalRejection(
     // 🔒 Ensure session user is the commissioner who can reject this proposal
     assertOwnership(actorId, proposal!.commissionerId, 'proposal');
 
-    // Get organization name for notification
+    // Get organization name for notification using hierarchical storage
     let organizationName = 'Organization';
     try {
-      const usersPath = path.join(process.cwd(), 'data', 'users.json');
-      const usersData = await readFile(usersPath, 'utf-8');
-      const users = JSON.parse(usersData);
-      const commissioner = users.find((u: any) => u.id === proposal!.commissionerId);
-      if (commissioner?.organizationName) {
-        organizationName = commissioner.organizationName;
+      const { UnifiedStorageService } = await import('@/lib/storage/unified-storage-service');
+      const [organizationsData, usersData] = await Promise.all([
+        UnifiedStorageService.getAllOrganizations(),
+        UnifiedStorageService.getAllUsers()
+      ]);
+
+      // Find the commissioner
+      const commissioner = usersData.find((u: any) => u.id === proposal!.commissionerId);
+
+      // Find the organization using comprehensive search
+      const organization = organizationsData.find((org: any) =>
+        org.firstCommissionerId === proposal!.commissionerId ||
+        org.contactPersonId === proposal!.commissionerId ||
+        org.associatedCommissioners?.includes(proposal!.commissionerId) ||
+        org.id === (proposal as any).organizationId
+      );
+
+      if (organization?.name) {
+        organizationName = organization.name;
       } else if (commissioner?.name) {
         organizationName = commissioner.name;
       }
+
+      console.log(`🔍 PROPOSAL REJECTION: Organization lookup - Commissioner: ${proposal!.commissionerId}, Organization: ${organizationName}`);
     } catch (error) {
       console.error('Error fetching organization name:', error);
     }
@@ -51,6 +77,9 @@ async function handleProposalRejection(
 
     // Log proposal rejection event
     try {
+      console.log(`🔔 PROPOSAL REJECTION: Creating notification event for proposal ${proposalId}`);
+      console.log(`🔔 PROPOSAL REJECTION: Actor: ${proposal!.commissionerId}, Target: ${(proposal as any).freelancerId}, Organization: ${organizationName}`);
+
       await eventLogger.logEvent({
         id: `proposal_rejected_${proposalId}_${Date.now()}`,
         timestamp: new Date().toISOString(),
@@ -70,8 +99,10 @@ async function handleProposalRejection(
           proposalId: proposalId
         }
       });
+
+      console.log(`✅ PROPOSAL REJECTION: Successfully created notification event for proposal ${proposalId}`);
     } catch (eventError) {
-      console.error('Failed to log proposal rejection event:', eventError);
+      console.error('❌ PROPOSAL REJECTION: Failed to log proposal rejection event:', eventError);
       // Don't fail the main operation if event logging fails
     }
 

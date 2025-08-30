@@ -1,0 +1,21 @@
+{
+  "projectId": "C-R007",
+  "title": "Smart Contract & NFT Fundraising Development for Venture X Green Energy Startup",
+  "description": "We’re launching Venture X, a green energy startup under Corlax Wellness, and need a freelancer to develop smart contracts that enable fundraising through NFTs. The contracts should securely manage NFT issuance, ownership, and revenue flow while reflecting Venture X’s sustainable mission. The ideal partner will ensure a seamless, transparent, and legally sound blockchain-based fundraising experience that excites investors and NFT collectors alike.",
+  "organizationId": 3,
+  "typeTags": [
+    "Engineering"
+  ],
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "status": "ongoing",
+  "dueDate": "2025-09-01",
+  "totalTasks": 1,
+  "invoicingMethod": "completion",
+  "totalBudget": 1500,
+  "paidToDate": 180,
+  "currency": "USD",
+  "createdAt": "2025-08-29T22:48:35.103Z",
+  "updatedAt": "2025-08-29T22:48:36.497Z",
+  "gigRequestId": 1756507685269
+}

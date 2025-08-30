@@ -1,0 +1,22 @@
+{
+  "id": "gig_request_sent_1756507685269_1756507686184",
+  "timestamp": "2025-08-29T22:48:05.246Z",
+  "type": "gig_request_sent",
+  "notificationType": 61,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "1756507685269",
+  "metadata": {
+    "gigTitle": "Smart Contract & NFT Fundraising Development for Venture X Green Energy Startup",
+    "organizationName": "Corlax Wellness",
+    "organizationLogo": "/logos/corlax-ios-logo.png",
+    "budgetMin": 1000,
+    "budgetMax": 1500
+  },
+  "context": {
+    "gigId": null,
+    "organizationId": 3,
+    "requestId": 1756507685269
+  }
+}

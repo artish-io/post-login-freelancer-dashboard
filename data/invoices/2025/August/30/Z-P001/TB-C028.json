@@ -1,0 +1,34 @@
+{
+  "invoiceNumber": "TB-C028",
+  "projectId": "Z-P001",
+  "freelancerId": 31,
+  "commissionerId": 35,
+  "projectTitle": "Lagos Only Comes Alive At Night",
+  "totalAmount": 48,
+  "invoiceType": "completion_upfront",
+  "milestoneNumber": 1,
+  "status": "paid",
+  "currency": "USD",
+  "issueDate": "2025-08-30T06:04:49.585Z",
+  "dueDate": "2025-09-13T06:04:49.585Z",
+  "createdAt": "2025-08-30T06:04:49.585Z",
+  "milestones": [
+    {
+      "description": "12% Upfront Payment",
+      "rate": 48,
+      "title": "12% Upfront Payment",
+      "taskId": "upfront"
+    }
+  ],
+  "paymentDetails": {
+    "paymentId": "TXN-TB-C028",
+    "paymentMethod": "mock",
+    "platformFee": 2.53,
+    "freelancerAmount": 45.47,
+    "currency": "USD",
+    "processedAt": "2025-08-30T06:04:50.122Z"
+  },
+  "paidDate": "2025-08-30",
+  "paidAmount": 48,
+  "updatedAt": "2025-08-30T06:04:50.123Z"
+}

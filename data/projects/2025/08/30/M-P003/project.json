@@ -1,0 +1,21 @@
+{
+  "projectId": "M-P003",
+  "title": "Skyfall Proposal V2 Completion ",
+  "description": "We’re raising funds for Wizkid’s A Million Blessings 5K charity marathon and need a freelancer to develop smart contracts that power NFT-based fundraising. The goal is to create a secure, seamless experience where participants and donors can purchase unique NFTs tied to rewards, recognition, or exclusive access. The ideal freelancer will ensure transparency, trust, and engagement while maximizing contributions for the charity.",
+  "organizationId": 3,
+  "typeTags": [
+    "UI/UX Design"
+  ],
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "status": "ongoing",
+  "dueDate": "2025-09-06",
+  "totalTasks": 1,
+  "invoicingMethod": "completion",
+  "totalBudget": 3000,
+  "paidToDate": 0,
+  "currency": "USD",
+  "createdAt": "2025-08-30T04:31:08.101Z",
+  "updatedAt": "2025-08-30T05:58:26.262Z",
+  "proposalId": "PROP-B2ZI0RNQ"
+}

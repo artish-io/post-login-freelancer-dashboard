@@ -191,7 +191,7 @@
     "brand": "mastercard",
     "isDefault": true,
     "isActive": true,
-    "availableBalance": 36488.01999999999,
+    "availableBalance": 34505.34999999999,
     "transactionHistory": [
       {
         "transactionId": "TXN-1755629849443",
@@ -533,11 +533,44 @@
         "freelancerId": 25,
         "timestamp": "2025-08-29T22:23:23.968Z",
         "balanceAfter": 36488.01999999999
+      },
+      {
+        "transactionId": "TXN-1756509125194",
+        "amount": -1262.67,
+        "type": "payment",
+        "description": "Payment for invoice MH-022",
+        "invoiceNumber": "MH-022",
+        "projectId": "C-R008",
+        "freelancerId": 1,
+        "timestamp": "2025-08-29T23:12:05.194Z",
+        "balanceAfter": 35225.34999999999
+      },
+      {
+        "transactionId": "TXN-1756528270519",
+        "amount": -360,
+        "type": "payment",
+        "description": "Payment for invoice MH-C022",
+        "invoiceNumber": "MH-C022",
+        "projectId": "M-P003",
+        "freelancerId": 1,
+        "timestamp": "2025-08-30T04:31:10.519Z",
+        "balanceAfter": 34865.34999999999
+      },
+      {
+        "transactionId": "TXN-1756528819078",
+        "amount": -360,
+        "type": "payment",
+        "description": "Payment for invoice MH-C022",
+        "invoiceNumber": "MH-C022",
+        "projectId": "M-P004",
+        "freelancerId": 31,
+        "timestamp": "2025-08-30T04:40:19.078Z",
+        "balanceAfter": 34505.34999999999
       }
     ],
     "createdAt": "2025-08-19T00:00:00.000Z",
     "lastUsed": "2025-08-26T23:59:41.475Z",
-    "updatedAt": "2025-08-29T22:23:23.968Z"
+    "updatedAt": "2025-08-30T04:40:19.078Z"
   },
   {
     "id": "card_test_033",
@@ -565,7 +598,7 @@
     "brand": "mastercard",
     "isDefault": true,
     "isActive": true,
-    "availableBalance": 28894.276666666665,
+    "availableBalance": 27131.276666666665,
     "transactionHistory": [
       {
         "transactionId": "TXN-1755674650743",
@@ -973,11 +1006,44 @@
         "freelancerId": 1,
         "timestamp": "2025-08-28T21:19:20.509Z",
         "balanceAfter": 28894.276666666665
+      },
+      {
+        "transactionId": "TXN-1756533578729",
+        "amount": -1667,
+        "type": "payment",
+        "description": "Payment for invoice TB-028",
+        "invoiceNumber": "TB-028",
+        "projectId": "T-P001",
+        "freelancerId": 31,
+        "timestamp": "2025-08-30T05:59:38.729Z",
+        "balanceAfter": 27227.276666666665
+      },
+      {
+        "transactionId": "TXN-1756533890120",
+        "amount": -48,
+        "type": "payment",
+        "description": "Payment for invoice TB-C028",
+        "invoiceNumber": "TB-C028",
+        "projectId": "Z-P001",
+        "freelancerId": 31,
+        "timestamp": "2025-08-30T06:04:50.120Z",
+        "balanceAfter": 27179.276666666665
+      },
+      {
+        "transactionId": "TXN-1756536865472",
+        "amount": -48,
+        "type": "payment",
+        "description": "Payment for invoice TB-C028",
+        "invoiceNumber": "TB-C028",
+        "projectId": "Z-016",
+        "freelancerId": 1,
+        "timestamp": "2025-08-30T06:54:25.472Z",
+        "balanceAfter": 27131.276666666665
       }
     ],
     "createdAt": "2025-08-20T05:45:11.483Z",
     "lastUsed": "2025-08-25T22:33:42.891Z",
-    "updatedAt": "2025-08-28T21:19:20.509Z"
+    "updatedAt": "2025-08-30T06:54:25.472Z"
   },
   {
     "id": "card_test_036",

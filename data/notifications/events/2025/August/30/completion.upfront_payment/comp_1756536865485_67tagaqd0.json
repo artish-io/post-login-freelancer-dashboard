@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756536865485_67tagaqd0",
+  "type": "completion.upfront_payment",
+  "notificationType": 151,
+  "actorId": 35,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "Z-016",
+  "projectId": "Z-016",
+  "message": "Zynate Events Group has paid $48 upfront for your newly activated Financial Management for James Bond Cosplay Charity Contest project. This project has a budget of $352 left. Click here to view invoice details",
+  "context": {
+    "projectId": "Z-016",
+    "upfrontAmount": 48,
+    "projectTitle": "Financial Management for James Bond Cosplay Charity Contest",
+    "remainingBudget": 352,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "metadata": {
+    "projectId": "Z-016",
+    "upfrontAmount": 48,
+    "projectTitle": "Financial Management for James Bond Cosplay Charity Contest",
+    "remainingBudget": 352,
+    "orgName": "Zynate Events Group",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Tilly Burzinsky"
+  },
+  "timestamp": "2025-08-30T06:54:25.481Z",
+  "subsystem": "completion_invoicing"
+}

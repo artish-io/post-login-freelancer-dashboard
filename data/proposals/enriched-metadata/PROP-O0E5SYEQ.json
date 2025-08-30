@@ -1,0 +1,77 @@
+{
+  "proposalId": "PROP-O0E5SYEQ",
+  "title": "Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)",
+  "summary": "We’re hosting a James Bond look-alike cosplay contest, where participants compete for a $5,000 prize pool paid in exclusive 007 NFTs. We’re looking for a freelancer to design and run a marketing campaign that mixes spy-thriller flair with modern Web3 culture, driving buzz, sign-ups, and community engagement. The campaign should feel cinematic, stylish, and irresistible to both Bond fans and NFT collectors.",
+  "budget": 5001,
+  "executionMethod": "milestone",
+  "timeline": "3 days",
+  "freelancer": {
+    "id": 31,
+    "name": "Margsate Flether",
+    "email": "margsate.flether@example.com",
+    "avatar": "/avatars/margsate-flether.png",
+    "skills": [],
+    "portfolio": []
+  },
+  "commissioner": {
+    "id": 35,
+    "name": "Tilly Burzinsky",
+    "email": "tilly.burzinsky@example.com",
+    "organizationId": 4
+  },
+  "financial": {
+    "totalBid": 5001,
+    "currency": "USD",
+    "upfrontAmount": 0,
+    "upfrontPercentage": 0,
+    "milestoneCount": 3,
+    "amountPerMilestone": 1667
+  },
+  "timeline_details": {
+    "startDate": "2025-08-30T05:14:22.464Z",
+    "endDate": "2025-09-02T04:00:00.000Z",
+    "estimatedDuration": "3 days",
+    "startType": "Immediately"
+  },
+  "metadata": {
+    "sentAt": "2025-08-30T05:14:22.052Z",
+    "status": "sent",
+    "typeTags": [
+      "Social Media Marketing",
+      "Event Marketing"
+    ],
+    "logoUrl": "/logos/zynate-events.png",
+    "milestones": [
+      {
+        "id": "02f29b7b-ad1c-46a2-b1c8-106056f2432c",
+        "title": "Phase 1 – Concept & Creative Direction",
+        "description": "Develop a campaign theme that merges James Bond aesthetics (sleek, high-stakes, iconic) with NFT/Web3 culture. Produce branded assets, teaser visuals, and a promotional content calendar.",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-08-30T04:00:00.000Z",
+        "amount": 1667
+      },
+      {
+        "id": "589af42a-4144-4136-b9bf-5d5ed8ca133f",
+        "title": "Phase 2 – Campaign Activation",
+        "description": "Launch a multi-channel marketing push across social media, cosplay communities, NFT/crypto spaces, and fan forums. Partner with influencers and Bond fan clubs to maximise reach and build hype.",
+        "startDate": "2025-08-31T04:00:00.000Z",
+        "endDate": "2025-08-31T04:00:00.000Z",
+        "amount": 1667
+      },
+      {
+        "id": "a0f9520c-2fac-4e39-a775-762152970d91",
+        "title": "Phase 3 – Contest Engagement & Legacy",
+        "description": "Manage live engagement during the contest (social updates, voting campaigns, highlight reels). Deliver a post-event package that includes contest recaps, NFT showcase drops, and a content archive that extends the excitement beyond the event.",
+        "startDate": "2025-09-01T04:00:00.000Z",
+        "endDate": "2025-09-02T04:00:00.000Z",
+        "amount": 1667
+      }
+    ]
+  },
+  "email": {
+    "subject": "New Proposal: Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs) from Margsate Flether",
+    "previewText": "Margsate Flether has sent you a proposal for \"Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)\" with a budget of $5,001",
+    "actionUrl": "https://artish.app/commissioner-dashboard/projects-and-invoices/recieved-proposals/PROP-O0E5SYEQ",
+    "expiresAt": "2025-09-29T05:14:22.052Z"
+  }
+}

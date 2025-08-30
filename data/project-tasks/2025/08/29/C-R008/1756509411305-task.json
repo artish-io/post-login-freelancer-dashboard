@@ -1,0 +1,20 @@
+{
+  "taskId": 1756509411305,
+  "projectId": "C-R008",
+  "projectTitle": "Smart Contract & NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon",
+  "title": "Phase 2 – Development & Testing",
+  "status": "Ongoing",
+  "completed": false,
+  "order": 2,
+  "dueDate": "2025-08-29T00:00:00.000Z",
+  "rejected": false,
+  "feedbackCount": 0,
+  "pushedBack": false,
+  "version": 1,
+  "description": "Build and deploy smart contracts for NFT minting, transfers, and automated fundraising logic. Conduct thorough testing on testnets to guarantee smooth functionality, gas efficiency, and donor transparency.\n\n",
+  "createdDate": "2025-08-29T23:10:37.497Z",
+  "lastModified": "2025-08-29T23:11:14.319Z",
+  "id": 1756509411305,
+  "createdAt": "2025-08-29T23:10:37.495Z",
+  "updatedAt": "2025-08-29T23:10:37.495Z"
+}

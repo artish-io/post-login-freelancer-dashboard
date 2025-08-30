@@ -6,7 +6,7 @@ import Link from 'next/link';
 import ProposalPreviewHeader from '../../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/preview/proposal-preview-header';
 import ProposalTimeline from '../../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/preview/proposal-timeline';
 import ProposalProjectIdentity from '../../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/preview/proposal-project-identity';
-import PreviewRightColumn from '../../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/preview/preview-right-column';
+import ProposalSummaryBox from '../../../../../../components/freelancer-dashboard/projects-and-invoices/proposals/preview/proposal-summary-box';
 
 import { generateDraftProposal } from '@/lib/proposals/generate-draft';
 import { DraftProposal, ProposalInput } from '@/lib/proposals/types';
@@ -44,21 +44,23 @@ export default function ProposalPreviewPage() {
   }
 
   return (
-    <div className="px-6 md:px-12 pt-6 pb-12 bg-white">
-      <div className="max-w-[1440px] mx-auto relative">
-
-        {/* Back Link */}
+    <div className="min-h-screen bg-gray-50">
+      {/* Back Navigation */}
+      <div className="bg-white border-b border-gray-200 px-4 md:px-12 py-4">
         <Link href="/freelancer-dashboard/projects-and-invoices/create-proposal">
           <span className="text-sm text-gray-600 hover:text-pink-600 flex items-center gap-1">
-            ← Back
+            ← Back to Create Proposal
           </span>
         </Link>
+      </div>
 
-        {/* Sticky Project Identity */}
-        <div className="sticky top-[80px] z-50 bg-white pb-4">
+      {/* Sticky Header Section */}
+      <div className="sticky top-0 z-20 bg-white px-4 md:px-12 pt-4 pb-6">
+        <div className="flex flex-col gap-6">
           <ProposalPreviewHeader
-            projectId={calculated.projectId ?? ''}
+            projectId={calculated.projectId ?? 'PREVIEW'}
             tags={data.typeTags ?? []}
+            isProposal={true}
           />
           <ProposalProjectIdentity
             logoUrl={data.logoUrl ?? ''}
@@ -66,41 +68,61 @@ export default function ProposalPreviewPage() {
             summary={data.summary ?? ''}
           />
         </div>
+      </div>
 
-        {/* Main Flex Layout */}
-        <div className="relative w-full overflow-visible">
-        <div className="mt-6 flex flex-col md:flex-row gap-12 items-start">
+      {/* Preview Banner */}
+      <div className="px-4 md:px-12 mb-6">
+        <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-semibold text-blue-900">Proposal Preview</h3>
+              <p className="text-sm mt-1 text-blue-800">
+                This is how your proposal will appear to the client. Review all details before sending.
+              </p>
+            </div>
+            <Link
+              href="/freelancer-dashboard/projects-and-invoices/create-proposal"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700"
+            >
+              Edit Proposal
+            </Link>
+          </div>
+        </div>
+      </div>
 
-          {/* Timeline Scrollable Column */}
-          <div className="flex-1 min-w-0 relative z-10 max-h-[calc(100vh-120px)] overflow-y-auto pr-2">
+      {/* Main Content */}
+      <div className="px-4 md:px-12 pb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Timeline */}
+          <div className="lg:col-span-2">
             <ProposalTimeline />
           </div>
 
-          {/* Sticky Right Column */}
-          <div className="w-full md:w-[320px] shrink-0 relative z-20">
-            <PreviewRightColumn
-              totalBid={calculated.totalBid}
-              executionMethod={data.executionMethod}
-              upfrontAmount={calculated.upfrontAmount}
-              upfrontPercentage={calculated.upfrontPercentage}
-              startDate={
-                data.customStartDate
-                  ? typeof data.customStartDate === 'string'
-                    ? data.customStartDate
-                    : data.customStartDate.toISOString()
-                  : new Date().toISOString()
-              }
-              endDate={
-                data.endDate
-                  ? typeof data.endDate === 'string'
-                    ? data.endDate
-                    : data.endDate.toISOString()
-                  : undefined
-              }
-              data={calculated}
-            />
+          {/* Right Column - Summary */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-32">
+              <ProposalSummaryBox
+                totalBid={calculated.totalBid}
+                executionMethod={calculated.executionMethod}
+                upfrontAmount={calculated.upfrontAmount}
+                upfrontPercentage={calculated.upfrontPercentage}
+                startDate={
+                  calculated.startDate
+                    ? typeof calculated.startDate === 'string'
+                      ? calculated.startDate
+                      : calculated.startDate.toISOString()
+                    : null
+                }
+                endDate={
+                  calculated.endDate
+                    ? typeof calculated.endDate === 'string'
+                      ? calculated.endDate
+                      : calculated.endDate.toISOString()
+                    : null
+                }
+              />
+            </div>
           </div>
-        </div>
         </div>
       </div>
     </div>

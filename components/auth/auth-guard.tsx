@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import { LoadingPage } from '../shared/loading-ellipsis';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -79,16 +80,7 @@ export default function AuthGuard({
 
   // Show loading state
   if (status === 'loading') {
-    return (
-      fallbackComponent || (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="text-center">
-            <div className="w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading...</p>
-          </div>
-        </div>
-      )
-    );
+    return fallbackComponent || <LoadingPage />;
   }
 
   // Don't render children if not authenticated

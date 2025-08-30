@@ -1,0 +1,31 @@
+{
+  "id": "comp_1756507716863_j9l501rkz",
+  "type": "completion.gig-request-upfront-commissioner",
+  "notificationType": 161,
+  "actorId": 34,
+  "targetId": 34,
+  "entityType": 3,
+  "entityId": "C-R007",
+  "projectId": "C-R007",
+  "message": "You just paid $180 upfront for your newly activated Smart Contract & NFT Fundraising Development for Venture X Green Energy Startup project. This project has a budget of $1320 left. Click here to view invoice details",
+  "context": {
+    "projectId": "C-R007",
+    "upfrontAmount": 180,
+    "projectTitle": "Smart Contract & NFT Fundraising Development for Venture X Green Energy Startup",
+    "remainingBudget": 1320,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "C-R007",
+    "upfrontAmount": 180,
+    "projectTitle": "Smart Contract & NFT Fundraising Development for Venture X Green Energy Startup",
+    "remainingBudget": 1320,
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-29T22:48:36.557Z",
+  "subsystem": "completion_invoicing"
+}

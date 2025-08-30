@@ -1,0 +1,15 @@
+{
+  "id": "notif_1756528546485_o9iij1arq",
+  "timestamp": "2025-08-30T04:35:46.485Z",
+  "type": "proposal_sent",
+  "notificationType": 0,
+  "targetId": 34,
+  "entityType": 0,
+  "entityId": "",
+  "metadata": {
+    "title": "Margsate Flether sent you a proposal",
+    "message": "New project proposal for The Big Test For Proposals ",
+    "priority": "high"
+  },
+  "context": {}
+}

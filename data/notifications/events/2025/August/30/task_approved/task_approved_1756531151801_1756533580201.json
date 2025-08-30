@@ -1,0 +1,22 @@
+{
+  "id": "task_approved_1756531151801_1756533580201",
+  "timestamp": "2025-08-30T05:59:40.201Z",
+  "type": "task_approved",
+  "notificationType": 2,
+  "actorId": 35,
+  "targetId": 31,
+  "entityType": 1,
+  "entityId": 1756531151801,
+  "metadata": {
+    "taskId": 1756531151801,
+    "taskTitle": "Phase 1 – Concept & Creative Direction",
+    "projectTitle": "Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)",
+    "action": "approve",
+    "invoiceGenerated": true,
+    "message": "\"Phase 1 – Concept & Creative Direction\" is awaiting your review for Marketing & Campaign Design for James Bond Look-Alike Cosplay Contest ($5,000 in 007 NFTs)"
+  },
+  "context": {
+    "projectId": "T-P001",
+    "taskId": 1756531151801
+  }
+}

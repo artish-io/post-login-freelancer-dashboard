@@ -1,0 +1,75 @@
+{
+  "title": "Bookkeeping & Financial Tracking for James Bond Cosplay Charity Contest (NFT Prize Fund)",
+  "summary": "I’d love to support your upcoming James Bond look-alike cosplay charity contest, especially since the proceeds will be donated to an orphanage in the form of $5,000 worth of 007 NFTs. My goal is to ensure full financial transparency, accurate recording of funds, and a clear audit trail for both participants and donors. By providing professional bookkeeping, I’ll help your team build trust, demonstrate accountability, and maximize the long-term impact of this charitable initiative.",
+  "logoUrl": "/logos/zynate-events.png",
+  "contact": {
+    "id": 35,
+    "name": "Tilly Burzinsky",
+    "title": "Events Lead",
+    "avatar": "/avatars/tilly.png",
+    "type": "commissioner",
+    "email": "tilly.burzinsky@example.com",
+    "username": "tilly",
+    "password": "password123",
+    "address": "Ottawa, Canada",
+    "organizationId": 4,
+    "bio": "Dynamic events professional specializing in large-scale corporate and cultural events. Expert in creating memorable experiences that bring communities together.",
+    "rating": 4.7,
+    "responsibilities": [
+      "Event Planning",
+      "Vendor Coordination",
+      "Budget Management",
+      "Logistics Oversight",
+      "Client Relations",
+      "Risk Management",
+      "Team Supervision"
+    ],
+    "socialLinks": [
+      {
+        "platform": "linkedin",
+        "url": "https://linkedin.com/in/tilly-burzinsky"
+      }
+    ],
+    "createdAt": "2025-07-29T14:26:40.167Z",
+    "updatedAt": "2025-08-12T15:46:25.247Z",
+    "organization": {
+      "name": "Zynate Events Group",
+      "logo": "/logos/zynate-events.png",
+      "address": "12 Festival Avenue, Ottawa, Canada"
+    }
+  },
+  "typeTags": [
+    "Bookkeeping"
+  ],
+  "milestones": [
+    {
+      "id": "b3f658af-929a-4a32-a88b-f813f7b9b53d",
+      "title": "Phase 1 – Research & Financial Setup",
+      "description": "Analyse the contest structure, NFT wallet systems, and any legal or tax implications. Set up a secure bookkeeping framework for tracking incoming funds, NFT transfers, and contest-related expenses. Deliver a ledger template and reporting workflow for clear oversight.",
+      "startDate": "2025-08-30T04:00:00.000Z",
+      "endDate": "2025-09-02T04:00:00.000Z",
+      "amount": 0
+    }
+  ],
+  "totalBid": 300,
+  "customStartDate": null,
+  "endDate": "2025-09-02T04:00:00.000Z",
+  "executionMethod": "completion",
+  "startType": "Immediately",
+  "projectId": "UNQ-007",
+  "expectedDurationDays": 3,
+  "upfrontAmount": 36,
+  "upfrontPercentage": 12,
+  "milestoneTotal": 0,
+  "amountPerMilestone": 0,
+  "id": "PROP-J3AON6P2",
+  "proposalTitle": "Bookkeeping & Financial Tracking for James Bond Cosplay Charity Contest (NFT Prize Fund)",
+  "description": "I’d love to support your upcoming James Bond look-alike cosplay charity contest, especially since the proceeds will be donated to an orphanage in the form of $5,000 worth of 007 NFTs. My goal is to ensure full financial transparency, accurate recording of funds, and a clear audit trail for both participants and donors. By providing professional bookkeeping, I’ll help your team build trust, demonstrate accountability, and maximize the long-term impact of this charitable initiative.",
+  "budget": 300,
+  "freelancerId": 25,
+  "commissionerId": 35,
+  "createdAt": "2025-08-30T06:18:47.118Z",
+  "status": "rejected",
+  "hiddenFor": [],
+  "sentAt": "2025-08-30T06:18:47.118Z"
+}

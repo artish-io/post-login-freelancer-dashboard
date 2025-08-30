@@ -1,0 +1,108 @@
+[
+  {
+    "id": 1756507685269,
+    "freelancerId": 1,
+    "commissionerId": 34,
+    "gigId": null,
+    "organizationId": 3,
+    "title": "Smart Contract & NFT Fundraising Development for Venture X Green Energy Startup",
+    "skills": [
+      "Engineering"
+    ],
+    "tools": [
+      "Hardhat"
+    ],
+    "notes": "We’re launching Venture X, a green energy startup under Corlax Wellness, and need a freelancer to develop smart contracts that enable fundraising through NFTs. The contracts should securely manage NFT issuance, ownership, and revenue flow while reflecting Venture X’s sustainable mission. The ideal partner will ensure a seamless, transparent, and legally sound blockchain-based fundraising experience that excites investors and NFT collectors alike.",
+    "budget": {
+      "min": 1000,
+      "max": 1500,
+      "currency": "USD"
+    },
+    "category": "Engineering",
+    "subcategory": "Smart Contracts",
+    "hourlyRateMin": 0,
+    "hourlyRateMax": 0,
+    "deliveryTimeWeeks": 0.42857142857142855,
+    "estimatedHours": 24,
+    "executionMethod": "completion",
+    "invoicingMethod": "completion",
+    "startType": "Immediately",
+    "customStartDate": null,
+    "endDate": "2025-09-02T04:00:00.000Z",
+    "milestones": [
+      {
+        "id": "202ceeff-9514-4b21-b21e-fa1445383d9d",
+        "title": "Requirements & Architecture",
+        "description": "Collaborate to define fundraising goals, NFT tiers, tokenomics, and investor reward structures. Design smart contract architecture with security, scalability, and compliance in mind.",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-09-02T04:00:00.000Z"
+      }
+    ],
+    "organizationData": null,
+    "status": "accepted",
+    "createdAt": "2025-08-29T22:48:05.246Z",
+    "responses": [],
+    "acceptedAt": "2025-08-29T22:48:36.881Z",
+    "projectId": null
+  },
+  {
+    "id": 1756509004646,
+    "freelancerId": 1,
+    "commissionerId": 34,
+    "gigId": null,
+    "organizationId": 3,
+    "title": "Smart Contract & NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon",
+    "skills": [
+      "Smart Contracts"
+    ],
+    "tools": [
+      "Hardhat"
+    ],
+    "notes": "We’re raising funds for Wizkid’s A Million Blessings 5K charity marathon and need a freelancer to develop smart contracts that power NFT-based fundraising. The goal is to create a secure, seamless experience where participants and donors can purchase unique NFTs tied to rewards, recognition, or exclusive access. The ideal freelancer will ensure transparency, trust, and engagement while maximizing contributions for the charity.",
+    "budget": {
+      "min": 3000,
+      "max": 3788,
+      "currency": "USD"
+    },
+    "category": "Engineering",
+    "subcategory": "Smart Contracts",
+    "hourlyRateMin": 0,
+    "hourlyRateMax": 0,
+    "deliveryTimeWeeks": 0.42857142857142855,
+    "estimatedHours": 24,
+    "executionMethod": "milestone",
+    "invoicingMethod": "milestone",
+    "startType": "Immediately",
+    "customStartDate": null,
+    "endDate": "2025-09-02T04:00:00.000Z",
+    "milestones": [
+      {
+        "id": "2dd61a7e-bf49-4c97-bb0e-3c8209042450",
+        "title": "Phase 1 – Requirements & Contract Design",
+        "description": "Gather fundraising goals, NFT tiers, and reward structures. Draft smart contract architecture that ensures security, audit readiness, and compatibility with major Web3 wallets.\n\n",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-08-30T04:00:00.000Z"
+      },
+      {
+        "id": "e731dd5b-d732-4513-bcd9-105fc00fd0f9",
+        "title": "Phase 2 – Development & Testing",
+        "description": "Build and deploy smart contracts for NFT minting, transfers, and automated fundraising logic. Conduct thorough testing on testnets to guarantee smooth functionality, gas efficiency, and donor transparency.\n\n",
+        "startDate": "2025-08-31T04:00:00.000Z",
+        "endDate": "2025-08-31T04:00:00.000Z"
+      },
+      {
+        "id": "c95174be-2cb6-4791-b866-311820853d00",
+        "title": "Phase 3 – Launch & Post-Event Reporting",
+        "description": "Support mainnet deployment, integrate with the event’s website or marketplace, and ensure real-time tracking of funds and NFT ownership. Deliver documentation and analytics dashboards for post-event reporting and donor acknowledgment.",
+        "startDate": "2025-08-30T04:00:00.000Z",
+        "endDate": "2025-08-31T04:00:00.000Z"
+      }
+    ],
+    "organizationData": null,
+    "status": "accepted",
+    "createdAt": "2025-08-29T23:10:04.645Z",
+    "responses": [],
+    "acceptedAt": "2025-08-29T23:10:37.500Z",
+    "projectId": null
+  }
+]

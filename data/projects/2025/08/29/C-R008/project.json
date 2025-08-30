@@ -1,0 +1,21 @@
+{
+  "projectId": "C-R008",
+  "title": "Smart Contract & NFT Fundraising Development for Wizkid’s A Million Blessings 5K Charity Marathon",
+  "description": "We’re raising funds for Wizkid’s A Million Blessings 5K charity marathon and need a freelancer to develop smart contracts that power NFT-based fundraising. The goal is to create a secure, seamless experience where participants and donors can purchase unique NFTs tied to rewards, recognition, or exclusive access. The ideal freelancer will ensure transparency, trust, and engagement while maximizing contributions for the charity.",
+  "organizationId": 3,
+  "typeTags": [
+    "Smart Contracts"
+  ],
+  "commissionerId": 34,
+  "freelancerId": 1,
+  "status": "ongoing",
+  "dueDate": "2025-09-01",
+  "totalTasks": 3,
+  "invoicingMethod": "milestone",
+  "totalBudget": 3788,
+  "paidToDate": 1262.67,
+  "currency": "USD",
+  "createdAt": "2025-08-29T23:10:37.495Z",
+  "updatedAt": "2025-08-29T23:12:06.018Z",
+  "gigRequestId": 1756509004646
+}

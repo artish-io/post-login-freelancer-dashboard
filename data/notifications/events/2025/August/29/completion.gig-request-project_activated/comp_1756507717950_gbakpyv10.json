@@ -1,0 +1,33 @@
+{
+  "id": "comp_1756507717950_gbakpyv10",
+  "type": "completion.gig-request-project_activated",
+  "notificationType": 159,
+  "actorId": 34,
+  "targetId": 1,
+  "entityType": 3,
+  "entityId": "C-R007",
+  "projectId": "C-R007",
+  "message": "This project is now active, managed by Matte Hannery and includes 1 milestone due by August 31, 2025",
+  "context": {
+    "projectId": "C-R007",
+    "projectTitle": "Smart Contract & NFT Fundraising Development for Venture X Green Energy Startup",
+    "totalTasks": 1,
+    "dueDate": "2025-09-01",
+    "invoicingMethod": "completion",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "metadata": {
+    "projectId": "C-R007",
+    "projectTitle": "Smart Contract & NFT Fundraising Development for Venture X Green Energy Startup",
+    "totalTasks": 1,
+    "dueDate": "2025-09-01",
+    "invoicingMethod": "completion",
+    "orgName": "Corlax Wellness",
+    "freelancerName": "Tobi Philly",
+    "commissionerName": "Matte Hannery"
+  },
+  "timestamp": "2025-08-29T22:48:37.788Z",
+  "subsystem": "completion_invoicing"
+}
