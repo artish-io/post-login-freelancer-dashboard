@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRequestCache } from '../src/hooks/useRequestCache';
 
 export interface DashboardStats {
   userId: string;
@@ -17,30 +18,27 @@ interface UseDashboardStatsOptions {
 
 export function useDashboardStats(options: UseDashboardStatsOptions = {}) {
   const { userId, refreshInterval = 30000, useRealTime = true } = options;
-  
-  const [stats, setStats] = useState<DashboardStats | DashboardStats[] | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchStats = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  // Create cache key based on options
+  const cacheKey = `dashboard-stats-${userId || 'all'}-${useRealTime}`;
 
+  // Use request cache with 2-minute TTL for dashboard stats
+  const { data: stats, error, loading, refresh } = useRequestCache(
+    cacheKey,
+    async () => {
       if (useRealTime) {
         // Fetch from API for real-time calculation
-        const url = userId 
+        const url = userId
           ? `/api/dashboard-stats?userId=${userId}`
           : '/api/dashboard-stats';
-        
+
         const response = await fetch(url);
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
-        const data = await response.json();
-        setStats(data);
+
+        return await response.json();
       } else {
         // Fetch from API endpoint
         const response = await fetch('/api/dashboard-stats');
@@ -50,61 +48,34 @@ export function useDashboardStats(options: UseDashboardStatsOptions = {}) {
         }
 
         const data: DashboardStats[] = await response.json();
-        
+
         if (userId) {
           const userStats = data.find(s => s.userId === userId);
-          setStats(userStats || null);
+          return userStats || null;
         } else {
-          setStats(data);
+          return data;
         }
       }
-    } catch (err) {
-      console.error('Error fetching dashboard stats:', err);
-      setError(err instanceof Error ? err.message : 'Unknown error');
-    } finally {
-      setLoading(false);
+    },
+    {
+      ttl: 2 * 60 * 1000, // 2 minutes cache
+      staleWhileRevalidate: true
     }
-  };
+  );
 
-  const updateStats = async () => {
-    try {
-      const response = await fetch('/api/dashboard-stats', {
-        method: 'POST',
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const result = await response.json();
-      console.log('Dashboard stats updated:', result.message);
-      
-      // Refresh the current stats
-      await fetchStats();
-      
-      return result;
-    } catch (err) {
-      console.error('Error updating dashboard stats:', err);
-      throw err;
-    }
-  };
-
+  // Auto-refresh based on refreshInterval
   useEffect(() => {
-    fetchStats();
-
-    // Set up refresh interval if specified
     if (refreshInterval > 0) {
-      const interval = setInterval(fetchStats, refreshInterval);
+      const interval = setInterval(refresh, refreshInterval);
       return () => clearInterval(interval);
     }
-  }, [userId, refreshInterval, useRealTime]);
+  }, [refresh, refreshInterval]);
 
   return {
     stats,
     loading,
-    error,
-    refetch: fetchStats,
-    updateStats
+    error: error?.message || null,
+    refetch: refresh
   };
 }
 

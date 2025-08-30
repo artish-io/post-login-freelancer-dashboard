@@ -7,9 +7,10 @@
 // Unread state is derived from `/api/dashboard/messages/preview?userId=...`.
 // Selecting a contact also PATCHes `/api/dashboard/messages/[threadId]/mark-read`.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import ContactListCard from './messages/contact-list-card';
+import { useSmartPolling } from '@/hooks/useSmartPolling';
 
 export type Contact = {
   id: number;
@@ -124,19 +125,26 @@ export default function MessagesContacts({
     window.addEventListener('messageSent', handleMessageSent);
     window.addEventListener('refreshUnreadCount', handleRefreshUnreadCount);
 
-    // Poll for unread state changes every 5 seconds (slightly longer than message thread polling)
-    const interval = setInterval(() => {
-      console.log('🔄 Polling for contact list unread state changes...');
-      fetchUnreadThreads();
-    }, 5000);
-
     return () => {
       window.removeEventListener('unreadCountChanged', handleUnreadCountChange);
       window.removeEventListener('messageSent', handleMessageSent);
       window.removeEventListener('refreshUnreadCount', handleRefreshUnreadCount);
-      clearInterval(interval);
     };
   }, [userId]);
+
+  // Smart polling for contact unread state - much less aggressive than before
+  useSmartPolling(
+    useCallback(() => {
+      console.log('🔄 Smart polling for contact list unread state changes...');
+      fetchUnreadThreads();
+    }, []),
+    {
+      activeInterval: 60000,    // 1 minute when active (was 5 seconds)
+      inactiveInterval: 300000, // 5 minutes when tab inactive
+      idleInterval: 600000,     // 10 minutes when user idle
+      enabled: !!session?.user?.id
+    }
+  );
 
   const handleSelect = async (contactId: number) => {
     const sorted = [Number(userId), contactId].sort((a, b) => a - b);

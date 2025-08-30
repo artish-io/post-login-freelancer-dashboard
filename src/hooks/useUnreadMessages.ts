@@ -1,6 +1,7 @@
 // src/hooks/useUnreadMessages.ts
 import { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
+import { useSmartPolling } from './useSmartPolling';
 
 export function useUnreadMessages() {
   const [unreadCount, setUnreadCount] = useState(0);
@@ -54,16 +55,22 @@ export function useUnreadMessages() {
     }
   }, [session?.user?.id]);
 
-  // Initial fetch and polling
+  // Initial fetch
   useEffect(() => {
     if (!session?.user?.id) return;
-
     fetchUnreadCount();
+  }, [session?.user?.id, fetchUnreadCount]);
 
-    // More frequent polling (every 3 seconds for real-time feel)
-    const interval = setInterval(fetchUnreadCount, 3000);
-    return () => clearInterval(interval);
-  }, [session?.user?.id]); // Remove fetchUnreadCount from dependencies
+  // Smart polling for unread count - much less aggressive than before
+  useSmartPolling(
+    fetchUnreadCount,
+    {
+      activeInterval: 30000,    // 30 seconds when active (was 3 seconds)
+      inactiveInterval: 120000, // 2 minutes when tab inactive
+      idleInterval: 600000,     // 10 minutes when user idle
+      enabled: !!session?.user?.id
+    }
+  );
 
   // Listen for manual refresh events
   useEffect(() => {

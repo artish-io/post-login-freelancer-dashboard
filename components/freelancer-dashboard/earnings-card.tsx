@@ -6,50 +6,39 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import CurrencyDisplay from '../ui/currency-display';
+import { useRequestCache } from '../../src/hooks/useRequestCache';
 
 export default function EarningsCard() {
   const { data: session } = useSession();
-  const [earnings, setEarnings] = useState<number | null>(null);
-  const [lastPaymentDate, setLastPaymentDate] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!session?.user?.id) {
-      setLoading(false);
-      return;
-    }
-
-    const fetchEarnings = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const res = await fetch(`/api/dashboard/earnings?id=${session.user.id}`);
-        const data = await res.json();
-
-        if (!res.ok) {
-          throw new Error(data.error || 'Failed to fetch earnings');
-        }
-
-        console.log('🎯 Fetched user-specific earnings:', data);
-
-        setEarnings(data.amount || 0);
-        setLastPaymentDate(data.lastUpdated || '');
-      } catch (error) {
-        console.error('❌ Error fetching user earnings:', error);
-        setError(error instanceof Error ? error.message : 'Failed to load earnings');
-        setEarnings(0);
-      } finally {
-        setLoading(false);
+  // Use request cache for earnings data with 3-minute TTL
+  const { data: earningsData, loading, error } = useRequestCache(
+    `earnings-${session?.user?.id}`,
+    async () => {
+      if (!session?.user?.id) {
+        throw new Error('No user ID available');
       }
-    };
 
-    fetchEarnings();
-  }, [session?.user?.id]);
+      const res = await fetch(`/api/dashboard/earnings?id=${session.user.id}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to fetch earnings');
+      }
+
+      console.log('🎯 Fetched user-specific earnings:', data);
+      return data;
+    },
+    {
+      ttl: 3 * 60 * 1000, // 3 minutes cache
+      staleWhileRevalidate: true
+    }
+  );
+
+  const earnings = earningsData?.amount || 0;
+  const lastPaymentDate = earningsData?.lastUpdated || '';
 
   return (
     <div
@@ -81,7 +70,7 @@ export default function EarningsCard() {
         {loading ? (
           'Loading...'
         ) : error ? (
-          error
+          error.message || 'Error loading earnings'
         ) : lastPaymentDate ? (
           `Last payment: ${new Date(lastPaymentDate).toLocaleDateString()}`
         ) : earnings && earnings > 0 ? (

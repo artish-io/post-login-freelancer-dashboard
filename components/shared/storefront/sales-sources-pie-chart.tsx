@@ -1,13 +1,21 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Doughnut } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import { Skeleton } from '../../ui/loading-skeleton';
+import dynamic from 'next/dynamic';
+
+// Lazy load chart components to reduce initial bundle size
+const Doughnut = dynamic(() => import('react-chartjs-2').then(mod => mod.Doughnut), {
+  ssr: false,
+  loading: () => <Skeleton height={160} width={160} rounded />
+});
+
+// Lazy load Chart.js components
+const ChartJS = dynamic(() => import('chart.js').then(mod => mod.Chart), { ssr: false });
+const ArcElement = dynamic(() => import('chart.js').then(mod => mod.ArcElement), { ssr: false });
+const Tooltip = dynamic(() => import('chart.js').then(mod => mod.Tooltip), { ssr: false });
+const Legend = dynamic(() => import('chart.js').then(mod => mod.Legend), { ssr: false });
+
 import type { TooltipItem } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend);

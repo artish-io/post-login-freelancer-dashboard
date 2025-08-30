@@ -1,7 +1,13 @@
 'use client';
 
-import { motion } from 'framer-motion';
 import clsx from 'clsx';
+import dynamic from 'next/dynamic';
+
+// Lazy load framer-motion to reduce initial bundle size
+const motion = dynamic(() => import('framer-motion').then(mod => ({ default: mod.motion })), {
+  ssr: false,
+  loading: () => ({ div: 'div' as any })
+});
 
 type SkeletonProps = {
   className?: string;

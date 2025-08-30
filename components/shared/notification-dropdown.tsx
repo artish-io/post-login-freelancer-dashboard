@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import LoadingEllipsis from './loading-ellipsis';
+import { useSmartPolling } from '@/hooks/useSmartPolling';
 
 type NotificationItem = {
   id: string;
@@ -47,31 +48,7 @@ export default function NotificationDropdown({ dashboardType }: Props) {
   const [unreadCount, setUnreadCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  // Fetch unread count on component mount and periodically
-  useEffect(() => {
-    // Only fetch if session is loaded and user is authenticated
-    if (status === 'authenticated' && session?.user?.id) {
-      fetchUnreadCount();
-
-      // Set up polling for unread count every 10 seconds for better responsiveness
-      const interval = setInterval(fetchUnreadCount, 10000);
-
-      // Listen for custom notification refresh events
-      const handleNotificationRefresh = () => {
-        fetchUnreadCount();
-        if (open) {
-          fetchNotifications();
-        }
-      };
-
-      window.addEventListener('notificationRefresh', handleNotificationRefresh);
-
-      return () => {
-        clearInterval(interval);
-        window.removeEventListener('notificationRefresh', handleNotificationRefresh);
-      };
-    }
-  }, [status, session?.user?.id, dashboardType, open]);
+  // Removed polling logic - will be added after function definitions
 
   // Fetch notifications when dropdown opens
   useEffect(() => {
@@ -159,6 +136,41 @@ export default function NotificationDropdown({ dashboardType }: Props) {
       window.removeEventListener('notificationRead', handleNotificationRead as EventListener);
     };
   }, [dashboardType]);
+
+  // Initial fetch and smart polling for unread count
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.id) {
+      fetchUnreadCount();
+    }
+  }, [status, session?.user?.id, dashboardType]);
+
+  // Smart polling for unread count - much less aggressive than before
+  useSmartPolling(
+    useCallback(() => {
+      if (status === 'authenticated' && session?.user?.id) {
+        fetchUnreadCount();
+      }
+    }, [status, session?.user?.id]),
+    {
+      activeInterval: 60000,    // 1 minute when active (was 10 seconds)
+      inactiveInterval: 300000, // 5 minutes when tab inactive
+      idleInterval: 600000,     // 10 minutes when user idle
+      enabled: status === 'authenticated' && !!session?.user?.id
+    }
+  );
+
+  // Listen for custom notification refresh events
+  useEffect(() => {
+    const handleNotificationRefresh = () => {
+      fetchUnreadCount();
+      if (open) {
+        fetchNotifications();
+      }
+    };
+
+    window.addEventListener('notificationRefresh', handleNotificationRefresh);
+    return () => window.removeEventListener('notificationRefresh', handleNotificationRefresh);
+  }, [open]);
 
   const formatTimeAgo = (timestamp: string) => {
     const now = new Date();

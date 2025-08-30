@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { MoreVertical } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import TaskCard from './task-card';
@@ -9,6 +9,7 @@ import { checkAndExecuteAutoMovement } from '@/lib/auto-task-movement';
 import { isThisWeek, startOfDay } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import { requireFreelancerSession, isValidFreelancerTask } from '@/lib/freelancer-access-control';
+import { useSmartPolling } from '@/hooks/useSmartPolling';
 
 type Props = {
   columnId: 'todo' | 'upcoming' | 'review';
@@ -203,19 +204,22 @@ export default function TaskColumn({ columnId, title }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Optimized refresh mechanism - much less aggressive polling to prevent resets
-  useEffect(() => {
-    const interval = setInterval(() => {
+  // Smart polling for task updates - much less aggressive than before
+  useSmartPolling(
+    useCallback(() => {
       // Only refresh if not currently fetching and no recent submissions
       if (!fetchingRef.current) {
-        console.log(`🔄 Scheduled refresh for ${columnId} column`);
+        console.log(`🔄 Smart refresh for ${columnId} column`);
         fetchData();
       }
-    }, 5000); // Poll every 5 seconds for faster updates
-
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    }, [columnId, fetchData]),
+    {
+      activeInterval: 60000,    // 1 minute when active (was 5 seconds)
+      inactiveInterval: 300000, // 5 minutes when tab inactive
+      idleInterval: 600000,     // 10 minutes when user idle
+      enabled: true
+    }
+  );
 
   // Enhanced auto-movement trigger - check much less frequently to prevent resets
   useEffect(() => {

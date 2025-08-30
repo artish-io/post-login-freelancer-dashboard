@@ -9,18 +9,24 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",              // ✅ FIX: use stable Node-style resolution
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".",                          // ✅ Enables root-relative imports
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],                      // ✅ Alias `@/` to `src/`
-      "@/components/*": ["components/*"]     // ✅ Alias for components folder
+      "@/*": ["src/*"],
+      "@/components/*": ["components/*"]
     },
     "types": ["next-auth"],
-    "plugins": [{ "name": "next" }]
+    "plugins": [{ "name": "next" }],
+
+    // Performance optimizations for development
+    "assumeChangesOnlyAffectDirectDependencies": true,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "disableSolutionSearching": true,
+    "disableReferencedProjectLoad": true
   },
   "include": [
     "next-env.d.ts",
@@ -28,5 +34,18 @@
     "**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "data/**/*",
+    "scripts/**/*",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "__tests__/**/*",
+    "coverage/**/*",
+    ".next/**/*",
+    "dist/**/*",
+    "build/**/*"
+  ]
 }

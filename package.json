@@ -4,7 +4,17 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:fast": "SKIP_TYPE_CHECK=true SKIP_LINT=true next dev",
+    "dev:turbo": "next dev --turbo",
+    "dev:monitor": "node scripts/dev-performance-monitor.js & npm run dev",
     "build": "next build",
+    "analyze": "ANALYZE=true npm run build",
+    "analyze:server": "BUNDLE_ANALYZE=server npm run build",
+    "analyze:browser": "BUNDLE_ANALYZE=browser npm run build",
+    "optimize:imports": "node scripts/optimize-imports.js",
+    "optimize:deps": "node scripts/analyze-dependencies.js",
+    "optimize:hmr": "node scripts/hmr-optimizer.js analyze",
+    "monitor:hmr": "node scripts/hmr-optimizer.js monitor",
     "start": "next start",
     "lint": "next lint",
     "check-storage": "node scripts/check-deprecated-file-usage.js",
@@ -26,10 +36,8 @@
     "migrate:organizations:dry": "tsx scripts/migrate-organizations-to-hierarchical.ts --dry-run"
   },
   "dependencies": {
-    "@continuum-ai/avatars": "^1.0.3",
     "@headlessui/react": "^2.2.4",
     "@radix-ui/react-popover": "^1.1.14",
-    "@tailwindcss/postcss": "^4.1.7",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.3",
     "chart.js": "^4.5.0",
@@ -47,26 +55,20 @@
     "react-chartjs-2": "^5.3.0",
     "react-day-picker": "^9.7.0",
     "react-dom": "19.0.0",
-    "react-tailwindcss-datepicker": "^2.0.0",
     "recharts": "^3.1.0",
-    "slugify": "^1.6.6",
-    "tsx": "^4.20.3",
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@types/chart.js": "^2.9.41",
-    "@types/libsodium-wrappers": "^0.7.14",
     "@types/node": "^20",
     "@types/react": "^19",
-    "@types/react-day-picker": "^5.2.1",
     "@types/react-dom": "^19",
     "@types/recharts": "^1.8.29",
-    "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.7",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }

@@ -8,6 +8,7 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useEncryption } from '@/hooks/useEncryption';
+import { useSmartPolling } from '@/hooks/useSmartPolling';
 
 type Message = {
   senderId: number;
@@ -157,18 +158,20 @@ export default function MessageThread({ threadId }: Props) {
     return () => window.removeEventListener('messageSent', handleMessageSent);
   }, [fetchAndMarkRead]);
 
-  // Poll for new messages every 3 seconds
-  useEffect(() => {
-    if (!threadId || !userId) return;
-
-    const interval = setInterval(() => {
-      console.log('🔄 Polling for new messages...');
+  // Smart polling for new messages - reduces frequency when tab inactive or user idle
+  useSmartPolling(
+    useCallback(() => {
+      if (!threadId || !userId) return;
+      console.log('🔄 Smart polling for new messages...');
       fetchAndMarkRead();
-    }, 3000);
-
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    }, [threadId, userId, fetchAndMarkRead]),
+    {
+      activeInterval: 15000,    // 15 seconds when active (was 3 seconds)
+      inactiveInterval: 60000,  // 1 minute when tab inactive
+      idleInterval: 300000,     // 5 minutes when user idle
+      enabled: !!(threadId && userId)
+    }
+  );
 
   // Auto scroll to bottom when messages change
   useEffect(() => {
